@@ -72,12 +72,12 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
       {
         contractName: "Eth",
         functionName: "approve",
-        args: [StakerContract?.address ?? "", 10 ** 14],
+        args: [StakerContract?.address ?? "", 5 ** 17],
       },
       {
         contractName: "Challenge1",
         functionName: "stake",
-        args: [10 ** 14],
+        args: [5 ** 17],
       },
     ],
   });
