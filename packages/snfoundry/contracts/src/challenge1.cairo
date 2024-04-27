@@ -40,7 +40,7 @@ mod Challenge1 {
         eth_contract_address: ContractAddress
     ) {
         self.token.write(IERC20CamelDispatcher { contract_address: eth_contract_address });
-        self.deadline.write(get_block_timestamp() + 100); // 45 seconds
+        self.deadline.write(get_block_timestamp() + 60); // 45 seconds
         self.external_contract_address.write(external_contract_address);
     }
 

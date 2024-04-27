@@ -4,10 +4,10 @@
  */
 
 const deployedContracts = {
-  sepolia: {
+  devnet: {
     ExampleExternalContract: {
       address:
-        "0x0129e446f7df55df520032100969dbc470c429126e47c2ae5734bc0cf66f0124",
+        "0x057a9a00c766979609b238fc3bf87b25556103424d9915641167c17128228002",
       abi: [
         {
           type: "impl",
@@ -82,7 +82,7 @@ const deployedContracts = {
     },
     Challenge1: {
       address:
-        "0x04b5b4cf59547813725495e80fe97c80c9b980d2859752242690fac011cf674f",
+        "0x07e62a4ba1d69fe879859be5a402b42f8c227b89ed447830f99587d7021bed9e",
       abi: [
         {
           type: "impl",
