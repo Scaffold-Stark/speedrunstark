@@ -45,7 +45,7 @@ const TokenVendor: NextPage = () => {
   const { data: vendorTokenBalance } = useScaffoldReadContract({
     contractName: "YourToken",
     functionName: "balance_of",
-    args: [vendorContractData?.address],
+    args: [vendorContractData?.address ?? ""],
   });
 
   const { data: vendorContractBalance } = useBalance({
@@ -102,7 +102,7 @@ const TokenVendor: NextPage = () => {
             Your token balance:{" "}
             <div className="inline-flex items-center justify-center">
               <span className="font-bold ml-1">
-                {parseFloat(formatEther(yourTokenBalance || 0n))}
+                {parseFloat(formatEther(yourTokenBalance?.toString() || 0n))}
               </span>
             </div>
           </div>
@@ -111,7 +111,9 @@ const TokenVendor: NextPage = () => {
           {/* <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
-              {parseFloat(formatEther(vendorTokenBalance || 0n)).toFixed(4)}
+              {parseFloat(
+                formatEther(vendorTokenBalance?.toString() || 0n),
+              ).toFixed(4)}
               <span className="font-bold ml-1"> </span>
             </div>
           </div> */}
@@ -149,26 +151,26 @@ const TokenVendor: NextPage = () => {
         </div> */}
 
         {/* Buy Tokens  */}
-        {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
-          <div className="text-xl">Buy tokens</div>
-          <div>{Number(tokensPerEth)} tokens per ETH</div>
+        {/*<div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">*/}
+        {/*  <div className="text-xl">Buy tokens</div>*/}
+        {/*  <div>{Number(tokensPerEth)} tokens per ETH</div>*/}
 
-          <div className="w-full flex flex-col space-y-2">
-            <IntegerInput
-              placeholder="amount of tokens to buy"
-              value={tokensToBuy.toString()}
-              onChange={(value) => setTokensToBuy(value)}
-              disableMultiplyBy1e18
-            />
-          </div>
+        {/*  <div className="w-full flex flex-col space-y-2">*/}
+        {/*    <IntegerInput*/}
+        {/*      placeholder="amount of tokens to buy"*/}
+        {/*      value={tokensToBuy.toString()}*/}
+        {/*      onChange={(value) => setTokensToBuy(value)}*/}
+        {/*      disableMultiplyBy1e18*/}
+        {/*    />*/}
+        {/*  </div>*/}
 
-          <button
-            className="btn btn-secondary mt-2"
-            onClick={wrapInTryCatch(buy, "buyTokens")}
-          >
-            Buy Tokens
-          </button>
-        </div> */}
+        {/*  <button*/}
+        {/*    className="btn btn-secondary mt-2"*/}
+        {/*    onClick={wrapInTryCatch(buy, "buyTokens")}*/}
+        {/*  >*/}
+        {/*    Buy Tokens*/}
+        {/*  </button>*/}
+        {/*</div>*/}
 
         {/* Sell Tokens */}
 
