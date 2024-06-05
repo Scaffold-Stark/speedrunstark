@@ -3,25 +3,22 @@ use starknet::ContractAddress;
 #[starknet::interface]
 pub trait IYourCollectible<T> {
     fn mint_item(ref self: T, recipient: ContractAddress, uri: ByteArray) -> u256;
-    fn token_of_owner_by_index(self: @T, owner: ContractAddress, index: u256) -> u256;
-    fn total_supply(self: @T) -> u256;
-
-    // ERC721 standard methods
-    fn balance_of(self: @T, owner: ContractAddress) -> u256;
-    fn owner_of(self: @T, token_id: u256) -> ContractAddress;
-    fn safe_transfer_from(
-        ref self: T, from: ContractAddress, to: ContractAddress, token_id: u256, data: Span<felt252>
-    );
-    fn transfer_from(ref self: T, from: ContractAddress, to: ContractAddress, token_id: u256);
-    fn approve(ref self: T, to: ContractAddress, token_id: u256);
-    fn set_approval_for_all(ref self: T, operator: ContractAddress, approved: bool);
-    fn get_approved(self: @T, token_id: u256) -> ContractAddress;
-    fn is_approved_for_all(self: @T, owner: ContractAddress, operator: ContractAddress) -> bool;
 }
 
 #[starknet::interface]
 pub trait ICounter<T> {
     fn token_id_counter(self: @T) -> u256;
+}
+
+#[starknet::interface]
+pub trait IERC721Enumerable<T> {
+    fn token_of_owner_by_index(self: @T, owner: ContractAddress, index: u256) -> u256;
+    fn total_supply(self: @T) -> u256;
+}
+
+#[starknet::interface]
+pub trait IERC721<T> {
+    fn balance_of(self: @T, account: ContractAddress) -> u256;
 }
 
 #[starknet::contract]
@@ -35,7 +32,7 @@ mod YourCollectible {
     use openzeppelin::token::erc721::interface::IERC721;
     use openzeppelin::token::erc721::interface::IERC721Metadata;
     use starknet::get_caller_address;
-    use super::{IYourCollectible, ContractAddress, ICounter};
+    use super::{IYourCollectible, ContractAddress, IERC721Enumerable, ICounter};
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
@@ -103,22 +100,34 @@ mod YourCollectible {
             self._set_token_uri(token_id, uri);
             token_id
         }
+    }
 
-        fn token_of_owner_by_index(
-            self: @ContractState, owner: ContractAddress, index: u256
-        ) -> u256 {
-            assert(index < self.erc721.balance_of(owner), 'Owner index out of bounds');
-            self.owned_tokens.read((owner, index))
+    #[abi(embed_v0)]
+    impl ICounterImpl of ICounter<ContractState> {
+        fn token_id_counter(self: @ContractState) -> u256 {
+            self._current()
         }
+    }
 
-        fn total_supply(self: @ContractState) -> u256 {
-            self.all_tokens_counter.read()
+    #[abi(embed_v0)]
+    impl WrappedIERC721MetadataImpl of IERC721Metadata<ContractState> {
+        // Override token_uri to use the internal ERC721URIStorage _token_uri function
+        fn token_uri(self: @ContractState, token_id: u256) -> ByteArray {
+            self._token_uri(token_id)
         }
-
-        fn balance_of(self: @ContractState, owner: ContractAddress) -> u256 {
-            self.erc721.balance_of(owner)
+        fn name(self: @ContractState) -> ByteArray {
+            self.erc721.name()
         }
+        fn symbol(self: @ContractState) -> ByteArray {
+            self.erc721.symbol()
+        }
+    }
 
+    #[abi(embed_v0)]
+    pub impl WrappedIERC721Impl of IERC721<ContractState> {
+        fn balance_of(self: @ContractState, account: ContractAddress) -> u256 {
+            self.erc721.balance_of(account)
+        }
         fn owner_of(self: @ContractState, token_id: u256) -> ContractAddress {
             self.erc721.owner_of(token_id)
         }
@@ -155,27 +164,19 @@ mod YourCollectible {
         }
     }
 
-    #[abi(embed_v0)]
-    impl ICounterImpl of ICounter<ContractState> {
-        fn token_id_counter(self: @ContractState) -> u256 {
-            self._current()
-        }
-    }
 
     #[abi(embed_v0)]
-    impl WrappedIERC721MetadataImpl of IERC721Metadata<ContractState> {
-        // Override token_uri to use the internal ERC721URIStorage _token_uri function
-        fn token_uri(self: @ContractState, token_id: u256) -> ByteArray {
-            self._token_uri(token_id)
+    impl IERC721EnumerableImpl of IERC721Enumerable<ContractState> {
+        fn token_of_owner_by_index(
+            self: @ContractState, owner: ContractAddress, index: u256
+        ) -> u256 {
+            assert(index < self.erc721.balance_of(owner), 'Owner index out of bounds');
+            self.owned_tokens.read((owner, index))
         }
-        fn name(self: @ContractState) -> ByteArray {
-            self.erc721.name()
-        }
-        fn symbol(self: @ContractState) -> ByteArray {
-            self.erc721.symbol()
+        fn total_supply(self: @ContractState) -> u256 {
+            self.all_tokens_counter.read()
         }
     }
-
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
