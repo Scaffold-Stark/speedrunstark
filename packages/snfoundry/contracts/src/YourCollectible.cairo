@@ -6,11 +6,6 @@ pub trait IYourCollectible<T> {
 }
 
 #[starknet::interface]
-pub trait ICounter<T> {
-    fn token_id_counter(self: @T) -> u256;
-}
-
-#[starknet::interface]
 pub trait IERC721Enumerable<T> {
     fn token_of_owner_by_index(self: @T, owner: ContractAddress, index: u256) -> u256;
     fn total_supply(self: @T) -> u256;
@@ -32,15 +27,18 @@ mod YourCollectible {
     use openzeppelin::token::erc721::interface::IERC721;
     use openzeppelin::token::erc721::interface::IERC721Metadata;
     use starknet::get_caller_address;
-    use super::{IYourCollectible, ContractAddress, IERC721Enumerable, ICounter};
+    use super::{IYourCollectible, ContractAddress, IERC721Enumerable};
+    use contracts::CounterComponent;
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+    component!(path: CounterComponent, storage: token_id_counter, event: CounterEvent);
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
-
+    #[abi(embed_v0)]
+    impl CounterImpl = CounterComponent::CounterImpl<ContractState>;
     impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
@@ -52,8 +50,8 @@ mod YourCollectible {
         src5: SRC5Component::Storage,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
-        // ICounter variables
-        counter: u256,
+        #[substorage(v0)]
+        token_id_counter: CounterComponent::Storage,
         // ERC721URIStorage variables
         // Mapping for token URIs
         token_uris: LegacyMap<u256, ByteArray>,
@@ -78,7 +76,8 @@ mod YourCollectible {
         #[flat]
         SRC5Event: SRC5Component::Event,
         #[flat]
-        OwnableEvent: OwnableComponent::Event
+        OwnableEvent: OwnableComponent::Event,
+        CounterEvent: CounterComponent::Event
     }
 
     #[constructor]
@@ -94,18 +93,11 @@ mod YourCollectible {
     #[abi(embed_v0)]
     impl YourCollectibleImpl of IYourCollectible<ContractState> {
         fn mint_item(ref self: ContractState, recipient: ContractAddress, uri: ByteArray) -> u256 {
-            self._increment();
-            let token_id = self._current();
+            self.token_id_counter.increment();
+            let token_id = self.token_id_counter.current();
             self._mint(recipient, token_id);
             self._set_token_uri(token_id, uri);
             token_id
-        }
-    }
-
-    #[abi(embed_v0)]
-    impl ICounterImpl of ICounter<ContractState> {
-        fn token_id_counter(self: @ContractState) -> u256 {
-            self._current()
         }
     }
 
@@ -220,14 +212,6 @@ mod YourCollectible {
             self._transfer(from, to, token_id);
         }
 
-        //  ICounter internal functions
-        fn _increment(ref self: ContractState) {
-            self.counter.write(self.counter.read() + 1);
-        }
-        fn _current(self: @ContractState) -> u256 {
-            self.counter.read()
-        }
-
         // ERC721URIStorage internal functions
         fn _token_uri(self: @ContractState, token_id: u256) -> ByteArray {
             assert(self.erc721._exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
@@ -308,4 +292,4 @@ mod YourCollectible {
             }
         }
     }
-}
+ }
