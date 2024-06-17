@@ -28,7 +28,7 @@ mod YourCollectible {
     use openzeppelin::token::erc721::interface::IERC721Metadata;
     use starknet::get_caller_address;
     use super::{IYourCollectible, ContractAddress, IERC721Enumerable};
-    use contracts::CounterComponent;
+    use contracts::Counter::CounterComponent;
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
