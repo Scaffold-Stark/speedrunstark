@@ -216,8 +216,12 @@ mod YourCollectible {
         fn _token_uri(self: @ContractState, token_id: u256) -> ByteArray {
             assert(self.erc721._exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
             let base_uri = self.erc721._base_uri();
-            let uri = self.token_uris.read(token_id);
-            format!("{}{}", base_uri, uri)
+            if base_uri.len() == 0 {
+                Default::default()
+            } else {
+                let uri = self.token_uris.read(token_id);
+                format!("{}{}", base_uri, uri)
+            }
         }
         fn _set_token_uri(ref self: ContractState, token_id: u256, uri: ByteArray) {
             assert(self.erc721._exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);

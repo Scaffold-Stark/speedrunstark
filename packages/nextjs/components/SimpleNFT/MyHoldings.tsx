@@ -49,12 +49,12 @@ export const MyHoldings = ({
       const totalBalance = parseInt(myTotalBalance.toString());
       for (let tokenIndex = 0; tokenIndex < totalBalance; tokenIndex++) {
         try {
-          const tokenIx = await yourCollectibleContract.functions[
+          const tokenId = await yourCollectibleContract.functions[
             "token_of_owner_by_index"
           ](connectedAddress, BigInt(tokenIndex));
 
           const tokenURI = decodeBigIntArrayToText(
-            (await yourCollectibleContract.functions["token_uri"](tokenIx))
+            (await yourCollectibleContract.functions["token_uri"](tokenId))
               .data,
           );
           const ipfsHash = tokenURI.replace(
@@ -65,7 +65,7 @@ export const MyHoldings = ({
           const nftMetadata: NFTMetaData = await getMetadataFromIPFS(ipfsHash);
 
           collectibleUpdate.push({
-            id: parseInt(tokenIx.toString()),
+            id: parseInt(tokenId.toString()),
             uri: tokenURI,
             owner: connectedAddress,
             ...nftMetadata,

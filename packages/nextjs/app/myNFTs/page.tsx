@@ -23,7 +23,7 @@ const MyNFTs: NextPage = () => {
 
   const { data: tokenIdCounter, refetch } = useScaffoldReadContract({
     contractName: "YourCollectible",
-    functionName: "token_id_counter",
+    functionName: "current",
     watch: true,
   });
 
