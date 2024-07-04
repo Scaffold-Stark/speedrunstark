@@ -26,7 +26,8 @@ const Home: NextPage = () => {
               className="sm:w-[30px] sm:h-[30px]"
             />
             <span className="text-center">
-              Learn how to build on <strong>Starknet</strong>; the superpowers and the gotchas.
+              Learn how to build on <strong>Starknet</strong>; the superpowers
+              and the gotchas.
             </span>
             <h1
               className={`text-8xl font-black text-center sm:text-6xl ${codec.className}`}
