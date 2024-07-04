@@ -1,4 +1,3 @@
-
 #[starknet::interface]
 pub trait ICounter<T> {
     fn current(self: @T) -> u256;
@@ -7,11 +6,10 @@ pub trait ICounter<T> {
 }
 
 #[starknet::component]
-pub mod CounterComponent{
+pub mod CounterComponent {
     use starknet::ContractAddress;
     use super::{ICounter};
     use starknet::get_caller_address;
-    use core::num::traits::Zero;
 
     #[storage]
     struct Storage {
