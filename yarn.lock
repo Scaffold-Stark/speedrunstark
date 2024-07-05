@@ -5164,19 +5164,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"humanize-duration@npm:^3.32.0":
+  version: 3.32.0
+  resolution: "humanize-duration@npm:3.32.0"
+  checksum: fd12af03045278c24542d2222d46831f74d21a2132bba053d4847ff8c8f6799840db6ff8a14ce24cc920f69633970fbde4f83d7cbcfed26806ed21804e72a03a
+  languageName: node
+  linkType: hard
+
 "husky@npm:^9.0.11":
   version: 9.0.11
   resolution: "husky@npm:9.0.11"
   bin:
     husky: bin.mjs
   checksum: 1aebc3334dc7ac6288ff5e1fb72cfb447cfa474e72cf7ba692e8c5698c573ab725c28c6a5088c9f8e6aca5f47d40fa7261beffbc07a4d307ca21656dc4571f07
-  languageName: node
-  linkType: hard
-
-"humanize-duration@npm:^3.32.0":
-  version: 3.32.0
-  resolution: "humanize-duration@npm:3.32.0"
-  checksum: fd12af03045278c24542d2222d46831f74d21a2132bba053d4847ff8c8f6799840db6ff8a14ce24cc920f69633970fbde4f83d7cbcfed26806ed21804e72a03a
   languageName: node
   linkType: hard
 

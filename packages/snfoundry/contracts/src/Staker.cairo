@@ -5,7 +5,7 @@ trait IStaker<T> {
     fn stake(ref self: T, amount: u256);
     fn withdraw(ref self: T);
     fn balances(self: @T, account: ContractAddress) -> u256;
-    //fn completed(self: @T) -> bool;
+    //fn example_external_contract_completed(self: @T) -> bool;
     fn deadline(self: @T) -> u64;
     fn example_external_contract(self: @T) -> ContractAddress;
     fn open_for_withdraw(self: @T) -> bool;
@@ -16,7 +16,6 @@ trait IStaker<T> {
 
 #[starknet::contract]
 mod Staker {
-    use core::traits::TryInto;
     use contracts::ExampleExternalContract::{
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait
     };
@@ -98,7 +97,7 @@ mod Staker {
         fn example_external_contract(self: @ContractState) -> ContractAddress {
             self.external_contract_address.read()
         }
-    // fn completed(self: @ContractState) -> bool {
+    // fn example_external_contract_completed(self: @ContractState) -> bool {
 
     // }
 
@@ -107,9 +106,7 @@ mod Staker {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        fn _complete_transfer(ref self: ContractState, amount: u256) {// Note: Staker contract should approve to transfer the staked_amount to the external contract
-
-        }
+        fn _complete_transfer(ref self: ContractState, amount: u256) {}
         fn _not_completed(ref self: ContractState) {}
     }
 }
