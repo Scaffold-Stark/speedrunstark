@@ -1,7 +1,3 @@
-use contracts::YourContract::{
-    IYourContractSafeDispatcher, IYourContractSafeDispatcherTrait, IYourContractDispatcher,
-    IYourContractDispatcherTrait
-};
 use openzeppelin::tests::utils::constants::OWNER;
 use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{declare, ContractClassTrait};
@@ -16,5 +12,4 @@ fn deploy_contract(name: ByteArray) -> ContractAddress {
 }
 
 #[test]
-fn test_deployment_values() {
-}
+fn test_deployment_values() {}

@@ -13,7 +13,7 @@ const Home: NextPage = () => {
             SpeedRunStark
           </span>
           <span className="block text-4xl font-bold text-primary">
-            Challenge #1: 🥩 Decentralized Staking App
+            Challenge #1: 🔏 Decentralized Staking App
           </span>
         </h1>
         <div className="flex flex-col items-center justify-center">
