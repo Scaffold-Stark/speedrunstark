@@ -1,2 +1,2 @@
-mod Staker;
 mod ExampleExternalContract;
+mod Staker;

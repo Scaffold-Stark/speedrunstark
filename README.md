@@ -77,14 +77,45 @@ yarn start
 You'll need to track individual `balances` using a LegacyMap:
 
 ```cairo
-balances: LegacyMap<ContractAddress, u256>
+#[storage]
+struct Storage {
+	eth_token_dispatcher: IERC20CamelDispatcher,
+	balances: LegacyMap<ContractAddress, u256>,
+}
 ```
 
-And also track a constant threshold at 1 ether
+And also track a constant threshold at 1 ether.
 
 ```cairo
 const THRESHOLD: u256 = 1000000000000000000;
 ```
+
+### Checkpoint 1.1: Handling ETH Transactions in Starknet
+
+In Starknet, `ETH` is treated as a token, which means you cannot directly `send value` through a transaction. Instead, you need to `approve` the spending of ETH and then execute a transaction to `transfer` the ETH to a contract. To achieve this, you need to use the predeployed `ETH contract address` in Starkent.
+
+First, define the ETH contract address:
+
+```cairo
+const ETH_CONTRACT_ADDRESS: felt252 = 0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
+```
+
+Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
+
+```cairo
+use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+```
+
+Then, instantiate the `IERC20CamelDispatcher` struct with the address of the ETH contract:
+
+```cairo
+let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
+self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
+```
+
+You can now call the functions defined in the interface on the dispatcher, such as `transfer`, `transferFrom` and `balanceOf`.
+
+---
 
 > 👩‍💻 Write your `stake()` function and test it with the `Debug Contracts` tab in the frontend.
 
@@ -165,8 +196,8 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ### 🐸 It's a trap!
 
-- [ ] Make sure funds can't get trapped in the contract! *Try sending funds after you have executed! What happens?*
-- [ ] Try to create a modifier called `notCompleted`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
+- [ ] Make sure funds can't get trapped in the contract! **Try sending funds after you have executed! What happens?**
+- [ ] Try to create a private function called `_not_completed`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
 ### ⚠️ Test it!
 
