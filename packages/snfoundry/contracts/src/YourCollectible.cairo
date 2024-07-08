@@ -21,9 +21,7 @@ mod YourCollectible {
     use core::num::traits::zero::Zero;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::token::erc721::ERC721Component;
-    use openzeppelin::token::erc721::interface::IERC721;
-    use openzeppelin::token::erc721::interface::IERC721Metadata;
+    use openzeppelin::token::erc721::{ERC721Component, interface::{IERC721, IERC721Metadata}};
     use starknet::get_caller_address;
     use super::{IYourCollectible, ContractAddress, IERC721Enumerable};
     use contracts::Counter::CounterComponent;
@@ -114,7 +112,7 @@ mod YourCollectible {
     }
 
     #[abi(embed_v0)]
-    pub impl WrappedIERC721Impl of IERC721<ContractState> {
+    impl WrappedIERC721Impl of IERC721<ContractState> {
         fn balance_of(self: @ContractState, account: ContractAddress) -> u256 {
             self.erc721.balance_of(account)
         }
