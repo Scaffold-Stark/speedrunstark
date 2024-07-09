@@ -1,6 +1,8 @@
+use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use starknet::ContractAddress;
+
 #[starknet::interface]
-trait IStaker<T> {
+pub trait IStaker<T> {
     // Core functions
     fn execute(ref self: T);
     fn stake(ref self: T, amount: u256);
@@ -11,6 +13,7 @@ trait IStaker<T> {
     fn deadline(self: @T) -> u64;
     fn example_external_contract(self: @T) -> ContractAddress;
     fn open_for_withdraw(self: @T) -> bool;
+    fn eth_token_dispatcher(self: @T) -> IERC20CamelDispatcher;
     fn threshold(self: @T) -> u256;
     fn total_balance(self: @T) -> u256;
     fn time_left(self: @T) -> u64;
@@ -21,9 +24,8 @@ mod Staker {
     use contracts::ExampleExternalContract::{
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait
     };
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::{get_block_timestamp, get_caller_address, get_contract_address};
-    use super::{ContractAddress, IStaker};
+    use super::{ContractAddress, IStaker, IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
     const THRESHOLD: u256 = 1000000000000000000; // ONE_ETH_IN_WEI: 10 ^ 18;
     const ETH_CONTRACT_ADDRESS: felt252 =
@@ -52,10 +54,15 @@ mod Staker {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, external_contract_address: ContractAddress,) {
-        let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
+    pub fn constructor(
+        ref self: ContractState,
+        eth_contract: ContractAddress,
+        external_contract_address: ContractAddress
+    ) {
         self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
         self.external_contract_address.write(external_contract_address);
+    // Set the deadline to 30 seconds from now. Implement your code here.
+
     }
 
     #[abi(embed_v0)]
@@ -89,6 +96,9 @@ mod Staker {
 
         fn threshold(self: @ContractState) -> u256 {
             THRESHOLD
+        }
+        fn eth_token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
+            self.eth_token_dispatcher.read()
         }
 
         fn open_for_withdraw(self: @ContractState) -> bool {
