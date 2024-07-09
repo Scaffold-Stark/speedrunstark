@@ -6,7 +6,11 @@ const deployScript = async (): Promise<void> => {
     "ExampleExternalContract"
   );
   await deployContract(
-    { external_contract_address: exampleContractAddr },
+    {
+      eth_contract:
+        "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      external_contract_address: exampleContractAddr,
+    },
     "Staker"
   );
 };
