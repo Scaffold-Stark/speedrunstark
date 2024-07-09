@@ -18,13 +18,13 @@ pub trait IERC721<T> {
 
 #[starknet::contract]
 mod YourCollectible {
+    use contracts::Counter::CounterComponent;
     use core::num::traits::zero::Zero;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::token::erc721::{ERC721Component, interface::{IERC721, IERC721Metadata}};
     use starknet::get_caller_address;
     use super::{IYourCollectible, ContractAddress, IERC721Enumerable};
-    use contracts::Counter::CounterComponent;
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
