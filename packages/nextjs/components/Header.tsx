@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  ArrowDownTrayIcon,  ArrowPathIcon,
+  ArrowDownTrayIcon,
+  ArrowPathIcon,
   ArrowUpTrayIcon,
   Bars3Icon,
   BugAntIcon,
