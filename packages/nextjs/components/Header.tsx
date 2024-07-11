@@ -1,17 +1,19 @@
-import React, { useState, useRef, useCallback } from "react";
+"use client";
+
+import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useOutsideClick } from "~~/hooks/scaffold-stark";
-import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import {
-  ArrowDownTrayIcon,
-  ArrowPathIcon,
+  ArrowDownTrayIcon,  ArrowPathIcon,
   ArrowUpTrayIcon,
   Bars3Icon,
   BugAntIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
+import { useOutsideClick } from "~~/hooks/scaffold-stark";
+import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
+import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import MenuItem from "~~/components/MenuItem/MenuItem";
 
 export type HeaderMenuLink = {
@@ -61,6 +63,9 @@ export const HeaderMenuLinks = () => {
   );
 };
 
+/**
+ * Site header
+ */
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
@@ -123,6 +128,7 @@ export const Header = () => {
       </div>
       <div className="navbar-end flex-grow mr-4">
         <CustomConnectButton />
+        <FaucetButton />
       </div>
     </div>
   );

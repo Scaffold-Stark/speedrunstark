@@ -79,7 +79,7 @@ yarn start
 
 ![image](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-nfts-images.png)
 
-👛 Open an window Browser and navigate to http://localhost:3000
+👛 Open an window Browser and navigate to <http://localhost:3000>
 
 🎟 Transfer an NFT from one address to another using the UI:
 
@@ -129,7 +129,7 @@ cp packages/snfoundry/.env.example packages/snfoundry/.env
 
 ![connect-wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-walletconnect.png)
 
-> You should see the correct network in the frontend (http://localhost:3000):
+> You should see the correct network in the frontend (<http://localhost:3000>):
 
 ![image](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-balance.png)
 
@@ -151,7 +151,7 @@ yarn vercel
 yarn test
 ```
 
-#### Configuration of Third-Party Services for Production-Grade Apps.
+#### Configuration of Third-Party Services for Production-Grade Apps
 
 By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
 This is great to complete your **SpeedRunStark**.
