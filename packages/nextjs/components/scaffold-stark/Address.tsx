@@ -13,6 +13,8 @@ import {
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
 import { BlockieAvatar } from "~~/components/scaffold-stark/BlockieAvatar";
+import { getStarknetPFPIfExists } from "~~/utils/profile";
+import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
 
 type AddressProps = {
   address?: AddressType;
@@ -44,9 +46,12 @@ export const Address = ({
   const [ensAvatar, setEnsAvatar] = useState<string | null>();
   const [addressCopied, setAddressCopied] = useState(false);
   const checkSumAddress = address ? getChecksumAddress(address) : undefined;
+  const { targetNetwork } = useTargetNetwork();
+  const { data: profile } = useConditionalStarkProfile(address);
+
   //   const checkSumAddress = address ? address : undefined;
 
-  const { targetNetwork } = useTargetNetwork();
+  // TODO add starkprofile | not working on devnet now
   //const { data: fetchedProfile } = useStarkProfile({ address });
 
   // We need to apply this pattern to avoid Hydration errors.
@@ -89,19 +94,32 @@ export const Address = ({
   return (
     <div className="flex items-center">
       <div className="flex-shrink-0">
-        <BlockieAvatar
-          address={checkSumAddress}
-          ensImage={ensAvatar}
-          size={(blockieSizeMap[size] * 24) / blockieSizeMap["base"]}
-        />
+        {getStarknetPFPIfExists(profile?.profilePicture) ? (
+          //eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={profile?.profilePicture}
+            alt="Profile Picture"
+            className="rounded-full h-6 w-6"
+            width={24}
+            height={24}
+          />
+        ) : (
+          <BlockieAvatar
+            address={checkSumAddress}
+            ensImage={ensAvatar}
+            size={(blockieSizeMap[size] * 24) / blockieSizeMap["base"]}
+          />
+        )}
       </div>
       {disableAddressLink ? (
         <span className={`ml-1.5 text-${size} font-normal`}>
-          {displayAddress}
+          {profile?.name || displayAddress}
         </span>
       ) : targetNetwork.network === devnet.network ? (
         <span className={`ml-1.5 text-${size} font-normal`}>
-          <Link href={blockExplorerAddressLink}>{displayAddress}</Link>
+          <Link href={blockExplorerAddressLink}>
+            {profile?.name || displayAddress}
+          </Link>
         </span>
       ) : (
         <a
@@ -110,7 +128,7 @@ export const Address = ({
           href={blockExplorerAddressLink}
           rel="noopener noreferrer"
         >
-          {displayAddress}
+          {profile?.name || displayAddress}
         </a>
       )}
       {addressCopied ? (

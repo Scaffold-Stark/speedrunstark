@@ -27,16 +27,12 @@ export const useScaffoldReadContract = <
     functionName,
     address: deployedContract?.address,
     abi: deployedContract?.abi,
-    watch: true,
-    args,
-    enabled: !Array.isArray(args) || !args.some((arg) => arg === undefined),
+	watch: true,
+    args: args ?? [],
+    enabled: true,
     blockIdentifier: "pending" as BlockNumber,
     ...(readConfig as any),
-  }) as Omit<ReturnType<typeof useContractRead>, "data" | "refetch"> & {
+  }) as Omit<ReturnType<typeof useContractRead>, "data"> & {
     data: AbiFunctionOutputs<ContractAbi, TFunctionName> | undefined;
-    // refetch: (options?: {
-    //   throwOnError: boolean;
-    //   cancelRefetch: boolean;
-    // }) => Promise<AbiFunctionOutputs<ContractAbi, TFunctionName>>;
   };
 };

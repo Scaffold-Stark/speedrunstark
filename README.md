@@ -60,7 +60,7 @@ cd challenge-1-decentralized-staking
 yarn start
 ```
 
-📱 Open http://localhost:3000 to see the app.
+📱 Open <http://localhost:3000> to see the app.
 
 > 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
 
@@ -79,8 +79,8 @@ You'll need to track individual `balances` using a LegacyMap:
 ```cairo
 #[storage]
 struct Storage {
-	eth_token_dispatcher: IERC20CamelDispatcher,
-	balances: LegacyMap<ContractAddress, u256>,
+ eth_token_dispatcher: IERC20CamelDispatcher,
+ balances: LegacyMap<ContractAddress, u256>,
 }
 ```
 
@@ -194,12 +194,12 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ---
 
-### 🐸 It's a trap!
+### 🐸 It's a trap
 
 - [ ] Make sure funds can't get trapped in the contract! **Try sending funds after you have executed! What happens?**
 - [ ] Try to create a private function called `_not_completed`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
-### ⚠️ Test it!
+### ⚠️ Test it
 
 - Now is a good time to run `yarn test` to run the automated testing function. It will test that you hit the core checkpoints. You are looking for all green checkmarks and passing tests!
 
@@ -228,7 +228,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the targetNetwork to `chains.sepolia`.
 
-💻 View your frontend at http://localhost:3000/stakerUI and verify you see the correct network.
+💻 View your frontend at <http://localhost:3000/stakerUI> and verify you see the correct network.
 
 📡 When you are ready to ship the frontend app...
 
@@ -240,7 +240,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 > 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default 🔥 burner wallets are only available on devnet. You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
-#### Configuration of Third-Party Services for Production-Grade Apps.
+#### Configuration of Third-Party Services for Production-Grade Apps
 
 By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
 This is great to complete your **SpeedRunStark**.
