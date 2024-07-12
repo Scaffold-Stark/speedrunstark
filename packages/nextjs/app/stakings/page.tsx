@@ -55,7 +55,7 @@ const Staking: NextPage = () => {
                 return (
                   <tr key={index}>
                     <td>
-                      <Address address={event.args.sender} />
+                      <Address address={`0x${event.args.sender}`} />
                     </td>
                     <td>
                       {event.args.amount &&
