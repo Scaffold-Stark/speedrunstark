@@ -21,7 +21,7 @@ const MyNFTs: NextPage = () => {
     args: [connectedAddress, ""],
   });
 
-  const { data : tokenIdCounter, refetch } = useScaffoldReadContract({
+  const { data: tokenIdCounter, refetch } = useScaffoldReadContract({
     contractName: "YourCollectible",
     functionName: "current",
     watch: false,
@@ -33,7 +33,7 @@ const MyNFTs: NextPage = () => {
     if (tokenIdCounter === undefined) {
       setStatus("Mint NFT");
       return;
-    };
+    }
 
     const tokenIdCounterNumber = Number(tokenIdCounter);
     const currentTokenMetaData =
