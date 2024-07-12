@@ -21,16 +21,19 @@ const MyNFTs: NextPage = () => {
     args: [connectedAddress, ""],
   });
 
-  const { data: tokenIdCounter, refetch } = useScaffoldReadContract({
+  const { data : tokenIdCounter, refetch } = useScaffoldReadContract({
     contractName: "YourCollectible",
     functionName: "current",
-    watch: true,
+    watch: false,
   });
 
   const handleMintItem = async () => {
     setStatus("Minting NFT");
     // circle back to the zero item if we've reached the end of the array
-    if (tokenIdCounter === undefined) return;
+    if (tokenIdCounter === undefined) {
+      setStatus("Mint NFT");
+      return;
+    };
 
     const tokenIdCounterNumber = Number(tokenIdCounter);
     const currentTokenMetaData =
