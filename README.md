@@ -2,17 +2,15 @@
 
 ![readme-2](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/hero2.png)
 
-🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn about the "approve" pattern for ERC20s and how contract to contract interactions work.
+🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn more about the "approve" pattern for ERC20s and how contract to contract interactions work.
 
 🏵 Create `YourToken.cairo` smart contract that inherits the **ERC20** token standard from OpenZeppelin. Set your token to `_mint()` **1000** \* (10^18) tokens to the `recipient`. Then create a `Vendor.cairo` contract that sells your token using a `buy_tokens()` function.
 
 🎛 Edit the frontend that invites the user to input an amount of tokens they want to buy. We'll display a preview of the amount of ETH it will cost with a confirm button.
 
-🔍 It will be important to verify your token's source code in the block explorer after you deploy. Supporters will want to be sure that it has a fixed supply, and you can't just mint more.
-
 🌟 The final deliverable is an app that lets users purchase your ERC20 token, transfer it, and sell it back to the vendor. Deploy your contracts on your public chain of choice and then `yarn vercel` your app to a public web server.
 
-> 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
+> 💬 Meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
 
 ---
 
@@ -27,8 +25,10 @@ Before you begin, you need to install the following tools:
 ### Compatible versions
 
 - Scarb - v2.5.4
-- Snforge - v0.23
-- Cairo - v2.5.41
+- Snforge - v0.25.0
+- Cairo - v2.5.4
+
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Then download the challenge to your computer and install dependencies by running:
 
@@ -40,20 +40,6 @@ yarn install
 ```
 
 > in the same terminal, start your local network (a blockchain emulator in your computer):
-
-2. Prepare your environment variables.
-
-By defauly Scaffold-Stark 2 takes the first prefunded account from `starknet-devnet` as a deployer address, thus **you can skip this step!**. But if you want use the .env file anyway, you can fill the envs related to devnet with any other predeployed contract address and private key from starknet-devnet.
-
-**Note:** In case you want to deploy on Sepolia, you need to fill the envs related to sepolia testnet with your own contract address and private key.
-
-```bash
-cp packages/snfoundry/.env.example packages/snfoundry/.env
-```
-
-3. Run a local network in the first terminal.
-
-**Note:** You can skip this step if you want to use Sepolia Testnet.
 
 ```bash
 yarn chain
@@ -73,10 +59,9 @@ cd token-vendor
 yarn start
 ```
 
-📱 Open http://localhost:3000 to see the app.
+📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy --reset` for a completely fresh deploy.
-
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
 ---
 
 ## Checkpoint 1: 🏵Your Token 💵
@@ -85,9 +70,9 @@ yarn start
 
 > Mint **1000** (\* 10 \*\* 18) to your frontend address using the `constructor()`.
 
-(Your frontend address is the address in the top right of http://localhost:3000)
+(Your frontend address is the address in the top right of <http://localhost:3000>)
 
-> You can `yarn deploy --reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 ### 🥅 Goals
 
@@ -96,7 +81,7 @@ yarn start
 
 ![debugContractsYourToken](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/ch2-YourToken.png)
 
-> 💬 Hint: Use an incognito window to create a new address and try sending to that new address. Can use the `transfer()` function in the `Debug Contracts` tab.
+> 💬 Hint: In Devnet, use the `switch account` feature to select a different pre-deployed account address and try sending to that new address. Can use the `transfer()` function in the `Debug Contracts` tab.
 
 ---
 
@@ -112,7 +97,7 @@ const TokensPerEth: u256 = 100;
 
 > 📝 The `buy_tokens()` function in `Vendor.cairo` should use `eth_amount_wei` and `tokensPerEth` to calculate an amount of tokens to `self.your_token.read().transfer()` to `recipient`.
 
-> 📟 Emit **event** `BuyTokens(ContractAddress buyer, u256 eth_amount, u256 tokens_amount)` when tokens are purchased.
+> 📟 Emit **event** `BuyTokens {buyer: ContractAddress, eth_amount: u256, tokens_amount: u256}` when tokens are purchased.
 
 Edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` (uncomment Vendor deploy lines).
 
@@ -132,7 +117,7 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 
 > ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to transfer 1000 tokens to vendor address.
 
-```js
+```ts
 await deployer.execute([
   {
     calldata: [
@@ -148,7 +133,7 @@ await deployer.execute([
 
 > 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor ETH and Token balances.
 
-> You can `yarn deploy --reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 ![TokenVendorBuy](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/ch2-TokenVendorBalance.png)
 
@@ -196,7 +181,7 @@ await deployer.execute([
 
 🤨 Then, the user makes a _second transaction_ to the `Vendor` contract to `sellTokens(amount_tokens: u256)`.
 
-🤓 The `Vendor` should call ` fn transfer_from(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool` and if the user has approved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
+🤓 The `Vendor` should call `fn transfer_from(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool` and if the user has approved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
 
 🤩 You can use `useScaffoldMultiWriteContract.ts` to call `approve` and `buy / sell tokens`
 
@@ -217,17 +202,12 @@ await deployer.execute([
 
 - [ ] Should we disable the `owner` withdraw to keep liquidity in the `Vendor`?
 - [ ] It would be a good idea to display Sell Token Events. Create an **event**
-      `struct SellTokens {
-#[key]
-seller: ContractAddress,
-tokens_amount: u256,
-eth_amount: u256,
-}`
-      and `emit` it in your `Vendor.sol` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
+      `SellTokens {seller: ContractAddress, tokens_amount: u256, eth_amount: u256}`
+      and `emit` it in your `Vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
 
   ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/2812ab21de5d261ef670b0ef5a211fdfbae3b8d8/packages/nextjs/public/events.png)
 
-### ⚠️ Test it!
+### ⚠️ Test it
 
 - Now is a good time to run `yarn test` to run the automated testing function. It will test that you hit the core checkpoints. You are looking for all green checkmarks and passing tests!
 
@@ -243,15 +223,15 @@ eth_amount: u256,
 
 🚀 Run `yarn deploy` to deploy your smart contract to a public network (selected in `scaffold.config.ts`)
 
-> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Etherscan and find the `Contract Creation` transaction line.
+> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
 
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁
 
-✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia` or any other public network.
+✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia`.
 
-💻 View your frontend at http://localhost:3000 and verify you see the correct network.
+💻 View your frontend at <http://localhost:3000/stakerUI> and verify you see the correct network.
 
 📡 When you are ready to ship the frontend app...
 
@@ -263,10 +243,10 @@ eth_amount: u256,
 
 > 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default, 🔥 `burner wallets` are only available on `devnet` . You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
-#### Configuration of Third-Party Services for Production-Grade Apps.
+#### Configuration of Third-Party Services for Production-Grade Apps
 
 By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
-This is great to complete your SpeedRunStark.
+This is great to complete your **SpeedRunStark**.
 
 For production-grade applications, it's recommended to obtain your own API keys (to prevent rate limiting issues). You can configure these at:
 
@@ -277,4 +257,4 @@ For production-grade applications, it's recommended to obtain your own API keys 
 ---
 
 > 🏃 Head to your next challenge [here](https://github.com/Quantum3-Labs/speedrunstark/tree/dice-game).
-> 💭 Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
+> � Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
