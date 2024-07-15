@@ -67,7 +67,7 @@ yarn start
 
 📱 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-> 👩‍💻 Rerun yarn deploy whenever you want to deploy new contracts to the frontend.
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
 
 ---
 
