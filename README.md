@@ -2,7 +2,7 @@
 
 ![readme-3](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/dice-game/packages/nextjs/public/hero3.png)
 
-📚 This tutorial is meant for developers that already understand the 🖍️ basics: Starklings or Node Guardians
+📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
 
 > 🎰 Randomness is tricky on a public deterministic blockchain. The block hash is an easy to use, but very weak form of randomness. This challenge will give you an example of a contract using block hash to create random numbers. This randomness is exploitable. Other, stronger forms of randomness include commit/reveal schemes, oracles, or VRF from Chainlink.
 
@@ -127,7 +127,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
-![WithdrawOnlyOwner](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/663143e24ecab9a71c2550ac5fe2d8fa5d23ee2c/packages/nextjs/public/withdraw.png)
+![WithdrawOnlyOwner](https://github.com/Quantum3-Labs/speedrunstark/blob/dice-game/packages/nextjs/public/withdraw.png)
 
 > ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy.ts`. This will allow your front end address to call the withdraw function.
 
