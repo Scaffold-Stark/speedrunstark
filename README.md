@@ -2,6 +2,8 @@
 
 ![readme-3](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/dice-game/packages/nextjs/public/hero3.png)
 
+📚 This tutorial is meant for developers that already understand the 🖍️ basics: Starklings or Node Guardians
+
 > 🎰 Randomness is tricky on a public deterministic blockchain. The block hash is an easy to use, but very weak form of randomness. This challenge will give you an example of a contract using block hash to create random numbers. This randomness is exploitable. Other, stronger forms of randomness include commit/reveal schemes, oracles, or VRF from Chainlink.
 
 > 💬 Dice Game is a contract that allows users to roll the dice to try and win the prize. If players roll either a 0, 1, 2, 3, 4 or 5 they will win the current prize amount. The initial prize is 10% of the contract's balance, which starts out at .05 Eth.
@@ -10,7 +12,7 @@
 
 > 🧨 Your job is to attack the Dice Game contract! You will create a new contract that will predict the randomness ahead of time and only roll the dice when you're guaranteed to be a winner!
 
-💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
+> 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
 
 ---
 
@@ -25,8 +27,10 @@ Before you begin, you need to install the following tools:
 ### Compatible versions
 
 - Scarb - v2.5.4
-- Snforge - v0.23
-- Cairo - v2.5.41
+- Snforge - v0.25
+- Cairo - v2.5.4
+
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Then download the challenge to your computer and install dependencies by running:
 
@@ -39,25 +43,13 @@ git checkout dice-game
 yarn install
 ```
 
-> in the same terminal, start your local network (a blockchain emulator in your computer):
 
-2. Prepare your environment variables.
-
-By defauly Scaffold-Stark 2 takes the first prefunded account from `starknet-devnet` as a deployer address, thus **you can skip this step!**. But if you want use the .env file anyway, you can fill the envs related to devnet with any other predeployed contract address and private key from starknet-devnet.
-
-**Note:** In case you want to deploy on Sepolia, you need to fill the envs related to sepolia testnet with your own contract address and private key.
-
-```bash
-cp packages/snfoundry/.env.example packages/snfoundry/.env
-```
-
-3. Run a local network in the first terminal.
-
-**Note:** You can skip this step if you want to use Sepolia Testnet.
+> in the same terminal, start your local network (a local instance of a blockchain):
 
 ```bash
 yarn chain
 ```
+
 
 > in a second terminal window, 🛰 deploy your contract (locally):
 
@@ -73,9 +65,9 @@ cd dice-game
 yarn start
 ```
 
-📱 Open http://localhost:3000 to see the app.
+📱 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy --reset` for a completely fresh deploy.
+> 👩‍💻 Rerun yarn deploy whenever you want to deploy new contracts to the frontend.
 
 ---
 
@@ -102,7 +94,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 > 📣 Reminder! Calling `rollTheDice()` will fail unless you transfer a value of at least .002 Eth!.
 
-🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `deploy_riggedRoll.ts` file in `packages/snfoundry/deployments`
+🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `deploy.ts` file in `packages/snfoundry/script-ts/deploy.ts`
 
 💸 You will need to send some funds to your RiggedRoll contract before doing your first roll, you can use the Faucet button at the bottom left of the page.
 
@@ -110,7 +102,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 ### ⚔️ Side Quest
 
-- [ ] Add a statement to require `address(this).balance >= .002 ether` in your riggedRoll function. This will help prevent calling the `rollTheDice()` function without enough value.
+- [ ] Add a statement to require `assert(contract_balance >= 2000000000000000,` in your riggedRoll function. This will help prevent calling the `rollTheDice()` function without enough value.
 - [ ] Uncomment the code in `packages/nextjs/app/dice/page.tsx` to show a riggedRoll button and contract balance on the main UI tab. Now you can test your function without switching tabs.
 - [ ] Does your riggedRoll function only call `rollTheDice()` when it's going to be a winning roll? What happens when it does call `rollTheDice()`?
 
@@ -124,7 +116,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 ![RiggedRollAddress](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/663143e24ecab9a71c2550ac5fe2d8fa5d23ee2c/packages/nextjs/public/riggedroll.png)
 
-📥 Create a `withdraw(address _addr, uint256 _amount)` function to allow you to send Eth from RiggedRoll to another address.
+📥 Create a `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
 
 ### 🥅 Goals
 
@@ -135,17 +127,27 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
-![WithdrawOnlyOwner](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/663143e24ecab9a71c2550ac5fe2d8fa5d23ee2c/packages/nextjs/public/debug.png)
+![WithdrawOnlyOwner](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/663143e24ecab9a71c2550ac5fe2d8fa5d23ee2c/packages/nextjs/public/withdraw.png)
 
-> ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy_riggedRoll.ts`. This will allow your front end address to call the withdraw function.
+> ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy.ts`. This will allow your front end address to call the withdraw function.
 
 ## Checkpoint 4: 💾 Deploy your contracts! 🛰
 
-📡 Edit the `defaultNetwork` to your choice of public Starknet networks in `packages/nextjs/scaffold.config.ts`
+📡 Edit the `defaultNetwork` to your choice of public Starknet networks in `packages/nextjs/scaffold.config.ts` to `sepolia`.
+
+![network](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-scaffold-config.png)
+
+> Prepare your environment variables.
+
+```shell
+cp packages/snfoundry/.env.example packages/snfoundry/.env
+```
 
 🔐 You will need to generate a *deployer address* using Argent or Braavos, get your private key and put in `packages/snfoundry/.env`
 
-⛽️ You will need to send ETH to your deployer address with your wallet, or get it from a public faucet of your chosen network.
+⛽️ You will need to send ETH or STRK to your deployer Contract Addres with your wallet, or get it from a public faucet of your chosen network.
+
+> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
 
 🚀 Run `yarn deploy --{DESIRED NETWORK}` , we support sepolia, mainnet and devnet
 
@@ -157,7 +159,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 ✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia` or any other public network.
 
-💻 View your frontend at http://localhost:3000 and verify you see the correct network.
+💻 View your frontend at http://localhost:3000/dice and verify you see the correct network.
 
 📡 When you are ready to ship the frontend app...
 
