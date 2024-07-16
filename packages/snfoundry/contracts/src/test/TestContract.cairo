@@ -1,36 +1,90 @@
-use contracts::YourContract::{
-    IYourContractSafeDispatcher, IYourContractSafeDispatcherTrait, IYourContractDispatcher,
-    IYourContractDispatcherTrait
-};
-
-use openzeppelin::tests::utils::constants::{
-    ZERO, OWNER, SPENDER, RECIPIENT, NAME, SYMBOL, DECIMALS, SUPPLY, VALUE
-};
+use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
+use contracts::Vendor::{IVendorDispatcher, IVendorDispatcherTrait};
+use contracts::mock_contracts::MockETHToken;
+use openzeppelin::tests::utils::constants::RECIPIENT;
+use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin::utils::serde::SerializedAppend;
+use snforge_std::{
+    declare, ContractClassTrait, cheat_caller_address, cheat_block_timestamp_global, CheatSpan
+};
+use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
-use snforge_std::{declare, ContractClassTrait};
-use starknet::{ContractAddress, contract_address_const};
-
-fn deploy_contract(name: ByteArray) -> ContractAddress {
-    let contract = declare(name).unwrap();
+// Should deploy the MockETHToken contract
+fn deploy_mock_eth_token() -> ContractAddress {
+    let erc20_class_hash = declare("MockETHToken").unwrap();
+    let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_ETH_IN_WEI
     let mut calldata = array![];
-    calldata.append_serde(OWNER());
-    let (contract_address, _) = contract.deploy(@calldata).unwrap();
-    contract_address
+    calldata.append_serde(INITIAL_SUPPLY);
+    calldata.append_serde(RECIPIENT());
+    let (eth_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
+    eth_token_address
+}
+
+// Should deploy the YourToken contract
+fn deploy_your_token_token() -> ContractAddress {
+    let erc20_class_hash = declare("YourToken").unwrap();
+    let NAME: ByteArray = "Gold";
+    let SYMBOL: ByteArray = "GLD";
+    let INITIAL_SUPPLY: u256 = 2000000000000000000000; // 2000_GLD_IN_WEI
+    let mut calldata = array![];
+    calldata.append_serde(NAME);
+    calldata.append_serde(SYMBOL);
+    calldata.append_serde(INITIAL_SUPPLY);
+    calldata.append_serde(RECIPIENT());
+    let (your_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
+    your_token_address
+}
+
+// Should deploy the Vendor contract
+fn deploy_vendor_contract() -> ContractAddress {
+    let eth_token_address = deploy_mock_eth_token();
+    let your_token_address = deploy_your_token_token();
+    let vendor_class_hash = declare("Vendor").unwrap();
+    let mut calldata = array![];
+    calldata.append_serde(eth_token_address);
+    calldata.append_serde(your_token_address);
+    calldata.append_serde(RECIPIENT());
+    let (vendor_contract_address, _) = vendor_class_hash.deploy(@calldata).unwrap();
+    println!("-- Vendor contract deployed on: {:?}", vendor_contract_address);
+    vendor_contract_address
 }
 
 #[test]
-fn test_deployment_values() {
-    let contract_address = deploy_contract("YourContract");
-
-    let dispatcher = IYourContractDispatcher { contract_address };
-
-    let current_gretting = dispatcher.gretting();
-    let expected_gretting: ByteArray = "Building Unstoppable Apps!!!";
-    assert_eq!(current_gretting, expected_gretting, "Should have the right message on deploy");
-
-    let new_greeting: ByteArray = "Learn Scaffold-ETH 2! :)";
-    dispatcher.set_gretting(new_greeting.clone(), 0); // we transfer 0 eth
-
-    assert_eq!(dispatcher.gretting(), new_greeting, "Should allow setting a new message");
+fn test_deploy_mock_eth_token() {
+    let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_ETH_IN_WEI
+    let contract_address = deploy_mock_eth_token();
+    let eth_token_dispatcher = IERC20CamelDispatcher { contract_address };
+    assert(eth_token_dispatcher.balanceOf(RECIPIENT()) == INITIAL_BALANCE, 'Balance should be > 0');
 }
+
+#[test]
+fn test_deploy_your_token() {
+    let MINIMUN_SUPPLY: u256 = 1000000000000000000000; // 1000_GLD_IN_WEI
+    let contract_address = deploy_your_token_token();
+    let your_token_dispatcher = IYourTokenDispatcher { contract_address };
+    let total_supply = your_token_dispatcher.total_supply();
+    println!("-- Total supply: {:?}", total_supply);
+    assert(total_supply >= MINIMUN_SUPPLY, 'supply should be at least 1000');
+}
+//Staker contract balance should go up by the staked amount
+#[test]
+fn test_deploy_vendor() {
+    let vendor_contract_address = deploy_vendor_contract();
+    let vendor_dispatcher = IVendorDispatcher { contract_address: vendor_contract_address };
+    let your_token_address = vendor_dispatcher.your_token();
+    let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
+    let INITIAL_BALANCE: u256 = 1000000000000000000000; // 1000_GLD_IN_WEI
+
+    let tester_address = RECIPIENT();
+
+    // Change the caller address of the your_token_address to be itself
+    cheat_caller_address(your_token_address, tester_address, CheatSpan::TargetCalls(1));
+    assert(
+        your_token_dispatcher.transfer(vendor_contract_address, INITIAL_BALANCE), 'Transfer failed'
+    );
+    let vendor_token_balance = your_token_dispatcher.balance_of(vendor_contract_address);
+    println!("-- Vendor token balance: {:?}", vendor_token_balance);
+}
+// // If enough is staked and time has passed, the external contract should be completed
+
+
