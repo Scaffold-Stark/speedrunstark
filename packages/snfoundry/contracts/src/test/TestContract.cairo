@@ -46,6 +46,12 @@ fn deploy_vendor_contract() -> ContractAddress {
     calldata.append_serde(RECIPIENT());
     let (vendor_contract_address, _) = vendor_class_hash.deploy(@calldata).unwrap();
     println!("-- Vendor contract deployed on: {:?}", vendor_contract_address);
+    // sent eth to vendor contract
+    // change the caller address of the eth_token_address to be recepient
+    cheat_caller_address(eth_token_address, RECIPIENT(), CheatSpan::TargetCalls(1));
+    let eth_token_dispatcher = IERC20CamelDispatcher { contract_address: eth_token_address };
+    let eth_amount_wei: u256 = 1000000000000000000; // 1_ETH_IN_WEI
+    eth_token_dispatcher.transfer(vendor_contract_address, eth_amount_wei);
     vendor_contract_address
 }
 
@@ -142,41 +148,37 @@ fn test_sell_tokens() {
     let eth_token_address = vendor_dispatcher.eth_token();
     let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
     let eth_token_dispatcher = IERC20CamelDispatcher { contract_address: eth_token_address };
-    let INITIAL_BALANCE: u256 = 1000000000000000000000; // 1000_GLD_IN_WEI
 
     let tester_address = RECIPIENT();
 
-    // Change the caller address of the your_token_address to be itself
-    cheat_caller_address(your_token_address, tester_address, CheatSpan::TargetCalls(1));
-    println!("-- Transfering 1000 GLD tokens to Vendor contract ...");
-    assert(
-        your_token_dispatcher.transfer(vendor_contract_address, INITIAL_BALANCE), 'Transfer failed'
-    );
-    let vendor_token_balance = your_token_dispatcher.balance_of(vendor_contract_address);
-    println!(
-        "-- Vendor contract token balance: {:?} GLD in wei", vendor_token_balance
-    ); // 1000 GLD_IN_WEI
-
     println!("-- Tester address: {:?}", tester_address);
-    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_WEI
+    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 2000 GLD_IN_WEI
     println!("---- Starting token balance: {:?} GLD in wei", starting_balance);
 
-    println!("-- Buying 0.001 ETH worth of tokens ...");
-    let eth_amount_wei: u256 = 1000000000000000; // 0.001_ETH_IN_WEI
-    // Change the caller address of the ETH_token_contract to the tester_address
-    cheat_caller_address(eth_token_address, tester_address, CheatSpan::TargetCalls(1));
-    eth_token_dispatcher.approve(vendor_contract_address, eth_amount_wei);
+    println!("-- Selling back 0.1 GLD tokens ...");
+    let gld_token_amount_wei: u256 = 100000000000000000; // 0.1_GLD_IN_WEI
+    // Change the caller address of the your_token_contract to the tester_address
+    cheat_caller_address(your_token_address, tester_address, CheatSpan::TargetCalls(1));
+    your_token_dispatcher.approve(vendor_contract_address, gld_token_amount_wei);
+    // check allowance
+    let allowance = your_token_dispatcher.allowance(tester_address, vendor_contract_address);
+    assert_eq!(allowance, gld_token_amount_wei, "Allowance should be equal to the sold amount");
+
+    // check vendor eth balance
+    let vendor_eth_balance = eth_token_dispatcher.balanceOf(vendor_contract_address);
+    println!("---- Vendor contract eth balance: {:?} ETH in wei", vendor_eth_balance);
 
     // Change the caller address of the your_token_address to the tester_address
     cheat_caller_address(vendor_contract_address, tester_address, CheatSpan::TargetCalls(1));
-    vendor_dispatcher.buy_tokens(eth_amount_wei);
-    println!("-- Bought 0.001 ETH worth of tokens");
-    let tokens_per_eth: u256 = vendor_dispatcher.tokens_per_eth(); // 100 tokens per ETH
-    let expected_tokens = eth_amount_wei * tokens_per_eth; // 0.1_GLD_IN_WEI ;
-    println!("---- Expect to receive: {:?} GLD in wei", expected_tokens);
-    let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_WEI
+    vendor_dispatcher.sell_tokens(gld_token_amount_wei);
+    println!("-- Sold 0.1 GLD tokens");
     let new_balance = your_token_dispatcher.balance_of(tester_address);
     println!("---- New token balance: {:?} GLD in wei", new_balance);
-    assert_eq!(new_balance, expected_balance, "Balance should be increased by the bought amount");
+    let expected_balance = starting_balance
+        - gld_token_amount_wei; // 2000 - 0.1 = 1999.9_GLD_IN_WEI
+    assert_eq!(new_balance, expected_balance, "Balance should be decreased by the sold amount");
 }
+// Should let the owner (and nobody else) withdraw the eth from the contract...
+// #[test]
+// fn test_wirhdraw_tokens() {}
 

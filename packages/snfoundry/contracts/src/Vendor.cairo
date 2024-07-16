@@ -1,12 +1,13 @@
 use starknet::ContractAddress;
 #[starknet::interface]
-trait IVendor<T> {
+pub trait IVendor<T> {
     fn buy_tokens(ref self: T, eth_amount_wei: u256);
     fn withdraw(ref self: T);
     fn sell_tokens(ref self: T, amount_tokens: u256);
     fn send_tokens(ref self: T, to: ContractAddress, amount_tokens: u256);
-    //fn tokens_per_eth(self: @T) -> u256;
+    fn tokens_per_eth(self: @T) -> u256;
     fn your_token(self: @T) -> ContractAddress;
+    fn eth_token(self: @T) -> ContractAddress;
 }
 
 #[starknet::contract]
@@ -25,6 +26,7 @@ mod Vendor {
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
+    const TokensPerEth: u256 = 100;
     const ETH_CONTRACT_ADDRESS: felt252 =
         0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
 
@@ -62,13 +64,11 @@ mod Vendor {
 
     #[constructor]
     fn constructor(
-        ref self: ContractState, token_address: ContractAddress, owner: ContractAddress
-    ) {
-        let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
-        self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_contract });
-        self.your_token.write(IYourTokenDispatcher { contract_address: token_address });
-    // ToDo: Initialize owner
-    }
+        ref self: ContractState,
+        eth_token_address: ContractAddress,
+        your_token_address: ContractAddress,
+        owner: ContractAddress
+    ) {}
 
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {
@@ -83,12 +83,16 @@ mod Vendor {
             assert(sent, 'Token Transfer failed');
         }
 
-        // fn tokens_per_eth(self: @ContractState) -> u256 {
-        //     TokensPerEth
-        // }
+        fn tokens_per_eth(self: @ContractState) -> u256 {
+            TokensPerEth
+        }
 
         fn your_token(self: @ContractState) -> ContractAddress {
             self.your_token.read().contract_address
+        }
+
+        fn eth_token(self: @ContractState) -> ContractAddress {
+            self.eth_token.read().contract_address
         }
     }
 }

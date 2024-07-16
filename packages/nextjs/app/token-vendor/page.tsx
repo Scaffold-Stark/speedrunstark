@@ -11,7 +11,7 @@ import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffo
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useBalance } from "@starknet-react/core";
 import { formatEther } from "ethers";
-import { multiplyTo1e18 } from "~~/utils/scaffold-stark/priceInWei";
+import {getTokenPrice, multiplyTo1e18 } from "~~/utils/scaffold-stark/priceInWei";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -52,17 +52,19 @@ const TokenVendor: NextPage = () => {
     address: vendorContractData?.address,
   });
 
+  const eth_to_spent = getTokenPrice(tokensToBuy, tokensPerEth);
+
   const { writeAsync: buy } = useScaffoldMultiWriteContract({
     calls: [
       {
         contractName: "Eth",
         functionName: "approve",
-        args: [vendorContractData?.address ?? "", multiplyTo1e18(tokensToBuy)],
+        args: [vendorContractData?.address ?? "", eth_to_spent],
       },
       {
         contractName: "Vendor",
         functionName: "buy_tokens",
-        args: [multiplyTo1e18(tokensToBuy)],
+        args: [eth_to_spent],
       },
     ],
   });
@@ -108,7 +110,7 @@ const TokenVendor: NextPage = () => {
           </div>
           {/* Vendor Balances */}
           <hr className="w-full border-secondary my-3" />
-          {/* <div>
+          { <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
@@ -116,14 +118,14 @@ const TokenVendor: NextPage = () => {
               ).toFixed(4)}
               <span className="font-bold ml-1"> </span>
             </div>
-          </div> */}
-          {/* <div>
+          </div> }
+          { <div>
             Vendor eth balance:
             <span className="px-1">{vendorContractBalance?.formatted}</span>
             <span className="font-bold ml-1">
               {vendorContractBalance?.symbol}
             </span>
-          </div> */}
+          </div> }
         </div>
 
         {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
@@ -151,30 +153,30 @@ const TokenVendor: NextPage = () => {
         </div> */}
 
         {/* Buy Tokens  */}
-        {/*<div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">*/}
-        {/*  <div className="text-xl">Buy tokens</div>*/}
-        {/*  <div>{Number(tokensPerEth)} tokens per ETH</div>*/}
+        <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+          <div className="text-xl">Buy tokens</div>
+          <div>{Number(tokensPerEth)} tokens per ETH</div>
 
-        {/*  <div className="w-full flex flex-col space-y-2">*/}
-        {/*    <IntegerInput*/}
-        {/*      placeholder="amount of tokens to buy"*/}
-        {/*      value={tokensToBuy.toString()}*/}
-        {/*      onChange={(value) => setTokensToBuy(value)}*/}
-        {/*      disableMultiplyBy1e18*/}
-        {/*    />*/}
-        {/*  </div>*/}
+          <div className="w-full flex flex-col space-y-2">
+            <IntegerInput
+              placeholder="amount of tokens to buy"
+              value={tokensToBuy.toString()}
+              onChange={(value) => setTokensToBuy(value)}
+              disableMultiplyBy1e18
+            />
+          </div>
 
-        {/*  <button*/}
-        {/*    className="btn btn-secondary mt-2"*/}
-        {/*    onClick={wrapInTryCatch(buy, "buyTokens")}*/}
-        {/*  >*/}
-        {/*    Buy Tokens*/}
-        {/*  </button>*/}
-        {/*</div>*/}
+          <button
+            className="btn btn-secondary mt-2"
+            onClick={wrapInTryCatch(buy, "buyTokens")}
+          >
+            Buy Tokens
+          </button>
+        </div>
 
         {/* Sell Tokens */}
 
-        {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+        { <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
           <div className="text-xl">Sell tokens</div>
           <div>{Number(tokensPerEth)} tokens per ETH</div>
           <div className="w-full flex flex-col space-y-2">
@@ -195,7 +197,7 @@ const TokenVendor: NextPage = () => {
               Sell Tokens
             </button>
           </div>
-        </div> */}
+        </div> }
       </div>
     </>
   );
