@@ -66,9 +66,9 @@ yarn start
 
 ## Checkpoint 1: 🏵Your Token 💵
 
-> 👩‍💻 Edit `YourToken.cairo` to inherit the **ERC20** token standard from OpenZeppelin
+> 👩‍💻 Edit `YourToken.cairo` to reuse the **ERC20** token standard from OpenZeppelin. To accomplish this, you can use [`Cairo Components`](https://book.cairo-lang.org/ch16-02-00-composability-and-components.html) to embed the `ERC20` logic inside your contract.
 
-> Mint **1000** (\* 10 \*\* 18) to your frontend address using the `constructor()`.
+> Mint **1000** (\* 10 \*\* 18) to your frontend address using the `constructor()`. In devnet, by default we choose the first pre-deployed account: `0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691`, to deploy the contracts. In order to complete this checkpoint, you need to connect to devnet using the same address.
 
 (Your frontend address is the address in the top right of <http://localhost:3000>)
 
@@ -95,19 +95,21 @@ Use a price variable named `tokensPerEth` set to **100**:
 const TokensPerEth: u256 = 100;
 ```
 
-> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `eth_amount_wei` and `tokensPerEth` to calculate an amount of tokens to `self.your_token.read().transfer()` to `recipient`.
+> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `eth_amount_wei` and `tokensPerEth` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
 
 > 📟 Emit **event** `BuyTokens {buyer: ContractAddress, eth_amount: u256, tokens_amount: u256}` when tokens are purchased.
 
 Edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` (uncomment Vendor deploy lines).
 
+Create a `tokens_per_eth` function in `Vendor.cairo` that returns the `tokensPerEth` value.
+
 Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.tsx` to show the UI to buy tokens on the Token Vendor tab.
 
 ### 🥅 Goals
 
-- [ ] When you try to buy tokens from the vendor, you should get an error: **'ERC20: transfer amount exceeds balance'**
+- [ ] When you try to buy tokens from the vendor, you should get an error: **'u256_sub Overflow'**. This error is related to the `transfer_from`, `transfer`, approve function in the `YourToken` contract.
 
-⚠️ This is because the Vendor contract doesn't have any YourTokens yet!
+⚠️ You might face this error because the Vendor contract doesn't have any `YourToken` yet!. You can create an `assert` in the `buy_tokens()` function to check if the Vendor has enough tokens to sell.
 
 ⚔️ Side Quest: send tokens from your frontend address to the Vendor contract address and _then_ try to buy them.
 
@@ -118,17 +120,24 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 > ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to transfer 1000 tokens to vendor address.
 
 ```ts
-await deployer.execute([
-  {
-    calldata: [
-      "sender",
-      vendor.address || "vendor_address",
-      uint256.bnToUint256(1000n * 10n ** 18n),
+  await deployer_v6.execute(
+    [
+      {
+        contractAddress: your_token.address,
+        calldata: [
+          vendor.address,
+          {
+            low:  1_000_000_000_000_000_000_000n, //1000 * 10^18
+            high: 0,
+          }
+        ],
+        entrypoint: "transfer",
+      }
     ],
-    contractAddress: your_token.address || "address",
-    entrypoint: "transfer_from",
-  },
-]);
+    {
+      maxFee: 1e18
+    }
+  );
 ```
 
 > 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor ETH and Token balances.
@@ -143,16 +152,29 @@ await deployer.execute([
 - [ ] Can you buy **10** tokens for **0.1** ETH?
 - [ ] Can you transfer tokens to a different account?
 
-In `packages/snfoundry/scripts-ts/deploy.ts` you will need to call `transfer_ownership()` on the `Vendor` to make _your frontend address_ the `owner`:
+> 📝 Edit `Vendor.cairo` to reuse _Ownable_ component from OpenZeppelin.
 
-```js
-await deployer.execute([
-  {
-    calldata: ["new_owner_address"],
-    contractAddress: vendor.address || "address",
-    entrypoint: "transfer_ownership",
-  },
-]);
+```cairo
+ #[storage]
+    struct Storage {
+        ...
+        #[substorage(v0)]
+        ownable: OwnableComponent::Storage,
+    }
+```
+
+In `Vendor.cairo` you will need to add one more input parameter to setup the `owner` in the `constructor()`.
+
+> ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` contract with the `owner` address.
+
+```ts
+  const vendor = await deployContract(
+    {
+      token_address: your_token.address,
+      owner: deployer.address,
+    },
+    "Vendor"
+  );
 ```
 
 ### 🥅 Goals
