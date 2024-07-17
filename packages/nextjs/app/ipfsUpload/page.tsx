@@ -60,7 +60,7 @@ const IpfsUpload: NextPage = () => {
           />
         )}
         <button
-          className={`btn btn-secondary my-4 ${loading ? "loading" : ""}`}
+          className={`btn btn-secondary text-white my-4 ${loading ? "loading" : ""}`}
           disabled={loading}
           onClick={handleIpfsUpload}
         >

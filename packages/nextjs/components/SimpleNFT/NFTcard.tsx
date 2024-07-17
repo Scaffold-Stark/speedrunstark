@@ -26,8 +26,8 @@ export const NFTCard = ({ nft }: { nft: Collectible }) => {
     };
 
   return (
-    <div className="card card-compact bg-base-100 shadow-lg sm:min-w-[300px] shadow-secondary">
-      <figure className="relative">
+    <div className="card card-compact bg-base-100 sm:min-w-[300px] border border-secondary">
+      <figure className="relative rounded-t-[15px]">
         {/* eslint-disable-next-line  */}
         <img src={nft.image} alt="NFT Image" className="h-60 min-w-full" />
         <figcaption className="glass absolute bottom-4 left-4 p-4 w-25 rounded-xl">
@@ -41,7 +41,7 @@ export const NFTCard = ({ nft }: { nft: Collectible }) => {
             {nft.attributes?.map((attr: any, index: any) => (
               <span
                 key={index}
-                className=" badge-primary badge py-3 gap-1 text-base-100 border-base-100"
+                className=" badge-primary badge py-3 gap-1 text-neutral border-base-100"
               >
                 {attr.value}
               </span>
@@ -65,7 +65,7 @@ export const NFTCard = ({ nft }: { nft: Collectible }) => {
         </div>
         <div className="card-actions justify-end">
           <button
-            className="btn btn-secondary btn-md px-8 tracking-wide border-primary"
+            className="btn btn-secondary btn-md px-8 tracking-wide text-white"
             onClick={wrapInTryCatch(transferNFT, "transferNFT")}
           >
             Send
