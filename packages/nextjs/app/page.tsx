@@ -16,7 +16,7 @@ const Home: NextPage = () => {
           </h1>
           <div className="flex flex-col items-center justify-center">
             <Image
-              src="/hero.png"
+              src="/ch0-cover.png"
               width="727"
               height="231"
               alt="challenge banner"
