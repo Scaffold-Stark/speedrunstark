@@ -67,17 +67,17 @@ yarn start
 
 > 👛 Explore how burner wallets work in 🏗 Scaffold-Stark. You will notice the `Connect Wallet` button on the top right corner. After click it, you can choose the `Burner Wallet` option. You will get a default prefunded account.
 
-## ![wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-walletconnect.png)
+## ![wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/simple-nft-example/packages/nextjs/public/simple-wallet.png)
 
 ## Checkpoint 2: 🖨 Minting
 
 > ✏️ Mint some NFTs! Click the **MINT NFT** button in the `My NFTs` tab.
 
-![image](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-mynft.png)
+![image](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/simple-nft-example/packages/nextjs/public/simple-mynft.png)
 
 👀 You should see your NFTs start to show up:
 
-![image](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-nfts-images.png)
+![image](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/simple-nft-example/packages/nextjs/public/simple-nfts-images.png)
 
 👛 Open an window Browser and navigate to <http://localhost:3000>
 
@@ -127,7 +127,7 @@ cp packages/snfoundry/.env.example packages/snfoundry/.env
 
 > 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
 
-![connect-wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-walletconnect.png)
+![connect-wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/simple-nft-example/packages/nextjs/public/simple-wallet.png)
 
 > You should see the correct network in the frontend (<http://localhost:3000>):
 
