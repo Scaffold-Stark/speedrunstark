@@ -14,7 +14,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
-import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import { useTheme } from "next-themes";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
@@ -155,7 +154,6 @@ export const Header = () => {
           Not deployed
         </span> */}
         <CustomConnectButton />
-        {/* <FaucetButton /> */}
         <SwitchTheme
           className={`pointer-events-auto ${
             isLocalNetwork ? "self-end md:self-auto" : ""

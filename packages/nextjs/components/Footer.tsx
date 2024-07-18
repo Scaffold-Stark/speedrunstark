@@ -69,31 +69,6 @@ export const Footer = () => {
               </a>
             </div>
             <span>·</span>
-            {/* <div className="flex justify-center items-center gap-2">
-              <p className="m-0 text-center">
-                Built with <HeartIcon className="inline-block h-4 w-4" /> by
-              </p>
-              <a
-                className="flex justify-center items-center gap-1"
-                href="https://quantum3labs.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <BuidlGuidlLogo className="w-3 h-5 pb-1" />
-                <span className="link">Q3 Labs</span>
-              </a>
-              <p className="m-0 text-center">at</p>
-              <a
-                className="flex justify-center items-center gap-1"
-                href="https://buidlguidl.com/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <BuidlGuidlLogo className="w-3 h-5 pb-1" />
-                <span className="link">BuidlGuidl</span>
-              </a>
-            </div>
-            <span>·</span> */}
             <div className="text-center">
               <a
                 href="https://t.me/+wO3PtlRAreo4MDI9"
