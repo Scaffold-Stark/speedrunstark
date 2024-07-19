@@ -38,8 +38,7 @@ mod YourToken {
         ERC20Event: ERC20Component::Event
     }
 
-    /// Sets the token `name` and `symbol`.
-    /// Mints `fixed_supply` tokens to `recipient`.
+
     #[constructor]
     fn constructor(
         ref self: ContractState,
@@ -47,9 +46,8 @@ mod YourToken {
         symbol: ByteArray,
         fixed_supply: u256,
         recipient: ContractAddress
-    ) {
-        self.erc20.initializer(name, symbol);
-        self.erc20._mint(recipient, fixed_supply);
+    ) { // Implement your constructor here.
+    // ToDo: Set the token `name` and `symbol`. Mint `fixed_supply` tokens to `recipient`.
     }
 
     #[abi(embed_v0)]

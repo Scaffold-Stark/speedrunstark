@@ -26,10 +26,6 @@ mod Vendor {
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
-    const TokensPerEth: u256 = 100;
-    const ETH_CONTRACT_ADDRESS: felt252 =
-        0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
-
     #[storage]
     struct Storage {
         eth_token: IERC20CamelDispatcher,
@@ -71,62 +67,22 @@ mod Vendor {
     ) {
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
-        self.ownable.initializer(owner);
+    // Implement your constructor here.
+    // ToDo: Initialize the owner of the contract.
+
     }
 
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {
-        fn buy_tokens(ref self: ContractState, eth_amount_wei: u256) {
-            assert(eth_amount_wei > 0, 'Amount must be greater than 0');
-            let tokens_to_buy = eth_amount_wei * TokensPerEth;
-            let vendor_token_balance = self.your_token.read().balance_of(get_contract_address());
-            assert(vendor_token_balance >= tokens_to_buy, 'NOT ENOUGHT TOKENS');
-            //call fn approve() on UI 
-            self
-                .eth_token
-                .read()
-                .transferFrom(get_caller_address(), get_contract_address(), eth_amount_wei);
-            let sent = self.your_token.read().transfer(get_caller_address(), tokens_to_buy);
-            assert(sent, 'Token Transfer failed');
-            self
-                .emit(
-                    BuyTokens {
-                        buyer: get_caller_address(),
-                        eth_amount: eth_amount_wei,
-                        tokens_amount: tokens_to_buy,
-                    }
-                );
+        fn buy_tokens(
+            ref self: ContractState, eth_amount_wei: u256
+        ) { // Implement your function buy_tokens here.
         }
 
-        fn withdraw(ref self: ContractState) {
-            self.ownable.assert_only_owner();
-            let balance = self.eth_token.read().balanceOf(get_contract_address());
-            let sent = self.eth_token.read().transfer(self.ownable.owner(), balance);
-            assert(sent, 'Eth Transfer failed');
+        fn withdraw(ref self: ContractState) {// Implement your function withdraw here.
         }
 
-        fn sell_tokens(ref self: ContractState, amount_tokens: u256) {
-            assert(amount_tokens > 0, 'Amount must be greater than 0');
-            let eth_amount_wei = amount_tokens / TokensPerEth;
-            let contract_eth_balance = self.eth_token.read().balanceOf(get_caller_address());
-            assert(contract_eth_balance >= eth_amount_wei, 'NOT Enough tokens');
-            // call fn approve() on UI 
-            let sent = self
-                .your_token
-                .read()
-                .transfer_from(get_caller_address(), get_contract_address(), amount_tokens);
-            assert(sent, 'Tokens Transfer failed');
-
-            let sent = self.eth_token.read().transfer(get_caller_address(), eth_amount_wei);
-            assert(sent, 'Eth Transfer failed');
-            self
-                .emit(
-                    SellTokens {
-                        seller: get_caller_address(),
-                        tokens_amount: amount_tokens,
-                        eth_amount: eth_amount_wei,
-                    }
-                );
+        fn sell_tokens(ref self: ContractState, amount_tokens: u256) {// Implement your function sell_tokens here.
         }
 
         fn send_tokens(ref self: ContractState, to: ContractAddress, amount_tokens: u256) {
@@ -135,7 +91,8 @@ mod Vendor {
         }
 
         fn tokens_per_eth(self: @ContractState) -> u256 {
-            TokensPerEth
+            // Modify the return value to return the amount of tokens per 1 ETH.
+            0
         }
 
         fn your_token(self: @ContractState) -> ContractAddress {

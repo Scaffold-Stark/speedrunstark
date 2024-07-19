@@ -2,9 +2,9 @@
 
 ![readme-2](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/hero2.png)
 
-🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn more about the "approve" pattern for ERC20s and how contract to contract interactions work.
+🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn about the "approve" pattern for ERC20s and how contract to contract interactions work.
 
-🏵 Create `YourToken.cairo` smart contract that inherits the **ERC20** token standard from OpenZeppelin. Set your token to `_mint()` **1000** \* (10^18) tokens to the `recipient`. Then create a `Vendor.cairo` contract that sells your token using a `buy_tokens()` function.
+🏵 Create `YourToken.cairo` smart contract that inherits the **ERC20** token standard from OpenZeppelin. Set `your token` to `_mint()` **1000** \* (10^18) tokens to the `recipient` account address. Then create a `Vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
 
 🎛 Edit the frontend that invites the user to input an amount of tokens they want to buy. We'll display a preview of the amount of ETH it will cost with a confirm button.
 
@@ -95,7 +95,7 @@ Use a price variable named `tokensPerEth` set to **100**:
 const TokensPerEth: u256 = 100;
 ```
 
-> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `eth_amount_wei` and `tokensPerEth` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
+> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `eth_amount_wei` value and `tokensPerEth` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
 
 > 📟 Emit **event** `BuyTokens {buyer: ContractAddress, eth_amount: u256, tokens_amount: u256}` when tokens are purchased.
 
