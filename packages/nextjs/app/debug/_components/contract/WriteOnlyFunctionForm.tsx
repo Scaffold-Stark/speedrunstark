@@ -33,8 +33,7 @@ export const WriteOnlyFunctionForm = ({
   abiFunction,
   onChange,
   contractAddress,
-}: 
-WriteOnlyFunctionFormProps) => {
+}: WriteOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() =>
     getInitialFormState(abiFunction),
   );
