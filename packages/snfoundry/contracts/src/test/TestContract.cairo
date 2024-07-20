@@ -1,5 +1,5 @@
-use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
 use contracts::Vendor::{IVendorDispatcher, IVendorDispatcherTrait};
+use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
 use contracts::mock_contracts::MockETHToken;
 use openzeppelin::tests::utils::constants::{RECIPIENT, OTHER};
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};

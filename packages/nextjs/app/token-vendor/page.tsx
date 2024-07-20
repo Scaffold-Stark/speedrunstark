@@ -11,7 +11,11 @@ import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffo
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useBalance } from "@starknet-react/core";
 import { formatEther } from "ethers";
-import {getTokenPrice, multiplyTo1e18 } from "~~/utils/scaffold-stark/priceInWei";
+import {
+  getTokenPrice,
+  multiplyTo1e18,
+} from "~~/utils/scaffold-stark/priceInWei";
+import { BlockIdentifier, BlockNumber } from "starknet";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -22,24 +26,14 @@ const TokenVendor: NextPage = () => {
 
   const { address: connectedAddress } = useAccount();
 
+  // ToDo: Add YourToken symbol
+
   const { data: yourTokenBalance } = useScaffoldReadContract({
     contractName: "YourToken",
     functionName: "balance_of",
     args: [connectedAddress ?? ""],
   });
 
-  const { data: tokensPerEth } = useScaffoldReadContract({
-    contractName: "Vendor",
-    functionName: "tokens_per_eth",
-  });
-
-  const { writeAsync: transferTokens } = useScaffoldWriteContract({
-    contractName: "YourToken",
-    functionName: "transfer",
-    args: [toAddress, multiplyTo1e18(tokensToSend)],
-  });
-
-  // // Vendor Balances
   const { data: vendorContractData } = useDeployedContractInfo("Vendor");
 
   const { data: vendorTokenBalance } = useScaffoldReadContract({
@@ -50,9 +44,25 @@ const TokenVendor: NextPage = () => {
 
   const { data: vendorContractBalance } = useBalance({
     address: vendorContractData?.address,
+	watch: true,
+	blockIdentifier: "pending" as BlockNumber, // to-do: Improve this
   });
 
-  const eth_to_spent = getTokenPrice(tokensToBuy, tokensPerEth as unknown as bigint);
+  const { data: tokensPerEth } = useScaffoldReadContract({
+    contractName: "Vendor",
+    functionName: "tokens_per_eth",
+  });
+
+//   const { writeAsync: transferTokens } = useScaffoldWriteContract({
+//     contractName: "YourToken",
+//     functionName: "transfer",
+//     args: [toAddress, multiplyTo1e18(tokensToSend)],
+//   });
+
+  const eth_to_spent = getTokenPrice(
+    tokensToBuy,
+    tokensPerEth as unknown as bigint,
+  );
 
   const { writeAsync: buy } = useScaffoldMultiWriteContract({
     calls: [
@@ -97,7 +107,7 @@ const TokenVendor: NextPage = () => {
     };
 
   return (
-	<>
+    <>
       <div className="flex items-center flex-col flex-grow py-10">
         <div className="flex flex-col items-center bg-base-100 border-8 border-secondary rounded-xl p-6 mt-24 w-full max-w-lg">
           <div className="text-xl">
@@ -110,7 +120,7 @@ const TokenVendor: NextPage = () => {
           </div>
           {/* Vendor Balances */}
           {/*<hr className="w-full border-secondary my-3" />
-          { <div>
+           <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
@@ -118,8 +128,8 @@ const TokenVendor: NextPage = () => {
               ).toFixed(4)}
               <span className="font-bold ml-1"> </span>
             </div>
-          </div> }
-          { <div>
+          </div> 
+          <div>
             Vendor eth balance:
             <span className="px-1">{vendorContractBalance?.formatted}</span>
             <span className="font-bold ml-1">
@@ -172,7 +182,7 @@ const TokenVendor: NextPage = () => {
           >
             Buy Tokens
           </button>
-        </div> *}
+        </div> */}
 
         {/* Sell Tokens */}
 

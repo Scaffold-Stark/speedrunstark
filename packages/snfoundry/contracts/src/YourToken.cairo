@@ -41,13 +41,14 @@ mod YourToken {
 
     #[constructor]
     fn constructor(
-        ref self: ContractState,
-        name: ByteArray,
-        symbol: ByteArray,
-        fixed_supply: u256,
-        recipient: ContractAddress
-    ) { // Implement your constructor here.
-    // ToDo: Set the token `name` and `symbol`. Mint `fixed_supply` tokens to `recipient`.
+        ref self: ContractState, recipient: ContractAddress
+    ) { // Implement your constructor here. 
+        let name = "Gold";
+        let symbol = "GLD";
+        self.erc20.initializer(name, symbol);
+    // Uncomment this line below
+    // let fixed_supply: u256 = 2_000_000_000_000_000_000_000; //2000 * 10^18
+    // ToDo: Mint `fixed_supply` tokens to `recipient`.
     }
 
     #[abi(embed_v0)]

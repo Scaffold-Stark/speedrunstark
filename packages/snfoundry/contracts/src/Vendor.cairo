@@ -63,13 +63,11 @@ mod Vendor {
         ref self: ContractState,
         eth_token_address: ContractAddress,
         your_token_address: ContractAddress,
-        owner: ContractAddress
     ) {
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
     // Implement your constructor here.
     // ToDo: Initialize the owner of the contract.
-
     }
 
     #[abi(embed_v0)]
@@ -79,10 +77,12 @@ mod Vendor {
         ) { // Implement your function buy_tokens here.
         }
 
-        fn withdraw(ref self: ContractState) {// Implement your function withdraw here.
+        fn withdraw(ref self: ContractState) { // Implement your function withdraw here.
         }
 
-        fn sell_tokens(ref self: ContractState, amount_tokens: u256) {// Implement your function sell_tokens here.
+        fn sell_tokens(
+            ref self: ContractState, amount_tokens: u256
+        ) { // Implement your function sell_tokens here.
         }
 
         fn send_tokens(ref self: ContractState, to: ContractAddress, amount_tokens: u256) {
@@ -90,8 +90,9 @@ mod Vendor {
             assert(sent, 'Token Transfer failed');
         }
 
-        fn tokens_per_eth(self: @ContractState) -> u256 {
-            // Modify the return value to return the amount of tokens per 1 ETH.
+        fn tokens_per_eth(
+            self: @ContractState
+        ) -> u256 { // Modify the return value to return the amount of tokens per 1 ETH.
             0
         }
 
