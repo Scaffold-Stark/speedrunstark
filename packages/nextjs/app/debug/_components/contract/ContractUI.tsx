@@ -5,10 +5,7 @@ import { useReducer } from "react";
 import { ContractReadMethods } from "./ContractReadMethods";
 // import { ContractWriteMethods } from "./ContractWriteMethods";
 import { Address, Balance } from "~~/components/scaffold-stark";
-import {
-  useDeployedContractInfo,
-  useNetworkColor,
-} from "~~/hooks/scaffold-stark";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { ContractName } from "~~/utils/scaffold-stark/contract";
 import { ContractVariables } from "./ContractVariables";

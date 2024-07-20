@@ -128,9 +128,6 @@ export const Header = () => {
         </ul>
       </div>
       <div className="navbar-end flex-grow mr-4 gap-4">
-        {/* <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
-          Not deployed
-        </span> */}
         <CustomConnectButton />
         {/* <FaucetButton /> */}
         <SwitchTheme

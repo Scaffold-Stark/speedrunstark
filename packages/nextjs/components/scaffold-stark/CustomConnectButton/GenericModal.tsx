@@ -6,7 +6,6 @@ const GenericModal = ({
   animate,
   children,
   className,
-  position,
 }: {
   isOpen: boolean;
   onClose: (e: React.MouseEvent<HTMLButtonElement>) => void;
