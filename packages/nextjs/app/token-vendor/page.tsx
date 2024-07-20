@@ -44,8 +44,8 @@ const TokenVendor: NextPage = () => {
 
   const { data: vendorContractBalance } = useBalance({
     address: vendorContractData?.address,
-	watch: true,
-	blockIdentifier: "pending" as BlockNumber, // to-do: Improve this
+    watch: true,
+    blockIdentifier: "pending" as BlockNumber, // to-do: Improve this
   });
 
   const { data: tokensPerEth } = useScaffoldReadContract({
@@ -53,11 +53,11 @@ const TokenVendor: NextPage = () => {
     functionName: "tokens_per_eth",
   });
 
-//   const { writeAsync: transferTokens } = useScaffoldWriteContract({
-//     contractName: "YourToken",
-//     functionName: "transfer",
-//     args: [toAddress, multiplyTo1e18(tokensToSend)],
-//   });
+  //   const { writeAsync: transferTokens } = useScaffoldWriteContract({
+  //     contractName: "YourToken",
+  //     functionName: "transfer",
+  //     args: [toAddress, multiplyTo1e18(tokensToSend)],
+  //   });
 
   const eth_to_spent = getTokenPrice(
     tokensToBuy,

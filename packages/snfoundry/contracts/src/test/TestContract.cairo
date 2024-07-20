@@ -23,13 +23,7 @@ fn deploy_mock_eth_token() -> ContractAddress {
 // Should deploy the YourToken contract
 fn deploy_your_token_token() -> ContractAddress {
     let erc20_class_hash = declare("YourToken").unwrap();
-    let NAME: ByteArray = "Gold";
-    let SYMBOL: ByteArray = "GLD";
-    let INITIAL_SUPPLY: u256 = 2000000000000000000000; // 2000_GLD_IN_WEI
     let mut calldata = array![];
-    calldata.append_serde(NAME);
-    calldata.append_serde(SYMBOL);
-    calldata.append_serde(INITIAL_SUPPLY);
     calldata.append_serde(RECIPIENT());
     let (your_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
     println!("-- YourToken contract deployed on: {:?}", your_token_address);

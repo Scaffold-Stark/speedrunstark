@@ -92,7 +92,7 @@ mod Vendor {
 
         fn tokens_per_eth(
             self: @ContractState
-        ) -> u256 { // Modify the return value to return the amount of tokens per 1 ETH.
+        ) -> u256 { // Modify to return the amount of tokens per 1 ETH.
             0
         }
 
