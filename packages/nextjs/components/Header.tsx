@@ -5,9 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  CircleStackIcon,
   Bars3Icon,
   BugAntIcon,
+  CircleStackIcon,
   BoltIcon,
 } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
@@ -95,7 +95,7 @@ export const Header = () => {
   const isLocalNetwork = targetNetwork.id === devnet.id;
   const { provider } = useProvider();
   const { address, status } = useAccount();
-  const [isDeployed, setIsDeployed] = useState(false);
+  const [isDeployed, setIsDeployed] = useState(true);
 
   useEffect(() => {
     if (status === "connected" && address) {

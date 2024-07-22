@@ -15,7 +15,6 @@ import {
   getTokenPrice,
   multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
-import { BlockIdentifier, BlockNumber } from "starknet";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -26,14 +25,24 @@ const TokenVendor: NextPage = () => {
 
   const { address: connectedAddress } = useAccount();
 
-  // ToDo: Add YourToken symbol
-
   const { data: yourTokenBalance } = useScaffoldReadContract({
     contractName: "YourToken",
     functionName: "balance_of",
     args: [connectedAddress ?? ""],
   });
 
+  const { data: tokensPerEth } = useScaffoldReadContract({
+    contractName: "Vendor",
+    functionName: "tokens_per_eth",
+  });
+
+  const { writeAsync: transferTokens } = useScaffoldWriteContract({
+    contractName: "YourToken",
+    functionName: "transfer",
+    args: [toAddress, multiplyTo1e18(tokensToSend)],
+  });
+
+  // // Vendor Balances
   const { data: vendorContractData } = useDeployedContractInfo("Vendor");
 
   const { data: vendorTokenBalance } = useScaffoldReadContract({
@@ -44,20 +53,7 @@ const TokenVendor: NextPage = () => {
 
   const { data: vendorContractBalance } = useBalance({
     address: vendorContractData?.address,
-    watch: true,
-    blockIdentifier: "pending" as BlockNumber, // to-do: Improve this
   });
-
-  const { data: tokensPerEth } = useScaffoldReadContract({
-    contractName: "Vendor",
-    functionName: "tokens_per_eth",
-  });
-
-  //   const { writeAsync: transferTokens } = useScaffoldWriteContract({
-  //     contractName: "YourToken",
-  //     functionName: "transfer",
-  //     args: [toAddress, multiplyTo1e18(tokensToSend)],
-  //   });
 
   const eth_to_spent = getTokenPrice(
     tokensToBuy,
@@ -120,7 +116,7 @@ const TokenVendor: NextPage = () => {
           </div>
           {/* Vendor Balances */}
           {/*<hr className="w-full border-secondary my-3" />
-           <div>
+          { <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
@@ -128,8 +124,8 @@ const TokenVendor: NextPage = () => {
               ).toFixed(4)}
               <span className="font-bold ml-1"> </span>
             </div>
-          </div> 
-          <div>
+          </div> }
+          { <div>
             Vendor eth balance:
             <span className="px-1">{vendorContractBalance?.formatted}</span>
             <span className="font-bold ml-1">
@@ -182,7 +178,7 @@ const TokenVendor: NextPage = () => {
           >
             Buy Tokens
           </button>
-        </div> */}
+        </div> *}
 
         {/* Sell Tokens */}
 
