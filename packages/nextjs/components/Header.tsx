@@ -81,7 +81,7 @@ export const Header = () => {
   const isLocalNetwork = targetNetwork.id === devnet.id;
   const { provider } = useProvider();
   const { address, status } = useAccount();
-  const [isDeployed, setIsDeployed] = useState(false);
+  const [isDeployed, setIsDeployed] = useState(true);
 
   useEffect(() => {
     if (status === "connected" && address) {
