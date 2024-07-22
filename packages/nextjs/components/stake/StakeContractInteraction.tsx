@@ -130,7 +130,9 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
         </div>
         <div className="flex items-start justify-around w-full">
           <div className="flex flex-col items-center justify-center w-1/2">
-            <p className="block text-xl mt-0 mb-1 font-semibold text-neutral">Time Left</p>
+            <p className="block text-xl mt-0 mb-1 font-semibold text-neutral">
+              Time Left
+            </p>
             <p className="m-0 p-0">
               {timeLeft
                 ? `${humanizeDuration(Number(timeLeft) * 1000)} left`
@@ -138,7 +140,9 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             </p>
           </div>
           <div className="flex flex-col items-center w-1/2">
-            <p className="block text-xl mt-0 mb-1 font-semibold text-neutral">You Staked</p>
+            <p className="block text-xl mt-0 mb-1 font-semibold text-neutral">
+              You Staked
+            </p>
             <span>
               {myStake
                 ? `${formatEther(Number(myStake))} ${targetNetwork.nativeCurrency.symbol}`
