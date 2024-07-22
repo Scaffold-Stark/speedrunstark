@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     ExampleExternalContract: {
       address:
-        "0x07d31e76396d671f5030dfce1444c1f72bd89e75026d6d579c0e56743e6f54ee",
+        "0x02842af21818418109b8c80a1fa5a2c4907f200bce0366f6044c13dd8242494e",
       abi: [
         {
           type: "impl",
@@ -63,7 +63,7 @@ const deployedContracts = {
     },
     Staker: {
       address:
-        "0x02022ce920c131c550ebd2545585b0ce5948a3b9189540f78e037f1249b07da0",
+        "0x037f78da6804e450a78757d327d6f5a263ff30f766b380f69c678072734a94f6",
       abi: [
         {
           type: "impl",
@@ -289,7 +289,7 @@ const deployedContracts = {
         },
       ],
     },
-  },
+  }
 } as const;
 
 export default deployedContracts;
