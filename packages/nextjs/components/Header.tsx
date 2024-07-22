@@ -40,6 +40,7 @@ export const HeaderMenuLinks = () => {
   useEffect(() => {
     setIsDark(theme === "dark");
   }, [theme]);
+
   return (
     <>
       {menuLinks.map(({ label, href, icon }) => {
@@ -146,13 +147,13 @@ export const Header = () => {
         </ul>
       </div>
       <div className="navbar-end flex-grow mr-4 gap-4">
-        {!isDeployed ? (
+        {/* Verificar si está conectado y no desplegado */}
+        {status === "connected" && !isDeployed ? (
           <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
             Wallet Not Deployed
           </span>
         ) : null}
         <CustomConnectButton />
-        {/* <FaucetButton /> */}
         <SwitchTheme
           className={`pointer-events-auto ${
             isLocalNetwork ? "self-end md:self-auto" : ""
