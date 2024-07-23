@@ -35,12 +35,12 @@ const Staking: NextPage = () => {
           <span className="block text-2xl font-bold">All Staking Events</span>
         </h1>
       </div>
-      <div className="overflow-x-auto border border-base-300">
+      <div className="overflow-x-auto border border-secondary">
         <table className="table table-zebra w-full">
           <thead>
             <tr>
-              <th className="bg-primary text-white">From</th>
-              <th className="bg-primary text-white">Value</th>
+              <th className="bg-secondary text-white">From</th>
+              <th className="bg-secondary text-white">Value</th>
             </tr>
           </thead>
           <tbody>

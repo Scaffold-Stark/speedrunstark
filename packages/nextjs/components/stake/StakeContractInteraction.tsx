@@ -98,7 +98,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
     };
 
   return (
-    <div className="flex items-center flex-col flex-grow w-full px-4 gap-12 text-neutral">
+    <div className="flex items-center flex-col flex-grow w-full px-4 gap-12 text-neutral justify-center">
       {isStakingCompleted && (
         <div className="flex flex-col items-center gap-2 bg-base-100 border-8 border-secondary  rounded-xl p-6 mt-12 w-full max-w-lg">
           <p className="block m-0 font-semibold text-neutral">
