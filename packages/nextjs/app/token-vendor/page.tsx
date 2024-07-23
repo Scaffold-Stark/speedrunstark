@@ -117,25 +117,29 @@ const TokenVendor: NextPage = () => {
               <span className="font-bold ml-1">
                 {parseFloat(formatEther(yourTokenBalance?.toString() || 0n))}
               </span>
+              <span className="font-bold ml-1">GLD</span>
             </div>
           </div>
           {/* Vendor Balances */}
-          {/*<hr className="w-full border-secondary my-3" />
-          { <div>
+          {/* <hr className="w-full border-secondary my-3" /> */}
+          {/* <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
                 formatEther(vendorTokenBalance?.toString() || 0n),
               ).toFixed(4)}
+              <span className="font-bold ml-1">
+                GLD
+              </span>
             </div>
-          </div> }
-          { <div>
+          </div>
+           <div>
             Vendor eth balance:
             <span className="px-1">{vendorContractBalance?.formatted}</span>
             <span className="font-bold ml-1">
               {vendorContractBalance?.symbol}
             </span>
-          </div> */}
+          </div>  */}
         </div>
 
         {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
