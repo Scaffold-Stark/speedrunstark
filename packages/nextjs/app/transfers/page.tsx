@@ -34,9 +34,9 @@ const Transfers: NextPage = () => {
           <table className="table table-zebra w-full">
             <thead>
               <tr>
-                <th className="bg-primary text-neutral">Token Id</th>
-                <th className="bg-primary text-neutral">From</th>
-                <th className="bg-primary text-neutral">To</th>
+                <th className="bg-secondary text-white">Token Id</th>
+                <th className="bg-secondary text-white">From</th>
+                <th className="bg-secondary text-white">To</th>
               </tr>
             </thead>
             <tbody>
