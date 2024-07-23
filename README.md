@@ -89,7 +89,7 @@ yarn start
 
 > 👩‍💻 Edit the `Vendor.cairo` contract with a `buy_tokens()` function
 
-Use a price variable named `tokensPerEth` set to **100**:
+Create a price variable named `tokensPerEth` set to **100**:
 
 ```cairo
 const TokensPerEth: u256 = 100;
@@ -101,7 +101,7 @@ const TokensPerEth: u256 = 100;
 
 Edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` (uncomment Vendor deploy lines).
 
-Create a `tokens_per_eth` function in `Vendor.cairo` that returns the `tokensPerEth` value.
+Implement `tokens_per_eth` function in `Vendor.cairo` that returns the `tokensPerEth` value.
 
 Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.tsx` to show the UI to buy tokens on the Token Vendor tab.
 
@@ -114,8 +114,6 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 ⚔️ Side Quest: send tokens from your frontend address to the Vendor contract address and _then_ try to buy them.
 
 > ✏️ We can't hard code the vendor address like we did above when deploying to the network because we won't know the vendor address at the time we create the token contract.
-
-> ✏️ So instead, edit `YourToken.cairo` to mint the tokens to the `recipient` (deployer) in the **constructor()**.
 
 > ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to transfer 1000 tokens to vendor address.
 

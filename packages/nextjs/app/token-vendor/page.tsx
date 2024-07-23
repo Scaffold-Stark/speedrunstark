@@ -24,6 +24,10 @@ const TokenVendor: NextPage = () => {
   const [tokensToSell, setTokensToSell] = useState<string>("");
 
   const { address: connectedAddress } = useAccount();
+  const { data: yourTokenSymbol } = useScaffoldReadContract({
+    contractName: "YourToken",
+    functionName: "symbol",
+  });
 
   const { data: yourTokenBalance } = useScaffoldReadContract({
     contractName: "YourToken",
@@ -49,6 +53,7 @@ const TokenVendor: NextPage = () => {
     contractName: "YourToken",
     functionName: "balance_of",
     args: [vendorContractData?.address ?? ""],
+    watch: true,
   });
 
   const { data: vendorContractBalance } = useBalance({
@@ -122,7 +127,6 @@ const TokenVendor: NextPage = () => {
               {parseFloat(
                 formatEther(vendorTokenBalance?.toString() || 0n),
               ).toFixed(4)}
-              <span className="font-bold ml-1"> </span>
             </div>
           </div> }
           { <div>
