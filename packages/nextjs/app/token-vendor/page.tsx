@@ -135,8 +135,10 @@ const TokenVendor: NextPage = () => {
                 formatEther(vendorTokenBalance?.toString() || 0n),
               ).toFixed(4)}
               <span className="font-bold ml-1">
-                GLD
-              </span>
+                {yourTokenSymbol
+                  ? byteArray.stringFromByteArray(yourTokenSymbol as any)
+                  : ""}
+              </span>{" "}
             </div>
           </div>
            <div>
