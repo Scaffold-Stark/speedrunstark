@@ -22,10 +22,10 @@ export const RollEvents = ({ rolls }: RollEventsProps) => {
       <table className="mt-4 p-2 bg-base-100 table table-zebra shadow-lg w-full overflow-hidden">
         <thead className="text-accent text-lg">
           <tr>
-            <th className="bg-primary text-lg" colSpan={3}>
+            <th className="bg-secondary text-lg" colSpan={3}>
               <span>Address</span>
             </th>
-            <th className="bg-primary text-lg">
+            <th className="bg-secondary text-lg">
               <span>Roll</span>
             </th>
           </tr>

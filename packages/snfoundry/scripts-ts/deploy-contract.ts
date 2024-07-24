@@ -15,11 +15,24 @@ const { provider, deployer }: Network = networks[networkName];
 const deployContract = async (
   constructorArgs: RawArgs,
   contractName: string,
-  exportContractName?: string
+  exportContractName?: string,
+  options?: {
+    maxFee: bigint;
+  }
 ): Promise<{
   classHash: string;
   address: string;
 }> => {
+  try {
+    await deployer.getContractVersion(deployer.address);
+  } catch (e) {
+    if (e.toString().includes("Contract not found")) {
+      throw new Error(
+        `The wallet you're using to deploy the contract is not deployed in ${networkName} network`
+      );
+    }
+  }
+
   const compiledContractCasm = JSON.parse(
     fs
       .readFileSync(
@@ -87,6 +100,8 @@ const deployContract = async (
     totalFee = 500000000000000n;
   }
 
+  totalFee = options?.maxFee || totalFee * 20n; // this optional max fee serves when error AccountValidation Failed or small fee on public networks , try 5n , 10n, 20n, 50n, 100n
+
   try {
     const tryDeclareAndDeploy = await deployer.declareAndDeploy(
       {
@@ -95,9 +110,14 @@ const deployContract = async (
         constructorCalldata,
       },
       {
-        maxFee: totalFee * 20n, // this optional max fee serves when error AccountValidation Failed or small fee on public networks , try 5n , 10n, 20n, 50n, 100n
+        maxFee: totalFee,
       }
     );
+    if (!tryDeclareAndDeploy.deploy.contract_address) {
+      throw new Error(
+        "Failed to deploy contract, try setting up a manual fee on deployContract, set maxFee to 0.001 ETH in WEI and increase it if needed."
+      );
+    }
     contractAddress =
       "0x" + tryDeclareAndDeploy.deploy.address.slice(2).padStart(64, "0");
   } catch (e) {
