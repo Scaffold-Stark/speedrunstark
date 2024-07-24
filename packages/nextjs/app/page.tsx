@@ -1,7 +1,6 @@
 "use client";
 
 import type { NextPage } from "next";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 
 const Home: NextPage = () => {
@@ -17,7 +16,7 @@ const Home: NextPage = () => {
           </h1>
           <div className="flex flex-col items-center justify-center">
             <Image
-              src="/hero.png"
+              src="/ch0-cover.png"
               width="727"
               height="231"
               alt="challenge banner"

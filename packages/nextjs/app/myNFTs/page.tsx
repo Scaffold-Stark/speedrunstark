@@ -72,7 +72,7 @@ const MyNFTs: NextPage = () => {
           <CustomConnectButton />
         ) : (
           <button
-            className="btn btn-secondary"
+            className="btn btn-secondary text-white"
             disabled={status !== "Mint NFT"}
             onClick={handleMintItem}
           >

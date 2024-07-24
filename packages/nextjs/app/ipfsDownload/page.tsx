@@ -52,7 +52,7 @@ const IpfsDownload: NextPage = () => {
           />
         </div>
         <button
-          className={`btn btn-secondary my-6 ${loading ? "loading" : ""}`}
+          className={`btn btn-secondary text-white my-6 ${loading ? "loading" : ""}`}
           disabled={loading}
           onClick={handleIpfsDownload}
         >
