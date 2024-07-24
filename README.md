@@ -119,7 +119,7 @@ You can now call the functions defined in the interface on the dispatcher, such 
 
 > 👩‍💻 Write your `stake()` function and test it with the `Debug Contracts` tab in the frontend.
 
-![debugContracts](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/decentralized-staking/packages/nextjs/public/ch1-debug.png)
+![debugContracts](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-debug.png)
 
 ### 🥅 Goals
 
@@ -127,7 +127,7 @@ You can now call the functions defined in the interface on the dispatcher, such 
 - [ ] Is your `balance` correctly tracked?
 - [ ] Do you see the events in the `Stake Events` tab?
 
-  ![allStakings](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/decentralized-staking/packages/nextjs/public/ch1-events.png)
+  ![allStakings](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-events.png)
 
 ---
 
@@ -163,7 +163,7 @@ You'll have 30 seconds after deploying until the deadline is reached, you can ad
 
 ⏳ _"Time Left"_ will only update if a transaction occurs. You can see the time update by getting funds from the faucet button in navbar just to trigger a new block.
 
-![stakerUI](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/decentralized-staking/packages/nextjs/public/ch1-staker.png)
+![stakerUI](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-staker.png)
 
 > 👩‍💻 You can call `yarn deploy` again any time you want a fresh contract.
 > You may need it when you want to reload the _"Time Left"_ of your tests.
@@ -219,7 +219,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 🚀 Run yarn deploy --network [network] to deploy your smart contract to a public network (mainnet or sepolia).
 
-![allStakings-blockFrom](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/decentralized-staking/packages/nextjs/public/ch1-events.png)
+![allStakings-blockFrom](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-events.png)
 
 > 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/scaffold-eth/se-2-challenges/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)).
 ---
