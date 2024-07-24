@@ -98,10 +98,10 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
     };
 
   return (
-    <div className="flex items-center flex-col flex-grow w-full px-4 gap-12 text-primary">
+    <div className="flex items-center flex-col flex-grow w-full px-4 gap-12 text-neutral justify-center">
       {isStakingCompleted && (
         <div className="flex flex-col items-center gap-2 bg-base-100 border-8 border-secondary  rounded-xl p-6 mt-12 w-full max-w-lg">
-          <p className="block m-0 font-semibold">
+          <p className="block m-0 font-semibold text-neutral">
             🎉 &nbsp; Staking App triggered `ExampleExternalContract` &nbsp; 🎉{" "}
           </p>
           <div className="flex items-center">
@@ -113,12 +113,12 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
               }
               className="text-[1rem]"
             />
-            <p className="block m-0 text-lg -ml-1">staked !!</p>
+            <p className="block m-0 text-lg -ml-1 text-neutral">staked !!</p>
           </div>
         </div>
       )}
       <div
-        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-primary rounded-xl p-6 w-full max-w-lg ${
+        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${
           !isStakingCompleted ? "mt-24" : ""
         }`}
       >
@@ -130,7 +130,9 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
         </div>
         <div className="flex items-start justify-around w-full">
           <div className="flex flex-col items-center justify-center w-1/2">
-            <p className="block text-xl mt-0 mb-1 font-semibold">Time Left</p>
+            <p className="block text-xl mt-0 mb-1 font-semibold text-neutral">
+              Time Left
+            </p>
             <p className="m-0 p-0">
               {timeLeft
                 ? `${humanizeDuration(Number(timeLeft) * 1000)} left`
@@ -138,7 +140,9 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             </p>
           </div>
           <div className="flex flex-col items-center w-1/2">
-            <p className="block text-xl mt-0 mb-1 font-semibold">You Staked</p>
+            <p className="block text-xl mt-0 mb-1 font-semibold text-neutral">
+              You Staked
+            </p>
             <span>
               {myStake
                 ? `${formatEther(Number(myStake))} ${targetNetwork.nativeCurrency.symbol}`
@@ -173,20 +177,20 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
         <div className="flex flex-col space-y-5">
           <div className="flex space-x-7">
             <button
-              className="btn btn-primary uppercase text-base-100"
+              className="btn btn-secondary uppercase text-white"
               onClick={wrapInTryCatch(execute, "execute")}
             >
               Execute!
             </button>
             <button
-              className="btn btn-primary uppercase text-base-100"
+              className="btn btn-secondary uppercase text-white"
               onClick={wrapInTryCatch(withdrawETH, "stakeETH")}
             >
               Withdraw
             </button>
           </div>
           <button
-            className="btn btn-primary uppercase text-base-100"
+            className="btn btn-secondary uppercase text-white"
             onClick={wrapInTryCatch(stakeEth, "stakeETH")}
           >
             🥩 Stake 0.5 ether!

@@ -29,18 +29,18 @@ const Staking: NextPage = () => {
     );
 
   return (
-    <div className="flex items-center flex-col flex-grow pt-10 text-primary">
+    <div className="flex items-center flex-col flex-grow pt-10 text-neutral">
       <div className="px-5">
         <h1 className="text-center mb-3">
           <span className="block text-2xl font-bold">All Staking Events</span>
         </h1>
       </div>
-      <div className="overflow-x-auto border border-base-300">
+      <div className="overflow-x-auto border border-secondary">
         <table className="table table-zebra w-full">
           <thead>
             <tr>
-              <th className="bg-primary text-base-100">From</th>
-              <th className="bg-primary text-base-100">Value</th>
+              <th className="bg-secondary text-white">From</th>
+              <th className="bg-secondary text-white">Value</th>
             </tr>
           </thead>
           <tbody>

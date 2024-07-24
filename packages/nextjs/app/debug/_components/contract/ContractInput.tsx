@@ -58,11 +58,11 @@ export const ContractInput = ({
     <div className="flex flex-col gap-1.5 w-full">
       <div className="flex items-center ml-2">
         {paramType.name && (
-          <span className="text-xs font-medium mr-2 leading-none">
+          <span className="text-xs font-medium mr-2 leading-none text-neutral">
             {paramType.name}
           </span>
         )}
-        <span className="block text-xs font-extralight leading-none">
+        <span className="block text-xs font-extralight leading-none text-neutral">
           {displayType(paramType.type)}
         </span>
       </div>
