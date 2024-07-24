@@ -15,6 +15,7 @@ import {
   getTokenPrice,
   multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
+import { byteArray } from "starknet-dev";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -117,7 +118,12 @@ const TokenVendor: NextPage = () => {
               <span className="font-bold ml-1">
                 {parseFloat(formatEther(yourTokenBalance?.toString() || 0n))}
               </span>
-              <span className="font-bold ml-1">GLD</span>
+              <span className="font-bold ml-1">
+                {yourTokenSymbol
+                  ? byteArray.stringFromByteArray(yourTokenSymbol as any)
+                  : ""}
+              </span>{" "}
+              {/* FixMe: Improve this parsing */}
             </div>
           </div>
           {/* Vendor Balances */}

@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourToken: {
       address:
-        "0x07ad7a12a7671e2abc24681007cf0f2a36a0f5fb0f8867e4363c6612ebb52ce4",
+        "0x0428d10c79b47354e26b20d9ad5b0f56f6b1c56e554708a8e1d93c846a6ea709",
       abi: [
         {
           type: "impl",
@@ -309,7 +309,7 @@ const deployedContracts = {
     },
     Vendor: {
       address:
-        "0x024a7d92cb64b9e4c2b59a38a616a5c2d3c12677e47abb04cb6205256bd5ed54",
+        "0x01b069cb55cbc425b6f58fbbfd413f002f60684b011eb8460f7ad6f29cde2555",
       abi: [
         {
           type: "impl",
