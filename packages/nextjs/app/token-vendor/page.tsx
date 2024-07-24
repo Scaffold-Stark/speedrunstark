@@ -15,6 +15,7 @@ import {
   getTokenPrice,
   multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
+import { BlockNumber } from "starknet";
 import { byteArray } from "starknet-dev";
 
 const TokenVendor: NextPage = () => {
@@ -54,11 +55,12 @@ const TokenVendor: NextPage = () => {
     contractName: "YourToken",
     functionName: "balance_of",
     args: [vendorContractData?.address ?? ""],
-    watch: true,
   });
 
   const { data: vendorContractBalance } = useBalance({
     address: vendorContractData?.address,
+    watch: true,
+    blockIdentifier: "pending" as BlockNumber,
   });
 
   const eth_to_spent = getTokenPrice(
@@ -108,6 +110,10 @@ const TokenVendor: NextPage = () => {
       }
     };
 
+  const parsedSymbol = yourTokenSymbol
+    ? byteArray.stringFromByteArray(yourTokenSymbol as any)
+    : "";
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow py-10">
@@ -118,12 +124,8 @@ const TokenVendor: NextPage = () => {
               <span className="font-bold ml-1">
                 {parseFloat(formatEther(yourTokenBalance?.toString() || 0n))}
               </span>
-              <span className="font-bold ml-1">
-                {yourTokenSymbol
-                  ? byteArray.stringFromByteArray(yourTokenSymbol as any)
-                  : ""}
-              </span>{" "}
               {/* FixMe: Improve this parsing */}
+              <span className="font-bold ml-1">{parsedSymbol}</span>
             </div>
           </div>
           {/* Vendor Balances */}
@@ -135,10 +137,8 @@ const TokenVendor: NextPage = () => {
                 formatEther(vendorTokenBalance?.toString() || 0n),
               ).toFixed(4)}
               <span className="font-bold ml-1">
-                {yourTokenSymbol
-                  ? byteArray.stringFromByteArray(yourTokenSymbol as any)
-                  : ""}
-              </span>{" "}
+                {parsedSymbol}
+              </span>
             </div>
           </div>
            <div>
