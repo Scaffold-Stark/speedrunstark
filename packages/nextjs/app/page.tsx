@@ -6,7 +6,7 @@ import { useAccount } from "@starknet-react/core";
 const Home: NextPage = () => {
   const connectedAddress = useAccount();
   return (
-    <div className="flex items-center flex-col flex-grow pt-10 text-neutral">
+    <div className="flex items-center flex-col flex-grow pt-10  text-neutral">
       <div className="px-5 w-[90%] md:w-[75%]">
         <h1 className="text-center mb-6">
           <span className="block text-2xl mb-2">SpeedRunStarknet</span>
