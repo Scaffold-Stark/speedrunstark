@@ -225,7 +225,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
       `SellTokens {seller: ContractAddress, tokens_amount: u256, eth_amount: u256}`
       and `emit` it in your `Vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
 
-  ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/nextjs/public/Events.png)
+  ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/nextjs/public/ch2-Events.png)
 
 ### ⚠️ Test it
 
