@@ -129,8 +129,8 @@ const TokenVendor: NextPage = () => {
             </div>
           </div>
           {/* Vendor Balances */}
-          {/* <hr className="w-full border-secondary my-3" /> */}
-          {/* <div>
+          {/* <hr className="w-full border-secondary my-3" /> 
+           <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
