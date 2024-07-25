@@ -79,7 +79,7 @@ yarn start
 - [ ] Can you check the `balance_of()` your frontend address in the `Debug Contracts` tab? (**YourToken** contract)
 - [ ] Can you `transfer()` your token to another account and check _that_ account's `balance_of`?
 
-![debugContractsYourToken](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/nadai/token-vendor-update/packages/nextjs/public/ch2-YourToken.png)
+![debugContractsYourToken](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/ch2-YourToken.png)
 
 > 💬 Hint: In Devnet, use the `switch account` feature to select a different pre-deployed account address and try sending to that new address. Can use the `transfer()` function in the `Debug Contracts` tab.
 
@@ -142,7 +142,7 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 
 > You can `yarn deploy` to deploy your contract until you get it right.
 
-![TokenVendorBuy](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/nadai/token-vendor-update/packages/nextjs/public/ch2-TokenVendorBalance.png)
+![TokenVendorBuy](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/ch2-TokenVendorBalance.png)
 
 ### 🥅 Goals
 
@@ -211,7 +211,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 🔍 Look in the `packages/nextjs/app/token-vendor/page.tsx` for the extra approve/sell UI to uncomment!
 
-![VendorBuyBack](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/nadai/token-vendor-update/packages/nextjs/public/ch2-VendorBuySell.png)
+![VendorBuyBack](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/packages/nextjs/public/ch2-VendorBuySell.png)
 
 ### 🥅 Goal
 
@@ -225,7 +225,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
       `SellTokens {seller: ContractAddress, tokens_amount: u256, eth_amount: u256}`
       and `emit` it in your `Vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
 
-  ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/nadai/token-vendor-update/nextjs/public/Events.png)
+  ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/nextjs/public/Events.png)
 
 ### ⚠️ Test it
 
