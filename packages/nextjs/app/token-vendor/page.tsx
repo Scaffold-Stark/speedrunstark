@@ -110,7 +110,7 @@ const TokenVendor: NextPage = () => {
       }
     };
 
-	// FixMe: This is a hack to get the symbol of the token. Propose a better way to do this.
+  // FixMe: This is a hack to get the symbol of the token. Propose a better way to do this.
   const parsedSymbol = yourTokenSymbol
     ? byteArray.stringFromByteArray(yourTokenSymbol as any)
     : "";
@@ -188,15 +188,12 @@ const TokenVendor: NextPage = () => {
             </div>
             <button
               className="btn btn-secondary"
-              onClick={wrapInTryCatch(
-                () => transferTokens(),
-                "transferTokens"
-              )}
+              onClick={wrapInTryCatch(() => transferTokens(), "transferTokens")}
             >
               Send Tokens
             </button>
           </div>
-        )} 
+        )}
 
         {/* Sell Tokens */}
         {/*  {!!yourTokenBalance && (
