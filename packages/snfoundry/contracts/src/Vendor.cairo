@@ -4,7 +4,6 @@ pub trait IVendor<T> {
     fn buy_tokens(ref self: T, eth_amount_wei: u256);
     fn withdraw(ref self: T);
     fn sell_tokens(ref self: T, amount_tokens: u256);
-    fn send_tokens(ref self: T, to: ContractAddress, amount_tokens: u256);
     fn tokens_per_eth(self: @T) -> u256;
     fn your_token(self: @T) -> ContractAddress;
     fn eth_token(self: @T) -> ContractAddress;
@@ -83,11 +82,6 @@ mod Vendor {
         fn sell_tokens(
             ref self: ContractState, amount_tokens: u256
         ) { // Implement your function sell_tokens here.
-        }
-
-        fn send_tokens(ref self: ContractState, to: ContractAddress, amount_tokens: u256) {
-            let sent = self.your_token.read().transfer(to, amount_tokens);
-            assert(sent, 'Token Transfer failed');
         }
 
         fn tokens_per_eth(

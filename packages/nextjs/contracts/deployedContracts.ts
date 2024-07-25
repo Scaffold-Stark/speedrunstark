@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourToken: {
       address:
-        "0x0428d10c79b47354e26b20d9ad5b0f56f6b1c56e554708a8e1d93c846a6ea709",
+        "0x050994d27ce101acd0c5545ec12912c0ffaaa5e21d797fd8aadc87c30d84bd10",
       abi: [
         {
           type: "impl",
@@ -309,7 +309,7 @@ const deployedContracts = {
     },
     Vendor: {
       address:
-        "0x01b069cb55cbc425b6f58fbbfd413f002f60684b011eb8460f7ad6f29cde2555",
+        "0x057ab241d9cebe65a67bf93e775059b598c036539655f7bc376b222bbc1b6535",
       abi: [
         {
           type: "impl",
@@ -357,22 +357,6 @@ const deployedContracts = {
               type: "function",
               name: "sell_tokens",
               inputs: [
-                {
-                  name: "amount_tokens",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "send_tokens",
-              inputs: [
-                {
-                  name: "to",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
                 {
                   name: "amount_tokens",
                   type: "core::integer::u256",

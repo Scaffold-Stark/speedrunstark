@@ -110,6 +110,7 @@ const TokenVendor: NextPage = () => {
       }
     };
 
+	// FixMe: This is a hack to get the symbol of the token. Propose a better way to do this.
   const parsedSymbol = yourTokenSymbol
     ? byteArray.stringFromByteArray(yourTokenSymbol as any)
     : "";
@@ -125,7 +126,6 @@ const TokenVendor: NextPage = () => {
                 {parseFloat(formatEther(yourTokenBalance?.toString() || 0n))}
               </span>
               <span className="font-bold ml-1">{parsedSymbol}</span>
-              {/* FixMe: Improve this parsing */}
             </div>
           </div>
           {/* Vendor Balances */}
@@ -168,7 +168,7 @@ const TokenVendor: NextPage = () => {
           >
             Buy Tokens
           </button>
-        </div>
+        </div>*/}
 
         {!!yourTokenBalance && (
           <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
@@ -196,7 +196,7 @@ const TokenVendor: NextPage = () => {
               Send Tokens
             </button>
           </div>
-        )} */}
+        )} 
 
         {/* Sell Tokens */}
         {/*  {!!yourTokenBalance && (
