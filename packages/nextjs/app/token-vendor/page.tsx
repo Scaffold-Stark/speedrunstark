@@ -15,7 +15,8 @@ import {
   getTokenPrice,
   multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
-import { BlockIdentifier, BlockNumber } from "starknet";
+import { BlockNumber } from "starknet";
+import { byteArray } from "starknet-dev";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -25,8 +26,10 @@ const TokenVendor: NextPage = () => {
   const [tokensToSell, setTokensToSell] = useState<string>("");
 
   const { address: connectedAddress } = useAccount();
-
-  // ToDo: Add YourToken symbol
+  const { data: yourTokenSymbol } = useScaffoldReadContract({
+    contractName: "YourToken",
+    functionName: "symbol",
+  });
 
   const { data: yourTokenBalance } = useScaffoldReadContract({
     contractName: "YourToken",
@@ -34,6 +37,7 @@ const TokenVendor: NextPage = () => {
     args: [connectedAddress ?? ""],
   });
 
+  // // Vendor Balances
   const { data: vendorContractData } = useDeployedContractInfo("Vendor");
 
   const { data: vendorTokenBalance } = useScaffoldReadContract({
@@ -42,22 +46,22 @@ const TokenVendor: NextPage = () => {
     args: [vendorContractData?.address ?? ""],
   });
 
-  const { data: vendorContractBalance } = useBalance({
-    address: vendorContractData?.address,
-    watch: true,
-    blockIdentifier: "pending" as BlockNumber, // to-do: Improve this
-  });
-
   const { data: tokensPerEth } = useScaffoldReadContract({
     contractName: "Vendor",
     functionName: "tokens_per_eth",
   });
 
-  //   const { writeAsync: transferTokens } = useScaffoldWriteContract({
-  //     contractName: "YourToken",
-  //     functionName: "transfer",
-  //     args: [toAddress, multiplyTo1e18(tokensToSend)],
-  //   });
+  const { writeAsync: transferTokens } = useScaffoldWriteContract({
+    contractName: "YourToken",
+    functionName: "transfer",
+    args: [toAddress, multiplyTo1e18(tokensToSend)],
+  });
+
+  const { data: vendorContractBalance } = useBalance({
+    address: vendorContractData?.address,
+    watch: true,
+    blockIdentifier: "pending" as BlockNumber,
+  });
 
   const eth_to_spent = getTokenPrice(
     tokensToBuy,
@@ -106,6 +110,11 @@ const TokenVendor: NextPage = () => {
       }
     };
 
+  // FixMe: This is a hack to get the symbol of the token. Propose a better way to do this.
+  const parsedSymbol = yourTokenSymbol
+    ? byteArray.stringFromByteArray(yourTokenSymbol as any)
+    : "";
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow py-10">
@@ -116,57 +125,35 @@ const TokenVendor: NextPage = () => {
               <span className="font-bold ml-1">
                 {parseFloat(formatEther(yourTokenBalance?.toString() || 0n))}
               </span>
+              <span className="font-bold ml-1">{parsedSymbol}</span>
             </div>
           </div>
           {/* Vendor Balances */}
-          {/*<hr className="w-full border-secondary my-3" />
+          {/* <hr className="w-full border-secondary my-3" /> 
            <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
                 formatEther(vendorTokenBalance?.toString() || 0n),
               ).toFixed(4)}
-              <span className="font-bold ml-1"> </span>
+              <span className="font-bold ml-1">
+                {parsedSymbol}
+              </span>
             </div>
-          </div> 
-          <div>
+          </div>
+           <div>
             Vendor eth balance:
             <span className="px-1">{vendorContractBalance?.formatted}</span>
             <span className="font-bold ml-1">
               {vendorContractBalance?.symbol}
             </span>
-          </div> */}
+          </div>  */}
         </div>
 
-        {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
-          <div className="text-xl">Transfer tokens</div>
-          <div className="w-full flex flex-col space-y-2">
-            <AddressInput
-              placeholder="to address"
-              value={toAddress}
-              onChange={(value) => setToAddress(value)}
-            />
-            <IntegerInput
-              placeholder="amount of tokens to send"
-              value={tokensToSend}
-              onChange={(value) => setTokensToSend(value as string)}
-              disableMultiplyBy1e18
-            />
-          </div>
-
-          <button
-            className="btn btn-secondary"
-            onClick={wrapInTryCatch(transferTokens, "transferTokens")}
-          >
-            Send Tokens
-          </button>
-        </div> */}
-
-        {/* Buy Tokens  */}
-        {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+        {/* Buy Tokens */}
+        {/*  <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
           <div className="text-xl">Buy tokens</div>
           <div>{Number(tokensPerEth)} tokens per ETH</div>
-
           <div className="w-full flex flex-col space-y-2">
             <IntegerInput
               placeholder="amount of tokens to buy"
@@ -175,39 +162,64 @@ const TokenVendor: NextPage = () => {
               disableMultiplyBy1e18
             />
           </div>
-
           <button
             className="btn btn-secondary mt-2"
             onClick={wrapInTryCatch(buy, "buyTokens")}
           >
             Buy Tokens
           </button>
-        </div> */}
+        </div>*/}
 
-        {/* Sell Tokens */}
-
-        {/* <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
-          <div className="text-xl">Sell tokens</div>
-          <div>{Number(tokensPerEth)} tokens per ETH</div>
-          <div className="w-full flex flex-col space-y-2">
-            <IntegerInput
-              placeholder="amount of tokens to sell"
-              value={tokensToSell}
-              onChange={(value) => setTokensToSell(value as string)}
-              disabled={isApproved}
-              disableMultiplyBy1e18
-            />
-          </div>
-
-          <div className="flex gap-4">
+        {!!yourTokenBalance && (
+          <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+            <div className="text-xl">Transfer tokens</div>
+            <div className="w-full flex flex-col space-y-2">
+              <AddressInput
+                placeholder="to address"
+                value={toAddress}
+                onChange={(value) => setToAddress(value)}
+              />
+              <IntegerInput
+                placeholder="amount of tokens to send"
+                value={tokensToSend}
+                onChange={(value) => setTokensToSend(value as string)}
+                disableMultiplyBy1e18
+              />
+            </div>
             <button
-              className="btn btn-secondary mt-2"
-              onClick={wrapInTryCatch(sell, "sellTokens")}
+              className="btn btn-secondary"
+              onClick={wrapInTryCatch(() => transferTokens(), "transferTokens")}
             >
-              Sell Tokens
+              Send Tokens
             </button>
           </div>
-        </div> */}
+        )}
+
+        {/* Sell Tokens */}
+        {/*  {!!yourTokenBalance && (
+          <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+            <div className="text-xl">Sell tokens</div>
+            <div>{Number(tokensPerEth)} tokens per ETH</div>
+            <div className="w-full flex flex-col space-y-2">
+              <IntegerInput
+                placeholder="amount of tokens to sell"
+                value={tokensToSell}
+                onChange={(value) => setTokensToSell(value as string)}
+                disabled={isApproved}
+                disableMultiplyBy1e18
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                className="btn btn-secondary mt-2"
+                onClick={wrapInTryCatch(sell, "sellTokens")}
+              >
+                Sell Tokens
+              </button>
+          </div>
+        </div> 
+        )}*/}
       </div>
     </>
   );

@@ -14,7 +14,7 @@ const deployScript = async (): Promise<void> => {
     "YourToken"
   );
 
-  // Uncomment Vendor deploy lines
+  // Todo: Uncomment Vendor deploy lines
   // const vendor = await deployContract(
   //   {
   //     eth_token_address:

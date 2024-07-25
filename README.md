@@ -68,7 +68,7 @@ yarn start
 
 > 👩‍💻 Edit `YourToken.cairo` to reuse the **ERC20** token standard from OpenZeppelin. To accomplish this, you can use [`Cairo Components`](https://book.cairo-lang.org/ch16-02-00-composability-and-components.html) to embed the `ERC20` logic inside your contract.
 
-> Mint **2000** (\* 10 \*\* 18) to your frontend address using the `constructor()`. In devnet, by default we choose the first pre-deployed account: `0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691`, to deploy the contracts. In order to complete this checkpoint, you need to connect to devnet using the same address. In testnet, you can use your own address to deploy the contracts. Edi the .env file in the `snfoundry` package to set the `ACCOUNT_ADDRESS_SEPOLIA` to your own address.
+> Mint **2000** (\* 10 \*\* 18) to your frontend address using the `constructor()`. In devnet, by default we choose the first pre-deployed account: `0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691`, to deploy the contracts. In order to complete this checkpoint, you need to connect to devnet using the same address. In testnet, you can use your own address to deploy the contracts. Edit the .env file in the `snfoundry` package to set the `ACCOUNT_ADDRESS_SEPOLIA` to your own address.
 
 (Your frontend address is the address in the top right of <http://localhost:3000>)
 
@@ -225,7 +225,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
       `SellTokens {seller: ContractAddress, tokens_amount: u256, eth_amount: u256}`
       and `emit` it in your `Vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
 
-  ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/2812ab21de5d261ef670b0ef5a211fdfbae3b8d8/packages/nextjs/public/events.png)
+  ![Events](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/token-vendor/nextjs/public/Events.png)
 
 ### ⚠️ Test it
 
