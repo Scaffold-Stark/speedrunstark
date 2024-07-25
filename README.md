@@ -106,7 +106,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 - [ ] Uncomment the code in `packages/nextjs/app/dice/page.tsx` to show a riggedRoll button and contract balance on the main UI tab. Now you can test your function without switching tabs.
 - [ ] Does your riggedRoll function only call `rollTheDice()` when it's going to be a winning roll? What happens when it does call `rollTheDice()`?
 
-![RiggedLosingRoll](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/663143e24ecab9a71c2550ac5fe2d8fa5d23ee2c/packages/nextjs/public/ch3-roll.png)
+![RiggedLosingRoll](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-roll.png)
 
 ---
 
@@ -114,7 +114,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 You have beaten the game, but where is your money? Since the RiggedRoll contract is the one calling `rollTheDice()`, that is where the prize money is being sent.
 
-![RiggedRollAddress](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/663143e24ecab9a71c2550ac5fe2d8fa5d23ee2c/packages/nextjs/public/riggedroll.png)
+![RiggedRollAddress](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-events.png)
 
 📥 Create a `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
 
@@ -127,7 +127,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
-![WithdrawOnlyOwner](https://github.com/Quantum3-Labs/speedrunstark/blob/dice-game/packages/nextjs/public/withdraw.png)
+![WithdrawOnlyOwner](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-debug.png)
 
 > ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy.ts`. This will allow your front end address to call the withdraw function.
 
