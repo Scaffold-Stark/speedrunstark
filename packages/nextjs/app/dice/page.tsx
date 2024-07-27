@@ -16,6 +16,7 @@ import {
 import { Address } from "~~/components/scaffold-stark";
 import { Address as AddressType } from "@starknet-react/chains";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
+import { BlockNumber } from "starknet";
 
 const ROLL_ETH_VALUE = "0.002";
 const MAX_TABLE_ROWS = 10;
@@ -39,6 +40,7 @@ const DiceGame: NextPage = () => {
     {
       address: riggedRollContract?.address,
       watch: true,
+	  blockIdentifier: "pending" as BlockNumber,
     },
   );
 
