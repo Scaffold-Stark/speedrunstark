@@ -44,6 +44,7 @@ export const AddressInput = ({
         checkSumAddress &&
         validateChecksumAddress(checkSumAddress) &&
         (getStarknetPFPIfExists(profile?.profilePicture) ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={profile?.profilePicture}
             alt="Profile Picture"
