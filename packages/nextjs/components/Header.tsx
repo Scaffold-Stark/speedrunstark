@@ -1,9 +1,16 @@
-import React, { useState, useRef, useCallback } from "react";
+"use client";
+
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
+import { useTheme } from "next-themes";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import { devnet } from "@starknet-react/chains";
+import { SwitchTheme } from "./SwitchTheme";
+import { useAccount, useProvider } from "@starknet-react/core";
 import {
   ArrowDownTrayIcon,
   ArrowPathIcon,
@@ -43,14 +50,32 @@ export const HeaderMenuLinks = () => {
 
   return (
     <>
-      {menuLinks.map((link) => {
-        const isActive = pathname === link.href;
-        return <MenuItem key={link.href} link={link} isActive={isActive} />;
+      {menuLinks.map(({ label, href, icon }) => {
+        const isActive = pathname === href;
+        return (
+          <li key={href}>
+            <Link
+              href={href}
+              passHref
+              className={`${
+                isActive
+                  ? "!bg-gradient-nav !text-white active:bg-gradient-nav shadow-md "
+                  : ""
+              } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
+            >
+              {icon}
+              <span>{label}</span>
+            </Link>
+          </li>
+        );
       })}
     </>
   );
 };
 
+/**
+ * Site header
+ */
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
@@ -59,13 +84,28 @@ export const Header = () => {
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
+  const { targetNetwork } = useTargetNetwork();
+  const isLocalNetwork = targetNetwork.id === devnet.id;
+  const { provider } = useProvider();
+  const { address, status } = useAccount();
+  const [isDeployed, setIsDeployed] = useState(true);
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
-  };
+  useEffect(() => {
+    if (status === "connected" && address) {
+      provider
+        .getContractVersion(address)
+        .then((v) => {
+          if (v) setIsDeployed(true);
+        })
+        .catch((e) => {
+          console.log(e);
+          setIsDeployed(false);
+        });
+    }
+  }, [status, address, provider]);
 
   return (
-    <div className="sticky lg:static top-0 navbar bg-base-100 min-h-0 flex-shrink-0 justify-between z-20 text-primary shadow-md shadow-secondary px-0 sm:px-2">
+    <div className="sticky lg:static top-0 navbar min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2">
       <div className="navbar-start w-auto lg:w-1/2">
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
@@ -73,14 +113,16 @@ export const Header = () => {
             className={`ml-1 btn btn-ghost ${
               isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
             }`}
-            onClick={toggleDrawer}
+            onClick={() => {
+              setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
+            }}
           >
             <Bars3Icon className="h-1/2" />
           </label>
           {isDrawerOpen && (
             <ul
               tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow rounded-box w-52"
               onClick={() => {
                 setIsDrawerOpen(false);
               }}
@@ -111,8 +153,18 @@ export const Header = () => {
           <HeaderMenuLinks />
         </ul>
       </div>
-      <div className="navbar-end flex-grow mr-4">
+      <div className="navbar-end flex-grow mr-4 gap-4">
+        {status === "connected" && !isDeployed ? (
+          <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
+            Wallet Not Deployed
+          </span>
+        ) : null}
         <CustomConnectButton />
+        <SwitchTheme
+          className={`pointer-events-auto ${
+            isLocalNetwork ? "self-end md:self-auto" : ""
+          }`}
+        />
       </div>
     </div>
   );

@@ -22,13 +22,13 @@ export const WinnerEvents = ({ winners }: WinnerEventsProps) => {
       </div>
 
       <table className="mt-4 p-2 bg-base-100 table table-zebra shadow-lg w-full overflow-hidden">
-        <thead className="text-lg text-base-100">
+        <thead className="text-lg text-white">
           <tr>
-            <th className="bg-primary" colSpan={3}>
+            <th className="bg-secondary" colSpan={3}>
               Address
             </th>
             <th
-              className="bg-primary"
+              className="bg-secondary"
               colSpan={2}
               onClick={() => {
                 setShowUsdPrice(!showUsdPrice);

@@ -16,6 +16,7 @@ import {
 import { Address } from "~~/components/scaffold-stark";
 import { Address as AddressType } from "@starknet-react/chains";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
+import { BlockNumber } from "starknet";
 
 const ROLL_ETH_VALUE = "0.002";
 const MAX_TABLE_ROWS = 10;
@@ -39,6 +40,7 @@ const DiceGame: NextPage = () => {
     {
       address: riggedRollContract?.address,
       watch: true,
+	  blockIdentifier: "pending" as BlockNumber,
     },
   );
 
@@ -153,7 +155,7 @@ const DiceGame: NextPage = () => {
 
   return (
     <div className="py-10 px-10">
-      <div className="grid grid-cols-3 max-lg:grid-cols-1 text-primary">
+      <div className="grid grid-cols-3 max-lg:grid-cols-1 text-neutral">
         <div className="max-lg:row-start-2">
           <RollEvents rolls={rolls} />
         </div>
@@ -183,11 +185,11 @@ const DiceGame: NextPage = () => {
               handleDice();
             }}
             disabled={isRolling}
-            className="mt-2 btn btn-secondary btn-xl normal-case font-xl text-lg text-base-100 bg-primary"
+            className="mt-2 btn btn-secondary btn-xl normal-case font-xl text-lg text-white bg-secondary"
           >
             Roll the dice!
           </button>
-          <div className="mt-4 pt-2 flex flex-col items-center w-full justify-center border-t-4 border-primary">
+          <div className="mt-4 pt-2 flex flex-col items-center w-full justify-center border-t-4 border-secondary">
             <span className="text-2xl">Rigged Roll</span>
             <div className="flex mt-2 items-center">
               <span className="mr-2 text-lg">Address:</span>
@@ -215,7 +217,7 @@ const DiceGame: NextPage = () => {
                 handleRigged();
               }}
               disabled={isRolling}
-              className="mt-2 btn btn-secondary bg-primary btn-xl normal-case font-xl text-lg text-base-100"
+              className="mt-2 btn btn-secondary bg-secondary btn-xl normal-case font-xl text-lg text-white"
             >
               Rigged Roll!
             </button>
