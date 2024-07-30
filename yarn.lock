@@ -1725,7 +1725,7 @@ __metadata:
     globals: ^15.8.0
     prettier: ^2.8.8
     shx: ^0.3.4
-    starknet: 6.7.0
+    starknet: 6.7.0  
     toml: ^3.0.0
     ts-node: ^10.9.2
     tslib: ^2.6.2

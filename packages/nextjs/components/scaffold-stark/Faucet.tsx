@@ -41,7 +41,7 @@ export const Faucet = () => {
   useEffect(() => {
     const checkChain = async () => {
       try {
-        const providerInfo = await publicClient.getBlock();
+        const providerInfo = await publicClient.getBlockWithTxHashes();
         console.log(providerInfo);
       } catch (error) {
         console.error("⚡️ ~ file: Faucet.tsx:checkChain ~ error", error);

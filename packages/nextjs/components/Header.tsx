@@ -78,7 +78,6 @@ export const Header = () => {
   );
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === devnet.id;
-
   const { provider } = useProvider();
   const { address, status } = useAccount();
   const [isDeployed, setIsDeployed] = useState(true);

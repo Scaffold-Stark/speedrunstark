@@ -85,7 +85,6 @@ export const ReadOnlyFunctionForm = ({
             </div>
           )}
         </div>
-
         <div
           className={`flex ${
             formErrorMessage &&
