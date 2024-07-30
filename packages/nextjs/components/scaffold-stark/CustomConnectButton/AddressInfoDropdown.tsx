@@ -25,7 +25,6 @@ import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 
-
 const allowedNetworks = getTargetNetworks();
 
 type AddressInfoDropdownProps = {

@@ -14,7 +14,6 @@ import { useState } from "react";
 import ConnectModal from "./ConnectModal";
 import { useTheme } from "next-themes";
 
-
 /**
  * Custom Connect Button (watch balance + custom design)
  */
