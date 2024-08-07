@@ -19,10 +19,21 @@ pub trait IERC721<T> {
 #[starknet::contract]
 mod YourCollectible {
     use contracts::Counter::CounterComponent;
+    use core::array::ArrayTrait;
     use core::num::traits::zero::Zero;
     use openzeppelin::access::ownable::OwnableComponent;
+
+    use openzeppelin::account::interface::ISRC6_ID;
+    use openzeppelin::introspection::interface::{ISRC5, ISRC5_ID};
     use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::token::erc721::{ERC721Component, interface::{IERC721, IERC721Metadata}};
+    use openzeppelin::token::erc721::interface::{
+        IERC721_ID, IERC721_METADATA_ID, IERC721_RECEIVER_ID,
+    };
+    use openzeppelin::token::erc721::{
+        ERC721ReceiverComponent, ERC721Component, ERC721HooksEmptyImpl,
+        interface::{IERC721, IERC721Metadata}
+    };
+
     use starknet::get_caller_address;
     use super::{IYourCollectible, ContractAddress, IERC721Enumerable};
 
@@ -30,6 +41,7 @@ mod YourCollectible {
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: CounterComponent, storage: token_id_counter, event: CounterEvent);
+    component!(path: ERC721ReceiverComponent, storage: erc721_receiver, event: ERC721ReceiverEvent);
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
@@ -37,11 +49,15 @@ mod YourCollectible {
     impl CounterImpl = CounterComponent::CounterImpl<ContractState>;
     impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
+    impl ERC721ReceiverInternalImpl = ERC721ReceiverComponent::InternalImpl<ContractState>;
+
 
     #[storage]
     struct Storage {
         #[substorage(v0)]
         erc721: ERC721Component::Storage,
+        #[substorage(v0)]
+        erc721_receiver: ERC721ReceiverComponent::Storage,
         #[substorage(v0)]
         src5: SRC5Component::Storage,
         #[substorage(v0)]
@@ -70,6 +86,8 @@ mod YourCollectible {
         #[flat]
         ERC721Event: ERC721Component::Event,
         #[flat]
+        ERC721ReceiverEvent: ERC721ReceiverComponent::Event,
+        #[flat]
         SRC5Event: SRC5Component::Event,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
@@ -84,6 +102,7 @@ mod YourCollectible {
 
         self.erc721.initializer(name, symbol, base_uri);
         self.ownable.initializer(owner);
+        self.erc721_receiver.initializer();
     }
 
     #[abi(embed_v0)]
@@ -91,7 +110,7 @@ mod YourCollectible {
         fn mint_item(ref self: ContractState, recipient: ContractAddress, uri: ByteArray) -> u256 {
             self.token_id_counter.increment();
             let token_id = self.token_id_counter.current();
-            self._mint(recipient, token_id);
+            self.mint(recipient, token_id);
             self._set_token_uri(token_id, uri);
             token_id
         }
@@ -134,6 +153,7 @@ mod YourCollectible {
         ) {
             self._transfer_from(from, to, token_id)
         }
+
         fn approve(ref self: ContractState, to: ContractAddress, token_id: u256) {
             self.erc721.approve(to, token_id)
         }
@@ -169,11 +189,11 @@ mod YourCollectible {
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         // IYourCollectible internal functions
-        fn _mint(ref self: ContractState, recipient: ContractAddress, token_id: u256) {
+        fn mint(ref self: ContractState, recipient: ContractAddress, token_id: u256) {
             assert(!recipient.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
-            assert(!self.erc721._exists(token_id), ERC721Component::Errors::ALREADY_MINTED);
+            assert(!self.erc721.exists(token_id), ERC721Component::Errors::ALREADY_MINTED);
             self._before_token_transfer(Zero::zero(), recipient, token_id, 1);
-            self.erc721._mint(recipient, token_id);
+            self.erc721.mint(recipient, token_id);
         }
 
         fn _transfer(
@@ -181,36 +201,24 @@ mod YourCollectible {
         ) {
             assert(!to.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
             let owner = self.erc721._owner_of(token_id);
-            assert(from == owner, ERC721Component::Errors::WRONG_SENDER);
+            assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
 
             self._before_token_transfer(from, to, token_id, 1);
 
-            assert(from == owner, ERC721Component::Errors::WRONG_SENDER);
+            assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
 
-            // Implicit clear approvals, no need to emit an event
-            self.erc721.ERC721_token_approvals.write(token_id, Zero::zero());
-
-            self.erc721.ERC721_balances.write(from, self.erc721.ERC721_balances.read(from) - 1);
-            self.erc721.ERC721_balances.write(to, self.erc721.ERC721_balances.read(to) + 1);
-            self.erc721.ERC721_owners.write(token_id, to);
-
-            self.erc721.emit(ERC721Component::Transfer { from, to, token_id });
+            self.erc721.transfer(from, to, token_id);
         }
 
         fn _transfer_from(
             ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256
         ) {
-            assert(
-                self.erc721._is_approved_or_owner(get_caller_address(), token_id),
-                ERC721Component::Errors::UNAUTHORIZED
-            );
-
             self._transfer(from, to, token_id);
         }
 
         // ERC721URIStorage internal functions
         fn _token_uri(self: @ContractState, token_id: u256) -> ByteArray {
-            assert(self.erc721._exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
+            assert(self.erc721.exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
             let base_uri = self.erc721._base_uri();
             if base_uri.len() == 0 {
                 Default::default()
@@ -220,7 +228,7 @@ mod YourCollectible {
             }
         }
         fn _set_token_uri(ref self: ContractState, token_id: u256, uri: ByteArray) {
-            assert(self.erc721._exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
+            assert(self.erc721.exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
             self.token_uris.write(token_id, uri);
         }
 

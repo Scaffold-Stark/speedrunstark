@@ -2,10 +2,13 @@ use contracts::YourCollectible::{
     IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait, IERC721Dispatcher,
     IERC721DispatcherTrait, IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
 };
-use openzeppelin::tests::utils::constants::OWNER;
+
+use contracts::mock_contracts::Receiver;
+use openzeppelin::tests::utils;
 use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{declare, ContractClassTrait};
 use starknet::ContractAddress;
+use starknet::contract_address_const;
 
 // Should deploy the contract
 fn deploy_contract(name: ByteArray) -> ContractAddress {
@@ -17,13 +20,25 @@ fn deploy_contract(name: ByteArray) -> ContractAddress {
     contract_address
 }
 
+fn OWNER() -> ContractAddress {
+    contract_address_const::<'OWNER'>()
+}
+
+fn deploy_receiver() -> ContractAddress {
+    let contract = declare("Receiver").unwrap();
+    let mut calldata = array![];
+    let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    println!("Receiver deployed on: {:?}", contract_address);
+    contract_address
+}
+
 #[test]
 fn test_mint_item() {
     // Should be able to mint an NFT
     let contract_address = deploy_contract("YourCollectible");
     let dispatcher = IYourCollectibleDispatcher { contract_address };
     let erc721 = IERC721Dispatcher { contract_address };
-    let tester_address = OWNER();
+    let tester_address = deploy_receiver();
     println!("Tester address: {:?}", tester_address);
     let starting_balance = erc721.balance_of(tester_address);
     println!("Starting balance: {:?}", starting_balance);
@@ -41,6 +56,7 @@ fn test_mint_item() {
     let erc721Enumerable = IERC721EnumerableDispatcher { contract_address };
     let index = new_balance - 1;
     let token = erc721Enumerable.token_of_owner_by_index(tester_address, index);
+    println!("token of owner by index {:?}", token);
     assert(token > 0, 'Token must be greater than zero');
     println!("Token of owner({:?}) by index({:?}): {:?}", tester_address, index, token);
 }

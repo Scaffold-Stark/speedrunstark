@@ -53,10 +53,9 @@ export const MyHoldings = ({
             "token_of_owner_by_index"
           ](connectedAddress, BigInt(tokenIndex));
 
-          const tokenURI = decodeBigIntArrayToText(
-            (await yourCollectibleContract.functions["token_uri"](tokenId))
-              .data,
-          );
+          const tokenURI =
+            await yourCollectibleContract.functions["token_uri"](tokenId);
+
           const ipfsHash = tokenURI.replace(
             /https:\/\/ipfs\.io\/(ipfs\/)?/,
             "",

@@ -106,15 +106,11 @@ export const Header = () => {
 
   useEffect(() => {
     if (status === "connected" && address) {
-      provider
-        .getContractVersion(address)
-        .then((v) => {
-          if (v) setIsDeployed(true);
-        })
-        .catch((e) => {
-          console.log(e);
+      provider.getContractVersion(address).catch((e) => {
+        if (e.toString().includes("Contract not found")) {
           setIsDeployed(false);
-        });
+        }
+      });
     }
   }, [status, address, provider]);
 
