@@ -98,7 +98,7 @@ mod YourCollectible {
     fn constructor(ref self: ContractState, owner: ContractAddress) {
         let name: ByteArray = "YourCollectible";
         let symbol: ByteArray = "YCB";
-        let base_uri: ByteArray = "https://ipfs.io/";
+        let base_uri: ByteArray = "https://ipfs.io/ipfs/";
 
         self.erc721.initializer(name, symbol, base_uri);
         self.ownable.initializer(owner);

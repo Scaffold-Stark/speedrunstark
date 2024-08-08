@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourCollectible: {
       address:
-        "0x1afc040a017738cf7427932465b2477728e84798c7e24040d93ca8990b3825c",
+        "0x6c21395fac49bfff059ac08d6584506dec5c82b7ce4adbf03965252e5b1d4ab",
       abi: [
         {
           type: "impl",
@@ -625,7 +625,7 @@ const deployedContracts = {
   sepolia: {
     YourCollectible: {
       address:
-        "0x561e253040030e8ee45649ff40188f665add9bc2cdf0757ac20f8cb6b2959e5",
+        "0x3dff65ca13c2f4f5d1d59991c4b275418729364c284b42582b2687b9154ba1c",
       abi: [
         {
           type: "impl",
