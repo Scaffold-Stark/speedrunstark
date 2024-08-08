@@ -45,13 +45,6 @@ export const CustomConnectButton = () => {
       >
         Connect
       </button>
-      <button
-        className={`rounded-[18px] btn-sm font-bold px-8 bg-btn-wallet`}
-        onClick={handleWalletConnect}
-        type="button"
-      >
-        Connect
-      </button>
       <ConnectModal isOpen={modalOpen} onClose={handleModalClose} />
     </>
   ) : chainId !== targetNetwork.id ? (
