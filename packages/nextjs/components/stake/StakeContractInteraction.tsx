@@ -101,7 +101,6 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
       }
     };
 
-	//console.log("stakerContractBalance.value", stakerContractBalance.value);
   return (
     <div className="flex items-center flex-col flex-grow w-full px-4 gap-12 text-neutral justify-center">
       {isStakingCompleted && (
