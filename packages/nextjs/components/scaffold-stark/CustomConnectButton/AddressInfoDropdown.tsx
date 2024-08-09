@@ -24,6 +24,8 @@ import { getStarknetPFPIfExists } from "~~/utils/profile";
 import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
+import { useTheme } from "next-themes";
+import { useEffect } from "react";
 
 const allowedNetworks = getTargetNetworks();
 
@@ -47,6 +49,8 @@ export const AddressInfoDropdown = ({
   const [showBurnerAccounts, setShowBurnerAccounts] = useState(false);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const { connectors, connect } = useConnect();
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
   const dropdownRef = useRef<HTMLDetailsElement>(null);
@@ -85,6 +89,7 @@ export const AddressInfoDropdown = ({
         <summary
           tabIndex={0}
           className="btn bg-transparent btn-sm pl-0 pr-2 dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
+          className="btn bg-transparent btn-sm pl-0 pr-2 dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
         >
           {getStarknetPFPIfExists(profile?.profilePicture) ? (
             //eslint-disable-next-line @next/next/no-img-element
@@ -99,6 +104,7 @@ export const AddressInfoDropdown = ({
             <BlockieAvatar address={address} size={30} ensImage={ensAvatar} />
           )}
           <span className="ml-4 mr-1">
+          <span className="ml-4 mr-1">
             {isENS(displayName)
               ? displayName
               : profile?.name ||
@@ -108,6 +114,7 @@ export const AddressInfoDropdown = ({
         </summary>
         <ul
           tabIndex={0}
+          className={`dropdown-content menu z-[2] p-2 mt-2 rounded-[5px] gap-1 border border-[#5c4fe5] bg-base-100`}
           className={`dropdown-content menu z-[2] p-2 mt-2 rounded-[5px] gap-1 border border-[#5c4fe5] bg-base-100`}
         >
           <NetworkOptions hidden={!selectingNetwork} />
@@ -179,6 +186,7 @@ export const AddressInfoDropdown = ({
               >
                 <UserCircleIcon className="h-6 w-4 ml-2 sm:ml-0" />
                 <span className="whitespace-nowrap">Switch Account</span>
+                <span className="whitespace-nowrap">Switch Account</span>
               </button>
             </li>
           ) : null}
@@ -197,6 +205,7 @@ export const AddressInfoDropdown = ({
                         </div>
                         <button
                           className="w-8 h-8 place-content-end rounded-full justify-center items-center flex"
+                          className="w-8 h-8 place-content-end rounded-full justify-center items-center flex"
                           onClick={() => setShowBurnerAccounts(false)}
                         >
                           <svg
@@ -213,6 +222,7 @@ export const AddressInfoDropdown = ({
                         </button>
                       </div>
                       <div className="flex flex-col items-center justify-center gap-3 mx-8 pb-10 pt-8">
+                      <div className="flex flex-col items-center justify-center gap-3 mx-8 pb-10 pt-8">
                         <div className="h-[300px] overflow-y-auto flex w-full flex-col gap-2">
                           {burnerAccounts.map((burnerAcc, ix) => (
                             // eslint-disable-next-line react/jsx-key
@@ -220,10 +230,19 @@ export const AddressInfoDropdown = ({
                               key={burnerAcc.publicKey}
                               className="w-full flex flex-col"
                             >
+                            <div
+                              key={burnerAcc.publicKey}
+                              className="w-full flex flex-col"
+                            >
                               <button
+                                className={`${isDarkMode ? "hover:bg-[#385183] border-[#385183]" : "hover:bg-gradient-light "} border rounded-md text-neutral py-[8px] pl-[10px] pr-16 flex items-center gap-4`}
                                 className={`${isDarkMode ? "hover:bg-[#385183] border-[#385183]" : "hover:bg-gradient-light "} border rounded-md text-neutral py-[8px] pl-[10px] pr-16 flex items-center gap-4`}
                                 onClick={(e) => handleConnectBurner(e, ix)}
                               >
+                                <BlockieAvatar
+                                  address={burnerAcc.accountAddress}
+                                  size={35}
+                                ></BlockieAvatar>
                                 <BlockieAvatar
                                   address={burnerAcc.accountAddress}
                                   size={35}
@@ -237,6 +256,7 @@ export const AddressInfoDropdown = ({
                     </div>
                   </div>
                 </div>
+                <div className="backdrop-blur fixed inset-0 z-40"></div>
                 <div className="backdrop-blur fixed inset-0 z-40"></div>
               </>,
               document.body,
@@ -258,6 +278,7 @@ export const AddressInfoDropdown = ({
           ) : null}
           <li className={selectingNetwork ? "hidden" : ""}>
             <button
+              className="menu-item text-secondary-content btn-sm !rounded-xl flex gap-3 py-3"
               className="menu-item text-secondary-content btn-sm !rounded-xl flex gap-3 py-3"
               type="button"
               onClick={() => disconnect()}

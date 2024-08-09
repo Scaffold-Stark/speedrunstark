@@ -1,4 +1,3 @@
-import Image from "next/image";
 import GenericModal from "./GenericModal";
 import { Connector, useConnect } from "@starknet-react/core";
 import React, { useEffect, useState } from "react";

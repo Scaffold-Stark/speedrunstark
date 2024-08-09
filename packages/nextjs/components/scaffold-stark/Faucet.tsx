@@ -104,7 +104,9 @@ export const Faucet = () => {
       <label
         htmlFor="faucet-modal"
         className="btn btn-sm font-normal gap-1 border border-[#32BAC4] shadow-none"
+        className="btn btn-sm font-normal gap-1 border border-[#32BAC4] shadow-none"
       >
+        <BanknotesIcon className="h-4 w-4 text-[#32BAC4]" />
         <BanknotesIcon className="h-4 w-4 text-[#32BAC4]" />
         <span>Faucet</span>
       </label>
