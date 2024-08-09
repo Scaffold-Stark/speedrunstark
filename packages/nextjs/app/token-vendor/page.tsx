@@ -9,14 +9,14 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldRead
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
-import { useBalance } from "@starknet-react/core";
+//import { useBalance } from "@starknet-react/core";
 import { formatEther } from "ethers";
 import {
   getTokenPrice,
   multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
-import { BlockNumber } from "starknet";
-import { byteArray } from "starknet-dev";
+//import { BlockNumber,byteArray } from "starknet";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -57,11 +57,13 @@ const TokenVendor: NextPage = () => {
     args: [toAddress, multiplyTo1e18(tokensToSend)],
   });
 
-  const { data: vendorContractBalance } = useBalance({
+  const { value: vendorContractBalance } = useScaffoldEthBalance({
     address: vendorContractData?.address,
-    watch: true,
-    blockIdentifier: "pending" as BlockNumber,
+    // watch: true,
+    // blockIdentifier: "pending" as BlockNumber,
   });
+
+  console.log("vendorContractBalance", vendorContractBalance);
 
   const eth_to_spent = getTokenPrice(
     tokensToBuy,
@@ -98,6 +100,9 @@ const TokenVendor: NextPage = () => {
     ],
   });
 
+  // FixMe: Read symbol from contract
+  const ethSymbol = "ETH";
+
   const wrapInTryCatch =
     (fn: () => Promise<any>, errorMessageFnDescription: string) => async () => {
       try {
@@ -111,9 +116,7 @@ const TokenVendor: NextPage = () => {
     };
 
   // FixMe: This is a hack to get the symbol of the token. Propose a better way to do this.
-  const parsedSymbol = yourTokenSymbol
-    ? byteArray.stringFromByteArray(yourTokenSymbol as any)
-    : "";
+  const parsedSymbol = yourTokenSymbol as unknown as string;
 
   return (
     <>
@@ -143,9 +146,9 @@ const TokenVendor: NextPage = () => {
           </div>
            <div>
             Vendor eth balance:
-            <span className="px-1">{vendorContractBalance?.formatted}</span>
+            <span className="px-1">{parseFloat(formatEther(vendorContractBalance?.toString() || 0n))}</span>
             <span className="font-bold ml-1">
-              {vendorContractBalance?.symbol}
+              {ethSymbol}
             </span>
           </div>  */}
         </div>

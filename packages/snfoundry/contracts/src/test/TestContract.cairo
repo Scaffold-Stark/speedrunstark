@@ -1,14 +1,20 @@
 use contracts::Vendor::{IVendorDispatcher, IVendorDispatcherTrait};
 use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
 use contracts::mock_contracts::MockETHToken;
-use openzeppelin::tests::utils::constants::{RECIPIENT, OTHER};
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, ContractClassTrait, cheat_caller_address, cheat_block_timestamp_global, CheatSpan
+    declare, ContractClassTrait, cheat_caller_address, cheat_block_timestamp, CheatSpan
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
+fn RECIPIENT() -> ContractAddress {
+    contract_address_const::<'RECIPIENT'>()
+}
+
+fn OTHER() -> ContractAddress {
+    contract_address_const::<'OTHER'>()
+}
 // Should deploy the MockETHToken contract
 fn deploy_mock_eth_token() -> ContractAddress {
     let erc20_class_hash = declare("MockETHToken").unwrap();

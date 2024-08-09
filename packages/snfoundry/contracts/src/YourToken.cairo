@@ -14,8 +14,8 @@ pub trait IYourToken<T> {
 
 #[starknet::contract]
 mod YourToken {
-    use openzeppelin::token::erc20::ERC20Component;
     use openzeppelin::token::erc20::interface::IERC20;
+    use openzeppelin::token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
 
     use super::{ContractAddress, IYourToken};
 

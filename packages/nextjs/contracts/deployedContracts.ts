@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourToken: {
       address:
-        "0x050994d27ce101acd0c5545ec12912c0ffaaa5e21d797fd8aadc87c30d84bd10",
+        "0x7818d51a212c7b76df7767419b3de3a636e67608af5807a6a3df0d93a1be36b",
       abi: [
         {
           type: "impl",
@@ -307,278 +307,11 @@ const deployedContracts = {
         },
       ],
     },
-    Vendor: {
-      address:
-        "0x057ab241d9cebe65a67bf93e775059b598c036539655f7bc376b222bbc1b6535",
-      abi: [
-        {
-          type: "impl",
-          name: "VendorImpl",
-          interface_name: "contracts::Vendor::IVendor",
-        },
-        {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "interface",
-          name: "contracts::Vendor::IVendor",
-          items: [
-            {
-              type: "function",
-              name: "buy_tokens",
-              inputs: [
-                {
-                  name: "eth_amount_wei",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "withdraw",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "sell_tokens",
-              inputs: [
-                {
-                  name: "amount_tokens",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "tokens_per_eth",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "your_token",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "eth_token",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "impl",
-          name: "OwnableImpl",
-          interface_name: "openzeppelin::access::ownable::interface::IOwnable",
-        },
-        {
-          type: "interface",
-          name: "openzeppelin::access::ownable::interface::IOwnable",
-          items: [
-            {
-              type: "function",
-              name: "owner",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "transfer_ownership",
-              inputs: [
-                {
-                  name: "new_owner",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "renounce_ownership",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-          ],
-        },
-        {
-          type: "constructor",
-          name: "constructor",
-          inputs: [
-            {
-              name: "eth_token_address",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "your_token_address",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-          kind: "struct",
-          members: [
-            {
-              name: "previous_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-          kind: "struct",
-          members: [
-            {
-              name: "previous_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "OwnershipTransferred",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-              kind: "nested",
-            },
-            {
-              name: "OwnershipTransferStarted",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-              kind: "nested",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::Vendor::Vendor::BuyTokens",
-          kind: "struct",
-          members: [
-            {
-              name: "buyer",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
-            },
-            {
-              name: "eth_amount",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-            {
-              name: "tokens_amount",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::Vendor::Vendor::SellTokens",
-          kind: "struct",
-          members: [
-            {
-              name: "seller",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "tokens_amount",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-            {
-              name: "eth_amount",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::Vendor::Vendor::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "OwnableEvent",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
-              kind: "flat",
-            },
-            {
-              name: "BuyTokens",
-              type: "contracts::Vendor::Vendor::BuyTokens",
-              kind: "nested",
-            },
-            {
-              name: "SellTokens",
-              type: "contracts::Vendor::Vendor::SellTokens",
-              kind: "nested",
-            },
-          ],
-        },
-      ],
-    },
   },
   sepolia: {
     YourCollectible: {
       address:
-        "0x05ed2b7bf5c5aec0c4122797a181e4d81a181cd11db2ca40a1a2af6434730e0b",
+        "0x561e253040030e8ee45649ff40188f665add9bc2cdf0757ac20f8cb6b2959e5",
       abi: [
         {
           type: "impl",
@@ -1091,6 +824,12 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "openzeppelin::token::erc721::erc721_receiver::ERC721ReceiverComponent::Event",
+          kind: "enum",
+          variants: [],
+        },
+        {
+          type: "event",
           name: "openzeppelin::introspection::src5::SRC5Component::Event",
           kind: "enum",
           variants: [],
@@ -1160,6 +899,11 @@ const deployedContracts = {
             {
               name: "ERC721Event",
               type: "openzeppelin::token::erc721::erc721::ERC721Component::Event",
+              kind: "flat",
+            },
+            {
+              name: "ERC721ReceiverEvent",
+              type: "openzeppelin::token::erc721::erc721_receiver::ERC721ReceiverComponent::Event",
               kind: "flat",
             },
             {
