@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useState, useRef, useEffect } from "react";
 import { Abi } from "abi-wan-kanabi";
 import { Address } from "@starknet-react/chains";
 import {
@@ -32,7 +31,6 @@ export const ReadOnlyFunctionForm = ({
   );
   const [inputValue, setInputValue] = useState<any | undefined>(undefined);
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
-  const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
   const lastForm = useRef(form);
 
   const { isFetching, data, refetch } = useContractRead({
@@ -40,9 +38,7 @@ export const ReadOnlyFunctionForm = ({
     functionName: abiFunction.name,
     abi: [...abi],
     args: inputValue ? inputValue.flat(Infinity) : [],
-    args: inputValue ? inputValue.flat(Infinity) : [],
     enabled: false,
-    parseArgs: false,
     parseArgs: false,
     blockIdentifier: "pending" as BlockNumber,
   });
@@ -53,13 +49,11 @@ export const ReadOnlyFunctionForm = ({
     return (
       <ContractInput
         abi={abi}
-        abi={abi}
         key={key}
         setForm={setForm}
         form={form}
         stateObjectKey={key}
         paramType={input}
-        setFormErrorMessage={setFormErrorMessage}
         setFormErrorMessage={setFormErrorMessage}
       />
     );
@@ -68,13 +62,9 @@ export const ReadOnlyFunctionForm = ({
   const handleRead = () => {
     const newInputValue = getParsedContractFunctionArgs(form, false);
     if (JSON.stringify(form) !== JSON.stringify(lastForm.current)) {
-  const handleRead = () => {
-    const newInputValue = getParsedContractFunctionArgs(form, false);
-    if (JSON.stringify(form) !== JSON.stringify(lastForm.current)) {
       setInputValue(newInputValue);
       lastForm.current = form;
     }
-    refetch();
     refetch();
   };
 
@@ -83,14 +73,10 @@ export const ReadOnlyFunctionForm = ({
       <p className="font-medium my-0 break-words text-function">
         {abiFunction.name}
       </p>
-      <p className="font-medium my-0 break-words text-function">
-        {abiFunction.name}
-      </p>
       {inputElements}
       <div className="flex justify-between gap-2 flex-wrap">
         <div className="flex-grow w-4/5">
           {data !== null && data !== undefined && (
-            <div className="bg-input text-sm px-4 py-1.5 break-words">
             <div className="bg-input text-sm px-4 py-1.5 break-words">
               <p className="font-bold m-0 mb-1">Result:</p>
               <pre className="whitespace-pre-wrap break-words">
