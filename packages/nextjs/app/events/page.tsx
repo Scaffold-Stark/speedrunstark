@@ -20,7 +20,6 @@ const Events: NextPage = () => {
       fromBlock: 0n,
     });
 
-  console.log(sellTokenEvents);
   return (
     <div className="flex items-center flex-col flex-grow pt-10">
       <div>

@@ -609,7 +609,6 @@ export function parseParamWithType(
           }, [] as any[]);
         }
       } catch (err) {
-        //console.log(err);
         return param;
       }
     }
