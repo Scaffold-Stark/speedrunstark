@@ -20,7 +20,7 @@ pub trait IStaker<T> {
 }
 
 #[starknet::contract]
-mod Staker {
+pub mod Staker {
     use contracts::ExampleExternalContract::{
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait
     };
@@ -28,8 +28,6 @@ mod Staker {
     use super::{ContractAddress, IStaker, IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
     const THRESHOLD: u256 = 1000000000000000000; // ONE_ETH_IN_WEI: 10 ^ 18;
-    const ETH_CONTRACT_ADDRESS: felt252 =
-        0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -97,6 +95,7 @@ mod Staker {
         fn threshold(self: @ContractState) -> u256 {
             THRESHOLD
         }
+
         fn eth_token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
             self.eth_token_dispatcher.read()
         }

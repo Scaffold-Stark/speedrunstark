@@ -9,6 +9,7 @@ import { ETHToPrice } from "~~/components/stake/ETHToPrice";
 import { Address } from "~~/components/scaffold-stark";
 import humanizeDuration from "humanize-duration";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 function formatEther(weiValue: number) {
   const etherValue = weiValue / 1e18;
@@ -18,17 +19,20 @@ function formatEther(weiValue: number) {
 export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { address: connectedAddress } = useAccount();
   const { data: StakerContract } = useDeployedContractInfo("Staker");
+
+  console.log("StakerContract", StakerContract);
   const { data: ExampleExternalContact } = useDeployedContractInfo(
     "ExampleExternalContract",
   );
-  const { data: stakerContractBalance, refetch: refetchStakeContract } =
-    useBalance({
+  const { value: stakerContractBalance} =
+    useScaffoldEthBalance({
       address: StakerContract?.address,
     });
+	console.log("stakerContractBalance", stakerContractBalance);
   const {
-    data: exampleExternalContractBalance,
-    refetch: refetchExampleExternalContract,
-  } = useBalance({
+    value: exampleExternalContractBalance,
+    //refetch: refetchExampleExternalContract,
+  } = useScaffoldEthBalance({
     address: ExampleExternalContact?.address,
   });
 
@@ -86,8 +90,8 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
     (fn: () => Promise<any>, errorMessageFnDescription: string) => async () => {
       try {
         await fn().then(() => {
-          refetchStakeContract();
-          refetchExampleExternalContract();
+          //refetchStakeContract();
+          //refetchExampleExternalContract();
         });
       } catch (error) {
         console.error(
@@ -97,6 +101,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
       }
     };
 
+	//console.log("stakerContractBalance.value", stakerContractBalance.value);
   return (
     <div className="flex items-center flex-col flex-grow w-full px-4 gap-12 text-neutral justify-center">
       {isStakingCompleted && (
@@ -107,9 +112,8 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
           <div className="flex items-center">
             <ETHToPrice
               value={
-                exampleExternalContractBalance != null
-                  ? exampleExternalContractBalance.formatted
-                  : undefined
+                exampleExternalContractBalance != null ? 
+				`${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}` : undefined
               }
               className="text-[1rem]"
             />
@@ -157,7 +161,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
               <ETHToPrice
                 value={
                   stakerContractBalance != null
-                    ? `${formatEther(Number(stakerContractBalance.value))}${targetNetwork.nativeCurrency.symbol}`
+                    ? `${formatEther(Number(stakerContractBalance))}${targetNetwork.nativeCurrency.symbol}`
                     : undefined
                 }
               />

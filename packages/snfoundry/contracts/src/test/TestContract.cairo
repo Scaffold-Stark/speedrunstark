@@ -1,13 +1,15 @@
 use contracts::Staker::{IStakerDispatcherTrait, IStakerDispatcher};
 use contracts::mock_contracts::MockETHToken;
-use openzeppelin::tests::utils::constants::RECIPIENT;
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin::utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, ContractClassTrait, cheat_caller_address, cheat_block_timestamp_global, CheatSpan
+    declare, ContractClassTrait, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
+fn RECIPIENT() -> ContractAddress {
+    contract_address_const::<'RECIPIENT'>()
+}
 // Should deploy the MockETHToken contract
 fn deploy_mock_eth_token() -> ContractAddress {
     let erc20_class_hash = declare("MockETHToken").unwrap();
@@ -110,7 +112,7 @@ fn test_execute_functionality() {
     assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
 
     // Increase the block_timestamp by 15 seconds
-    cheat_block_timestamp_global(get_block_timestamp() + 15);
+    start_cheat_block_timestamp_global(get_block_timestamp() + 15);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
     assert_eq!(time_left, 15, "There should be 15 seconds left");
@@ -124,7 +126,7 @@ fn test_execute_functionality() {
     println!("-- Staked 1 ETH");
 
     // Increase the block_timestamp by 15 seconds
-    cheat_block_timestamp_global(get_block_timestamp() + 15);
+    start_cheat_block_timestamp_global(get_block_timestamp() + 15);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
     assert_eq!(time_left, 0, "Time should be up now");
@@ -173,7 +175,7 @@ fn test_withdraw_functionality() {
     assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
 
     // Increase the block_timestamp by 30 seconds
-    cheat_block_timestamp_global(get_block_timestamp() + 30);
+    start_cheat_block_timestamp_global(get_block_timestamp() + 30);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
     assert_eq!(time_left, 0, "Time should be up now");

@@ -71,7 +71,7 @@ export const ContractUI = ({
             </div>
             {targetNetwork && (
               <p className="my-0 text-sm">
-                <span className="font-bold text-neutral">Network</span>:{" "}
+                <span className="font-bold">Network</span>:{" "}
                 <span className="text-network">{targetNetwork.name}</span>
               </p>
             )}
@@ -88,7 +88,7 @@ export const ContractUI = ({
             <div className="rounded-[5px] border border-[#8A45FC] flex flex-col mt-10 relative bg-component">
               <div className="bg-function w-[140px] h-[32.5px] absolute self-start -top-[43px] -left-[1px] -z-10 py-[0.55rem] clip-corner">
                 <div className="flex items-center justify-center space-x-2">
-                  <p className="my-0 text-sm text-center text-neutral">Read</p>
+                  <p className="my-0 text-sm text-center">Read</p>
                 </div>
               </div>
               <div className="p-5 divide-y divide-secondary">
@@ -102,7 +102,7 @@ export const ContractUI = ({
             <div className="rounded-[5px] border border-[#8A45FC] flex flex-col mt-10 relative bg-component">
               <div className="w-[140px] h-[32.5px] absolute self-start -top-[43px] -left-[1px] -z-10 py-[0.55rem]  bg-function clip-corner">
                 <div className="flex items-center justify-center space-x-2">
-                  <p className="my-0 text-sm text-neutral">Write</p>
+                  <p className="my-0 text-sm">Write</p>
                 </div>
               </div>
               <div className="p-5 divide-y divide-secondary">
