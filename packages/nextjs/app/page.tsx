@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import type { NextPage } from "next";
 import { useAccount } from "@starknet-react/core";
@@ -29,7 +29,7 @@ const Home: NextPage = () => {
               This challenge will give you an example of a contract using block
               hash to create random numbers. This randomness is exploitable.
               Other, stronger forms of randomness include commit/reveal schemes,
-              oracles, or VRF from Chainlink. 
+              oracles, or VRF from Chainlink.
             </p>
             <p className="text-lg mt-2">
               👍 One day soon, randomness will be built into the Starknet!

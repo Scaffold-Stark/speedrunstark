@@ -11,12 +11,7 @@ import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useProvider } from "@starknet-react/core";
-import {
-
-  Bars3Icon,
-  BugAntIcon,
-  CubeIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, BugAntIcon, CubeIcon } from "@heroicons/react/24/outline";
 import MenuItem from "~~/components/MenuItem/MenuItem";
 
 export type HeaderMenuLink = {

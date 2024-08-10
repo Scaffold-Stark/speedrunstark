@@ -9,7 +9,11 @@ import {
 import preDeployedContracts from "../../nextjs/contracts/predeployedContracts";
 
 const deployScript = async (): Promise<void> => {
-  const { address: diceGameAddr } = await deployContract(null,
+  const { address: diceGameAddr } = await deployContract(
+    {
+      eth_token_address:
+        "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+    },
 
     "DiceGame"
   );
@@ -18,7 +22,10 @@ const deployScript = async (): Promise<void> => {
 
   const ethContract = new Contract(ethAbi, ethAddress, deployer);
 
-  const tx = await ethContract.invoke("transfer", [diceGameAddr, 1000000000000000000n]);
+  const tx = await ethContract.invoke("transfer", [
+    diceGameAddr,
+    1000000000000000000n,
+  ]);
   //const receipt = await provider.waitForTransaction(tx.transaction_hash);
 
   await deployContract(

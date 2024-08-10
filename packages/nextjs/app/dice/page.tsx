@@ -37,13 +37,11 @@ const DiceGame: NextPage = () => {
   const { data: riggedRollContract } = useScaffoldContract({
     contractName: "RiggedRoll",
   });
-  const { value: riggedRollBalance } = useScaffoldEthBalance(
-    {
-      address: riggedRollContract?.address,
+  const { value: riggedRollBalance } = useScaffoldEthBalance({
+    address: riggedRollContract?.address,
     //   watch: true,
-	//   blockIdentifier: "pending" as BlockNumber,
-    },
-  );
+    //   blockIdentifier: "pending" as BlockNumber,
+  });
 
   const { data: prize } = useScaffoldReadContract({
     contractName: "DiceGame",
@@ -202,7 +200,11 @@ const DiceGame: NextPage = () => {
             <div className="flex mt-1 items-center">
               <span className="text-lg mr-2">Balance:</span>
               <Amount
-                amount={riggedRollBalance ? Number(formatEther(riggedRollBalance.toString())) : 0}
+                amount={
+                  riggedRollBalance
+                    ? Number(formatEther(riggedRollBalance.toString()))
+                    : 0
+                }
                 showUsdPrice
                 className="text-lg"
               />
@@ -222,7 +224,7 @@ const DiceGame: NextPage = () => {
             >
               Rigged Roll!
             </button>
-          } 
+          }
 
           <div className="flex mt-8">
             {rolled ? (
