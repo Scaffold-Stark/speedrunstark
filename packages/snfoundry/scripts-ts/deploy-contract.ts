@@ -213,13 +213,11 @@ const deployContract = async (
 
   deployments[finalContractName] = {
     classHash: classHash,
-    classHash: classHash,
     address: contractAddress,
     contract: contract,
   };
 
   return {
-    classHash: classHash,
     classHash: classHash,
     address: contractAddress,
   };
