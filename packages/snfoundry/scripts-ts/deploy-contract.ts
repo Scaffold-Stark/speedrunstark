@@ -166,7 +166,8 @@ const executeDeployCalls = async () => {
     let { transaction_hash } = await deployer.execute(deployCalls);
     console.log("Deploy Calls Executed at ", transaction_hash);
     if (networkName == "sepolia" || networkName == "mainnet") {
-      await provider.waitForTransaction(transaction_hash);
+      const receipt = await provider.waitForTransaction(transaction_hash);
+      console.log("Deploy Calls Executed at ", receipt);
     }
   } catch (error) {
     // split the calls in half and try again recursively

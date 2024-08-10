@@ -11,13 +11,13 @@ pub trait IRiggedRoll<T> {
 
 #[starknet::contract]
 mod RiggedRoll {
-    use openzeppelin::token::erc20::interface::IERC20CamelDispatcherTrait;
-    use contracts::DiceGame::IDiceGameDispatcherTrait;
     use contracts::DiceGame::IDiceGameDispatcher;
-    use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
+    use contracts::DiceGame::IDiceGameDispatcherTrait;
     use keccak::keccak_u256s_le_inputs;
-    use super::IRiggedRoll;
     use openzeppelin::access::ownable::OwnableComponent;
+    use openzeppelin::token::erc20::interface::IERC20CamelDispatcherTrait;
+    use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
+    use super::IRiggedRoll;
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 

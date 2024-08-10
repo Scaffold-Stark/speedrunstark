@@ -11,9 +11,9 @@ pub trait IDiceGame<T> {
 
 #[starknet::contract]
 mod DiceGame {
+    use keccak::keccak_u256s_le_inputs;
     use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-    use keccak::keccak_u256s_le_inputs;
     use super::IDiceGame;
 
     const ETH_CONTRACT_ADDRESS: felt252 =
@@ -52,7 +52,6 @@ mod DiceGame {
     fn constructor(ref self: ContractState, owner: ContractAddress) {
         let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_contract });
-        self.eth_token.read().transferFrom(owner, get_contract_address(), 0);
     }
 
 
