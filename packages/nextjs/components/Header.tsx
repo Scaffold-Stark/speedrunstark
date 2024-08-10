@@ -6,9 +6,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bars3Icon,
-  BoltIcon,
   BugAntIcon,
   CircleStackIcon,
+  BoltIcon,
 } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
@@ -18,7 +18,7 @@ import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useProvider } from "@starknet-react/core";
 
-type HeaderMenuLink = {
+export type HeaderMenuLink = {
   label: string;
   href: string;
   icon?: React.ReactNode;
@@ -85,13 +85,14 @@ export const HeaderMenuLinks = () => {
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
+
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === devnet.id;
-
   const { provider } = useProvider();
   const { address, status } = useAccount();
   const [isDeployed, setIsDeployed] = useState(true);
@@ -112,9 +113,8 @@ export const Header = () => {
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
             tabIndex={0}
-            className={`ml-1 btn btn-ghost ${
-              isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
-            }`}
+            className={`ml-1 btn btn-ghost ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
+              }`}
             onClick={() => {
               setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
             }}
@@ -143,7 +143,7 @@ export const Header = () => {
               alt="SE2 logo"
               className="cursor-pointer"
               fill
-              src="/logo.svg"
+              src="/challenge-icon-starknet.svg"
             />
           </div>
           <div className="flex flex-col">
