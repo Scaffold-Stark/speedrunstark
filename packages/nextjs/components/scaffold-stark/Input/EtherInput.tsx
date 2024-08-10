@@ -154,7 +154,7 @@ export const EtherInput = ({
             disabled={!internalUsdMode && !nativeCurrencyPrice}
           >
             <ArrowsRightLeftIcon
-              className="h-3 w-3 cursor-pointer"
+              className="h-3 w-3 cursor-pointer text-white"
               aria-hidden="true"
             />
           </button>
