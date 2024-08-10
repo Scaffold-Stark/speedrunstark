@@ -34,9 +34,9 @@ export const useScaffoldReadContract = <
     ...(readConfig as any),
   }) as Omit<ReturnType<typeof useContractRead>, "data" | "refetch"> & {
     data: AbiFunctionOutputs<ContractAbi, TFunctionName> | undefined;
-    // refetch: (options?: {
-    //   throwOnError: boolean;
-    //   cancelRefetch: boolean;
-    // }) => Promise<AbiFunctionOutputs<ContractAbi, TFunctionName>>;
+    refetch: (options?: {
+      throwOnError: boolean;
+      cancelRefetch: boolean;
+    }) => Promise<AbiFunctionOutputs<ContractAbi, TFunctionName>>;
   };
 };
