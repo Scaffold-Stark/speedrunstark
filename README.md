@@ -12,20 +12,6 @@ Deploy your contracts to a testnet then build and upload your app to a public we
 ---
 
 ## Checkpoint 0: 📦 Environment 📚
-# 🚩 Challenge {challengeNum}: {challengeEmoji} {challengeTitle}
-
-{challengeHeroImage}
-
-A {challengeDescription}.
-
-🌟 The final deliverable is an app that {challengeDeliverable}.
-Deploy your contracts to a testnet then build and upload your app to a public web server. Submit the url on [SpeedRunStark.com](https://speedrunstark.com/)!
-
-💬 Meet other builders working on this challenge and get help in the {challengeTelegramLink}
-
----
-
-## Checkpoint 0: 📦 Environment 📚
 
 Before you begin, you need to install the following tools:
 
@@ -53,23 +39,9 @@ yarn install
 > in the same terminal, start your local network (a local instance of a blockchain):
 
 ```sh
-> in the same terminal, start your local network (a local instance of a blockchain):
-
-```sh
 yarn chain
 ```
 
-> in a second terminal window, 🛰 deploy your contract (locally):
-
-```sh
-cd <challenge_folder_name>
-yarn deploy
-```
-
-> in a third terminal window, start your 📱 frontend:
-
-```sh
-cd <challenge_folder_name>
 > in a second terminal window, 🛰 deploy your contract (locally):
 
 ```sh
@@ -85,25 +57,17 @@ yarn start
 ```
 
 📱 Open http://localhost:3000 to see the app.
-📱 Open http://localhost:3000 to see the app.
 
-> 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend, update your current contracts with changes, or re-deploy it to get a fresh contract address.
 > 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend, update your current contracts with changes, or re-deploy it to get a fresh contract address.
 
 🔏 Now you are ready to edit your smart contract `{YourCollectible.cairo}` in `packages/snfoundry/contracts`
-🔏 Now you are ready to edit your smart contract `{YourCollectible.cairo}` in `packages/snfoundry/contracts`
 
----
 ---
 
 ### ⚔️ Side Quests
-### ⚔️ Side Quests
 
-_To finish your README, can add these links_
 _To finish your README, can add these links_
 
 > 🏃 Head to your next challenge [here](https://speedrunstark.com/).
-> 🏃 Head to your next challenge [here](https://speedrunstark.com/).
 
-> 💬 Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
 > 💬 Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
