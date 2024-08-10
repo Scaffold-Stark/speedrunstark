@@ -1,21 +1,30 @@
-import { deployContract, deployer, exportDeployments } from "./deploy-contract";
+import {
+  deployContract,
+  executeDeployCalls,
+  exportDeployments,
+  deployer,
+} from "./deploy-contract";
 
 const deployScript = async (): Promise<void> => {
-  const { address: diceGameAddr } = await deployContract(null, "DiceGame");
+	
+  const { address: diceGameAddr } = await deployContract({ owner: deployer.address
+  }, "DiceGame");
 
-  //  await deployContract(
-  //    {
-  //    dice_game_address: diceGameAddr,
-  //  owner: deployer.address,
-  // },
-  // "RiggedRoll"
-  // );
+   await deployContract(
+     {
+     dice_game_address: diceGameAddr,
+     owner: deployer.address,
+  },
+  "RiggedRoll"
+  );
 
 };
 
 deployScript()
   .then(() => {
-    exportDeployments();
+    executeDeployCalls().then(() => {
+      exportDeployments();
+    });
     console.log("All Setup Done");
   })
   .catch(console.error);

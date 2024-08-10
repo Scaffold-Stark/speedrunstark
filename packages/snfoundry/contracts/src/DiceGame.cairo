@@ -1,6 +1,7 @@
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 #[starknet::interface]
 pub trait IDiceGame<T> {
+    fn init(ref self: T, init_balance: u256);
     fn roll_dice(ref self: T, amount: u256);
     fn last_dice_value(self: @T) -> u256;
     fn nonce(self: @T) -> u256;
@@ -48,14 +49,23 @@ mod DiceGame {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState) {
+    fn constructor(ref self: ContractState, owner: ContractAddress) {
         let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_contract });
-        self._reset_prize();
+        self.eth_token.read().transferFrom(owner, get_contract_address(), 0);
     }
+
 
     #[abi(embed_v0)]
     impl DiceGameImpl of super::IDiceGame<ContractState> {
+        fn init(ref self: ContractState, init_balance: u256) {
+            self
+                .eth_token
+                .read()
+                .transferFrom(get_caller_address(), get_contract_address(), init_balance);
+            self._reset_prize();
+        }
+
         fn roll_dice(ref self: ContractState, amount: u256) {
             // >= 0.002 ETH 
             assert(amount >= 2000000000000000, 'Not enough ETH');
@@ -84,7 +94,7 @@ mod DiceGame {
             self.eth_token.read().transfer(caller, prize);
 
             self._reset_prize();
-            self.emit(Winner { winner: caller, amount });
+            self.emit(Winner { winner: caller, amount: prize });
         }
         fn last_dice_value(self: @ContractState) -> u256 {
             self.last_dice_value.read()
