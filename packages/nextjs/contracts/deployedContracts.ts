@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     DiceGame: {
       address:
-        "0x210b1ef37a3ac645656349a874e009c57241bb1cf937db896f5907c20342abc",
+        "0x66e4dcf6230bf18042e2be9b6a2631448388a843e52bd5d00f74789d342358e",
       abi: [
         {
           type: "impl",
@@ -42,18 +42,6 @@ const deployedContracts = {
           type: "interface",
           name: "contracts::DiceGame::IDiceGame",
           items: [
-            {
-              type: "function",
-              name: "init",
-              inputs: [
-                {
-                  name: "init_balance",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
             {
               type: "function",
               name: "roll_dice",
@@ -115,12 +103,7 @@ const deployedContracts = {
         {
           type: "constructor",
           name: "constructor",
-          inputs: [
-            {
-              name: "owner",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-          ],
+          inputs: [],
         },
         {
           type: "event",
@@ -182,7 +165,7 @@ const deployedContracts = {
     },
     RiggedRoll: {
       address:
-        "0x7a9aff1482fe4d97527c1c3e71831c7a0abd2a93f5f93c43a1dae37e056b6d2",
+        "0x5066136cdb0912938065748ac43fb25e863bd25c6b8dbe5537c73fab3720780",
       abi: [
         {
           type: "impl",
