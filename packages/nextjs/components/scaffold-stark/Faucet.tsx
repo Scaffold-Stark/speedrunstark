@@ -104,9 +104,7 @@ export const Faucet = () => {
       <label
         htmlFor="faucet-modal"
         className="btn btn-sm font-normal gap-1 border border-[#32BAC4] shadow-none"
-        className="btn btn-sm font-normal gap-1 border border-[#32BAC4] shadow-none"
       >
-        <BanknotesIcon className="h-4 w-4 text-[#32BAC4]" />
         <BanknotesIcon className="h-4 w-4 text-[#32BAC4]" />
         <span>Faucet</span>
       </label>
@@ -140,11 +138,11 @@ export const Faucet = () => {
                 disabled={loading}
               >
                 {!loading ? (
-                  <BanknotesIcon className="h-6 w-6 text-white" />
+                  <BanknotesIcon className="h-6 w-6" />
                 ) : (
                   <span className="loading loading-spinner loading-sm"></span>
                 )}
-                <span className="text-white">Send</span>
+                <span>Send</span>
               </button>
             </div>
           </div>

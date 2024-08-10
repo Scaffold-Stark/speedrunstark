@@ -12,14 +12,6 @@ import {
   BugAntIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
-import {
-  ArrowDownTrayIcon,
-  ArrowPathIcon,
-  ArrowUpTrayIcon,
-  Bars3Icon,
-  BugAntIcon,
-  PhotoIcon,
-} from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import { useTheme } from "next-themes";
@@ -27,13 +19,8 @@ import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useProvider } from "@starknet-react/core";
-import { useTheme } from "next-themes";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { devnet } from "@starknet-react/chains";
-import { SwitchTheme } from "./SwitchTheme";
-import { useAccount, useProvider } from "@starknet-react/core";
 
-export type HeaderMenuLink = {
+type HeaderMenuLink = {
   label: string;
   href: string;
   icon?: React.ReactNode;
@@ -41,24 +28,6 @@ export type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   {
-    label: "My NFTs",
-    href: "/myNFTs",
-    icon: <PhotoIcon className="h-4 w-4" />,
-  },
-  {
-    label: "Transfers",
-    href: "/transfers",
-    icon: <ArrowPathIcon className="h-4 w-4" />,
-  },
-  {
-    label: "IPFS Upload",
-    href: "/ipfsUpload",
-    icon: <ArrowUpTrayIcon className="h-4 w-4" />,
-  },
-  {
-    label: "IPFS Download",
-    href: "/ipfsDownload",
-    icon: <ArrowDownTrayIcon className="h-4 w-4" />,
     label: "My NFTs",
     href: "/myNFTs",
     icon: <PhotoIcon className="h-4 w-4" />,
@@ -107,10 +76,6 @@ export const HeaderMenuLinks = () => {
                   ? "!bg-gradient-nav !text-white active:bg-gradient-nav shadow-md "
                   : ""
               } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
-                isActive
-                  ? "!bg-gradient-nav !text-white active:bg-gradient-nav shadow-md "
-                  : ""
-              } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
             >
               {icon}
               <span>{label}</span>
@@ -128,7 +93,6 @@ export const HeaderMenuLinks = () => {
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
@@ -152,7 +116,6 @@ export const Header = () => {
 
   return (
     <div className="sticky lg:static top-0 navbar min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2">
-    <div className="sticky lg:static top-0 navbar min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2">
       <div className="navbar-start w-auto lg:w-1/2">
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
@@ -169,7 +132,6 @@ export const Header = () => {
           {isDrawerOpen && (
             <ul
               tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow rounded-box w-52"
               className="menu menu-compact dropdown-content mt-3 p-2 shadow rounded-box w-52"
               onClick={() => {
                 setIsDrawerOpen(false);
@@ -189,7 +151,7 @@ export const Header = () => {
               alt="SE2 logo"
               className="cursor-pointer"
               fill
-              src="/challenge-icon-starknet.svg"
+              src="/logo.svg"
             />
           </div>
           <div className="flex flex-col">
@@ -201,12 +163,6 @@ export const Header = () => {
           <HeaderMenuLinks />
         </ul>
       </div>
-      <div className="navbar-end flex-grow mr-4 gap-4">
-        {status === "connected" && !isDeployed ? (
-          <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
-            Wallet Not Deployed
-          </span>
-        ) : null}
       <div className="navbar-end flex-grow mr-4 gap-4">
         {status === "connected" && !isDeployed ? (
           <span className="bg-[#8a45fc] text-[9px] p-1 text-white">

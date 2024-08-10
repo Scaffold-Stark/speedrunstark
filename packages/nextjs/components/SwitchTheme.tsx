@@ -27,7 +27,6 @@ export const SwitchTheme = ({ className }: { className?: string }) => {
   return (
     <div
       className={`flex space-x-2 h-5 items-center justify-center text-sm border-l border-neutral px-4 ${className}`}
-      className={`flex space-x-2 h-5 items-center justify-center text-sm border-l border-neutral px-4 ${className}`}
     >
       {/* <input
         id="theme-toggle"
@@ -40,7 +39,6 @@ export const SwitchTheme = ({ className }: { className?: string }) => {
         <label
           htmlFor="theme-toggle"
           className={`swap swap-rotate ${!isDarkMode ? "swap-active" : ""}`}
-          onClick={handleToggle}
           onClick={handleToggle}
         >
           <SunIcon className="swap-on h-5 w-5" />
