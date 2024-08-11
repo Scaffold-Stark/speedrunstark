@@ -1,6 +1,6 @@
 "use client";
 
-import { useAccount, useBalance } from "@starknet-react/core";
+import { useAccount } from "@starknet-react/core";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
@@ -20,15 +20,12 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { address: connectedAddress } = useAccount();
   const { data: StakerContract } = useDeployedContractInfo("Staker");
 
-  console.log("StakerContract", StakerContract);
   const { data: ExampleExternalContact } = useDeployedContractInfo(
     "ExampleExternalContract",
   );
-  const { value: stakerContractBalance} =
-    useScaffoldEthBalance({
-      address: StakerContract?.address,
-    });
-	console.log("stakerContractBalance", stakerContractBalance);
+  const { value: stakerContractBalance } = useScaffoldEthBalance({
+    address: StakerContract?.address,
+  });
   const {
     value: exampleExternalContractBalance,
     //refetch: refetchExampleExternalContract,
@@ -111,8 +108,9 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
           <div className="flex items-center">
             <ETHToPrice
               value={
-                exampleExternalContractBalance != null ? 
-				`${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}` : undefined
+                exampleExternalContractBalance != null
+                  ? `${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}`
+                  : undefined
               }
               className="text-[1rem]"
             />
