@@ -223,8 +223,7 @@ const DiceGame: NextPage = () => {
               className="mt-2 btn btn-secondary bg-secondary btn-xl normal-case font-xl text-lg text-white"
             >
               Rigged Roll!
-            </button>*/
-          }
+            </button>*/}
 
           <div className="flex mt-8">
             {rolled ? (
