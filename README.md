@@ -43,13 +43,11 @@ git checkout dice-game
 yarn install
 ```
 
-
 > in the same terminal, start your local network (a local instance of a blockchain):
 
 ```bash
 yarn chain
 ```
-
 
 > in a second terminal window, 🛰 deploy your contract (locally):
 
@@ -159,7 +157,7 @@ cp packages/snfoundry/.env.example packages/snfoundry/.env
 
 ✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia` or any other public network.
 
-💻 View your frontend at http://localhost:3000/dice and verify you see the correct network.
+💻 View your frontend at <http://localhost:3000/dice> and verify you see the correct network.
 
 📡 When you are ready to ship the frontend app...
 
@@ -171,7 +169,7 @@ cp packages/snfoundry/.env.example packages/snfoundry/.env
 
 > 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default 🔥 `burner wallets` are only available on `devnet` . You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
-#### Configuration of Third-Party Services for Production-Grade Apps.
+#### Configuration of Third-Party Services for Production-Grade Apps
 
 By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
 This is great to complete your SpeedRunStark.

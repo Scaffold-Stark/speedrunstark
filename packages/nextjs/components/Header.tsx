@@ -11,15 +11,7 @@ import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useProvider } from "@starknet-react/core";
-import {
-  ArrowDownTrayIcon,
-  ArrowPathIcon,
-  ArrowUpTrayIcon,
-  Bars3Icon,
-  BugAntIcon,
-  PhotoIcon,
-  CubeIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, BugAntIcon, CubeIcon } from "@heroicons/react/24/outline";
 import MenuItem from "~~/components/MenuItem/MenuItem";
 
 export type HeaderMenuLink = {
@@ -47,7 +39,12 @@ export const menuLinks: HeaderMenuLink[] = [
 
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
+  const { theme } = useTheme();
+  const [isDark, setIsDark] = useState(false);
 
+  useEffect(() => {
+    setIsDark(theme === "dark");
+  }, [theme]);
   return (
     <>
       {menuLinks.map(({ label, href, icon }) => {
@@ -92,15 +89,11 @@ export const Header = () => {
 
   useEffect(() => {
     if (status === "connected" && address) {
-      provider
-        .getContractVersion(address)
-        .then((v) => {
-          if (v) setIsDeployed(true);
-        })
-        .catch((e) => {
-          console.log(e);
+      provider.getContractVersion(address).catch((e) => {
+        if (e.toString().includes("Contract not found")) {
           setIsDeployed(false);
-        });
+        }
+      });
     }
   }, [status, address, provider]);
 
@@ -160,6 +153,7 @@ export const Header = () => {
           </span>
         ) : null}
         <CustomConnectButton />
+        {/* <FaucetButton /> */}
         <SwitchTheme
           className={`pointer-events-auto ${
             isLocalNetwork ? "self-end md:self-auto" : ""

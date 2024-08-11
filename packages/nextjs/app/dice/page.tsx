@@ -17,6 +17,7 @@ import { Address } from "~~/components/scaffold-stark";
 import { Address as AddressType } from "@starknet-react/chains";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { BlockNumber } from "starknet";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 const ROLL_ETH_VALUE = "0.002";
 const MAX_TABLE_ROWS = 10;
@@ -36,13 +37,11 @@ const DiceGame: NextPage = () => {
   const { data: riggedRollContract } = useScaffoldContract({
     contractName: "RiggedRoll",
   });
-  const { data: riggedRollBalance, refetch: refetchRiggedBalance } = useBalance(
-    {
-      address: riggedRollContract?.address,
-      watch: true,
-	  blockIdentifier: "pending" as BlockNumber,
-    },
-  );
+  const { value: riggedRollBalance } = useScaffoldEthBalance({
+    address: riggedRollContract?.address,
+    //   watch: true,
+    //   blockIdentifier: "pending" as BlockNumber,
+  });
 
   const { data: prize } = useScaffoldReadContract({
     contractName: "DiceGame",
@@ -121,7 +120,7 @@ const DiceGame: NextPage = () => {
   const handleDice = async () => {
     try {
       await multiContractWriteDice();
-      refetchRiggedBalance();
+      //refetchRiggedBalance();
       setIsRolling(false);
       setRolled(true);
     } catch (error) {
@@ -132,7 +131,7 @@ const DiceGame: NextPage = () => {
   const handleRigged = async () => {
     try {
       await multiContractWriteRigged();
-      refetchRiggedBalance();
+      //refetchRiggedBalance();
       setIsRolling(false);
       setRolled(true);
     } catch (error) {
@@ -201,13 +200,17 @@ const DiceGame: NextPage = () => {
             <div className="flex mt-1 items-center">
               <span className="text-lg mr-2">Balance:</span>
               <Amount
-                amount={Number(riggedRollBalance?.formatted || 0)}
+                amount={
+                  riggedRollBalance
+                    ? Number(formatEther(riggedRollBalance.toString()))
+                    : 0
+                }
                 showUsdPrice
                 className="text-lg"
               />
             </div>
           </div>
-          {/* {
+          {/*
             <button
               onClick={() => {
                 if (!rolled) {
@@ -220,8 +223,7 @@ const DiceGame: NextPage = () => {
               className="mt-2 btn btn-secondary bg-secondary btn-xl normal-case font-xl text-lg text-white"
             >
               Rigged Roll!
-            </button>
-          } */}
+            </button>*/}
 
           <div className="flex mt-8">
             {rolled ? (

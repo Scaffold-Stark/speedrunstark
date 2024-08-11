@@ -10,13 +10,9 @@ pub trait IDiceGame<T> {
 
 #[starknet::contract]
 mod DiceGame {
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-    use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
     use keccak::keccak_u256s_le_inputs;
-    use super::IDiceGame;
-
-    const ETH_CONTRACT_ADDRESS: felt252 =
-        0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
+    use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
+    use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IDiceGame};
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -48,11 +44,11 @@ mod DiceGame {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState) {
-        let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
-        self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_contract });
+    fn constructor(ref self: ContractState, eth_token_address: ContractAddress) {
+        self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self._reset_prize();
     }
+
 
     #[abi(embed_v0)]
     impl DiceGameImpl of super::IDiceGame<ContractState> {
@@ -84,7 +80,7 @@ mod DiceGame {
             self.eth_token.read().transfer(caller, prize);
 
             self._reset_prize();
-            self.emit(Winner { winner: caller, amount });
+            self.emit(Winner { winner: caller, amount: prize });
         }
         fn last_dice_value(self: @ContractState) -> u256 {
             self.last_dice_value.read()
