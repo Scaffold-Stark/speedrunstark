@@ -15,27 +15,9 @@
 ---
 
 ## Checkpoint 0: 📦 Environment 📚
-# 🚩 Challenge #1: 🔏 Decentralized Staking App
-
-![readme-1](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/7e7be92753ffa1f18f50976e97fdb0052ca9414a/packages/nextjs/public/banner-decentralized-staking.svg)
-
-🦸 A superpower of Smart contracts is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code.
-
-🏦 Build a `Staker.cairo` contract that collects **ETH** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allows users to `withdraw()`.
-
-🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake {sender: ContractAddress, amount: u256}` Starknet event to list all stakes.
-
-🌟 The final deliverable is deploying a Dapp that lets users send ether to a contract and stake if the conditions are met, then `yarn vercel` your app to a public webserver.
-
-💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
-
----
-
-## Checkpoint 0: 📦 Environment 📚
 
 Before you begin, you need to install the following tools:
 
-- [Node (v18 LTS)](https://nodejs.org/en/download/)
 - [Node (v18 LTS)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
@@ -59,23 +41,11 @@ yarn install
 ```
 
 > in the same terminal, start your local network (a blockchain emulator in your computer):
-> in the same terminal, start your local network (a blockchain emulator in your computer):
 
 ```bash
 yarn chain
 ```
 
-> in a second terminal window, 🛰 deploy your contract (locally):
-
-```sh
-cd challenge-1-decentralized-staking
-yarn deploy
-```
-
-> in a third terminal window, start your 📱 frontend:
-
-```sh
-cd challenge-1-decentralized-staking
 > in a second terminal window, 🛰 deploy your contract (locally):
 
 ```sh
