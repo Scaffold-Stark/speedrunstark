@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { NetworkOptions } from "./NetworkOptions";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { createPortal } from "react-dom";
-import { createPortal } from "react-dom";
 import {
   ArrowLeftEndOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
@@ -12,23 +11,18 @@ import {
   DocumentDuplicateIcon,
   QrCodeIcon,
   UserCircleIcon,
-  UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import { useLocalStorage } from "usehooks-ts";
 import { useLocalStorage } from "usehooks-ts";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-stark";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
-import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
 import { getTargetNetworks } from "~~/utils/scaffold-stark";
-import { burnerAccounts } from "~~/utils/devnetAccounts";
 import { burnerAccounts } from "~~/utils/devnetAccounts";
 import { Address } from "@starknet-react/chains";
 import { useDisconnect, useNetwork, useConnect } from "@starknet-react/core";
 import { getStarknetPFPIfExists } from "~~/utils/profile";
 import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
 import { useTheme } from "next-themes";
-import { useEffect } from "react";
 
 const allowedNetworks = getTargetNetworks();
 
@@ -50,13 +44,7 @@ export const AddressInfoDropdown = ({
   const { data: profile } = useConditionalStarkProfile(address);
   const { chain } = useNetwork();
   const [showBurnerAccounts, setShowBurnerAccounts] = useState(false);
-  const { data: profile } = useConditionalStarkProfile(address);
-  const { chain } = useNetwork();
-  const [showBurnerAccounts, setShowBurnerAccounts] = useState(false);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
-  const { connectors, connect } = useConnect();
-  const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
   const { connectors, connect } = useConnect();
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
@@ -90,50 +78,13 @@ export const AddressInfoDropdown = ({
     },
   );
 
-  function handleConnectBurner(
-    e: React.MouseEvent<HTMLButtonElement>,
-    ix: number,
-  ) {
-    const connector = connectors.find(
-      (it) => it.id == "burner-wallet",
-    ) as BurnerConnector;
-    if (connector) {
-      connector.burnerAccount = burnerAccounts[ix];
-      connect({ connector });
-      setLastConnector({ id: connector.id, ix });
-      setShowBurnerAccounts(false);
-    }
-  }
-
-  const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
-    "lastUsedConnector",
-    { id: "" },
-    {
-      initializeWithValue: false,
-    },
-  );
-
   return (
     <>
       <details ref={dropdownRef} className="dropdown dropdown-end leading-3">
         <summary
           tabIndex={0}
           className="btn bg-transparent btn-sm pl-0 pr-2 dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
-          className="btn bg-transparent btn-sm pl-0 pr-2 dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
         >
-          {getStarknetPFPIfExists(profile?.profilePicture) ? (
-            //eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile?.profilePicture}
-              alt="Profile Picture"
-              className="rounded-full h-8 w-8"
-              width={30}
-              height={30}
-            />
-          ) : (
-            <BlockieAvatar address={address} size={30} ensImage={ensAvatar} />
-          )}
-          <span className="ml-4 mr-1">
           {getStarknetPFPIfExists(profile?.profilePicture) ? (
             //eslint-disable-next-line @next/next/no-img-element
             <img
@@ -151,14 +102,11 @@ export const AddressInfoDropdown = ({
               ? displayName
               : profile?.name ||
                 address?.slice(0, 6) + "..." + address?.slice(-4)}
-              : profile?.name ||
-                address?.slice(0, 6) + "..." + address?.slice(-4)}
           </span>
           <ChevronDownIcon className="h-6 w-4 ml-2 sm:ml-0" />
         </summary>
         <ul
           tabIndex={0}
-          className={`dropdown-content menu z-[2] p-2 mt-2 rounded-[5px] gap-1 border border-[#5c4fe5] bg-base-100`}
           className={`dropdown-content menu z-[2] p-2 mt-2 rounded-[5px] gap-1 border border-[#5c4fe5] bg-base-100`}
         >
           <NetworkOptions hidden={!selectingNetwork} />
@@ -239,7 +187,7 @@ export const AddressInfoDropdown = ({
               <>
                 <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                   <div className="relative w-auto my-6 mx-auto max-w-5xl">
-                    <div className="border border-[#4f4ab7] rounded-lg shadow-lg relative w-full mx-auto md:max-h-[30rem] md:max-w-[25rem] bg-base-100 outline-none focus:outline-none">
+                    <div className="border border-[#4f4ab7] rounded-lg shadow-lg relative w-full mx-auto md:max-h-[30rem] md:max-w-[25rem] bg-modal outline-none focus:outline-none">
                       <div className="flex items-start justify-between p-4 pt-8 rounded-t">
                         <div className="flex justify-center items-center w-11/12">
                           <h2 className="text-lg text-center text-neutral m-0">
@@ -309,7 +257,6 @@ export const AddressInfoDropdown = ({
           ) : null}
           <li className={selectingNetwork ? "hidden" : ""}>
             <button
-              className="menu-item text-secondary-content btn-sm !rounded-xl flex gap-3 py-3"
               className="menu-item text-secondary-content btn-sm !rounded-xl flex gap-3 py-3"
               type="button"
               onClick={() => disconnect()}
