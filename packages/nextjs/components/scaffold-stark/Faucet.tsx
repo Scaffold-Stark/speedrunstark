@@ -41,7 +41,8 @@ export const Faucet = () => {
   useEffect(() => {
     const checkChain = async () => {
       try {
-        const providerInfo = await publicClient.getBlock();
+        const providerInfo = await publicClient.getBlockWithTxHashes();
+        console.log(providerInfo);
       } catch (error) {
         console.error("⚡️ ~ file: Faucet.tsx:checkChain ~ error", error);
         notification.error(
@@ -82,16 +83,16 @@ export const Faucet = () => {
       return;
     }
 
-    const res = await mintEth(inputAddress, sendValue);
-    if (!res.new_balance) {
+    try {
+      setLoading(true);
+      await mintEth(inputAddress, sendValue);
       setLoading(false);
-      notification.error(`${res}`);
-      return;
+      setInputAddress(undefined);
+      setSendValue("");
+    } catch (error) {
+      console.error("⚡️ ~ file: Faucet.tsx:sendETH ~ error", error);
+      setLoading(false);
     }
-    setLoading(false);
-    setInputAddress(undefined);
-    setSendValue("");
-    notification.success("ETH sent successfully!");
   };
 
   // Render only on local chain
@@ -120,7 +121,17 @@ export const Faucet = () => {
           >
             ✕
           </label>
-          <div className="space-y-3 mt-6">
+          <div className="space-y-3">
+            <div className="flex space-x-4">
+              <div>
+                <span className="text-sm font-bold">From:</span>
+                <Address address={faucetAddress} />
+              </div>
+              <div>
+                <span className="text-sm font-bold pl-3">Available:</span>
+                <Balance address={faucetAddress} />
+              </div>
+            </div>
             <div className="flex flex-col space-y-3">
               <AddressInput
                 placeholder="Destination Address"
