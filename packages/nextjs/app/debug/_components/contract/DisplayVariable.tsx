@@ -55,7 +55,7 @@ export const DisplayVariable = ({
           {abiFunction.name}
         </h3>
         <button
-          className="btn btn-ghost btn-xs"
+          className="btn btn-ghost btn-xs text-neutral"
           onClick={async () => await refetch()}
         >
           {!isLoading && isFetching ? (

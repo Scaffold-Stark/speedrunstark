@@ -1,12 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import { Abi, AbiFunction } from "abitype";
-// import { Address, TransactionReceipt } from "viem";
-// import { useContractWrite, useNetwork, useWaitForTransaction } from "wagmi";
 import {
   ContractInput,
-  //   TxReceipt,
   getFunctionInputKey,
   getInitialFormState,
   getParsedContractFunctionArgs,
@@ -31,7 +27,6 @@ type WriteOnlyFunctionFormProps = {
   abiFunction: AbiFunction;
   onChange: () => void;
   contractAddress: Address;
-  //   inheritedFrom?: string;
 };
 
 export const WriteOnlyFunctionForm = ({
@@ -39,8 +34,7 @@ export const WriteOnlyFunctionForm = ({
   abiFunction,
   onChange,
   contractAddress,
-}: //   inheritedFrom,
-WriteOnlyFunctionFormProps) => {
+}: WriteOnlyFunctionFormProps) => {
   const [form, setForm] = useState<Record<string, any>>(() =>
     getInitialFormState(abiFunction),
   );
@@ -135,12 +129,11 @@ WriteOnlyFunctionFormProps) => {
       >
         <p className="font-medium my-0 break-words text-function">
           {abiFunction.name}
-          {/* <InheritanceTooltip inheritedFrom={undefined} /> */}
         </p>
         {inputs}
         <div className="flex justify-between gap-2">
           {!zeroInputs && (
-            <div className="flex-grow basis-0">
+            <div className="flex-grow basis-0 text-neutral-content">
               {displayedTxResult ? (
                 <TxReceipt txResult={displayedTxResult} />
               ) : null}
@@ -167,7 +160,7 @@ WriteOnlyFunctionFormProps) => {
         </div>
       </div>
       {zeroInputs && txResult ? (
-        <div className="flex-grow basis-0">
+        <div className="flex-grow basis-0 ">
           <TxReceipt txResult={txResult} />
         </div>
       ) : null}

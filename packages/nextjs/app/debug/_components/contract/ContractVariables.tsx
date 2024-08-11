@@ -1,10 +1,7 @@
 import { Abi } from "abi-wan-kanabi";
 import {
-  AbiFunction,
   Contract,
   ContractName,
-  GenericContract,
-  InheritedFunctions,
   getFunctionsByStateMutability,
 } from "~~/utils/scaffold-stark/contract";
 import { DisplayVariable } from "./DisplayVariable";
@@ -34,7 +31,7 @@ export const ContractVariables = ({
       };
     });
   if (!functionsToDisplay.length) {
-    return <>No contract variables</>;
+    return <span className="text-neutral">No contract variables</span>;
   }
 
   return (
