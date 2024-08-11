@@ -1,182 +1,187 @@
-# 🏗 Scaffold-Stark
+# 🚩 Challenge 3: 🎲 Dice Game
 
-<h4 align="center">
-  <a href="https://www.docs.scaffoldstark.com/">Documentation</a> |
-  <a href="https://www.scaffoldstark.com/">Website</a> |
-  <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
-</h4>
+![readme-3](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/dice-game/packages/nextjs/public/hero3.png)
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
 
-⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
+> 🎰 Randomness is tricky on a public deterministic blockchain. The block hash is an easy to use, but very weak form of randomness. This challenge will give you an example of a contract using block hash to create random numbers. This randomness is exploitable. Other, stronger forms of randomness include commit/reveal schemes, oracles, or VRF from Chainlink.
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://www.docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://www.docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
+> 💬 Dice Game is a contract that allows users to roll the dice to try and win the prize. If players roll either a 0, 1, 2, 3, 4 or 5 they will win the current prize amount. The initial prize is 10% of the contract's balance, which starts out at .05 Eth.
 
-![Debug Contracts tab](https://raw.githubusercontent.com/Quantum3-Labs/scaffold-stark-2/main/packages/nextjs/public/debug-image.png)
+> 🧤 Every time a player rolls the dice, they are required to send .002 Eth. 40 percent of this value is added to the current prize amount while the other 60 percent stays in the contract to fund future prizes. Once a prize is won, the new prize amount is set to 10% of the total balance of the DiceGame contract.
 
-## Requirements
+> 🧨 Your job is to attack the Dice Game contract! You will create a new contract that will predict the randomness ahead of time and only roll the dice when you're guaranteed to be a winner!
+
+> 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
+
+---
+
+## Checkpoint 0: 📦 Environment 📚
 
 Before you begin, you need to install the following tools:
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
+- [Node (v18 LTS)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
-- [Rust](https://www.rust-lang.org/tools/install)
-- [asdf](https://asdf-vm.com/guide/getting-started.html)
-- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 
-### Starknet-devnet version
-
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.0.4`. To accomplish this, first check your local starknet-devnet version:
-
-```sh
-starknet-devnet --version
-```
-
-If your local starknet-devnet version is not `0.0.4`, you need to install it.
-
-```bash
-cargo install starknet-devnet --version 0.0.4
-```
-
-### Scarb version
-
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.6.5`. To accomplish this, first check your local Scarb version:
-
-```sh
-scarb --version
-```
-
-If your local Scarb version is not `2.6.5`, you need to install it.
-
-- Install Scarb `2.6.5` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
-
-### Starknet Foundry version
-
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.27.0. To accomplish this, first check your Starknet Foundry version:
-
-```sh
-snforge --version
-```
-
-If your Starknet Foundry version is not `0.27.0`, you need to install it.
-
-- Install Starknet Foundry `0.27.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
-
-## Compatible versions
+### Compatible versions
 
 - Scarb - v2.6.5
-- Snforge - v0.27.0
+- Snforge - v0.27
 - Cairo - v2.6.4
-- Rpc - v0.7.0
 
-## Quickstart with Starknet-Devnet
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
-To get started with Scaffold-Stark, follow the steps below:
+Then download the challenge to your computer and install dependencies by running:
 
-1. Clone this repo and install dependencies
+```sh
 
-```bash
-git clone https://github.com/Quantum3-Labs/scaffold-stark-2.git
-cd scaffold-stark-2
+git clone https://github.com/Quantum3-Labs/speedrunstark.git dice-game
+cd dice-game
+git checkout dice-game
+
 yarn install
 ```
 
-2. Run a local network in the first terminal.
+> in the same terminal, start your local network (a local instance of a blockchain):
 
 ```bash
 yarn chain
 ```
 
-This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
+> in a second terminal window, 🛰 deploy your contract (locally):
 
-3. On a second terminal, deploy the sample contract:
-
-```bash
+```sh
+cd dice-game
 yarn deploy
 ```
 
-This command deploys a sample smart contract to the local network. The contract is located in `packages/snfoundry/contracts/src` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/snfoundry/scripts-ts/deploy.ts` to deploy the contract to the network. You can also customize the deploy script.
+> in a third terminal window, start your 📱 frontend:
 
-By default `Scaffold-Stark` takes the first prefunded account from `starknet-devnet` as a deployer address,
-
-4. On a third terminal, start your NextJS app:
-
-```bash
+```sh
+cd dice-game
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+📱 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-## Quickstart with Sepolia Testnet
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
 
-<details>
+---
 
-1. Make sure you alredy cloned this repo and installed dependencies.
-2. Prepare your environment variables.
+## Checkpoint 1: 🎲 Dice Game
 
-Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account contract address and private key.
+🔍 Inspect the code in the `DiceGame.cairo` contract in `packages/snfoundry/contracts`
 
-3. Change your default network to Sepolia testnet.
+🔒 You will not be changing any code in the `DiceGame.cairo` contract in this challenge. You will write your own contract to predict the outcome, then only roll the dice when it is favourable.
 
-Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
+### 🥅 Goals
 
-![chall-0-scaffold-config](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-scaffold-config.png)
+- [ ] Track the cairo code to find out how the DiceGame contract is generating random numbers.
+- [ ] Is it possible to predict the random number for any given roll?
 
-4. Get some testnet tokens
+---
 
-You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+## Checkpoint 2: 🔑 Rigged Contract
+
+Start by adding the ETh token address in the `RiggedRoll.cairo` contract to allow it to receive Eth. This will allow us to fund the RiggedRoll contract from the faucet which is required for our contract to call the `rollTheDice()` function.
+
+Next add a `riggedRoll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `rollTheDice()` on the DiceGame contract.
+
+🃏 Predict the outcome by generating your random numbers in the exact same way as the DiceGame contract.
+
+> 📣 Reminder! Calling `rollTheDice()` will fail unless you transfer a value of at least .002 Eth!.
+
+🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `deploy.ts` file in `packages/snfoundry/script-ts/deploy.ts`
+
+💸 You will need to send some funds to your RiggedRoll contract before doing your first roll, you can use the Faucet button at the bottom left of the page.
+
+❓ If you're struggling to get the exact same random number as the DiceGame contract, try adding some `console.log()` statements in both contracts to help you track the values. These messages will appear in the Hardhat node terminal.
+
+### ⚔️ Side Quest
+
+- [ ] Add a statement to require `assert(contract_balance >= 2000000000000000,` in your riggedRoll function. This will help prevent calling the `rollTheDice()` function without enough value.
+- [ ] Uncomment the code in `packages/nextjs/app/dice/page.tsx` to show a riggedRoll button and contract balance on the main UI tab. Now you can test your function without switching tabs.
+- [ ] Does your riggedRoll function only call `rollTheDice()` when it's going to be a winning roll? What happens when it does call `rollTheDice()`?
+
+![RiggedLosingRoll](./packages/nextjs/public/ch3-roll.png)
+
+---
+
+## Checkpoint 3: 💵 Where's my money?!?
+
+You have beaten the game, but where is your money? Since the RiggedRoll contract is the one calling `rollTheDice()`, that is where the prize money is being sent.
+
+![RiggedRollAddress](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-events.png)
+
+📥 Create a `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
+
+### 🥅 Goals
+
+- [ ] Can you send value from the RiggedRoll contract to your front end address?
+- [ ] Is anyone able to call the withdraw function? What would be the downside to that?
+
+### ⚔️ Side Quest
+
+- [ ] Lock the withdraw function so it can only be called by the owner.
+
+![WithdrawOnlyOwner](./packages/nextjs/public/ch3-debug.png)
+
+> ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy.ts`. This will allow your front end address to call the withdraw function.
+
+## Checkpoint 4: 💾 Deploy your contracts! 🛰
+
+📡 Edit the `defaultNetwork` to your choice of public Starknet networks in `packages/nextjs/scaffold.config.ts` to `sepolia`.
+
+![network](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-scaffold-config.png)
+
+> Prepare your environment variables.
+
+```shell
+cp packages/snfoundry/.env.example packages/snfoundry/.env
+```
+
+🔐 You will need to generate a *deployer address* using Argent or Braavos, get your private key and put in `packages/snfoundry/.env`
+
+⛽️ You will need to send ETH or STRK to your deployer Contract Addres with your wallet, or get it from a public faucet of your chosen network.
 
 > Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
 
-4. Open a terminal, deploy the sample contract to Sepolia testnet:
+🚀 Run `yarn deploy --{DESIRED NETWORK}` , we support sepolia, mainnet and devnet
 
-```bash
-yarn deploy --network sepolia
-```
+> 💬 Hint: you can `yarn deploy --network sepolia`.
 
-5. On a second terminal, start your NextJS app:
+---
 
-```bash
-yarn start
-```
+## Checkpoint 5: 🚢 Ship your frontend! 🚁
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia` or any other public network.
 
-### RPC specific version
+💻 View your frontend at <http://localhost:3000/dice> and verify you see the correct network.
 
-To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.7.0`. This repository contains a .env.example file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_7`. Let's verify this RPC version is `0.7.0` by running the following command:
+📡 When you are ready to ship the frontend app...
 
-```sh
-curl --location 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7' \
---data '{
-    "jsonrpc":"2.0",
-    "method":"starknet_specVersion",
-    "id":1
-}'
-```
+📦 Run `yarn vercel` to package up your frontend and deploy.
 
-</details>
+> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
 
-## **What's next**
+> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
 
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
+> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default 🔥 `burner wallets` are only available on `devnet` . You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
-## Documentation
+#### Configuration of Third-Party Services for Production-Grade Apps
 
-Visit our [docs](https://www.docs.scaffoldstark.com/) to learn how to start building with Scaffold-Stark.
+By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
+This is great to complete your SpeedRunStark.
 
-To know more about its features, check out our [website](https://scaffoldstark.com)
+For production-grade applications, it's recommended to obtain your own API keys (to prevent rate limiting issues). You can configure these at:
 
-## Contributing to Scaffold-Stark
+🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env.local`. You can create API keys from the [Infura dashboard](https://www.infura.io/).
 
-We welcome contributions to Scaffold-Stark!
+> 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
 
-Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark.
+---
+
+> 🏃 Head to your next challenge [here](https://speedrunstark.com/).
+
+> 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
