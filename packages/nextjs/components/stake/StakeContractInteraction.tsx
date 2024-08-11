@@ -1,6 +1,6 @@
 "use client";
 
-import { useAccount, useBalance } from "@starknet-react/core";
+import { useAccount } from "@starknet-react/core";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
@@ -9,6 +9,7 @@ import { ETHToPrice } from "~~/components/stake/ETHToPrice";
 import { Address } from "~~/components/scaffold-stark";
 import humanizeDuration from "humanize-duration";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
+import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 function formatEther(weiValue: number) {
   const etherValue = weiValue / 1e18;
@@ -18,17 +19,17 @@ function formatEther(weiValue: number) {
 export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { address: connectedAddress } = useAccount();
   const { data: StakerContract } = useDeployedContractInfo("Staker");
+
   const { data: ExampleExternalContact } = useDeployedContractInfo(
     "ExampleExternalContract",
   );
-  const { data: stakerContractBalance, refetch: refetchStakeContract } =
-    useBalance({
-      address: StakerContract?.address,
-    });
+  const { value: stakerContractBalance } = useScaffoldEthBalance({
+    address: StakerContract?.address,
+  });
   const {
-    data: exampleExternalContractBalance,
-    refetch: refetchExampleExternalContract,
-  } = useBalance({
+    value: exampleExternalContractBalance,
+    //refetch: refetchExampleExternalContract,
+  } = useScaffoldEthBalance({
     address: ExampleExternalContact?.address,
   });
 
@@ -86,8 +87,8 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
     (fn: () => Promise<any>, errorMessageFnDescription: string) => async () => {
       try {
         await fn().then(() => {
-          refetchStakeContract();
-          refetchExampleExternalContract();
+          //refetchStakeContract();
+          //refetchExampleExternalContract();
         });
       } catch (error) {
         console.error(
@@ -108,7 +109,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             <ETHToPrice
               value={
                 exampleExternalContractBalance != null
-                  ? exampleExternalContractBalance.formatted
+                  ? `${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}`
                   : undefined
               }
               className="text-[1rem]"
@@ -157,7 +158,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
               <ETHToPrice
                 value={
                   stakerContractBalance != null
-                    ? `${formatEther(Number(stakerContractBalance.value))}${targetNetwork.nativeCurrency.symbol}`
+                    ? `${formatEther(Number(stakerContractBalance))}${targetNetwork.nativeCurrency.symbol}`
                     : undefined
                 }
               />

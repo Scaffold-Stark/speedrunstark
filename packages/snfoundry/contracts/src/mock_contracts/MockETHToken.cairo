@@ -1,6 +1,6 @@
 #[starknet::contract]
 pub mod MockETHToken {
-    use openzeppelin::token::erc20::ERC20Component;
+    use openzeppelin::token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
     use starknet::ContractAddress;
 
     component!(path: ERC20Component, storage: erc20, event: ERC20Event);
@@ -29,6 +29,6 @@ pub mod MockETHToken {
 
         self.erc20.initializer(name, symbol);
         let amount_to_mint = initial_supply / 10;
-        self.erc20._mint(recipient, amount_to_mint);
+        self.erc20.mint(recipient, amount_to_mint);
     }
 }
