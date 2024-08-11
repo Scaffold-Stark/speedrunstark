@@ -1,182 +1,258 @@
-# 🏗 Scaffold-Stark
+# 🚩 Challenge #1: 🔏 Decentralized Staking App
 
-<h4 align="center">
-  <a href="https://www.docs.scaffoldstark.com/">Documentation</a> |
-  <a href="https://www.scaffoldstark.com/">Website</a> |
-  <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
-</h4>
+![readme-1](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/7e7be92753ffa1f18f50976e97fdb0052ca9414a/packages/nextjs/public/banner-decentralized-staking.svg)
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+🦸 A superpower of Smart contracts is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code.
 
-⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
+🏦 Build a `Staker.cairo` contract that collects **ETH** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allows users to `withdraw()`.
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://www.docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://www.docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
+🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake {sender: ContractAddress, amount: u256}` Starknet event to list all stakes.
 
-![Debug Contracts tab](https://raw.githubusercontent.com/Quantum3-Labs/scaffold-stark-2/main/packages/nextjs/public/debug-image.png)
+🌟 The final deliverable is deploying a Dapp that lets users send ether to a contract and stake if the conditions are met, then `yarn vercel` your app to a public webserver.
 
-## Requirements
+💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
+
+---
+
+## Checkpoint 0: 📦 Environment 📚
 
 Before you begin, you need to install the following tools:
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
+- [Node (v18 LTS)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
-- [Rust](https://www.rust-lang.org/tools/install)
-- [asdf](https://asdf-vm.com/guide/getting-started.html)
-- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 
-### Starknet-devnet version
-
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.0.4`. To accomplish this, first check your local starknet-devnet version:
-
-```sh
-starknet-devnet --version
-```
-
-If your local starknet-devnet version is not `0.0.4`, you need to install it.
-
-```bash
-cargo install starknet-devnet --version 0.0.4
-```
-
-### Scarb version
-
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.6.5`. To accomplish this, first check your local Scarb version:
-
-```sh
-scarb --version
-```
-
-If your local Scarb version is not `2.6.5`, you need to install it.
-
-- Install Scarb `2.6.5` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
-
-### Starknet Foundry version
-
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.27.0. To accomplish this, first check your Starknet Foundry version:
-
-```sh
-snforge --version
-```
-
-If your Starknet Foundry version is not `0.27.0`, you need to install it.
-
-- Install Starknet Foundry `0.27.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
-
-## Compatible versions
+### Compatible versions
 
 - Scarb - v2.6.5
 - Snforge - v0.27.0
 - Cairo - v2.6.4
-- Rpc - v0.7.0
 
-## Quickstart with Starknet-Devnet
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
-To get started with Scaffold-Stark, follow the steps below:
+Then download the challenge to your computer and install dependencies by running:
 
-1. Clone this repo and install dependencies
+```sh
+git clone https://github.com/Quantum3-Labs/speedrunstark.git challenge-1-decentralized-staking
+cd challenge-1-decentralized-staking
+git checkout decentralized-staking
 
-```bash
-git clone https://github.com/Quantum3-Labs/scaffold-stark-2.git
-cd scaffold-stark-2
 yarn install
 ```
 
-2. Run a local network in the first terminal.
+> in the same terminal, start your local network (a blockchain emulator in your computer):
 
 ```bash
 yarn chain
 ```
 
-This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
+> in a second terminal window, 🛰 deploy your contract (locally):
 
-3. On a second terminal, deploy the sample contract:
-
-```bash
+```sh
+cd challenge-1-decentralized-staking
 yarn deploy
 ```
 
-This command deploys a sample smart contract to the local network. The contract is located in `packages/snfoundry/contracts/src` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/snfoundry/scripts-ts/deploy.ts` to deploy the contract to the network. You can also customize the deploy script.
-
-By default `Scaffold-Stark` takes the first prefunded account from `starknet-devnet` as a deployer address,
-
-4. On a third terminal, start your NextJS app:
-
-```bash
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-## Quickstart with Sepolia Testnet
-
-<details>
-
-1. Make sure you alredy cloned this repo and installed dependencies.
-2. Prepare your environment variables.
-
-Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account contract address and private key.
-
-3. Change your default network to Sepolia testnet.
-
-Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
-
-![chall-0-scaffold-config](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-scaffold-config.png)
-
-4. Get some testnet tokens
-
-You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
-
-> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
-
-4. Open a terminal, deploy the sample contract to Sepolia testnet:
-
-```bash
-yarn deploy --network sepolia
-```
-
-5. On a second terminal, start your NextJS app:
-
-```bash
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-### RPC specific version
-
-To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.7.0`. This repository contains a .env.example file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_7`. Let's verify this RPC version is `0.7.0` by running the following command:
+> in a third terminal window, start your 📱 frontend:
 
 ```sh
-curl --location 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7' \
---data '{
-    "jsonrpc":"2.0",
-    "method":"starknet_specVersion",
-    "id":1
-}'
+cd challenge-1-decentralized-staking
+yarn start
 ```
 
-</details>
+📱 Open <http://localhost:3000> to see the app.
 
-## **What's next**
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
 
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
+🔏 Now you are ready to edit your smart contract `Staker.cairo` in `packages/sfoundry/contracts`.
 
-## Documentation
+---
 
-Visit our [docs](https://www.docs.scaffoldstark.com/) to learn how to start building with Scaffold-Stark.
+⚗️ At this point you will need to know basic Cairo syntax. If not, you can pick it up quickly by tinkering with concepts from [📑 The Cairo Book](https://book.cairo-lang.org/ch13-00-introduction-to-starknet-smart-contracts.html) using [🏗️ Scaffold-Stark-2](https://www.scaffoldstark.com/). (In particular:  Contract's State, storage variables, interface, mappings, events, traits, constructor, and public/private functions.)
 
-To know more about its features, check out our [website](https://scaffoldstark.com)
+---
 
-## Contributing to Scaffold-Stark
+## Checkpoint 1: 🥩 Staking 💵
 
-We welcome contributions to Scaffold-Stark!
+You'll need to track individual `balances` using a LegacyMap:
 
-Please see [CONTRIBUTING.MD](https://github.com/Quantum3-Labs/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark.
+```cairo
+#[storage]
+struct Storage {
+ eth_token_dispatcher: IERC20CamelDispatcher,
+ balances: LegacyMap<ContractAddress, u256>,
+}
+```
+
+And also track a constant threshold at 1 ether.
+
+```cairo
+const THRESHOLD: u256 = 1000000000000000000;
+```
+
+### Checkpoint 1.1: Handling ETH Transactions in Starknet
+
+In Starknet, `ETH` is treated as a token, which means you cannot directly `send value` through a transaction. Instead, you need to `approve` the spending of ETH and then execute a transaction to `transfer` the ETH to a contract. To achieve this, you need to use the predeployed `ETH contract address` in Starkent.
+
+First, define the ETH contract address:
+
+```cairo
+const ETH_CONTRACT_ADDRESS: felt252 = 0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
+```
+
+Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
+
+```cairo
+use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+```
+
+Then, instantiate the `IERC20CamelDispatcher` struct with the address of the ETH contract:
+
+```cairo
+let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
+self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
+```
+
+You can now call the functions defined in the interface on the dispatcher, such as `transfer`, `transferFrom` and `balanceOf`.
+
+---
+
+> 👩‍💻 Write your `stake()` function and test it with the `Debug Contracts` tab in the frontend.
+
+![debugContracts](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-debug.png)
+
+### 🥅 Goals
+
+- [ ] Do you see the balance of the `Staker` contract go up when you `stake()`?
+- [ ] Is your `balance` correctly tracked?
+- [ ] Do you see the events in the `Stake Events` tab?
+
+  ![allStakings](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-events.png)
+
+---
+
+## Checkpoint 2: 🔬 State Machine / Timing ⏱
+
+### State Machine
+
+> ⚙️ Think of your smart contract like a _state machine_. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of ETH, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
+
+Set a `deadline` of `get_block_timestamp() + 60` in the constructor to allow 60 seconds for users to stake.
+
+```cairo
+self.deadline.write(get_block_timestamp() + 60);
+```
+
+👨‍🏫 Smart contracts can't execute automatically, you always need to have a transaction execute to change state. Because of this, you will need to have an `execute()` function that _anyone_ can call, just once, after the `deadline` has expired.
+
+> 👩‍💻 Write your `execute()` function and test it with the Debug Contracts tab
+
+> Check the `ExampleExternalContract.cairo` for the bool you can use to test if it has been completed or not. But do not edit the `ExampleExternalContract.cairo` as it can slow the auto grading.
+
+If the staked amount of the contract `let staked_amount = self.eth_token_dispatcher.read().balanceOf(get_contract_address())` is over the `threshold` by the `deadline`, you will want to call: `self._complete_transfer(staked_amount)`. This will send the funds to the `ExampleExternalContract` and call `complete()`.
+
+If the balance is less than the `threshold`, you want to set a `open_for_withdraw` bool to `true` which will allow users to `withdraw()` their funds.
+
+### Timing
+
+You'll have 30 seconds after deploying until the deadline is reached, you can adjust this in the contract.
+
+> 👩‍💻 Create a `time_left()` function including u64 that returns how much time is left.
+
+⚠️ Be careful! If `get_block_timestamp() >= deadline` you want to return 0;
+
+⏳ _"Time Left"_ will only update if a transaction occurs. You can see the time update by getting funds from the faucet button in navbar just to trigger a new block.
+
+![stakerUI](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-staker.png)
+
+> 👩‍💻 You can call `yarn deploy` again any time you want a fresh contract.
+> You may need it when you want to reload the _"Time Left"_ of your tests.
+
+Your `Staker UI` tab should be almost done and working at this point.
+
+---
+
+### 🥅 Goals
+
+- [ ] Can you see `time_left()` counting down in the Staker UI tab when you trigger a transaction with the faucet button?
+- [ ] If enough ETH is staked by the deadline, does your `execute()` function correctly call `complete()` and stake the ETH?
+- [ ] If the threshold isn't met by the deadline, are you able to `withdraw()` your funds?
+
+---
+
+## Checkpoint 3: 💵 UX 🙎
+
+### 🥅 Goals
+
+- [ ] If you send ETH directly to the contract address does it update your `balance` and the `balance` of the contract?
+
+### ⚔️ Side Quests
+
+- [ ] Can `execute()` get called more than once, and is that okay?
+- [ ] Can you stake and withdraw freely after the `deadline`, and is that okay?
+- [ ] What are other implications of _anyone_ being able to withdraw for someone?
+
+---
+
+### 🐸 It's a trap
+
+- [ ] Make sure funds can't get trapped in the contract! **Try sending funds after you have executed! What happens?**
+- [ ] Try to create a private function called `_not_completed`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
+
+### ⚠️ Test it
+
+- Now is a good time to run `yarn test` to run the automated testing function. It will test that you hit the core checkpoints. You are looking for all green checkmarks and passing tests!
+
+---
+
+## Checkpoint 4: 💾 Deploy your contract! 🛰
+
+📡 Edit the `defaultNetwork` to choose `Sepolia` public Starknet network in `packages/nextjs/scaffold.config.ts`
+
+  ![network](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-scaffold-config.png)
+
+🔐 You will need to generate a **deployer address** using Argent or Braavos wallet, get your account address and private key and put in `packages/snfoundry/.env`
+
+⛽️ You will need to send ETH to your deployer address with your wallet, or get it from a public faucet.
+
+> 📝 If you plan on submitting this challenge, be sure to set your deadline to at least block.timestamp + 72 hours
+
+🚀 Run yarn deploy --network [network] to deploy your smart contract to a public network (mainnet or sepolia).
+
+![allStakings-blockFrom](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-events.png)
+
+> 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/scaffold-eth/se-2-challenges/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)).
+---
+
+## Checkpoint 5: 🚢 Ship your frontend! 🚁
+
+✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the targetNetwork to `chains.sepolia`.
+
+💻 View your frontend at <http://localhost:3000/stakerUI> and verify you see the correct network.
+
+📡 When you are ready to ship the frontend app...
+
+📦 Run `yarn vercel` to package up your frontend and deploy.
+
+> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
+
+> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
+
+> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default 🔥 burner wallets are only available on devnet. You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
+
+#### Configuration of Third-Party Services for Production-Grade Apps
+
+By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
+This is great to complete your **SpeedRunStark**.
+
+For production-grade applications, it's recommended to obtain your own API keys (to prevent rate limiting issues). You can configure these at:
+
+🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env.local`. You can create API keys from the [Infura dashboard](https://www.infura.io/).
+
+> 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
+
+---
+
+> 🏃 Head to your next challenge [here](https://github.com/Quantum3-Labs/speedrunstark/tree/token-vendor).
+
+> 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
