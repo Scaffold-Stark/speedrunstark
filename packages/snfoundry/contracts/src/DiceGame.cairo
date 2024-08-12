@@ -1,38 +1,39 @@
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+
 #[starknet::interface]
 pub trait IDiceGame<T> {
     fn roll_dice(ref self: T, amount: u256);
     fn last_dice_value(self: @T) -> u256;
     fn nonce(self: @T) -> u256;
     fn prize(self: @T) -> u256;
-    fn eth_token(self: @T) -> IERC20CamelDispatcher;
+    fn eth_token_dispatcher(self: @T) -> IERC20CamelDispatcher;
 }
 
 #[starknet::contract]
-mod DiceGame {
+pub mod DiceGame {
     use keccak::keccak_u256s_le_inputs;
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
     use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IDiceGame};
 
     #[event]
     #[derive(Drop, starknet::Event)]
-    enum Event {
+    pub enum Event {
         Roll: Roll,
         Winner: Winner,
     }
 
     #[derive(Drop, starknet::Event)]
-    struct Roll {
+    pub struct Roll {
         #[key]
-        player: ContractAddress,
-        amount: u256,
-        roll: u256,
+        pub player: ContractAddress,
+        pub amount: u256,
+        pub roll: u256,
     }
 
     #[derive(Drop, starknet::Event)]
-    struct Winner {
-        winner: ContractAddress,
-        amount: u256,
+    pub struct Winner {
+        pub winner: ContractAddress,
+        pub amount: u256,
     }
 
     #[storage]
@@ -92,7 +93,7 @@ mod DiceGame {
         fn prize(self: @ContractState) -> u256 {
             self.prize.read()
         }
-        fn eth_token(self: @ContractState) -> IERC20CamelDispatcher {
+        fn eth_token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
             self.eth_token.read()
         }
     }
