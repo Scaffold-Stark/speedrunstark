@@ -23,7 +23,6 @@ import { useDisconnect, useNetwork, useConnect } from "@starknet-react/core";
 import { getStarknetPFPIfExists } from "~~/utils/profile";
 import useConditionalStarkProfile from "~~/hooks/useConditionalStarkProfile";
 import { useTheme } from "next-themes";
-
 const allowedNetworks = getTargetNetworks();
 
 type AddressInfoDropdownProps = {

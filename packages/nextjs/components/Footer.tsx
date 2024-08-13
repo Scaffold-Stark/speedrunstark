@@ -66,7 +66,6 @@ export const Footer = () => {
                 Fork me
               </a>
             </div>
-
             <div className="text-center">
               <a
                 href="https://t.me/+wO3PtlRAreo4MDI9"
