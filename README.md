@@ -26,9 +26,9 @@ Before you begin, you need to install the following tools:
 
 ### Compatible versions
 
-- Scarb - v2.5.4
-- Snforge - v0.25
-- Cairo - v2.5.4
+- Scarb - v2.6.5
+- Snforge - v0.27
+- Cairo - v2.6.4
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
@@ -36,7 +36,7 @@ Then download the challenge to your computer and install dependencies by running
 
 ```sh
 
-git clone https://github.com/Quantum3-Labs/speedrunstark.git --recurse-submodules dice-game
+git clone https://github.com/Quantum3-Labs/speedrunstark.git dice-game
 cd dice-game
 git checkout dice-game
 
@@ -104,7 +104,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 - [ ] Uncomment the code in `packages/nextjs/app/dice/page.tsx` to show a riggedRoll button and contract balance on the main UI tab. Now you can test your function without switching tabs.
 - [ ] Does your riggedRoll function only call `rollTheDice()` when it's going to be a winning roll? What happens when it does call `rollTheDice()`?
 
-![RiggedLosingRoll](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-roll.png)
+![RiggedLosingRoll](./packages/nextjs/public/ch3-roll.png)
 
 ---
 
@@ -125,7 +125,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
-![WithdrawOnlyOwner](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-debug.png)
+![WithdrawOnlyOwner](./packages/nextjs/public/ch3-debug.png)
 
 > ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy.ts`. This will allow your front end address to call the withdraw function.
 

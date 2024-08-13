@@ -1,3 +1,4 @@
+use contracts::DiceGame::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
 use starknet::ContractAddress;
 
 #[starknet::interface]
@@ -6,17 +7,16 @@ pub trait IRiggedRoll<T> {
     fn withdraw(ref self: T, to: ContractAddress, amount: u256);
     fn last_dice_value(self: @T) -> u256;
     fn predicted_roll(self: @T) -> u256;
-    fn dice_game(self: @T) -> ContractAddress;
+    fn dice_game_dispatcher(self: @T) -> IDiceGameDispatcher;
 }
 
 #[starknet::contract]
 mod RiggedRoll {
-    use contracts::DiceGame::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
     use keccak::keccak_u256s_le_inputs;
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::token::erc20::interface::IERC20CamelDispatcherTrait;
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-    use super::IRiggedRoll;
+    use super::{IRiggedRoll, IDiceGameDispatcher, IDiceGameDispatcherTrait};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
@@ -65,8 +65,8 @@ mod RiggedRoll {
         fn predicted_roll(self: @ContractState) -> u256 {
             self.predicted_roll.read()
         }
-        fn dice_game(self: @ContractState) -> ContractAddress {
-            self.dice_game.read().contract_address
+        fn dice_game_dispatcher(self: @ContractState) -> IDiceGameDispatcher {
+            self.dice_game.read()
         }
     }
 }

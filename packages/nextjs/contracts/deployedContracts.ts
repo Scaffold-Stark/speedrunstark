@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     DiceGame: {
       address:
-        "0x56532915f8755d81641ef7da74e358d88ac31ba40bce0c2a53ddef7a6c8dedd",
+        "0x682753de433000cc2ea0752e86fa44c10023b9c1a3547c641ddd2834a51fd16",
       abi: [
         {
           type: "impl",
@@ -167,10 +167,12 @@ const deployedContracts = {
           ],
         },
       ],
+      classHash:
+        "0x30c5a46ac42247a384b77d044a851fb5f284c853043d014b19cf29eeaed03f8",
     },
     RiggedRoll: {
       address:
-        "0x59d7a0a3a619fcecedc8122ff6b9e08cf2a689afc61b84c7939576361c09276",
+        "0x36b4b658a6ad3c82eb386252b5fa2a2c83a64a96dcb4484271cd927b92f78a1",
       abi: [
         {
           type: "impl",
@@ -377,6 +379,8 @@ const deployedContracts = {
           ],
         },
       ],
+      classHash:
+        "0xce37e709ce13262a7803866491fb40eb7b1d8275d915c188a1aaa32172c8f9",
     },
   },
 } as const;

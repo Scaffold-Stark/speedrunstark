@@ -10,6 +10,7 @@ import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { ContractName } from "~~/utils/scaffold-stark/contract";
 import { ContractVariables } from "./ContractVariables";
 import { ContractWriteMethods } from "./ContractWriteMethods";
+import { ClassHash } from "~~/components/scaffold-stark/ClassHash";
 
 type ContractUIProps = {
   contractName: ContractName;
@@ -58,6 +59,10 @@ export const ContractUI = ({
               <div className="flex flex-col gap-1">
                 <span className="font-bold text-neutral">{contractName}</span>
                 <Address address={deployedContractData.address} />
+                <ClassHash
+                  classHash={deployedContractData.classHash}
+                  size="xs"
+                />
                 <div className="flex gap-1 items-center">
                   <span className="font-bold text-sm">Balance:</span>
                   <Balance
