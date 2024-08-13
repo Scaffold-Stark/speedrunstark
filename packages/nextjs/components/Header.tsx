@@ -90,6 +90,7 @@ export const Header = () => {
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
+
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === devnet.id;
   const { provider } = useProvider();
@@ -112,9 +113,8 @@ export const Header = () => {
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
             tabIndex={0}
-            className={`ml-1 btn btn-ghost ${
-              isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
-            }`}
+            className={`ml-1 btn btn-ghost ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"
+              }`}
             onClick={() => {
               setIsDrawerOpen((prevIsOpenState) => !prevIsOpenState);
             }}
