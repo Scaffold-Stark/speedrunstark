@@ -228,15 +228,21 @@ export type ExtractAbiFunctionNamesScaffold<
 > = ExtractAbiFunctionsScaffold<TAbi, TAbiStateMutability>["name"];
 
 // helper function will only take from interfaces : //TODO: see if we can make it more generic
+// helper function will only take from interfaces : //TODO: see if we can make it more generic
 export type ExtractAbiFunctionsScaffold<
   TAbi extends Abi,
   TAbiStateMutability extends AbiStateMutability = AbiStateMutability,
 > = Extract<
   ExtractAbiInterfaces<TAbi>["items"][number],
-  {
-    type: "function";
-    state_mutability: TAbiStateMutability;
-  }
+  | {
+      state_mutability: TAbiStateMutability;
+    }
+  | Extract<
+      TAbi[number],
+      {
+        type: "function";
+      }
+    >
 >;
 
 // helper function will only take from interfaces : //TODO: see if we can make it more generic
@@ -312,31 +318,6 @@ export type AbiFunctionOutputs<
   TFunctionName extends string,
 > = ExtractAbiFunctionScaffold<TAbi, TFunctionName>["outputs"];
 
-/*export type AbiEventInputs<TAbi extends Abi, TEventName extends ExtractAbiEventNames<TAbi>> = ExtractAbiEvent<
-  TAbi,
-  TEventName
->["inputs"];
-
-type IndexedEventInputs<
-  TContractName extends ContractName,
-  TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
-> = Extract<AbiEventInputs<ContractAbi<TContractName>, TEventName>[number], { indexed: true }>;
-
-export type EventFilters<
-  TContractName extends ContractName,
-  TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
-> = IsContractDeclarationMissing<
-  any,
-  IndexedEventInputs<TContractName, TEventName> extends never
-    ? never
-    : {
-      [Key in IsContractDeclarationMissing<
-        any,
-        IndexedEventInputs<TContractName, TEventName>["name"]
-      >]?: AbiParameterToPrimitiveType<Extract<IndexedEventInputs<TContractName, TEventName>, { name: Key }>>;
-    }
->;*/
-
 export type UseScaffoldEventHistoryConfig<
   TContractName extends ContractName,
   TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
@@ -379,7 +360,7 @@ export function getFunctionsByStateMutability(
     });
 }
 
-// TODO: in the future when param decoding is standarized in wallets argent and braavos we can return the object
+// TODO: in the future when param decoding is standardized in wallets argent and braavos we can return the object
 // TODO : starknet react makes an input validation so we need to return objects for function reads
 function tryParsingParamReturnValues(fn: (x: any) => {}, param: any) {
   try {

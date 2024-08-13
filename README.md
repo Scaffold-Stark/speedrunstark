@@ -1,6 +1,10 @@
 # 🚩 Challenge 3: 🎲 Dice Game
 
+<<<<<<< HEAD
 ![readme-3](./packages/nextjs/public/hero3.png)
+=======
+![readme-3](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/dice-game/packages/nextjs/public/hero3.png)
+>>>>>>> origin/dice-game
 
 📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
 
@@ -112,7 +116,11 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 You have beaten the game, but where is your money? Since the RiggedRoll contract is the one calling `rollTheDice()`, that is where the prize money is being sent.
 
+<<<<<<< HEAD
 ![RiggedRollAddress](./packages/nextjs/public/ch3-events.png)
+=======
+![RiggedRollAddress](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/dice-game/packages/nextjs/public/ch3-events.png)
+>>>>>>> origin/dice-game
 
 📥 Create a `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
 
