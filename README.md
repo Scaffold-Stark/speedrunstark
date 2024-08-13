@@ -24,16 +24,16 @@ Before you begin, you need to install the following tools:
 
 ### Compatible versions
 
-- Scarb - v2.5.4
-- Snforge - v0.25.0
-- Cairo - v2.5.4
+- Scarb - v2.6.5
+- Snforge - v0.27.0
+- Cairo - v2.6.4
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-git clone https://github.com/Quantum3-Labs/speedrunstark.git --recurse-submodules challenge-1-decentralized-staking
+git clone https://github.com/Quantum3-Labs/speedrunstark.git challenge-1-decentralized-staking
 cd challenge-1-decentralized-staking
 git checkout decentralized-staking
 
@@ -137,10 +137,10 @@ You can now call the functions defined in the interface on the dispatcher, such 
 
 > ⚙️ Think of your smart contract like a _state machine_. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of ETH, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
 
-Set a `deadline` of `get_block_timestamp() + 30` in the constructor to allow 30 seconds for users to stake.
+Set a `deadline` of `get_block_timestamp() + 60` in the constructor to allow 60 seconds for users to stake.
 
 ```cairo
-self.deadline.write(get_block_timestamp() + 30);
+self.deadline.write(get_block_timestamp() + 60);
 ```
 
 👨‍🏫 Smart contracts can't execute automatically, you always need to have a transaction execute to change state. Because of this, you will need to have an `execute()` function that _anyone_ can call, just once, after the `deadline` has expired.

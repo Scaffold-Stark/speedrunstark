@@ -200,4 +200,3 @@ fn test_withdraw_functionality() {
         "Balance should be increased by the stake amount"
     );
 }
-

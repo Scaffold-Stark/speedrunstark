@@ -59,7 +59,7 @@ pub mod Staker {
     ) {
         self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
         self.external_contract_address.write(external_contract_address);
-    // Set the deadline to 30 seconds from now. Implement your code here.
+    // Set the deadline to 60 seconds from now. Implement your code here.
 
     }
 

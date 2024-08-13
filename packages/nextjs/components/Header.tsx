@@ -18,7 +18,7 @@ import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useProvider } from "@starknet-react/core";
 
-export type HeaderMenuLink = {
+type HeaderMenuLink = {
   label: string;
   href: string;
   icon?: React.ReactNode;
@@ -85,13 +85,13 @@ export const HeaderMenuLinks = () => {
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === devnet.id;
+
   const { provider } = useProvider();
   const { address, status } = useAccount();
   const [isDeployed, setIsDeployed] = useState(true);
@@ -143,7 +143,7 @@ export const Header = () => {
               alt="SE2 logo"
               className="cursor-pointer"
               fill
-              src="/challenge-icon-starknet.svg"
+              src="/logo.svg"
             />
           </div>
           <div className="flex flex-col">
