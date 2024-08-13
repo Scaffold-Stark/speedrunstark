@@ -29,7 +29,7 @@ export const ContractReadMethods = ({
       };
     });
   if (!functionsToDisplay.length) {
-    return <>No read methods</>;
+    return <span className="text-neutral">No read methods</span>;
   }
   return (
     <>

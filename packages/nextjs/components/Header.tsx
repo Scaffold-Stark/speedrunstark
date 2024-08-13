@@ -9,7 +9,6 @@ import {
   BugAntIcon,
   CircleStackIcon,
   InboxStackIcon,
-  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";

@@ -112,11 +112,11 @@ export const Address = ({
         )}
       </div>
       {disableAddressLink ? (
-        <span className={`ml-1.5 text-${size} font-normal`}>
+        <span className={`ml-1.5 text-${size} font-normal text-neutral`}>
           {profile?.name || displayAddress}
         </span>
       ) : targetNetwork.network === devnet.network ? (
-        <span className={`ml-1.5 text-${size} font-normal`}>
+        <span className={`ml-1.5 text-${size} font-normal text-neutral`}>
           <Link href={blockExplorerAddressLink}>
             {profile?.name || displayAddress}
           </Link>
