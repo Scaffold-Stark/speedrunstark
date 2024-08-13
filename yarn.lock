@@ -1854,6 +1854,7 @@ __metadata:
     "@types/yargs": ^17.0.32
     dotenv: ^16.3.1
     envfile: ^6.18.0
+    globals: ^15.8.0
     prettier: ^2.8.8
     shx: ^0.3.4
     starknet: 6.7.0
@@ -4981,6 +4982,13 @@ __metadata:
   dependencies:
     type-fest: ^0.20.2
   checksum: 56066ef058f6867c04ff203b8a44c15b038346a62efbc3060052a1016be9f56f4cf0b2cd45b74b22b81e521a889fc7786c73691b0549c2f3a6e825b3d394f43c
+  languageName: node
+  linkType: hard
+
+"globals@npm:^15.8.0":
+  version: 15.8.0
+  resolution: "globals@npm:15.8.0"
+  checksum: 92d0522c47226ca12f6fd8938df04b37852d812cc5a84e31890d919497f102a818d2081570bc08c2dd6353cd8b2699e7180bc468abbbec8c858a19e0fa53aeb8
   languageName: node
   linkType: hard
 

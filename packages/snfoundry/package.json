@@ -4,6 +4,7 @@
   "scripts": {
     "chain": "starknet-devnet --seed 0 --account-class cairo1",
     "deploy": "ts-node scripts-ts/helpers/deploy-wrapper.ts",
+    "deploy:reset": "ts-node scripts-ts/helpers/deploy-wrapper.ts --reset",
     "test": "cd contracts && snforge test",
     "test-eslint": "node eslint-contract-name/eslint-plugin-contract-names.test.js",
     "compile": "cd contracts && scarb build",
@@ -15,6 +16,7 @@
     "@types/node": "^20",
     "@types/prettier": "^2",
     "@types/yargs": "^17.0.32",
+    "globals": "^15.8.0",
     "shx": "^0.3.4",
     "ts-node": "^10.9.2",
     "typescript": "^5",

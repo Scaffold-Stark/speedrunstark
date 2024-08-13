@@ -123,7 +123,7 @@ Prepare your environment variables.
 
 > 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
 
-![connect-wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/gabi/simple-nft-example/packages/nextjs/public/ch0-wallet.png)
+![connect-wallet](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/simple-nft-example/packages/nextjs/public/ch0-wallet.png)
 
 > You should see the correct network in the frontend (<http://localhost:3000>):
 

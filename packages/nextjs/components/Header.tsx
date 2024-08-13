@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +20,7 @@ import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useProvider } from "@starknet-react/core";
 
-export type HeaderMenuLink = {
+type HeaderMenuLink = {
   label: string;
   href: string;
   icon?: React.ReactNode;
@@ -61,7 +62,6 @@ export const HeaderMenuLinks = () => {
   useEffect(() => {
     setIsDark(theme === "dark");
   }, [theme]);
-
   return (
     <>
       {menuLinks.map(({ label, href, icon }) => {
@@ -93,13 +93,13 @@ export const HeaderMenuLinks = () => {
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
-
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === devnet.id;
+
   const { provider } = useProvider();
   const { address, status } = useAccount();
   const [isDeployed, setIsDeployed] = useState(true);
@@ -151,7 +151,7 @@ export const Header = () => {
               alt="SE2 logo"
               className="cursor-pointer"
               fill
-              src="/challenge-icon-starknet.svg"
+              src="/logo.svg"
             />
           </div>
           <div className="flex flex-col">
@@ -170,6 +170,7 @@ export const Header = () => {
           </span>
         ) : null}
         <CustomConnectButton />
+        {/* <FaucetButton /> */}
         <SwitchTheme
           className={`pointer-events-auto ${
             isLocalNetwork ? "self-end md:self-auto" : ""

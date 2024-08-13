@@ -28,7 +28,7 @@ export const useScaffoldReadContract = <
     address: deployedContract?.address,
     abi: deployedContract?.abi,
     watch: true,
-    args: args ? args : [],
+    args: args ?? [],
     enabled: true,
     blockIdentifier: "pending" as BlockNumber,
     ...(readConfig as any),
