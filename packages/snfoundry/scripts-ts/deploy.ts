@@ -6,46 +6,16 @@ import {
 } from "./deploy-contract";
 import { green } from "./helpers/colorize-log";
 
-/**
- * Deploy a contract using the specified parameters.
- *
- * @example (deploy contract with contructorArgs)
- * const deployScript = async (): Promise<void> => {
- *   await deployContract(
- *     {
- *       contract: "YourContract",
- *       contractName: "YourContractExportName",
- *       constructorArgs: {
- *         owner: deployer.address,
- *       },
- *       options: {
- *         maxFee: BigInt(1000000000000)
- *       }
- *     }
- *   );
- * };
- *
- * @example (deploy contract without contructorArgs)
- * const deployScript = async (): Promise<void> => {
- *   await deployContract(
- *     {
- *       contract: "YourContract",
- *       contractName: "YourContractExportName",
- *       options: {
- *         maxFee: BigInt(1000000000000)
- *       }
- *     }
- *   );
- * };
- *
- *
- * @returns {Promise<void>}
- */
 const deployScript = async (): Promise<void> => {
+  const { address: exampleContractAddr } = await deployContract({
+    contract: "ExampleExternalContract",
+  });
   await deployContract({
-    contract: "YourContract",
+    contract: "Staker",
     constructorArgs: {
-      owner: deployer.address,
+      eth_contract:
+        "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      external_contract_address: exampleContractAddr,
     },
   });
 };
