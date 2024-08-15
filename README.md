@@ -22,6 +22,7 @@ Before you begin, you need to install the following tools:
 
 ### Compatible versions
 
+- Starknet-devnet - v0.0.4
 - Scarb - v2.6.5
 - Snforge - v0.27.0
 - Cairo - v2.6.4
@@ -81,7 +82,7 @@ yarn start
 
 👛 Open an window Browser and navigate to <http://localhost:3000>
 
-🎟 Transfer an NFT from one address to another using the UI:
+🎟 Transfer an NFT from one address to another using the `Copy address` and `Switch Account` from UI:
 
 ![image](https://github.com/Quantum3-Labs/speedrunstark/blob/simple-nft-example/packages/nextjs/public/ch0-nfts-images-transfer.png?raw=true)
 
@@ -109,7 +110,7 @@ Prepare your environment variables.
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
 
-⛽️ You will need to send ETH or STRK to your deployer Contract Addres with your wallet, or get it from a public faucet of your chosen network.
+⛽️ You will need to send `ETH` or `STRK` token to your deployer address with your wallet, or get it from a public faucet of your chosen network.
 
 > Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
 
@@ -149,12 +150,12 @@ yarn test
 
 #### Configuration of Third-Party Services for Production-Grade Apps
 
-By default, 🏗 Scaffold-Stark provides predefined API keys for some services such as Infura. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
+By default, 🏗 Scaffold-Stark provides predefined Open API endpoint for some services such as Blast. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
 This is great to complete your **SpeedRunStark**.
 
 For production-grade applications, it's recommended to obtain your own API keys (to prevent rate limiting issues). You can configure these at:
 
-🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env.local`. You can create API keys from the [Infura dashboard](https://www.infura.io/).
+🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env.local`. You can create API keys from the [Alchemy dashboard](https://dashboard.alchemy.com/).
 
 > 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
 
