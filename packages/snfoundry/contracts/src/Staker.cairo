@@ -59,25 +59,31 @@ pub mod Staker {
     ) {
         self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
         self.external_contract_address.write(external_contract_address);
-    // Set the deadline to 60 seconds from now. Implement your code here.
+    // ToDo Checkpoint 2: Set the deadline to 60 seconds from now. Implement your code here.
 
     }
 
     #[abi(embed_v0)]
     impl StakerImpl of IStaker<ContractState> {
+        // ToDo Checkpoint 1: Implement your `stake` function here
+        // ToDo Checkpoint 3: Assert that the staking period has not ended
         fn stake(
             ref self: ContractState, amount: u256
-        ) { // Note: In UI and Debug contract `sender` should call `approve`` before to `transfer`` the amount to the staker contract
-        // Implement your stake function here
-
-        // self.emit(Stake { sender, amount }); // uncomment to emit the Stake event
+        ) { // Note: In UI and Debug contract `sender` should call `approve`` before to `transfer` the amount to the staker contract
+            //self.emit(Stake { sender, amount }); // ToDo Checkpoint 1: Uncomment to emit the Stake event
         }
 
         // Function to execute the transfer or allow withdrawals after the deadline
-        fn execute(ref self: ContractState) { // Implement your execute function here
+        // ToDo Checkpoint 2: Implement your `execute` function here
+        // In this implimentation, we should call the `complete_transfer` function if the staked amount is greater than or equal to the threshold
+        // Otherwise, we should call `open_for_withdraw` function
+        // ToDo Checkpoint 3: Assert that the staking period has ended
+        // ToDo Checkpoint 3: Protect the function calling `not_completed` function before the execution
+        fn execute(ref self: ContractState) {
         }
 
-        fn withdraw(ref self: ContractState) { // Implement your withdraw function here
+        // ToDo Checkpoint 3: Implement your `withdraw` function here
+        fn withdraw(ref self: ContractState) {
         }
 
         fn balances(self: @ContractState, account: ContractAddress) -> u256 {
@@ -107,24 +113,29 @@ pub mod Staker {
         fn example_external_contract(self: @ContractState) -> ContractAddress {
             self.external_contract_address.read()
         }
-        // Function to check if the external contract is completed. 
+        // Read Function to check if the external contract is completed. 
+        // ToDo Checkpoint 3: Implement your completed function here
         fn completed(self: @ContractState) -> bool {
-            // Implement your completed function here
             false
         }
+        // ToDo Checkpoint 2: Implement your time_left function here
         fn time_left(self: @ContractState) -> u64 {
-            // Implement your time_left function here
             0
         }
     }
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        fn _complete_transfer(
+        // ToDo Checkpoint 2: Implement your complete_transfer function here
+        // This function should be called after the deadline has passed and the staked amount is greater than or equal to the threshold
+        // You have to call/use this function in the above `execute` function
+        // This function should call the `complete` function of the external contract and transfer the staked amount to the external contract
+        fn complete_transfer(
             ref self: ContractState, amount: u256
-        ) { // Implement your _complete_transfer function here
-        }
-        fn _not_completed(ref self: ContractState) { // Implement your _not_completed function here
+        ) { 
+            // Note: Staker contract should approve to transfer the staked_amount to the external contract
+        // ToDo Checkpoint 3: Implement your not_completed function here
+        fn not_completed(ref self: ContractState) {
         }
     }
 }

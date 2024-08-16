@@ -63,13 +63,13 @@ yarn start
 
 📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:reset` for a completely fresh deploy.
 
 🔏 Now you are ready to edit your smart contract `Staker.cairo` in `packages/sfoundry/contracts`.
 
 ---
 
-⚗️ At this point you will need to know basic Cairo syntax. If not, you can pick it up quickly by tinkering with concepts from [📑 The Cairo Book](https://book.cairo-lang.org/ch13-00-introduction-to-starknet-smart-contracts.html) using [🏗️ Scaffold-Stark-2](https://www.scaffoldstark.com/). (In particular:  Contract's State, storage variables, interface, mappings, events, traits, constructor, and public/private functions.)
+⚗️ At this point you will need to know basic Cairo syntax. If not, you can pick it up quickly by tinkering with concepts from [📑 The Cairo Book](https://book.cairo-lang.org/ch13-00-introduction-to-starknet-smart-contracts.html) using [🏗️ Scaffold-Stark](https://www.scaffoldstark.com/). (In particular:  Contract's State, storage variables, interface, mappings, events, traits, constructor, and public/private functions.)
 
 ---
 
@@ -82,6 +82,7 @@ You'll need to track individual `balances` using a LegacyMap:
 struct Storage {
  eth_token_dispatcher: IERC20CamelDispatcher,
  balances: LegacyMap<ContractAddress, u256>,
+ ...
 }
 ```
 
@@ -93,12 +94,31 @@ const THRESHOLD: u256 = 1000000000000000000;
 
 ### Checkpoint 1.1: Handling ETH Transactions in Starknet
 
-In Starknet, `ETH` is treated as a token, which means you cannot directly `send value` through a transaction. Instead, you need to `approve` the spending of ETH and then execute a transaction to `transfer` the ETH to a contract. To achieve this, you need to use the predeployed `ETH contract address` in Starkent.
+In Starknet, `ETH` is managed as a token, which means you cannot directly `send value` through a transaction. Meaning you must `approve` ETH spending and then `transfer` it using a contract. This involves utilizing the predeployed `ETH contract address` in Starknet.
 
-First, define the ETH contract address:
+In this challenge, we’ll demonstrate how to handle ETH transactions by passing the ETH contract address as an argument to the contract constructor.
+
+First, you have to define your constructor function in the `Staker` contract:
 
 ```cairo
-const ETH_CONTRACT_ADDRESS: felt252 = 0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7;
+ #[constructor]
+    pub fn constructor(
+        ref self: ContractState,
+        eth_contract: ContractAddress,
+  ...
+    ) 
+
+Then, pass the `eth_contract` address as an argument to the `deployContract` function in the `deploy.ts` file:
+
+```ts
+  await deployContract({
+    contract: "Staker",
+    constructorArgs: {
+      eth_contract:
+        "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      ...
+    },
+  });
 ```
 
 Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
@@ -107,14 +127,13 @@ Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 ```
 
-Then, instantiate the `IERC20CamelDispatcher` struct with the address of the ETH contract:
+In the constructor function, instantiate the `IERC20CamelDispatcher` struct with the address of the ETH contract address:
 
 ```cairo
-let eth_contract: ContractAddress = ETH_CONTRACT_ADDRESS.try_into().unwrap();
-self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
+        self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
 ```
 
-You can now call the functions defined in the interface on the dispatcher, such as `transfer`, `transferFrom` and `balanceOf`.
+With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage ETH transactions effectively.
 
 ---
 
@@ -150,7 +169,7 @@ self.deadline.write(get_block_timestamp() + 60);
 
 > Check the `ExampleExternalContract.cairo` for the bool you can use to test if it has been completed or not. But do not edit the `ExampleExternalContract.cairo` as it can slow the auto grading.
 
-If the staked amount of the contract `let staked_amount = self.eth_token_dispatcher.read().balanceOf(get_contract_address())` is over the `threshold` by the `deadline`, you will want to call: `self._complete_transfer(staked_amount)`. This will send the funds to the `ExampleExternalContract` and call `complete()`.
+If the staked amount of the contract `let staked_amount = self.eth_token_dispatcher.read().balanceOf(get_contract_address())` is over the `threshold` by the `deadline`, you will want to call: `self.complete_transfer(staked_amount)`. This will send the funds to the `ExampleExternalContract` and call `complete()`.
 
 If the balance is less than the `threshold`, you want to set a `open_for_withdraw` bool to `true` which will allow users to `withdraw()` their funds.
 
@@ -158,15 +177,15 @@ If the balance is less than the `threshold`, you want to set a `open_for_withdra
 
 You'll have 60 seconds after deploying until the deadline is reached, you can adjust this in the contract.
 
-> 👩‍💻 Create a `time_left()` function including u64 that returns how much time is left.
+> 👩‍💻 Implement the `time_left()` function that returns how much time is left.
 
-⚠️ Be careful! If `get_block_timestamp() >= deadline` you want to return 0;
+⚠️ Be careful! If `get_block_timestamp() >= deadline` you want to `return 0`;
 
 ⏳ _"Time Left"_ will only update if a transaction occurs. You can see the time update by getting funds from the faucet button in navbar just to trigger a new block.
 
 ![stakerUI](https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/decentralized-staking/packages/nextjs/public/ch1-staker.png)
 
-> 👩‍💻 You can call `yarn deploy` again any time you want a fresh contract.
+> 👩‍💻 You can call `yarn deploy:reset` any time you want a fresh contract, it will get re-deployed even if there are no changes on it.  
 > You may need it when you want to reload the _"Time Left"_ of your tests.
 
 Your `Staker UI` tab should be almost done and working at this point.
@@ -198,7 +217,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 ### 🐸 It's a trap
 
 - [ ] Make sure funds can't get trapped in the contract! **Try sending funds after you have executed! What happens?**
-- [ ] Try to create a private function called `_not_completed`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
+- [ ] Implement the private function called `not_completed`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
 ### ⚠️ Test it
 

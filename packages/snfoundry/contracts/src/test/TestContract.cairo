@@ -115,7 +115,7 @@ fn test_execute_functionality() {
     start_cheat_block_timestamp_global(get_block_timestamp() + 15);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
-    assert_eq!(time_left, 15, "There should be 15 seconds left");
+    assert_eq!(time_left, 45, "There should be 45 seconds left");
 
     println!("-- Staking a full ETH ...");
     let amount_to_stake: u256 = 1_000_000_000_000_000_000; // 1_ETH_IN_WEI
@@ -125,8 +125,8 @@ fn test_execute_functionality() {
     staker_dispatcher.stake(amount_to_stake);
     println!("-- Staked 1 ETH");
 
-    // Increase the block_timestamp by 15 seconds
-    start_cheat_block_timestamp_global(get_block_timestamp() + 15);
+    // Increase the block_timestamp by 45 seconds
+    start_cheat_block_timestamp_global(get_block_timestamp() + 45);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
     assert_eq!(time_left, 0, "Time should be up now");
@@ -175,7 +175,7 @@ fn test_withdraw_functionality() {
     assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
 
     // Increase the block_timestamp by 30 seconds
-    start_cheat_block_timestamp_global(get_block_timestamp() + 30);
+    start_cheat_block_timestamp_global(get_block_timestamp() + 60);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
     assert_eq!(time_left, 0, "Time should be up now");

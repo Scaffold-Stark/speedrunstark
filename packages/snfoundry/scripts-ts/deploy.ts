@@ -2,7 +2,6 @@ import {
   deployContract,
   executeDeployCalls,
   exportDeployments,
-  deployer,
 } from "./deploy-contract";
 import { green } from "./helpers/colorize-log";
 
