@@ -174,7 +174,7 @@ fn test_withdraw_functionality() {
     println!("-- New balance in Staker contract: {:?} wei", new_balance);
     assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
 
-    // Increase the block_timestamp by 30 seconds
+    // Increase the block_timestamp by 60 seconds
     start_cheat_block_timestamp_global(get_block_timestamp() + 60);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);

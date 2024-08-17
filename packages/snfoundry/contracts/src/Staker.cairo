@@ -134,6 +134,7 @@ pub mod Staker {
             ref self: ContractState, amount: u256
         ) { 
             // Note: Staker contract should approve to transfer the staked_amount to the external contract
+        }
         // ToDo Checkpoint 3: Implement your not_completed function here
         fn not_completed(ref self: ContractState) {
         }
