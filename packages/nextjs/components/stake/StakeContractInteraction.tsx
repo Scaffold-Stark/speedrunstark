@@ -28,7 +28,6 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   });
   const {
     value: exampleExternalContractBalance,
-    //refetch: refetchExampleExternalContract,
   } = useScaffoldEthBalance({
     address: ExampleExternalContact?.address,
   });
@@ -86,10 +85,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const wrapInTryCatch =
     (fn: () => Promise<any>, errorMessageFnDescription: string) => async () => {
       try {
-        await fn().then(() => {
-          //refetchStakeContract();
-          //refetchExampleExternalContract();
-        });
+        await fn();
       } catch (error) {
         console.error(
           `Error calling ${errorMessageFnDescription} function`,
