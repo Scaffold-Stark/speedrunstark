@@ -62,33 +62,30 @@ mod Vendor {
         ref self: ContractState,
         eth_token_address: ContractAddress,
         your_token_address: ContractAddress,
+    // ToDo Checkpoint 2: Add `owner` parameter to the constructor.
     ) {
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
-    // Implement your constructor here.
-    // ToDo: Initialize the owner of the contract.
+    // ToDo Checkpoint 2: Initialize the owner of the contract.
     }
 
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {
-        fn buy_tokens(
-            ref self: ContractState, eth_amount_wei: u256
-        ) { // Implement your function buy_tokens here.
-        }
+        fn buy_tokens(ref self: ContractState, eth_amount_wei: u256) {}
+        //ToDo Checkpoint 2: Implement your function buy_tokens here.
 
-        fn withdraw(ref self: ContractState) { // Implement your function withdraw here.
-        }
+        fn withdraw(ref self: ContractState) {}
+        // ToDo Checkpoint 2: Implement your function withdraw here.
 
         fn sell_tokens(
             ref self: ContractState, amount_tokens: u256
-        ) { // Implement your function sell_tokens here.
+        ) { // ToDo Checkpoint 3: Implement your function sell_tokens here.
         }
 
-        fn tokens_per_eth(
-            self: @ContractState
-        ) -> u256 { // Modify to return the amount of tokens per 1 ETH.
+        fn tokens_per_eth(self: @ContractState) -> u256 {
             0
         }
+        // ToDo Checkpoint 2: Modify to returns the `tokensPerEth` value.
 
         fn your_token(self: @ContractState) -> ContractAddress {
             self.your_token.read().contract_address

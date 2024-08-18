@@ -15,20 +15,21 @@ const deployScript = async (): Promise<void> => {
       recipient: deployer.address, // ~~~YOUR FRONTEND ADDRESS HERE~~~~
     },
   });
+
+  // ToDo Checkpoint 2:: Uncomment Vendor deploy lines
+  // vendor = await deployContract({
+  //  contract: "Vendor",
+  //  constructorArgs: {
+  //    eth_token_address:
+  //     "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+  //    your_token_address: your_token.address,
+
+  // ToDo Checkpoint 2: Add owner address, should be the same as `deployer.address`
+  // },
+  //});
 };
 
-// Todo: Uncomment Vendor deploy lines
-// vendor = await deployContract({
-//  contract: "Vendor",
-//  constructorArgs: {
-//   eth_token_address:
-//    "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
-//  your_token_address: your_token.address,
-
-// Todo: Add owner address, should be the same as `deployer.address`
-// },
-// });
-
+// ToDo Checkpoint 2: Uncomment to `transfer` 1000 tokens to vendor address.
 // const transferScript = async (): Promise<void> => {
 //transfer 1000 GLD tokens to VendorContract
 //  await deployer.execute(
@@ -55,8 +56,9 @@ deployScript()
   .then(() => {
     executeDeployCalls().then(() => {
       exportDeployments();
+      // ToDo Checkpoint 2: Uncomment `transferScript`.
       // transferScript();
     });
-    console.log("All Setup Done");
+    console.log(green("All Setup Done"));
   })
   .catch(console.error);

@@ -167,13 +167,15 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 > ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` contract with the `owner` address.
 
 ```ts
-  const vendor = await deployContract(
-    {
-      token_address: your_token.address,
+   vendor = await deployContract({
+    contract: "Vendor",
+    constructorArgs: {
+      eth_token_address:
+      "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      your_token_address: your_token.address,
       owner: deployer.address,
     },
-    "Vendor"
-  );
+  });
 ```
 
 ### 🥅 Goals
@@ -236,21 +238,25 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 ## Checkpoint 4: 💾 Deploy your contracts! 🛰
 
-📡 Edit the `defaultNetwork` to your choice of Starknet networks in `packages/nextjs/scaffold.config.ts`
+📡 Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
 
-🔐 In devnet you can choose a burner wallet auto-generated
+![network](./packages/nextjs/public/ch0-scaffold-config.png)
 
-⛽️ You will need to send ETH to your deployer address with your wallet if not in devnet, or get it from a public faucet of your chosen network.
+🔐 Prepare your environment variables.
 
-🚀 Run `yarn deploy` to deploy your smart contract to a public network (selected in `scaffold.config.ts`)
+> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
 
-> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+
+🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
+
+> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/challenge-2-token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
 
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁
 
-✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia`.
+> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
 
 💻 View your frontend at <http://localhost:3000/stakerUI> and verify you see the correct network.
 
@@ -261,8 +267,6 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 > Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
 
 > If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
-
-> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default, 🔥 `burner wallets` are only available on `devnet` . You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
 #### Configuration of Third-Party Services for Production-Grade Apps
 
@@ -278,5 +282,5 @@ For production-grade applications, it's recommended to obtain your own API keys 
 ---
 
 > 🏃 Head to your next challenge [here](https://github.com/Quantum3-Labs/speedrunstark/tree/dice-game).
->
-> � Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
+
+> 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
