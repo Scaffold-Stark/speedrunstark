@@ -76,6 +76,8 @@ yarn start
 
 🔒 You will not be changing any code in the `DiceGame.cairo` contract in this challenge. You will write your own contract to predict the outcome, then only roll the dice when it is favourable.
 
+💸 Connect to the first prefunded account of `starknet devnet` clicking on the top right `Connect` button, and roll the dice a few times. Watch the balance of the DiceGame contract in the Debug tab. It increases on a failed roll and decreases by the prize amount on a successful roll.
+
 ### 🥅 Goals
 
 - [ ] Track the cairo code to find out how the DiceGame contract is generating random numbers.
@@ -85,25 +87,23 @@ yarn start
 
 ## Checkpoint 2: 🔑 Rigged Contract
 
-Start by adding the ETh token address in the `RiggedRoll.cairo` contract to allow it to receive Eth. This will allow us to fund the RiggedRoll contract from the faucet which is required for our contract to call the `rollTheDice()` function.
-
-Next add a `riggedRoll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `rollTheDice()` on the DiceGame contract.
+In the  RiggedRoll contract implement the `rigged_roll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `roll_dice()` on the DiceGame contract.
 
 🃏 Predict the outcome by generating your random numbers in the exact same way as the DiceGame contract.
 
-> 📣 Reminder! Calling `rollTheDice()` will fail unless you transfer a value of at least .002 Eth!.
+> 📣 Reminder! Calling `roll_dice()` will fail unless you transfer a value of at least .002 Eth!. That's why in order to call `rigged_roll()` the user will need to transfer a value of at least .002 Eth.
 
 🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `deploy.ts` file in `packages/snfoundry/script-ts/deploy.ts`
 
-💸 You will need to send some funds to your RiggedRoll contract before doing your first roll, you can use the Faucet button at the bottom left of the page.
+💸 In case you need some funds, you can use the Faucet button at the bottom left of the page.
 
-❓ If you're struggling to get the exact same random number as the DiceGame contract, try adding some `console.log()` statements in both contracts to help you track the values. These messages will appear in the Hardhat node terminal.
+❓ If you're struggling to get the exact same random number as the DiceGame contract, go to the `test` folder, and try adding some `println!` statements in some tests, it will help you track the values. These messages will appear in terminal where you run `yarn test`.
 
 ### ⚔️ Side Quest
 
-- [ ] Add a statement to require `assert(contract_balance >= 2000000000000000,` in your riggedRoll function. This will help prevent calling the `rollTheDice()` function without enough value.
+- [ ] Add a statement to require `assert(contract_balance >= 2000000000000000,` in your riggedRoll function. This will help prevent calling the `roll_dice()` function without enough value.
 - [ ] Uncomment the code in `packages/nextjs/app/dice/page.tsx` to show a riggedRoll button and contract balance on the main UI tab. Now you can test your function without switching tabs.
-- [ ] Does your riggedRoll function only call `rollTheDice()` when it's going to be a winning roll? What happens when it does call `rollTheDice()`?
+- [ ] Does your riggedRoll function only call `roll_dice()` when it's going to be a winning roll? What happens when it does call `roll_dice()`?
 
 ![RiggedLosingRoll](./packages/nextjs/public/ch3-roll.png)
 
@@ -111,11 +111,11 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 ## Checkpoint 3: 💵 Where's my money?!?
 
-You have beaten the game, but where is your money? Since the RiggedRoll contract is the one calling `rollTheDice()`, that is where the prize money is being sent.
+You have beaten the game, but where is your money? Since the RiggedRoll contract is the one calling `roll_dice()`, that is where the prize money is being sent.
 
 ![RiggedRollAddress](./packages/nextjs/public/ch3-events.png)
 
-📥 Create a `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
+📥 Implement the `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
 
 ### 🥅 Goals
 
@@ -128,35 +128,29 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 ![WithdrawOnlyOwner](./packages/nextjs/public/ch3-debug.png)
 
-> ⚠️ But wait, I am not the owner! You will want to set your front end address as the owner in `deploy.ts`. This will allow your front end address to call the withdraw function.
+> ⚠️ But wait, I am not the owner! You will want to set your deployer address as the owner in `deploy.ts`. This will allow your deployer address to call the withdraw function.
 
 ## Checkpoint 4: 💾 Deploy your contracts! 🛰
 
-📡 Edit the `defaultNetwork` to your choice of public Starknet networks in `packages/nextjs/scaffold.config.ts` to `sepolia`.
+📡 Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
 
 ![network](./packages/nextjs/public/ch0-scaffold-config.png)
 
-> Prepare your environment variables.
+🔐 Prepare your environment variables.
 
-```shell
-cp packages/snfoundry/.env.example packages/snfoundry/.env
-```
+> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
 
-🔐 You will need to generate a *deployer address* using Argent or Braavos, get your private key and put in `packages/snfoundry/.env`
+⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
-⛽️ You will need to send ETH or STRK to your deployer Contract Addres with your wallet, or get it from a public faucet of your chosen network.
+🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
 
-> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
-
-🚀 Run `yarn deploy --{DESIRED NETWORK}` , we support sepolia, mainnet and devnet
-
-> 💬 Hint: you can `yarn deploy --network sepolia`.
+> 💬 Hint: you input `yarn deploy --network sepolia`.
 
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁
 
-✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia` or any other public network.
+> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
 
 💻 View your frontend at <http://localhost:3000/dice> and verify you see the correct network.
 
@@ -167,8 +161,6 @@ cp packages/snfoundry/.env.example packages/snfoundry/.env
 > Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
 
 > If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
-
-> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default 🔥 `burner wallets` are only available on `devnet` . You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
 #### Configuration of Third-Party Services for Production-Grade Apps
 

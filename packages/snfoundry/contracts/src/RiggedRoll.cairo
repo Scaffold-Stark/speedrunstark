@@ -50,14 +50,11 @@ mod RiggedRoll {
 
     #[abi(embed_v0)]
     impl RiggedRollImpl of super::IRiggedRoll<ContractState> {
-        fn rigged_roll(
-            ref self: ContractState, amount: u256
-        ) { // Create the `rigged_roll()` function to predict the randomness in the DiceGame contract and only initiate a roll when it guarantees a win.
-        }
-        fn withdraw(
-            ref self: ContractState, to: ContractAddress, amount: u256
-        ) { // Implement the `withdraw` function to transfer Ether from the rigged contract to a specified address.
-        }
+        // ToDo Checkpoint 2: Implement the `rigged_roll()` function to predict the randomness in the DiceGame contract and only initiate a roll when it guarantees a win.
+        fn rigged_roll(ref self: ContractState, amount: u256) {}
+
+        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Ether from the rigged contract to a specified address.
+        fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256) {}
 
         fn last_dice_value(self: @ContractState) -> u256 {
             self.dice_game.read().last_dice_value()

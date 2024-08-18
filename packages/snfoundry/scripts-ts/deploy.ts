@@ -22,19 +22,20 @@ const deployScript = async (): Promise<void> => {
 
   const ethContract = new Contract(ethAbi, ethAddress, deployer);
 
-  const tx = await ethContract.invoke("transfer", [
-    diceGameAddr,
-    1000000000000000000n,
-  ]);
+  // 0.05 Eth
+  const ethAmount = 50000000000000000n;
+
+  const tx = await ethContract.invoke("transfer", [diceGameAddr, ethAmount]);
   // const receipt = await provider.waitForTransaction(tx.transaction_hash);
 
-  await deployContract({
-    contract: "RiggedRoll",
-    constructorArgs: {
-      dice_game_address: diceGameAddr,
-      owner: deployer.address,
-    },
-  });
+  // ToDo Checkpoint 2: Deploy RiggedRoll contract
+  //   await deployContract({
+  //     contract: "RiggedRoll",
+  //     constructorArgs: {
+  //       dice_game_address: diceGameAddr,
+  //       owner: deployer.address,
+  //     },
+  //   });
 };
 
 deployScript()
