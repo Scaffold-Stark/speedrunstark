@@ -4,7 +4,7 @@
 
 🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn about the "approve" pattern for ERC20s and how contract to contract interactions work.
 
-🏵 Create `YourToken.cairo` smart contract that inherits the **ERC20** token standard from OpenZeppelin. Set `your token` to `_mint()` **1000** \* (10^18) tokens to the `recipient` account address. Then create a `Vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
+🏵 Look at `YourToken.cairo` smart contract that reuses the **ERC20** token standard as a component from OpenZeppelin. You have to set `your token` to `mint()` **2000** \* (10^18) tokens to the `recipient` account address. Then create a `Vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
 
 🎛 Edit the frontend that invites the user to input an amount of tokens they want to buy. We'll display a preview of the amount of ETH it will cost with a confirm button.
 
@@ -62,18 +62,19 @@ yarn start
 
 📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:reset` for a completely fresh deploy.
+
 ---
 
 ## Checkpoint 1: 🏵Your Token 💵
 
-> 👩‍💻 Edit `YourToken.cairo` to reuse the **ERC20** token standard from OpenZeppelin. To accomplish this, you can use [`Cairo Components`](https://book.cairo-lang.org/ch16-02-00-composability-and-components.html) to embed the `ERC20` logic inside your contract.
+> 👩‍💻 Look at `YourToken.cairo` how it reuses the **ERC20** token standard from OpenZeppelin. To accomplish this, we used [`Cairo Components`](https://book.cairo-lang.org/ch16-02-00-composability-and-components.html) to embed the `ERC20` logic inside your contract.
 
-> Mint **2000** (\* 10 \*\* 18) to your frontend address using the `constructor()`. In devnet, by default we choose the first pre-deployed account: `0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691`, to deploy the contracts. In order to complete this checkpoint, you need to connect to devnet using the same address. In testnet, you can use your own address to deploy the contracts. Edit the .env file in the `snfoundry` package to set the `ACCOUNT_ADDRESS_SEPOLIA` to your own address.
+> You have to mint **2000** (\* 10 \*\* 18) to your frontend address using the `constructor()`. In devnet, by default we choose the first pre-deployed account: `0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691`, to deploy the contracts. In order to complete this checkpoint, you need to connect to devnet using the same address. In testnet, you can use your own address to deploy the contracts. Edit the .env file in the `snfoundry` package to set the `ACCOUNT_ADDRESS_SEPOLIA` to your own address.
 
 (Your frontend address is the address in the top right of <http://localhost:3000>)
 
-> You can `yarn deploy` to deploy your contract until you get it right.
+> You can `yarn deploy:reset` to deploy your contract until you get it right.
 
 ### 🥅 Goals
 
@@ -88,7 +89,7 @@ yarn start
 
 ## Checkpoint 2: ⚖️ Vendor 🤖
 
-> 👩‍💻 Edit the `Vendor.cairo` contract with a `buy_tokens()` function
+> 👩‍💻 Edit the `Vendor.cairo` contract with a `buy_tokens()` function implementation.
 
 Create a price variable named `tokensPerEth` set to **100**:
 
@@ -102,7 +103,7 @@ const TokensPerEth: u256 = 100;
 
 Edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` (uncomment Vendor deploy lines).
 
-Implement `tokens_per_eth` function in `Vendor.cairo` that returns the `tokensPerEth` value.
+Implement/modify `tokens_per_eth` function in `Vendor.cairo` that returns the `tokensPerEth` value.
 
 Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.tsx` to show the UI to buy tokens on the Token Vendor tab.
 
@@ -112,14 +113,14 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 
 ⚠️ You might face this error because the Vendor contract doesn't have any `YourToken` yet!. You can create an `assert` in the `buy_tokens()` function to check if the Vendor has enough tokens to sell.
 
-⚔️ Side Quest: send tokens from your frontend address to the Vendor contract address and _then_ try to buy them.
+⚔️ Side Quest: Using Ui with `transfer tokens` section, send tokens from your frontend address to the Vendor contract address and _then_ try to buy them.
 
 > ✏️ We can't hard code the vendor address like we did above when deploying to the network because we won't know the vendor address at the time we create the token contract.
 
-> ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to transfer 1000 tokens to vendor address.
+> ✏️ Then, uncomment `packages/snfoundry/scripts-ts/deploy.ts` to transfer 1000 tokens to vendor address.
 
 ```ts
-  await deployer_v6.execute(
+  await deployer.execute(
     [
       {
         contractAddress: your_token.address,
@@ -141,17 +142,17 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 
 > 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor ETH and Token balances.
 
-> You can `yarn deploy` to deploy your contract until you get it right.
+> You can `yarn deploy:reset` to deploy your contract until you get it right.
 
 ![TokenVendorBuy](./packages/nextjs/public/ch2-TokenVendorBalance.png)
 
 ### 🥅 Goals
 
-- [ ] Does the `Vendor` address start with a `balanceOf` **1000** in `YourToken` on the `Debug Contracts` tab?
+- [ ] Does the `Vendor` address start with a `balance_of` **1000** in `YourToken` on the `Debug Contracts` tab?
 - [ ] Can you buy **10** tokens for **0.1** ETH?
 - [ ] Can you transfer tokens to a different account?
 
-> 📝 Edit `Vendor.cairo` to reuse _Ownable_ component from OpenZeppelin.
+> 📝 Look at `Vendor.cairo` how to reuse _Ownable_ component from OpenZeppelin.
 
 ```cairo
  #[storage]
@@ -167,20 +168,22 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 > ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` contract with the `owner` address.
 
 ```ts
-  const vendor = await deployContract(
-    {
-      token_address: your_token.address,
+ vendor = await deployContract({
+    contract: "Vendor",
+    constructorArgs: {
+      eth_token_address:
+      "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      your_token_address: your_token.address,
       owner: deployer.address,
     },
-    "Vendor"
-  );
+  });
 ```
 
 ### 🥅 Goals
 
 - [ ] Is your frontend address the `owner` of the `Vendor`?
 
-> 📝 Finally, add a `withdraw()` function in `Vendor.cairo` that lets the owner withdraw all the ETH from the vendor contract.
+> 📝 Finally, Implement a `withdraw()` function in `Vendor.cairo` that lets the owner withdraw all the ETH from the vendor contract.
 
 ### 🥅 Goals
 
@@ -204,9 +207,9 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 🤓 The `Vendor` should call `fn transfer_from(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool` and if the user has approved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
 
-🤩 You can use `useScaffoldMultiWriteContract.ts` to call `approve` and `buy / sell tokens`
+🤩 In the UI, you can use `useScaffoldMultiWriteContract.ts` to call `approve` and `buy / sell tokens`
 
-> 📝 Edit `Vendor.cairo` and add a `sellTokens(amount_tokens: u256)` function!
+> 📝 Edit `Vendor.cairo` and implement the `sellTokens(amount_tokens: u256)` function!
 
 🔨 Use the `Debug Contracts` tab to call the approve and sellTokens() at first but then...
 
@@ -236,21 +239,27 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 ## Checkpoint 4: 💾 Deploy your contracts! 🛰
 
-📡 Edit the `defaultNetwork` to your choice of Starknet networks in `packages/nextjs/scaffold.config.ts`
+📡 Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
 
-🔐 In devnet you can choose a burner wallet auto-generated
+![network](./packages/nextjs/public/ch0-scaffold-config.png)
 
-⛽️ You will need to send ETH to your deployer address with your wallet if not in devnet, or get it from a public faucet of your chosen network.
+🔐 Prepare your environment variables.
 
-🚀 Run `yarn deploy` to deploy your smart contract to a public network (selected in `scaffold.config.ts`)
+> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
 
-> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+
+🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
+
+> 💬 Hint: you input `yarn deploy --network sepolia`.
+
+> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/challenge-2-token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
 
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁
 
-✏️ Edit your frontend config in `packages/nextjs/scaffold.config.ts` to change the `targetNetwork` to `chains.sepolia`.
+> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
 
 💻 View your frontend at <http://localhost:3000/stakerUI> and verify you see the correct network.
 
@@ -261,8 +270,6 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 > Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
 
 > If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
-
-> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own or use a burner wallet. By default, 🔥 `burner wallets` are only available on `devnet` . You can enable them on every chain by setting `onlyLocalBurnerWallet: false` in your frontend config (`scaffold.config.ts` in `packages/nextjs/`)
 
 #### Configuration of Third-Party Services for Production-Grade Apps
 

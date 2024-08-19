@@ -9,20 +9,17 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldRead
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
-//import { useBalance } from "@starknet-react/core";
 import { formatEther } from "ethers";
 import {
   getTokenPrice,
   multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
-//import { BlockNumber,byteArray } from "starknet";
 import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
   const [tokensToSend, setTokensToSend] = useState("");
   const [tokensToBuy, setTokensToBuy] = useState<string | bigint>("");
-  const [isApproved, setIsApproved] = useState(false);
   const [tokensToSell, setTokensToSell] = useState<string>("");
 
   const { address: connectedAddress } = useAccount();
@@ -59,11 +56,7 @@ const TokenVendor: NextPage = () => {
 
   const { value: vendorContractBalance } = useScaffoldEthBalance({
     address: vendorContractData?.address,
-    // watch: true,
-    // blockIdentifier: "pending" as BlockNumber,
   });
-
-  console.log("vendorContractBalance", vendorContractBalance);
 
   const eth_to_spent = getTokenPrice(
     tokensToBuy,
@@ -131,47 +124,47 @@ const TokenVendor: NextPage = () => {
               <span className="font-bold ml-1">{parsedSymbol}</span>
             </div>
           </div>
-          {/* Vendor Balances */}
-          {/* <hr className="w-full border-secondary my-3" /> 
-           <div>
+          {/* ToDo Checkpoint 2: Vendor Balances */}
+          {/*<hr className="w-full border-secondary my-3" />
+          <div>
             Vendor token balance:{" "}
             <div className="inline-flex items-center justify-center">
               {parseFloat(
                 formatEther(vendorTokenBalance?.toString() || 0n),
               ).toFixed(4)}
-              <span className="font-bold ml-1">
-                {parsedSymbol}
-              </span>
+              <span className="font-bold ml-1">{parsedSymbol}</span>
             </div>
           </div>
-           <div>
+          <div>
             Vendor eth balance:
-            <span className="px-1">{parseFloat(formatEther(vendorContractBalance?.toString() || 0n))}</span>
-            <span className="font-bold ml-1">
-              {ethSymbol}
+            <span className="px-1">
+              {parseFloat(formatEther(vendorContractBalance?.toString() || 0n))}
             </span>
-          </div>  */}
+            <span className="font-bold ml-1">{ethSymbol}</span>
+          </div>*/}
         </div>
 
-        {/* Buy Tokens */}
-        {/*  <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
-          <div className="text-xl">Buy tokens</div>
-          <div>{Number(tokensPerEth)} tokens per ETH</div>
-          <div className="w-full flex flex-col space-y-2">
-            <IntegerInput
-              placeholder="amount of tokens to buy"
-              value={tokensToBuy.toString()}
-              onChange={(value) => setTokensToBuy(value)}
-              disableMultiplyBy1e18
-            />
+        {/* ToDo Checkpoint 2: Uncomment Buy Tokens */}
+        {/*
+          <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
+            <div className="text-xl">Buy tokens</div>
+            <div>{Number(tokensPerEth)} tokens per ETH</div>
+            <div className="w-full flex flex-col space-y-2">
+              <IntegerInput
+                placeholder="amount of tokens to buy"
+                value={tokensToBuy.toString()}
+                onChange={(value) => setTokensToBuy(value)}
+                disableMultiplyBy1e18
+              />
+            </div>
+            <button
+              className="btn btn-secondary mt-2"
+              onClick={wrapInTryCatch(buy, "buyTokens")}
+            >
+              Buy Tokens
+            </button>
           </div>
-          <button
-            className="btn btn-secondary mt-2"
-            onClick={wrapInTryCatch(buy, "buyTokens")}
-          >
-            Buy Tokens
-          </button>
-        </div>*/}
+        */}
 
         {!!yourTokenBalance && (
           <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
@@ -198,8 +191,8 @@ const TokenVendor: NextPage = () => {
           </div>
         )}
 
-        {/* Sell Tokens */}
-        {/*  {!!yourTokenBalance && (
+        {/* ToDo Checkpoint 3: Uncomment Sell Tokens */}
+        {/* {!!yourTokenBalance && (
           <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
             <div className="text-xl">Sell tokens</div>
             <div>{Number(tokensPerEth)} tokens per ETH</div>
@@ -222,7 +215,7 @@ const TokenVendor: NextPage = () => {
               </button>
           </div>
         </div> 
-        )}*/}
+		)}*/}
       </div>
     </>
   );

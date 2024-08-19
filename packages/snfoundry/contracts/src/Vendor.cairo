@@ -21,6 +21,8 @@ mod Vendor {
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
+    // ToDo Checkpoint 2: Define const TokensPerEth 
+
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
@@ -49,44 +51,37 @@ mod Vendor {
         tokens_amount: u256,
     }
 
+    //  ToDo Checkpoint 3: Define the event SellTokens
     #[derive(Drop, starknet::Event)]
-    struct SellTokens {
-        #[key]
-        seller: ContractAddress,
-        tokens_amount: u256,
-        eth_amount: u256,
-    }
+    struct SellTokens {}
 
     #[constructor]
+    // Todo Checkpoint 2: Edit the constructor to initialize the owner of the contract.
     fn constructor(
         ref self: ContractState,
         eth_token_address: ContractAddress,
-        your_token_address: ContractAddress,
+        your_token_address: ContractAddress
     ) {
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
-    // Implement your constructor here.
-    // ToDo: Initialize the owner of the contract.
+    // ToDo Checkpoint 2: Initialize the owner of the contract here.
     }
-
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {
+        // ToDo Checkpoint 2: Implement your function buy_tokens here.
         fn buy_tokens(
             ref self: ContractState, eth_amount_wei: u256
-        ) { // Implement your function buy_tokens here.
+        ) { // Note: In UI and Debug contract `buyer` should call `approve`` before to `transfer` the amount to the `Vendor` contract.
         }
 
-        fn withdraw(ref self: ContractState) { // Implement your function withdraw here.
-        }
+        // ToDo Checkpoint 2: Implement your function withdraw here.
+        fn withdraw(ref self: ContractState) {}
 
-        fn sell_tokens(
-            ref self: ContractState, amount_tokens: u256
-        ) { // Implement your function sell_tokens here.
-        }
+        // ToDo Checkpoint 3: Implement your function sell_tokens here.
+        fn sell_tokens(ref self: ContractState, amount_tokens: u256) {}
 
-        fn tokens_per_eth(
-            self: @ContractState
-        ) -> u256 { // Modify to return the amount of tokens per 1 ETH.
+        // ToDo Checkpoint 2: Modify to return the amount of tokens per 1 ETH.
+        fn tokens_per_eth(self: @ContractState) -> u256 {
             0
         }
 

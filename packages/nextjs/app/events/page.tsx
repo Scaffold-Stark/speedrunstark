@@ -67,8 +67,8 @@ const Events: NextPage = () => {
           </div>
         )}
       </div>
-
-      <div className="mt-14">
+      {/* ToDo Checkpoint 3: Uncomment Sell Token Events*/}
+      {/*<div className="mt-14">
         <div className="text-center mb-4">
           <span className="block text-2xl font-bold">Sell Token Events</span>
         </div>
@@ -112,7 +112,7 @@ const Events: NextPage = () => {
             </table>
           </div>
         )}
-      </div>
+      </div>*/}
     </div>
   );
 };
