@@ -284,6 +284,6 @@ For production-grade applications, it's recommended to obtain your own API keys 
 
 ---
 
-> 🏃 Head to your next challenge [here](https://github.com/Quantum3-Labs/speedrunstark/tree/dice-game).
+> 🏃 Head to your next challenge [here](https://github.com/Quantum3-Labs/speedrunstark/tree/challenge-3-dice-game).
 >
 > � Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
