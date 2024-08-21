@@ -46,7 +46,7 @@ const deployScript = async (): Promise<void> => {
 //       },
 //     ],
 //     {
-//       maxFee: 1e18,
+//       maxFee: 1e15,
 //     }
 //   );
 // };
