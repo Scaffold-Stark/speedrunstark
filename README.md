@@ -18,20 +18,36 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [asdf](https://asdf-vm.com/guide/getting-started.html)
+- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+
+### Starknet-devnet version
+
+To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.2.0`. To accomplish this, first check your local starknet-devnet version:
+
+```sh
+starknet-devnet --version
+```
+
+If your local starknet-devnet version is not `0.2.0`, you need to install it.
+
+- Install Starknet-devnet `0.2.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
 ### Compatible versions
 
-- Starknet-devnet - v0.0.4
-- Scarb - v2.6.5
-- Snforge - v0.27.0
-- Cairo - v2.6.4
+- Starknet-devnet - v0.2.0
+- Scarb - v2.8.2
+- Snforge - v0.30.0
+- Cairo - v2.8.2
+- RPC - v0.7.1
 
-Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-git clone https://github.com/Quantum3-Labs/speedrunstark.git {challengeName}
+git clone https://github.com/Scaffold-Stark/speedrunstark.git {challengeName}
 cd {challengeName}
 git checkout {challengeName}
 yarn install
@@ -42,6 +58,8 @@ yarn install
 ```sh
 yarn chain
 ```
+
+> To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
 
 > in a second terminal window, 🛰 deploy your contract (locally):
 
