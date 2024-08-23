@@ -14,6 +14,13 @@ pub trait IERC721Enumerable<T> {
 #[starknet::interface]
 pub trait IERC721<T> {
     fn balance_of(self: @T, account: ContractAddress) -> u256;
+    fn transfer_from(ref self: T, from: ContractAddress, to: ContractAddress, token_id: u256);
+    fn owner_of(self: @T, token_id: u256) -> ContractAddress;
+}
+
+#[starknet::interface]
+pub trait IERC721Metadata<T> {
+    fn token_uri(self: @T, token_id: u256) -> ByteArray;
 }
 
 #[starknet::contract]
@@ -30,8 +37,7 @@ mod YourCollectible {
         IERC721_ID, IERC721_METADATA_ID, IERC721_RECEIVER_ID,
     };
     use openzeppelin::token::erc721::{
-        ERC721ReceiverComponent, ERC721Component, ERC721HooksEmptyImpl,
-        interface::{IERC721, IERC721Metadata}
+        ERC721ReceiverComponent, ERC721Component, interface::{IERC721, IERC721Metadata}
     };
 
     use starknet::get_caller_address;
@@ -192,8 +198,10 @@ mod YourCollectible {
         fn mint(ref self: ContractState, recipient: ContractAddress, token_id: u256) {
             assert(!recipient.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
             assert(!self.erc721.exists(token_id), ERC721Component::Errors::ALREADY_MINTED);
-            self._before_token_transfer(Zero::zero(), recipient, token_id, 1);
+            //self._before_token_transfer(Zero::zero(), recipient, token_id, 1);
+            println!("Minting token: {:?}", token_id);
             self.erc721.mint(recipient, token_id);
+            println!("Token minted: {:?}", token_id);
         }
 
         fn _transfer(
@@ -203,7 +211,7 @@ mod YourCollectible {
             let owner = self.erc721._owner_of(token_id);
             assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
 
-            self._before_token_transfer(from, to, token_id, 1);
+            //self._before_token_transfer(from, to, token_id, 1);
 
             assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
 
@@ -299,5 +307,73 @@ mod YourCollectible {
                 self._add_token_to_owner_enumeration(to, first_token_id);
             }
         }
+    }
+    pub impl ERC721HooksEmptyImpl of ERC721Component::ERC721HooksTrait<ContractState> {
+        fn before_update(
+            ref self: ERC721Component::ComponentState<ContractState>,
+            to: ContractAddress,
+            token_id: u256,
+            auth: ContractAddress
+        ) {
+            let mut contract_state = ERC721Component::HasComponent::get_contract_mut(ref self);
+            let token_id_counter = contract_state.token_id_counter.current();
+            if (token_id == token_id_counter) { // self._add_token_to_all_tokens_enumeration(first_token_id);
+                let length = contract_state.all_tokens_counter.read();
+                contract_state.all_tokens_index.write(token_id, length);
+                contract_state.all_tokens.write(length, token_id);
+                contract_state.all_tokens_counter.write(length + 1);
+                println!("auth == Zero::zero()");
+            } else if (token_id < token_id_counter
+                + 1) { //self._remove_token_from_owner_enumeration(auth, first_token_id);
+                // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
+                // then delete the last slot (swap and pop).
+                println!("auth != to");
+                let owner = self.owner_of(token_id);
+                println!("owner {:?}", owner);
+                let last_token_index = self.balance_of(owner) - 1;
+                println!("last_token_index {:?}", last_token_index);
+                let token_index = contract_state.owned_tokens_index.read(token_id);
+
+                // When the token to delete is the last token, the swap operation is unnecessary
+                if (token_index != last_token_index) {
+                    let last_token_id = contract_state.owned_tokens.read((owner, last_token_index));
+                    // Move the last token to the slot of the to-delete token
+                    contract_state.owned_tokens.write((owner, token_index), last_token_id);
+                    // Update the moved token's index
+                    println!("token_index != last_token_index");
+                    contract_state.owned_tokens_index.write(last_token_id, token_index);
+                }
+
+                // Clear the last slot
+                contract_state.owned_tokens.write((owner, last_token_index), 0);
+                contract_state.owned_tokens_index.write(token_id, 0);
+            }
+            if (to == Zero::zero()) { //self._remove_token_from_all_tokens_enumeration(first_token_id);
+                let last_token_index = contract_state.all_tokens_counter.read() - 1;
+                let token_index = contract_state.all_tokens_index.read(token_id);
+
+                let last_token_id = contract_state.all_tokens.read(last_token_index);
+
+                contract_state.all_tokens.write(token_index, last_token_id);
+                contract_state.all_tokens_index.write(last_token_id, token_index);
+
+                contract_state.all_tokens_index.write(token_id, 0);
+                contract_state.all_tokens.write(last_token_index, 0);
+                contract_state.all_tokens_counter.write(last_token_index);
+                println!("to == Zero::zero()");
+            } else if (to != auth) { //self._add_token_to_owner_enumeration(to, first_token_id);
+                let length = self.balance_of(to);
+                contract_state.owned_tokens.write((to, length), token_id);
+                contract_state.owned_tokens_index.write(token_id, length);
+                println!("to != auth");
+            }
+        }
+
+        fn after_update(
+            ref self: ERC721Component::ComponentState<ContractState>,
+            to: ContractAddress,
+            token_id: u256,
+            auth: ContractAddress
+        ) {}
     }
 }
