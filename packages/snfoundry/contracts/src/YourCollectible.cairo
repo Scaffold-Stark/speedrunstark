@@ -53,6 +53,9 @@ mod YourCollectible {
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     #[abi(embed_v0)]
     impl CounterImpl = CounterComponent::CounterImpl<ContractState>;
+    #[abi(embed_v0)]
+    impl ERC721Impl = ERC721Component::ERC721Impl<ContractState>;
+
     impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
     impl ERC721ReceiverInternalImpl = ERC721ReceiverComponent::InternalImpl<ContractState>;
@@ -136,48 +139,6 @@ mod YourCollectible {
         }
     }
 
-    #[abi(embed_v0)]
-    impl WrappedIERC721Impl of IERC721<ContractState> {
-        fn balance_of(self: @ContractState, account: ContractAddress) -> u256 {
-            self.erc721.balance_of(account)
-        }
-        fn owner_of(self: @ContractState, token_id: u256) -> ContractAddress {
-            self.erc721.owner_of(token_id)
-        }
-        fn safe_transfer_from(
-            ref self: ContractState,
-            from: ContractAddress,
-            to: ContractAddress,
-            token_id: u256,
-            data: Span<felt252>
-        ) {
-            self.erc721.safe_transfer_from(from, to, token_id, data)
-        }
-        // Override transfer_from to use the internal fn _before_token_transfer()
-        fn transfer_from(
-            ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256
-        ) {
-            self._transfer_from(from, to, token_id)
-        }
-
-        fn approve(ref self: ContractState, to: ContractAddress, token_id: u256) {
-            self.erc721.approve(to, token_id)
-        }
-        fn set_approval_for_all(
-            ref self: ContractState, operator: ContractAddress, approved: bool
-        ) {
-            self.erc721.set_approval_for_all(operator, approved)
-        }
-        fn get_approved(self: @ContractState, token_id: u256) -> ContractAddress {
-            self.erc721.get_approved(token_id)
-        }
-        fn is_approved_for_all(
-            self: @ContractState, owner: ContractAddress, operator: ContractAddress
-        ) -> bool {
-            self.erc721.is_approved_for_all(owner, operator)
-        }
-    }
-
 
     #[abi(embed_v0)]
     impl IERC721EnumerableImpl of IERC721Enumerable<ContractState> {
@@ -199,21 +160,6 @@ mod YourCollectible {
             assert(!recipient.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
             assert(!self.erc721.exists(token_id), ERC721Component::Errors::ALREADY_MINTED);
             self.erc721.mint(recipient, token_id);
-        }
-
-        fn _transfer(
-            ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256
-        ) {
-            assert(!to.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
-            let owner = self.erc721._owner_of(token_id);
-            assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
-            self.erc721.transfer(from, to, token_id);
-        }
-
-        fn _transfer_from(
-            ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256
-        ) {
-            self._transfer(from, to, token_id);
         }
 
         // ERC721URIStorage internal functions

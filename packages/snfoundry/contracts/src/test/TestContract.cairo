@@ -8,7 +8,7 @@ use contracts::YourCollectible::{
 use contracts::mock_contracts::Receiver;
 use openzeppelin::tests::utils;
 use openzeppelin::utils::serde::SerializedAppend;
-use snforge_std::{declare, ContractClassTrait};
+use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
 use starknet::ContractAddress;
 use starknet::contract_address_const;
 
@@ -38,9 +38,8 @@ fn deploy_receiver() -> ContractAddress {
 }
 
 #[test]
-// Test mint two items and transfer the first item
+// Test: Should be able to mint two NFT and transfer the frist item to another account
 fn test_mint_item() {
-    // Should be able to mint an NFT
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
         contract_address: your_collectible_contract_address
@@ -86,6 +85,10 @@ fn test_mint_item() {
     println!("Starting balance new_owner: {:?}", new_owner_starting_balance);
 
     println!("Transfering first item...");
+    // Change the caller address of the YourCollectible to the tester_address
+    cheat_caller_address(
+        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1)
+    );
     erc721.transfer_from(tester_address, new_owner, first_token_id); // first_token_id = 1
     let balance_new_owner = erc721.balance_of(new_owner);
     assert(balance_new_owner == new_owner_starting_balance + 1, 'Balance must be increased by 1');
@@ -156,6 +159,10 @@ fn test_mint_item2() {
     println!("Starting balance new_owner: {:?}", new_owner_starting_balance);
 
     println!("Transfering first item...");
+    // Change the caller address of the YourCollectible to the tester_address
+    cheat_caller_address(
+        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1)
+    );
     erc721.transfer_from(tester_address, new_owner, first_token_id); // first_token_id = 1
     let balance_new_owner = erc721.balance_of(new_owner);
     assert(balance_new_owner == new_owner_starting_balance + 1, 'Balance must be increased by 1');
