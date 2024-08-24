@@ -80,8 +80,8 @@ mod YourCollectible {
         owned_tokens_index: LegacyMap<u256, u256>,
         // Mapping with all token ids, 
         all_tokens: LegacyMap<u256, u256>,
-        // Counter for all tokens, used for enumeration
-        all_tokens_counter: u256,
+        // Helper to get the length of `all_tokens`
+        all_tokens_length: u256,
         // Mapping from token id to position in the allTokens array
         all_tokens_index: LegacyMap<u256, u256>
     }
@@ -188,7 +188,7 @@ mod YourCollectible {
             self.owned_tokens.read((owner, index))
         }
         fn total_supply(self: @ContractState) -> u256 {
-            self.all_tokens_counter.read()
+            self.all_tokens_length.read()
         }
     }
 
@@ -198,10 +198,7 @@ mod YourCollectible {
         fn mint(ref self: ContractState, recipient: ContractAddress, token_id: u256) {
             assert(!recipient.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
             assert(!self.erc721.exists(token_id), ERC721Component::Errors::ALREADY_MINTED);
-            //self._before_token_transfer(Zero::zero(), recipient, token_id, 1);
-            println!("Minting token: {:?}", token_id);
             self.erc721.mint(recipient, token_id);
-            println!("Token minted: {:?}", token_id);
         }
 
         fn _transfer(
@@ -210,11 +207,6 @@ mod YourCollectible {
             assert(!to.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
             let owner = self.erc721._owner_of(token_id);
             assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
-
-            //self._before_token_transfer(from, to, token_id, 1);
-
-            assert(from == owner, ERC721Component::Errors::INVALID_SENDER);
-
             self.erc721.transfer(from, to, token_id);
         }
 
@@ -239,76 +231,9 @@ mod YourCollectible {
             assert(self.erc721.exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
             self.token_uris.write(token_id, uri);
         }
-
-        // IERC721Enumerable internal functions
-        fn _add_token_to_owner_enumeration(
-            ref self: ContractState, recipient: ContractAddress, token_id: u256
-        ) {
-            let length = self.erc721.balance_of(recipient);
-            self.owned_tokens.write((recipient, length), token_id);
-            self.owned_tokens_index.write(token_id, length);
-        }
-        fn _remove_token_from_owner_enumeration(
-            ref self: ContractState, from: ContractAddress, token_id: u256
-        ) {
-            // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
-            // then delete the last slot (swap and pop).
-            let last_token_index = self.erc721.balance_of(from) - 1;
-            let token_index = self.owned_tokens_index.read(token_id);
-
-            // When the token to delete is the last token, the swap operation is unnecessary
-            if (token_index != last_token_index) {
-                let last_token_id = self.owned_tokens.read((from, last_token_index));
-                // Move the last token to the slot of the to-delete token
-                self.owned_tokens.write((from, token_index), last_token_id);
-                // Update the moved token's index
-                self.owned_tokens_index.write(last_token_id, token_index);
-            }
-
-            // Clear the last slot
-            self.owned_tokens.write((from, last_token_index), 0);
-            self.owned_tokens_index.write(token_id, 0);
-        }
-        fn _remove_token_from_all_tokens_enumeration(ref self: ContractState, token_id: u256) {
-            let last_token_index = self.all_tokens_counter.read() - 1;
-            let token_index = self.all_tokens_index.read(token_id);
-
-            let last_token_id = self.all_tokens.read(last_token_index);
-
-            self.all_tokens.write(token_index, last_token_id);
-            self.all_tokens_index.write(last_token_id, token_index);
-
-            self.all_tokens_index.write(token_id, 0);
-            self.all_tokens.write(last_token_index, 0);
-            self.all_tokens_counter.write(last_token_index);
-        }
-        fn _add_token_to_all_tokens_enumeration(ref self: ContractState, token_id: u256) {
-            let length = self.all_tokens_counter.read();
-            self.all_tokens_index.write(token_id, length);
-            self.all_tokens.write(length, token_id);
-            self.all_tokens_counter.write(length + 1);
-        }
-        fn _before_token_transfer(
-            ref self: ContractState,
-            from: ContractAddress,
-            to: ContractAddress,
-            first_token_id: u256,
-            batch_size: u256
-        ) {
-            assert(batch_size <= 1, 'Consecutive transfers error');
-            if (from == Zero::zero()) {
-                self._add_token_to_all_tokens_enumeration(first_token_id);
-            } else if (from != to) {
-                self._remove_token_from_owner_enumeration(from, first_token_id);
-            }
-            if (to == Zero::zero()) {
-                self._remove_token_from_all_tokens_enumeration(first_token_id);
-            } else if (to != from) {
-                self._add_token_to_owner_enumeration(to, first_token_id);
-            }
-        }
     }
-    pub impl ERC721HooksEmptyImpl of ERC721Component::ERC721HooksTrait<ContractState> {
+
+    impl ERC721HooksEmptyImpl of ERC721Component::ERC721HooksTrait<ContractState> {
         fn before_update(
             ref self: ERC721Component::ComponentState<ContractState>,
             to: ContractAddress,
@@ -317,21 +242,16 @@ mod YourCollectible {
         ) {
             let mut contract_state = ERC721Component::HasComponent::get_contract_mut(ref self);
             let token_id_counter = contract_state.token_id_counter.current();
-            if (token_id == token_id_counter) { // self._add_token_to_all_tokens_enumeration(first_token_id);
-                let length = contract_state.all_tokens_counter.read();
+            if (token_id == token_id_counter) { // Mint case: self._add_token_to_all_tokens_enumeration(first_token_id);
+                let length = contract_state.all_tokens_length.read();
                 contract_state.all_tokens_index.write(token_id, length);
                 contract_state.all_tokens.write(length, token_id);
-                contract_state.all_tokens_counter.write(length + 1);
-                println!("auth == Zero::zero()");
             } else if (token_id < token_id_counter
-                + 1) { //self._remove_token_from_owner_enumeration(auth, first_token_id);
+                + 1) { // Transfer Case: self._remove_token_from_owner_enumeration(auth, first_token_id);
                 // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
                 // then delete the last slot (swap and pop).
-                println!("auth != to");
                 let owner = self.owner_of(token_id);
-                println!("owner {:?}", owner);
                 let last_token_index = self.balance_of(owner) - 1;
-                println!("last_token_index {:?}", last_token_index);
                 let token_index = contract_state.owned_tokens_index.read(token_id);
 
                 // When the token to delete is the last token, the swap operation is unnecessary
@@ -340,7 +260,6 @@ mod YourCollectible {
                     // Move the last token to the slot of the to-delete token
                     contract_state.owned_tokens.write((owner, token_index), last_token_id);
                     // Update the moved token's index
-                    println!("token_index != last_token_index");
                     contract_state.owned_tokens_index.write(last_token_id, token_index);
                 }
 
@@ -348,8 +267,8 @@ mod YourCollectible {
                 contract_state.owned_tokens.write((owner, last_token_index), 0);
                 contract_state.owned_tokens_index.write(token_id, 0);
             }
-            if (to == Zero::zero()) { //self._remove_token_from_all_tokens_enumeration(first_token_id);
-                let last_token_index = contract_state.all_tokens_counter.read() - 1;
+            if (to == Zero::zero()) { // Burn case: self._remove_token_from_all_tokens_enumeration(first_token_id);
+                let last_token_index = contract_state.all_tokens_length.read() - 1;
                 let token_index = contract_state.all_tokens_index.read(token_id);
 
                 let last_token_id = contract_state.all_tokens.read(last_token_index);
@@ -359,13 +278,11 @@ mod YourCollectible {
 
                 contract_state.all_tokens_index.write(token_id, 0);
                 contract_state.all_tokens.write(last_token_index, 0);
-                contract_state.all_tokens_counter.write(last_token_index);
-                println!("to == Zero::zero()");
+                contract_state.all_tokens_length.write(last_token_index);
             } else if (to != auth) { //self._add_token_to_owner_enumeration(to, first_token_id);
                 let length = self.balance_of(to);
                 contract_state.owned_tokens.write((to, length), token_id);
                 contract_state.owned_tokens_index.write(token_id, length);
-                println!("to != auth");
             }
         }
 
