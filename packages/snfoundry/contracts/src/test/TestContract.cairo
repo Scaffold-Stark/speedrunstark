@@ -1,16 +1,14 @@
 use core::clone::Clone;
 use contracts::YourCollectible::{
-    IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait, IERC721Dispatcher,
-    IERC721DispatcherTrait, IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait,
-    IERC721MetadataDispatcher, IERC721MetadataDispatcherTrait
+    IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait, IERC721EnumerableDispatcher,
+    IERC721EnumerableDispatcherTrait, IERC721MetadataDispatcher, IERC721MetadataDispatcherTrait
 };
 
 use contracts::mock_contracts::Receiver;
-use openzeppelin::tests::utils;
 use openzeppelin::utils::serde::SerializedAppend;
+use openzeppelin::token::erc721::interface::{IERC721Dispatcher, IERC721DispatcherTrait};
 use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
-use starknet::ContractAddress;
-use starknet::contract_address_const;
+use starknet::{ContractAddress, contract_address_const};
 
 // Should deploy the contract
 fn deploy_contract(name: ByteArray) -> ContractAddress {

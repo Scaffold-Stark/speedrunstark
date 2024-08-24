@@ -12,21 +12,14 @@ pub trait IERC721Enumerable<T> {
 }
 
 #[starknet::interface]
-pub trait IERC721<T> {
-    fn balance_of(self: @T, account: ContractAddress) -> u256;
-    fn transfer_from(ref self: T, from: ContractAddress, to: ContractAddress, token_id: u256);
-    fn owner_of(self: @T, token_id: u256) -> ContractAddress;
-}
-
-#[starknet::interface]
 pub trait IERC721Metadata<T> {
+    // Define custom `token_uri` function
     fn token_uri(self: @T, token_id: u256) -> ByteArray;
 }
 
 #[starknet::contract]
 mod YourCollectible {
     use contracts::Counter::CounterComponent;
-    use core::array::ArrayTrait;
     use core::num::traits::zero::Zero;
     use openzeppelin::access::ownable::OwnableComponent;
 
@@ -119,8 +112,8 @@ mod YourCollectible {
         fn mint_item(ref self: ContractState, recipient: ContractAddress, uri: ByteArray) -> u256 {
             self.token_id_counter.increment();
             let token_id = self.token_id_counter.current();
-            self.mint(recipient, token_id);
-            self._set_token_uri(token_id, uri);
+            self.erc721.mint(recipient, token_id);
+            self.set_token_uri(token_id, uri);
             token_id
         }
     }
@@ -155,14 +148,7 @@ mod YourCollectible {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        // IYourCollectible internal functions
-        fn mint(ref self: ContractState, recipient: ContractAddress, token_id: u256) {
-            assert(!recipient.is_zero(), ERC721Component::Errors::INVALID_RECEIVER);
-            assert(!self.erc721.exists(token_id), ERC721Component::Errors::ALREADY_MINTED);
-            self.erc721.mint(recipient, token_id);
-        }
-
-        // ERC721URIStorage internal functions
+        // token_uri custom implementation
         fn _token_uri(self: @ContractState, token_id: u256) -> ByteArray {
             assert(self.erc721.exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
             let base_uri = self.erc721._base_uri();
@@ -173,7 +159,8 @@ mod YourCollectible {
                 format!("{}{}", base_uri, uri)
             }
         }
-        fn _set_token_uri(ref self: ContractState, token_id: u256, uri: ByteArray) {
+        // ERC721URIStorage internal functions,
+        fn set_token_uri(ref self: ContractState, token_id: u256, uri: ByteArray) {
             assert(self.erc721.exists(token_id), ERC721Component::Errors::INVALID_TOKEN_ID);
             self.token_uris.write(token_id, uri);
         }
@@ -188,12 +175,12 @@ mod YourCollectible {
         ) {
             let mut contract_state = ERC721Component::HasComponent::get_contract_mut(ref self);
             let token_id_counter = contract_state.token_id_counter.current();
-            if (token_id == token_id_counter) { // Mint case: self._add_token_to_all_tokens_enumeration(first_token_id);
+            if (token_id == token_id_counter) { // Mint Token case: self._add_token_to_all_tokens_enumeration(first_token_id);
                 let length = contract_state.all_tokens_length.read();
                 contract_state.all_tokens_index.write(token_id, length);
                 contract_state.all_tokens.write(length, token_id);
             } else if (token_id < token_id_counter
-                + 1) { // Transfer Case: self._remove_token_from_owner_enumeration(auth, first_token_id);
+                + 1) { // Transfer Token Case: self._remove_token_from_owner_enumeration(auth, first_token_id);
                 // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
                 // then delete the last slot (swap and pop).
                 let owner = self.owner_of(token_id);
@@ -213,7 +200,7 @@ mod YourCollectible {
                 contract_state.owned_tokens.write((owner, last_token_index), 0);
                 contract_state.owned_tokens_index.write(token_id, 0);
             }
-            if (to == Zero::zero()) { // Burn case: self._remove_token_from_all_tokens_enumeration(first_token_id);
+            if (to == Zero::zero()) { // Burn Token case: self._remove_token_from_all_tokens_enumeration(first_token_id);
                 let last_token_index = contract_state.all_tokens_length.read() - 1;
                 let token_index = contract_state.all_tokens_index.read(token_id);
 
