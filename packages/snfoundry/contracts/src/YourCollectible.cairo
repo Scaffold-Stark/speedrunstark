@@ -137,6 +137,8 @@ mod YourCollectible {
     }
 
     impl ERC721HooksEmptyImpl of ERC721Component::ERC721HooksTrait<ContractState> {
+        // Implement this to add custom logic to the ERC721 hooks
+        // Similat to _beforeTokenTransfer in OpenZeppelin ERC721.sol
         fn before_update(
             ref self: ERC721Component::ComponentState<ContractState>,
             to: ContractAddress,
