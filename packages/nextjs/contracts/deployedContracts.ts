@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourCollectible: {
       address:
-        "0x13c3ea96efff6befddacdfd84cb0b88eaaf7a69285e757cb757767588b76ce6",
+        "0x418f946934444bc3281c8dc919d1d636e64cccb9489600dc26c61cc1a714145",
       abi: [
         {
           type: "impl",
@@ -521,12 +521,6 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::token::erc721::erc721_receiver::ERC721ReceiverComponent::Event",
-          kind: "enum",
-          variants: [],
-        },
-        {
-          type: "event",
           name: "openzeppelin::introspection::src5::SRC5Component::Event",
           kind: "enum",
           variants: [],
@@ -605,11 +599,6 @@ const deployedContracts = {
               kind: "flat",
             },
             {
-              name: "ERC721ReceiverEvent",
-              type: "openzeppelin::token::erc721::erc721_receiver::ERC721ReceiverComponent::Event",
-              kind: "flat",
-            },
-            {
               name: "SRC5Event",
               type: "openzeppelin::introspection::src5::SRC5Component::Event",
               kind: "flat",
@@ -633,7 +622,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x22705c0b225ca32b8694b10a4893371470267aabe20876e1a02cac52088be75",
+        "0x527200e23a98acbca6116d4ce2366fe27199f78c146fefc921ec9a2c0d77dc",
     },
   },
   sepolia: {
@@ -1153,12 +1142,6 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "openzeppelin::token::erc721::erc721_receiver::ERC721ReceiverComponent::Event",
-          kind: "enum",
-          variants: [],
-        },
-        {
-          type: "event",
           name: "openzeppelin::introspection::src5::SRC5Component::Event",
           kind: "enum",
           variants: [],
@@ -1234,11 +1217,6 @@ const deployedContracts = {
             {
               name: "ERC721Event",
               type: "openzeppelin::token::erc721::erc721::ERC721Component::Event",
-              kind: "flat",
-            },
-            {
-              name: "ERC721ReceiverEvent",
-              type: "openzeppelin::token::erc721::erc721_receiver::ERC721ReceiverComponent::Event",
               kind: "flat",
             },
             {

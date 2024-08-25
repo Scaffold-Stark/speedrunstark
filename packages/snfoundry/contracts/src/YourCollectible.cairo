@@ -140,6 +140,7 @@ mod YourCollectible {
                 let length = enumerable.all_tokens_length.read();
                 enumerable.all_tokens_index.write(token_id, length);
                 enumerable.all_tokens.write(length, token_id);
+                enumerable.all_tokens_length.write(length + 1);
             } else if (token_id < token_id_counter
                 + 1) { // `Transfer Token` Case: Remove token from owner and update enumerable component
                 // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
