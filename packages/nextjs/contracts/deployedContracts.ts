@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourCollectible: {
       address:
-        "0x4a8e24db7ae69d128fea40785e393ebbe39d8662b5f1c412f53bdc59d6f0ec2",
+        "0x7e0a62ddae222f9fe2b542ec71b2ae8e85bb44c138cd74695978f6d9999cb85",
       abi: [
         {
           type: "impl",
@@ -124,48 +124,6 @@ const deployedContracts = {
         },
         {
           type: "impl",
-          name: "IERC721EnumerableImpl",
-          interface_name: "contracts::YourCollectible::IERC721Enumerable",
-        },
-        {
-          type: "interface",
-          name: "contracts::YourCollectible::IERC721Enumerable",
-          items: [
-            {
-              type: "function",
-              name: "token_of_owner_by_index",
-              inputs: [
-                {
-                  name: "owner",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-                {
-                  name: "index",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "total_supply",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "impl",
           name: "OwnableImpl",
           interface_name: "openzeppelin::access::ownable::interface::IOwnable",
         },
@@ -208,11 +166,11 @@ const deployedContracts = {
         {
           type: "impl",
           name: "CounterImpl",
-          interface_name: "contracts::Counter::ICounter",
+          interface_name: "contracts::components::Counter::ICounter",
         },
         {
           type: "interface",
-          name: "contracts::Counter::ICounter",
+          name: "contracts::components::Counter::ICounter",
           items: [
             {
               type: "function",
@@ -421,6 +379,49 @@ const deployedContracts = {
           ],
         },
         {
+          type: "impl",
+          name: "ERC721EnumerableImpl",
+          interface_name:
+            "contracts::components::ERC721Enumerable::IERC721Enumerable",
+        },
+        {
+          type: "interface",
+          name: "contracts::components::ERC721Enumerable::IERC721Enumerable",
+          items: [
+            {
+              type: "function",
+              name: "token_of_owner_by_index",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "index",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "total_supply",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
           type: "constructor",
           name: "constructor",
           inputs: [
@@ -583,7 +584,13 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "contracts::Counter::CounterComponent::Event",
+          name: "contracts::components::Counter::CounterComponent::Event",
+          kind: "enum",
+          variants: [],
+        },
+        {
+          type: "event",
+          name: "contracts::components::ERC721Enumerable::ERC721EnumerableComponent::Event",
           kind: "enum",
           variants: [],
         },
@@ -614,270 +621,19 @@ const deployedContracts = {
             },
             {
               name: "CounterEvent",
-              type: "contracts::Counter::CounterComponent::Event",
+              type: "contracts::components::Counter::CounterComponent::Event",
+              kind: "nested",
+            },
+            {
+              name: "EnumerableEvent",
+              type: "contracts::components::ERC721Enumerable::ERC721EnumerableComponent::Event",
               kind: "nested",
             },
           ],
         },
       ],
       classHash:
-        "0x62a190b0d435daeff798be8dc65d56c5ac236d50e92757600f5e5a1761a217f",
-    },
-    YourContract: {
-      address:
-        "0xb0fd0844236d9476db0380885b452b878131f18169874d8764b3356e36005a",
-      abi: [
-        {
-          type: "impl",
-          name: "YourContractImpl",
-          interface_name: "contracts::YourContract::IYourContract",
-        },
-        {
-          type: "struct",
-          name: "core::byte_array::ByteArray",
-          members: [
-            {
-              name: "data",
-              type: "core::array::Array::<core::bytes_31::bytes31>",
-            },
-            {
-              name: "pending_word",
-              type: "core::felt252",
-            },
-            {
-              name: "pending_word_len",
-              type: "core::integer::u32",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "interface",
-          name: "contracts::YourContract::IYourContract",
-          items: [
-            {
-              type: "function",
-              name: "gretting",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::byte_array::ByteArray",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "set_gretting",
-              inputs: [
-                {
-                  name: "new_greeting",
-                  type: "core::byte_array::ByteArray",
-                },
-                {
-                  name: "amount_eth",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "withdraw",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "premium",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::bool",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "impl",
-          name: "OwnableImpl",
-          interface_name: "openzeppelin::access::ownable::interface::IOwnable",
-        },
-        {
-          type: "interface",
-          name: "openzeppelin::access::ownable::interface::IOwnable",
-          items: [
-            {
-              type: "function",
-              name: "owner",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "transfer_ownership",
-              inputs: [
-                {
-                  name: "new_owner",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "renounce_ownership",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-          ],
-        },
-        {
-          type: "constructor",
-          name: "constructor",
-          inputs: [
-            {
-              name: "owner",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-          kind: "struct",
-          members: [
-            {
-              name: "previous_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-          kind: "struct",
-          members: [
-            {
-              name: "previous_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "OwnershipTransferred",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-              kind: "nested",
-            },
-            {
-              name: "OwnershipTransferStarted",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-              kind: "nested",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::YourContract::YourContract::GreetingChanged",
-          kind: "struct",
-          members: [
-            {
-              name: "greeting_setter",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_greeting",
-              type: "core::byte_array::ByteArray",
-              kind: "key",
-            },
-            {
-              name: "premium",
-              type: "core::bool",
-              kind: "data",
-            },
-            {
-              name: "value",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::YourContract::YourContract::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "OwnableEvent",
-              type: "openzeppelin::access::ownable::ownable::OwnableComponent::Event",
-              kind: "flat",
-            },
-            {
-              name: "GreetingChanged",
-              type: "contracts::YourContract::YourContract::GreetingChanged",
-              kind: "nested",
-            },
-          ],
-        },
-      ],
-      classHash:
-        "0x63f027df0f2faa7a7dd3ff7ddd301ac67dfe18f947aad36b490ac4fac788b73",
+        "0x3f6160b2e5a3d6a7105d0748e608f0c44a3166c6b9bd6390be82b6f3fcf68b4",
     },
   },
   sepolia: {
@@ -1000,48 +756,6 @@ const deployedContracts = {
         },
         {
           type: "impl",
-          name: "IERC721EnumerableImpl",
-          interface_name: "contracts::YourCollectible::IERC721Enumerable",
-        },
-        {
-          type: "interface",
-          name: "contracts::YourCollectible::IERC721Enumerable",
-          items: [
-            {
-              type: "function",
-              name: "token_of_owner_by_index",
-              inputs: [
-                {
-                  name: "owner",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-                {
-                  name: "index",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "total_supply",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "impl",
           name: "OwnableImpl",
           interface_name: "openzeppelin::access::ownable::interface::IOwnable",
         },
@@ -1084,11 +798,11 @@ const deployedContracts = {
         {
           type: "impl",
           name: "CounterImpl",
-          interface_name: "contracts::Counter::ICounter",
+          interface_name: "contracts::components::Counter::ICounter",
         },
         {
           type: "interface",
-          name: "contracts::Counter::ICounter",
+          name: "contracts::components::Counter::ICounter",
           items: [
             {
               type: "function",
@@ -1297,6 +1011,49 @@ const deployedContracts = {
           ],
         },
         {
+          type: "impl",
+          name: "ERC721EnumerableImpl",
+          interface_name:
+            "contracts::components::ERC721Enumerable::IERC721Enumerable",
+        },
+        {
+          type: "interface",
+          name: "contracts::components::ERC721Enumerable::IERC721Enumerable",
+          items: [
+            {
+              type: "function",
+              name: "token_of_owner_by_index",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "index",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "total_supply",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
           type: "constructor",
           name: "constructor",
           inputs: [
@@ -1459,7 +1216,13 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "contracts::Counter::CounterComponent::Event",
+          name: "contracts::components::Counter::CounterComponent::Event",
+          kind: "enum",
+          variants: [],
+        },
+        {
+          type: "event",
+          name: "contracts::components::ERC721Enumerable::ERC721EnumerableComponent::Event",
           kind: "enum",
           variants: [],
         },
@@ -1490,7 +1253,12 @@ const deployedContracts = {
             },
             {
               name: "CounterEvent",
-              type: "contracts::Counter::CounterComponent::Event",
+              type: "contracts::components::Counter::CounterComponent::Event",
+              kind: "nested",
+            },
+            {
+              name: "EnumerableEvent",
+              type: "contracts::components::ERC721Enumerable::ERC721EnumerableComponent::Event",
               kind: "nested",
             },
           ],

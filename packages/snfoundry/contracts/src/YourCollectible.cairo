@@ -5,19 +5,13 @@ pub trait IYourCollectible<T> {
     fn mint_item(ref self: T, recipient: ContractAddress, uri: ByteArray) -> u256;
 }
 
-#[starknet::interface]
-pub trait IERC721Metadata<T> {
-    // Define custom `token_uri` function
-    fn token_uri(self: @T, token_id: u256) -> ByteArray;
-}
-
 #[starknet::contract]
 mod YourCollectible {
-    use contracts::Counter::CounterComponent;
-    use contracts::ERC721Enumerable::ERC721EnumerableComponent;
+    use contracts::components::Counter::CounterComponent;
+    use contracts::components::ERC721Enumerable::ERC721EnumerableComponent;
     use core::num::traits::zero::Zero;
-    use openzeppelin::access::ownable::OwnableComponent;
 
+    use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::account::interface::ISRC6_ID;
     use openzeppelin::introspection::interface::{ISRC5, ISRC5_ID};
     use openzeppelin::introspection::src5::SRC5Component;
@@ -25,10 +19,9 @@ mod YourCollectible {
         IERC721_ID, IERC721_METADATA_ID, IERC721_RECEIVER_ID,
     };
     use openzeppelin::token::erc721::{
-        ERC721ReceiverComponent, ERC721Component, interface::{IERC721, IERC721Metadata}
+        ERC721ReceiverComponent, ERC721Component, interface::{IERC721Metadata}
     };
 
-    use starknet::get_caller_address;
     use super::{IYourCollectible, ContractAddress};
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
@@ -153,12 +146,12 @@ mod YourCollectible {
             let mut contract_state = ERC721Component::HasComponent::get_contract_mut(ref self);
             let token_id_counter = contract_state.token_id_counter.current();
             let mut enumerable = contract_state.enumerable;
-            if (token_id == token_id_counter) { // Mint Token case: self._add_token_to_all_tokens_enumeration(first_token_id);
+            if (token_id == token_id_counter) { // `Mint Token` case: Add token to `all_tokens` enumerable component
                 let length = enumerable.all_tokens_length.read();
                 enumerable.all_tokens_index.write(token_id, length);
                 enumerable.all_tokens.write(length, token_id);
             } else if (token_id < token_id_counter
-                + 1) { // Transfer Token Case: self._remove_token_from_owner_enumeration(auth, first_token_id);
+                + 1) { // `Transfer Token` Case: Remove token from owner and update enumerable component
                 // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
                 // then delete the last slot (swap and pop).
                 let owner = self.owner_of(token_id);
@@ -178,7 +171,7 @@ mod YourCollectible {
                 enumerable.owned_tokens.write((owner, last_token_index), 0);
                 enumerable.owned_tokens_index.write(token_id, 0);
             }
-            if (to == Zero::zero()) { // Burn Token case: self._remove_token_from_all_tokens_enumeration(first_token_id);
+            if (to == Zero::zero()) { // `Burn Token` case: Remove token from `all_tokens` enumerable component
                 let last_token_index = enumerable.all_tokens_length.read() - 1;
                 let token_index = enumerable.all_tokens_index.read(token_id);
 
@@ -190,7 +183,7 @@ mod YourCollectible {
                 enumerable.all_tokens_index.write(token_id, 0);
                 enumerable.all_tokens.write(last_token_index, 0);
                 enumerable.all_tokens_length.write(last_token_index);
-            } else if (to != auth) { //self._add_token_to_owner_enumeration(to, first_token_id);
+            } else if (to != auth) { // `Mint Token` and `Transfer Token` case: Add token owner to `owned_tokens` enumerable component
                 let length = self.balance_of(to);
                 enumerable.owned_tokens.write((to, length), token_id);
                 enumerable.owned_tokens_index.write(token_id, length);
