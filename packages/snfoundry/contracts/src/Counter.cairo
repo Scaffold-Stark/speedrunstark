@@ -8,7 +8,6 @@ pub trait ICounter<T> {
 #[starknet::component]
 pub mod CounterComponent {
     use starknet::ContractAddress;
-    use starknet::get_caller_address;
     use super::{ICounter};
 
     #[storage]
