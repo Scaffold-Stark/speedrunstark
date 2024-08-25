@@ -4,9 +4,6 @@ pub mod Receiver {
     use openzeppelin::token::erc721::ERC721ReceiverComponent;
     use starknet::ContractAddress;
 
-    pub const SUCCESS: felt252 = 123123;
-
-
     component!(path: ERC721ReceiverComponent, storage: erc721_receiver, event: ERC721ReceiverEvent);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
 
@@ -51,7 +48,7 @@ pub mod Receiver {
             token_id: u256,
             data: Span<felt252>
         ) -> felt252 {
-            if *data.at(0) == SUCCESS {
+            if *data.at(0) == 'SUCCESS' {
                 self.erc721_receiver.on_erc721_received(operator, from, token_id, data)
             } else {
                 0

@@ -12,15 +12,8 @@ mod YourCollectible {
     use core::num::traits::zero::Zero;
 
     use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::account::interface::ISRC6_ID;
-    use openzeppelin::introspection::interface::{ISRC5, ISRC5_ID};
     use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::token::erc721::interface::{
-        IERC721_ID, IERC721_METADATA_ID, IERC721_RECEIVER_ID,
-    };
-    use openzeppelin::token::erc721::{
-        ERC721ReceiverComponent, ERC721Component, interface::{IERC721Metadata}
-    };
+    use openzeppelin::token::erc721::{ERC721Component, interface::{IERC721Metadata}};
 
     use super::{IYourCollectible, ContractAddress};
 
@@ -28,7 +21,6 @@ mod YourCollectible {
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: CounterComponent, storage: token_id_counter, event: CounterEvent);
-    component!(path: ERC721ReceiverComponent, storage: erc721_receiver, event: ERC721ReceiverEvent);
     component!(path: ERC721EnumerableComponent, storage: enumerable, event: EnumerableEvent);
 
     #[abi(embed_v0)]
@@ -43,15 +35,12 @@ mod YourCollectible {
 
     impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
-    impl ERC721ReceiverInternalImpl = ERC721ReceiverComponent::InternalImpl<ContractState>;
 
 
     #[storage]
     struct Storage {
         #[substorage(v0)]
         erc721: ERC721Component::Storage,
-        #[substorage(v0)]
-        erc721_receiver: ERC721ReceiverComponent::Storage,
         #[substorage(v0)]
         src5: SRC5Component::Storage,
         #[substorage(v0)]
@@ -71,8 +60,6 @@ mod YourCollectible {
         #[flat]
         ERC721Event: ERC721Component::Event,
         #[flat]
-        ERC721ReceiverEvent: ERC721ReceiverComponent::Event,
-        #[flat]
         SRC5Event: SRC5Component::Event,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
@@ -88,7 +75,6 @@ mod YourCollectible {
 
         self.erc721.initializer(name, symbol, base_uri);
         self.ownable.initializer(owner);
-        self.erc721_receiver.initializer();
     }
 
     #[abi(embed_v0)]
@@ -96,6 +82,8 @@ mod YourCollectible {
         fn mint_item(ref self: ContractState, recipient: ContractAddress, uri: ByteArray) -> u256 {
             self.token_id_counter.increment();
             let token_id = self.token_id_counter.current();
+            // let data_sucess = array!['SUCCESS'].span(); // ERC721Receiver data
+            // self.erc721.safe_mint(recipient, token_id, data_sucess);
             self.erc721.mint(recipient, token_id);
             self.set_token_uri(token_id, uri);
             token_id
@@ -138,7 +126,7 @@ mod YourCollectible {
 
     impl ERC721HooksEmptyImpl of ERC721Component::ERC721HooksTrait<ContractState> {
         // Implement this to add custom logic to the ERC721 hooks
-        // Similat to _beforeTokenTransfer in OpenZeppelin ERC721.sol
+        // Similar to _beforeTokenTransfer in OpenZeppelin ERC721.sol
         fn before_update(
             ref self: ERC721Component::ComponentState<ContractState>,
             to: ContractAddress,
