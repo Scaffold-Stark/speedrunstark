@@ -13,7 +13,9 @@ mod YourCollectible {
 
     use openzeppelin::access::ownable::OwnableComponent;
     use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::token::erc721::{ERC721Component, interface::{IERC721Metadata}};
+    use openzeppelin::token::erc721::{
+        ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly}
+    };
 
     use super::{IYourCollectible, ContractAddress};
 
@@ -29,6 +31,10 @@ mod YourCollectible {
     impl CounterImpl = CounterComponent::CounterImpl<ContractState>;
     #[abi(embed_v0)]
     impl ERC721Impl = ERC721Component::ERC721Impl<ContractState>;
+    #[abi(embed_v0)]
+    impl ERC721CamelOnlyImpl = ERC721Component::ERC721CamelOnlyImpl<ContractState>;
+    #[abi(embed_v0)]
+    impl SRC5Impl = SRC5Component::SRC5Impl<ContractState>;
     #[abi(embed_v0)]
     impl ERC721EnumerableImpl =
         ERC721EnumerableComponent::ERC721EnumerableImpl<ContractState>;
@@ -101,6 +107,14 @@ mod YourCollectible {
         }
         fn symbol(self: @ContractState) -> ByteArray {
             self.erc721.symbol()
+        }
+    }
+
+    #[abi(embed_v0)]
+    impl WrappedIERC721MetadataCamelOnlyImpl of IERC721MetadataCamelOnly<ContractState> {
+        // Override tokenURI to use the internal ERC721URIStorage _token_uri function
+        fn tokenURI(self: @ContractState, tokenId: u256) -> ByteArray {
+            self._token_uri(tokenId)
         }
     }
 

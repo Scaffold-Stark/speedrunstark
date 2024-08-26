@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourCollectible: {
       address:
-        "0x418f946934444bc3281c8dc919d1d636e64cccb9489600dc26c61cc1a714145",
+        "0x7bf2dc3695e421c31e7acf3d1498c14688a5922df268da9afc5ba9bc8e1ebda",
       abi: [
         {
           type: "impl",
@@ -110,6 +110,34 @@ const deployedContracts = {
               inputs: [
                 {
                   name: "token_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::byte_array::ByteArray",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "WrappedIERC721MetadataCamelOnlyImpl",
+          interface_name:
+            "openzeppelin::token::erc721::interface::IERC721MetadataCamelOnly",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::token::erc721::interface::IERC721MetadataCamelOnly",
+          items: [
+            {
+              type: "function",
+              name: "tokenURI",
+              inputs: [
+                {
+                  name: "tokenId",
                   type: "core::integer::u256",
                 },
               ],
@@ -380,6 +408,173 @@ const deployedContracts = {
         },
         {
           type: "impl",
+          name: "ERC721CamelOnlyImpl",
+          interface_name:
+            "openzeppelin::token::erc721::interface::IERC721CamelOnly",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::token::erc721::interface::IERC721CamelOnly",
+          items: [
+            {
+              type: "function",
+              name: "balanceOf",
+              inputs: [
+                {
+                  name: "account",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "ownerOf",
+              inputs: [
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "safeTransferFrom",
+              inputs: [
+                {
+                  name: "from",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "to",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "data",
+                  type: "core::array::Span::<core::felt252>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "transferFrom",
+              inputs: [
+                {
+                  name: "from",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "to",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "setApprovalForAll",
+              inputs: [
+                {
+                  name: "operator",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "approved",
+                  type: "core::bool",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "getApproved",
+              inputs: [
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "isApprovedForAll",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "operator",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::bool",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "SRC5Impl",
+          interface_name: "openzeppelin::introspection::interface::ISRC5",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::introspection::interface::ISRC5",
+          items: [
+            {
+              type: "function",
+              name: "supports_interface",
+              inputs: [
+                {
+                  name: "interface_id",
+                  type: "core::felt252",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::bool",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
           name: "ERC721EnumerableImpl",
           interface_name:
             "contracts::components::ERC721Enumerable::IERC721Enumerable",
@@ -622,13 +817,13 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x527200e23a98acbca6116d4ce2366fe27199f78c146fefc921ec9a2c0d77dc",
+        "0x2d7b083a934419eecfa89aabb3d052549a35fb6cba27323e4c54f2c7c558c9b",
     },
   },
   sepolia: {
     YourCollectible: {
       address:
-        "0x45305e8c94f02c8ade9c6df459a1c84e98bbbf2ba9d0ad7047652c310d9f5e8",
+        "0x36aa61b3b40c1071a64d923cec42a358143f70affdaca821ae5e584dc4b8505",
       abi: [
         {
           type: "impl",
@@ -731,6 +926,34 @@ const deployedContracts = {
               inputs: [
                 {
                   name: "token_id",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::byte_array::ByteArray",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "WrappedIERC721MetadataCamelOnlyImpl",
+          interface_name:
+            "openzeppelin::token::erc721::interface::IERC721MetadataCamelOnly",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::token::erc721::interface::IERC721MetadataCamelOnly",
+          items: [
+            {
+              type: "function",
+              name: "tokenURI",
+              inputs: [
+                {
+                  name: "tokenId",
                   type: "core::integer::u256",
                 },
               ],
@@ -1001,6 +1224,173 @@ const deployedContracts = {
         },
         {
           type: "impl",
+          name: "ERC721CamelOnlyImpl",
+          interface_name:
+            "openzeppelin::token::erc721::interface::IERC721CamelOnly",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::token::erc721::interface::IERC721CamelOnly",
+          items: [
+            {
+              type: "function",
+              name: "balanceOf",
+              inputs: [
+                {
+                  name: "account",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "ownerOf",
+              inputs: [
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "safeTransferFrom",
+              inputs: [
+                {
+                  name: "from",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "to",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+                {
+                  name: "data",
+                  type: "core::array::Span::<core::felt252>",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "transferFrom",
+              inputs: [
+                {
+                  name: "from",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "to",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "setApprovalForAll",
+              inputs: [
+                {
+                  name: "operator",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "approved",
+                  type: "core::bool",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "getApproved",
+              inputs: [
+                {
+                  name: "tokenId",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "isApprovedForAll",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "operator",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::bool",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
+          name: "SRC5Impl",
+          interface_name: "openzeppelin::introspection::interface::ISRC5",
+        },
+        {
+          type: "interface",
+          name: "openzeppelin::introspection::interface::ISRC5",
+          items: [
+            {
+              type: "function",
+              name: "supports_interface",
+              inputs: [
+                {
+                  name: "interface_id",
+                  type: "core::felt252",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::bool",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "impl",
           name: "ERC721EnumerableImpl",
           interface_name:
             "contracts::components::ERC721Enumerable::IERC721Enumerable",
@@ -1243,7 +1633,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x604a5408288ed85d4220cfa7bddf6db718feec9f79455e7391ea81c063023f5",
+        "0x2d7b083a934419eecfa89aabb3d052549a35fb6cba27323e4c54f2c7c558c9b",
     },
   },
 } as const;
