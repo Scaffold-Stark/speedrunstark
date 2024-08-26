@@ -25,6 +25,7 @@ mod YourCollectible {
     component!(path: CounterComponent, storage: token_id_counter, event: CounterEvent);
     component!(path: ERC721EnumerableComponent, storage: enumerable, event: EnumerableEvent);
 
+    // Expose entrypoints
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     #[abi(embed_v0)]
@@ -39,6 +40,7 @@ mod YourCollectible {
     impl ERC721EnumerableImpl =
         ERC721EnumerableComponent::ERC721EnumerableImpl<ContractState>;
 
+    // Use internal implementations but do not expose them
     impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
 
@@ -154,7 +156,7 @@ mod YourCollectible {
             token_id: u256,
             auth: ContractAddress
         ) {
-            let mut counter_component = get_dep_component_mut!(ref self, Counter);
+            let counter_component = get_dep_component!(@self, Counter);
             let token_id_counter = counter_component.current();
             let mut enumerable_component = get_dep_component_mut!(ref self, ERC721Enumerable);
             if (token_id == token_id_counter) { // `Mint Token` case: Add token to `all_tokens` enumerable component

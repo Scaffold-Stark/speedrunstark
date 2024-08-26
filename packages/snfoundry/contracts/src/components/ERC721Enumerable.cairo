@@ -1,9 +1,9 @@
 use starknet::ContractAddress;
 
 #[starknet::interface]
-pub trait IERC721Enumerable<T> {
-    fn token_of_owner_by_index(self: @T, owner: ContractAddress, index: u256) -> u256;
-    fn total_supply(self: @T) -> u256;
+pub trait IERC721Enumerable<TState> {
+    fn token_of_owner_by_index(self: @TState, owner: ContractAddress, index: u256) -> u256;
+    fn total_supply(self: @TState) -> u256;
 }
 
 #[starknet::component]
