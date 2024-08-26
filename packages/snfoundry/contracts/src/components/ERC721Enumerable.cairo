@@ -8,10 +8,10 @@ pub trait IERC721Enumerable<T> {
 
 #[starknet::component]
 pub mod ERC721EnumerableComponent {
-    use super::{IERC721Enumerable, ContractAddress};
+    use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::token::erc721::ERC721Component;
     use openzeppelin::token::erc721::interface::IERC721;
-    use openzeppelin::introspection::src5::SRC5Component;
+    use super::{IERC721Enumerable, ContractAddress};
 
     #[storage]
     struct Storage {

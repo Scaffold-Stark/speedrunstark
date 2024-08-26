@@ -138,65 +138,74 @@ mod YourCollectible {
         }
     }
 
-    impl ERC721EnumerableHooksImpl of ERC721Component::ERC721HooksTrait<ContractState> {
+    impl ERC721EnumerableHooksImpl<
+        T,
+        impl ERC721Enumerable: ERC721EnumerableComponent::HasComponent<T>,
+        impl Counter: CounterComponent::HasComponent<T>,
+        impl HasComponent: ERC721Component::HasComponent<T>,
+        +SRC5Component::HasComponent<T>,
+        +Drop<T>
+    > of ERC721Component::ERC721HooksTrait<T> {
         // Implement this to add custom logic to the ERC721 hooks
         // Similar to _beforeTokenTransfer in OpenZeppelin ERC721.sol
         fn before_update(
-            ref self: ERC721Component::ComponentState<ContractState>,
+            ref self: ERC721Component::ComponentState<T>,
             to: ContractAddress,
             token_id: u256,
             auth: ContractAddress
         ) {
-            let mut contract_state = ERC721Component::HasComponent::get_contract_mut(ref self);
-            let token_id_counter = contract_state.token_id_counter.current();
-            let mut enumerable = contract_state.enumerable;
+            let mut counter_component = get_dep_component_mut!(ref self, Counter);
+            let token_id_counter = counter_component.current();
+            let mut enumerable_component = get_dep_component_mut!(ref self, ERC721Enumerable);
             if (token_id == token_id_counter) { // `Mint Token` case: Add token to `all_tokens` enumerable component
-                let length = enumerable.all_tokens_length.read();
-                enumerable.all_tokens_index.write(token_id, length);
-                enumerable.all_tokens.write(length, token_id);
-                enumerable.all_tokens_length.write(length + 1);
+                let length = enumerable_component.all_tokens_length.read();
+                enumerable_component.all_tokens_index.write(token_id, length);
+                enumerable_component.all_tokens.write(length, token_id);
+                enumerable_component.all_tokens_length.write(length + 1);
             } else if (token_id < token_id_counter
                 + 1) { // `Transfer Token` Case: Remove token from owner and update enumerable component
                 // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
                 // then delete the last slot (swap and pop).
                 let owner = self.owner_of(token_id);
                 let last_token_index = self.balance_of(owner) - 1;
-                let token_index = enumerable.owned_tokens_index.read(token_id);
+                let token_index = enumerable_component.owned_tokens_index.read(token_id);
 
                 // When the token to delete is the last token, the swap operation is unnecessary
                 if (token_index != last_token_index) {
-                    let last_token_id = enumerable.owned_tokens.read((owner, last_token_index));
+                    let last_token_id = enumerable_component
+                        .owned_tokens
+                        .read((owner, last_token_index));
                     // Move the last token to the slot of the to-delete token
-                    enumerable.owned_tokens.write((owner, token_index), last_token_id);
+                    enumerable_component.owned_tokens.write((owner, token_index), last_token_id);
                     // Update the moved token's index
-                    enumerable.owned_tokens_index.write(last_token_id, token_index);
+                    enumerable_component.owned_tokens_index.write(last_token_id, token_index);
                 }
 
                 // Clear the last slot
-                enumerable.owned_tokens.write((owner, last_token_index), 0);
-                enumerable.owned_tokens_index.write(token_id, 0);
+                enumerable_component.owned_tokens.write((owner, last_token_index), 0);
+                enumerable_component.owned_tokens_index.write(token_id, 0);
             }
             if (to == Zero::zero()) { // `Burn Token` case: Remove token from `all_tokens` enumerable component
-                let last_token_index = enumerable.all_tokens_length.read() - 1;
-                let token_index = enumerable.all_tokens_index.read(token_id);
+                let last_token_index = enumerable_component.all_tokens_length.read() - 1;
+                let token_index = enumerable_component.all_tokens_index.read(token_id);
 
-                let last_token_id = enumerable.all_tokens.read(last_token_index);
+                let last_token_id = enumerable_component.all_tokens.read(last_token_index);
 
-                enumerable.all_tokens.write(token_index, last_token_id);
-                enumerable.all_tokens_index.write(last_token_id, token_index);
+                enumerable_component.all_tokens.write(token_index, last_token_id);
+                enumerable_component.all_tokens_index.write(last_token_id, token_index);
 
-                enumerable.all_tokens_index.write(token_id, 0);
-                enumerable.all_tokens.write(last_token_index, 0);
-                enumerable.all_tokens_length.write(last_token_index);
+                enumerable_component.all_tokens_index.write(token_id, 0);
+                enumerable_component.all_tokens.write(last_token_index, 0);
+                enumerable_component.all_tokens_length.write(last_token_index);
             } else if (to != auth) { // `Mint Token` and `Transfer Token` case: Add token owner to `owned_tokens` enumerable component
                 let length = self.balance_of(to);
-                enumerable.owned_tokens.write((to, length), token_id);
-                enumerable.owned_tokens_index.write(token_id, length);
+                enumerable_component.owned_tokens.write((to, length), token_id);
+                enumerable_component.owned_tokens_index.write(token_id, length);
             }
         }
 
         fn after_update(
-            ref self: ERC721Component::ComponentState<ContractState>,
+            ref self: ERC721Component::ComponentState<T>,
             to: ContractAddress,
             token_id: u256,
             auth: ContractAddress
