@@ -9,6 +9,10 @@ pub trait IERC721Enumerable<T> {
 #[starknet::component]
 pub mod ERC721EnumerableComponent {
     use super::{IERC721Enumerable, ContractAddress};
+    use openzeppelin::token::erc721::ERC721Component;
+    use openzeppelin::token::erc721::interface::IERC721;
+    use core::num::traits::zero::Zero;
+
 
     #[storage]
     struct Storage {
@@ -26,13 +30,20 @@ pub mod ERC721EnumerableComponent {
 
     #[embeddable_as(ERC721EnumerableImpl)]
     impl ERC721Enumerable<
-        TContractState, +HasComponent<TContractState>
+        TContractState,
+        +HasComponent<TContractState>,
+        impl ERC721: ERC721Component::HasComponent<TContractState>,
+        +ERC721Component::ERC721HooksTrait<TContractState>,
+        +Drop<TContractState>
     > of IERC721Enumerable<ComponentState<TContractState>> {
         fn token_of_owner_by_index(
             self: @ComponentState<TContractState>, owner: ContractAddress, index: u256
         ) -> u256 {
-            // TODO: Add this check back in 
-            //assert(index < self.erc721.balance_of(owner), 'Owner index out of bounds');
+            let mut erc721_component = get_dep_component!(self, ERC721);
+            // ToDo: Improve to use erc721_component.balance_of()
+            assert(!owner.is_zero(), 'INVALID_ACCOUNT');
+            let balance = erc721_component.ERC721_balances.read(owner);
+            assert(index < balance, 'Owner index out of bounds');
             self.owned_tokens.read((owner, index))
         }
         fn total_supply(self: @ComponentState<TContractState>) -> u256 {
