@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     YourCollectible: {
       address:
-        "0x7bf2dc3695e421c31e7acf3d1498c14688a5922df268da9afc5ba9bc8e1ebda",
+        "0x6089cf0e1f1537f4ba7ed7f38bd45f454a78ba933cd91e8ca326aeec8187771",
       abi: [
         {
           type: "impl",
@@ -817,7 +817,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x2d7b083a934419eecfa89aabb3d052549a35fb6cba27323e4c54f2c7c558c9b",
+        "0x5d7a0a9e879cb1fd5c163704ecc6cda835adc46274f80b3178e428510f435e1",
     },
   },
   sepolia: {
