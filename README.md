@@ -108,7 +108,7 @@ yarn start
 
 🔐 Prepare your environment variables.
 
-> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
+> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key. Please visit [https://www.alchemy.com/](https://www.alchemy.com) for more details and fill in the PRIVATE_KEY_SEPOLIA and ACCOUNT_ADDRESS_SEPOLIA fields for the Sepolia network.
 
 ⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
