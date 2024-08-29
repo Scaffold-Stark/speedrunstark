@@ -19,6 +19,47 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [asdf](https://asdf-vm.com/guide/getting-started.html)
+- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+
+### Starknet-devnet version
+
+To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.0.4`. To accomplish this, first check your local starknet-devnet version:
+
+```sh
+starknet-devnet --version
+```
+
+If your local starknet-devnet version is not `0.0.4`, you need to install it.
+
+```bash
+cargo install starknet-devnet --version 0.0.4
+```
+
+### Scarb version
+
+To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.6.5`. To accomplish this, first check your local Scarb version:
+
+```sh
+scarb --version
+```
+
+If your local Scarb version is not `2.6.5`, you need to install it.
+
+- Install Scarb `2.6.5` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
+
+### Starknet Foundry version
+
+To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.27.0. To accomplish this, first check your Starknet Foundry version:
+
+```sh
+snforge --version
+```
+
+If your Starknet Foundry version is not `0.27.0`, you need to install it.
+
+- Install Starknet Foundry `0.27.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
 
 ### Compatible versions
 
@@ -110,7 +151,26 @@ yarn start
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
 
-⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+>  How to Install the example Wallet on Browser
+1. Install the Argent X Extension:
+    Go to the Argent X on Web Store.
+    Click add button and confirm the installation.
+
+2. Create a New Wallet:
+    After installation, open the Argent X wallet by clicking on the icon in your browser's toolbar.
+    Select "Create a new wallet" to set up a new StarkNet wallet.
+    You will be prompted to back up your recovery seed phrase. This is essential for recovering your wallet in case you lose access, so store it securely.
+
+3. Get ETH from StarkNet Faucet:
+    Once your wallet is created, you can visit the StarkNet Faucet to receive testnet ETH.
+    Enter your wallet's contract address and click "Request funds". You’ll receive a small amount of test ETH to use for transactions on StarkNet.
+    How to Find Your Contract Address and Private Key in Argent X
+    - Find Your Contract Address:
+        Open Argent X and select your account.
+        The contract address (wallet address) will be displayed under your account name. You can copy this address to use it as needed.
+    - Retrieve Your Private Key:
+        You can get the private key based on the wallet interface you installed. Go to your account profile by going to settings and click on your account, you will see the line "export private key"
+
 
 > Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
 
