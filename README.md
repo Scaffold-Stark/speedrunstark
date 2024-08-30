@@ -67,6 +67,7 @@ If your Starknet Foundry version is not `0.27.0`, you need to install it.
 - Scarb - v2.6.5
 - Snforge - v0.27.0
 - Cairo - v2.6.4
+- Rpc - v0.7.0    
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
@@ -151,28 +152,11 @@ yarn start
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own contract address and private key.
 
->  How to Install the example Wallet on Browser
-1. Install the Argent X Extension:
-    Go to the Argent X on Web Store.
-    Click add button and confirm the installation.
+> Follow up [Wallet Account](https://docs.starknet.io/quick-start/set-up-an-account) to install the example Wallet on Browser
+ - Visit [here](https://www.argent.xyz/argent-x) to dowload ArgentX wallet
+ - visit [here](https://braavos.app/) to dowload Braavos wallet
 
-2. Create a New Wallet:
-    After installation, open the Argent X wallet by clicking on the icon in your browser's toolbar.
-    Select "Create a new wallet" to set up a new StarkNet wallet.
-    You will be prompted to back up your recovery seed phrase. This is essential for recovering your wallet in case you lose access, so store it securely.
-
-3. Get ETH from StarkNet Faucet:
-    Once your wallet is created, you can visit the StarkNet Faucet to receive testnet ETH.
-    Enter your wallet's contract address and click "Request funds". You’ll receive a small amount of test ETH to use for transactions on StarkNet.
-    How to Find Your Contract Address and Private Key in Argent X
-    - Find Your Contract Address:
-        Open Argent X and select your account.
-        The contract address (wallet address) will be displayed under your account name. You can copy this address to use it as needed.
-    - Retrieve Your Private Key:
-        You can get the private key based on the wallet interface you installed. Go to your account profile by going to settings and click on your account, you will see the line "export private key"
-
-
-> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
+> You will need to get some ETH or STRK Sepolia tokens to deploy your contract to Sepolia testnet.Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
 
 🚀 Deploy your NFT smart contract with `yarn deploy`.
 
