@@ -15,11 +15,11 @@ const PageView: React.FC = () => {
   useEffect(() => {
     const getMarkdown = async () => {
       const response = await fetch(
-        `https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/${id}/README.md`,
+        `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${id}/README.md`,
       );
       let markdownData = await response.text();
 
-      const baseUrl = `https://raw.githubusercontent.com/Quantum3-Labs/speedrunstark/${id}/`;
+      const baseUrl = `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${id}/`;
       markdownData = markdownData.replace(
         /!\[(.*?)\]\((?!https?)(.*?)\)/g,
         `![$1](${baseUrl}$2)`,
@@ -33,7 +33,7 @@ const PageView: React.FC = () => {
 
   const handleClick = () => {
     window.open(
-      `https://github.com/Quantum3-Labs/speedrunstark/tree/${id}`,
+      `https://github.com/Scaffold-Stark/speedrunstark/tree/${id}`,
       "_blank",
     );
   };
