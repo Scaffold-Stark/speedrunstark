@@ -2,6 +2,8 @@
 
 ![readme-2](./packages/nextjs/public/hero2.png)
 
+📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
+
 🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn about the "approve" pattern for ERC20s and how contract to contract interactions work.
 
 🏵 Look at `YourToken.cairo` smart contract that reuses the **ERC20** token standard as a component from OpenZeppelin. You have to set `your token` to `mint()` **2000** \* (10^18) tokens to the `recipient` account address. Then create a `Vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
@@ -21,6 +23,9 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [asdf](https://asdf-vm.com/guide/getting-started.html)
+- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 
 ### Compatible versions
 
@@ -28,13 +33,14 @@ Before you begin, you need to install the following tools:
 - Scarb - v2.6.5
 - Snforge - v0.27.0
 - Cairo - v2.6.4
+- Rpc - v0.7.0
 
-Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-git clone https://github.com/Quantum3-Labs/speedrunstark.git challenge-2-token-vendor
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-2-token-vendor
 cd challenge-2-token-vendor
 git checkout challenge-2-token-vendor
 yarn install
@@ -259,7 +265,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 > 💬 Hint: you input `yarn deploy --network sepolia`.
 
-> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Quantum3-Labs/speedrunstark/blob/challenge-2-token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+> 💬 Hint: For faster loading of your _"Events"_ page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/events/page.tsx`](https://github.com/Scaffold-Stark/speedrunstark/blob/challenge-2-token-vendor/packages/nextjs/app/events/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
 
 ---
 
@@ -290,6 +296,6 @@ For production-grade applications, it's recommended to obtain your own API keys 
 
 ---
 
-> 🏃 Head to your next challenge [here](https://github.com/Quantum3-Labs/speedrunstark/tree/challenge-3-dice-game).
+> 🏃 Head to your next challenge [here](https://github.com/Scaffold-Stark/speedrunstark/tree/challenge-3-dice-game).
 >
 > � Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
