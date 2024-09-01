@@ -20,9 +20,12 @@
 
 Before you begin, you need to install the following tools:
 
-- [Node (v18 LTS)](https://nodejs.org/en/download/)
+- [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [asdf](https://asdf-vm.com/guide/getting-started.html)
+- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 
 ### Compatible versions
 
@@ -30,14 +33,15 @@ Before you begin, you need to install the following tools:
 - Scarb - v2.6.5
 - Snforge - v0.27
 - Cairo - v2.6.4
+- Rpc - v0.7.0
 
-Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Quantum3-Labs/scaffold-stark-2?.tab=readme-ov-file#requirements)
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
 
-git clone https://github.com/Quantum3-Labs/speedrunstark.git challenge-3-dice-game
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-3-dice-game
 cd challenge-3-dice-game
 git checkout challenge-3-dice-game
 yarn install
