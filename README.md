@@ -1,3 +1,7 @@
+# Speedrun Stark Campaign
+
+See full details [here](./SpeedrunStarkPrizeCampaign.pdf).
+
 # 🏗 Scaffold-Stark Challenges
 
 **Learn how to use 🏗 Scaffold-Stark to create decentralized applications on Starknet. 🚀**
