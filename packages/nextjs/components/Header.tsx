@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { BugAntIcon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
-import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import { usePathname } from "next/navigation";
 import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import HeaderLogo from "./HeaderLogo";
@@ -45,7 +44,6 @@ export const Header = () => {
         )}
       </div>
       <div className="navbar-end flex-grow pr-8 py-[8px] sm:pr-0 leading-7">
-        <CustomConnectButton />
         <FaucetButton />
       </div>
     </div>
