@@ -169,23 +169,25 @@ mod YourCollectible {
                 // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
                 // then delete the last slot (swap and pop).
                 let owner = self.owner_of(token_id);
-                let last_token_index = self.balance_of(owner) - 1;
-                let token_index = enumerable_component.owned_tokens_index.read(token_id);
+                if owner != to {
+                    let last_token_index = self.balance_of(owner) - 1;
+                    let token_index = enumerable_component.owned_tokens_index.read(token_id);
 
-                // When the token to delete is the last token, the swap operation is unnecessary
-                if (token_index != last_token_index) {
-                    let last_token_id = enumerable_component
-                        .owned_tokens
-                        .read((owner, last_token_index));
-                    // Move the last token to the slot of the to-delete token
-                    enumerable_component.owned_tokens.write((owner, token_index), last_token_id);
-                    // Update the moved token's index
-                    enumerable_component.owned_tokens_index.write(last_token_id, token_index);
+                    // When the token to delete is the last token, the swap operation is unnecessary
+                    if (token_index != last_token_index) {
+                        let last_token_id = enumerable_component
+                            .owned_tokens
+                            .read((owner, last_token_index));
+                        // Move the last token to the slot of the to-delete token
+                        enumerable_component.owned_tokens.write((owner, token_index), last_token_id);
+                        // Update the moved token's index
+                        enumerable_component.owned_tokens_index.write(last_token_id, token_index);
+                    }
+
+                    // Clear the last slot
+                    enumerable_component.owned_tokens.write((owner, last_token_index), 0);
+                    enumerable_component.owned_tokens_index.write(token_id, 0);
                 }
-
-                // Clear the last slot
-                enumerable_component.owned_tokens.write((owner, last_token_index), 0);
-                enumerable_component.owned_tokens_index.write(token_id, 0);
             }
             if (to == Zero::zero()) { // `Burn Token` case: Remove token from `all_tokens` enumerable component
                 let last_token_index = enumerable_component.all_tokens_length.read() - 1;
