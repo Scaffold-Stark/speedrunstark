@@ -5,7 +5,6 @@ import { useAccount } from "~~/hooks/useAccount";
 const Home: NextPage = () => {
   const connectedAddress = useAccount();
 
-
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
