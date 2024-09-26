@@ -1,8 +1,10 @@
 const nftsMetadata = [
   {
     description: "It's actually a bison?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/buffalo.jpg",
+    external_url:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/", // <-- this can link to a page for the specific file too    i
+    image:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/buffalo.jpg",
     name: "Buffalo",
     attributes: [
       {
@@ -21,8 +23,10 @@ const nftsMetadata = [
   },
   {
     description: "What is it so worried about?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/zebra.jpg",
+    external_url:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/", // <-- this can link to a page for the specific file too
+    image:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/zebra.jpg",
     name: "Zebra",
     attributes: [
       {
@@ -41,8 +45,10 @@ const nftsMetadata = [
   },
   {
     description: "What a horn!",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/rhino.jpg",
+    external_url:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/", // <-- this can link to a page for the specific file too
+    image:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/rhino.jpg",
     name: "Rhino",
     attributes: [
       {
@@ -61,8 +67,10 @@ const nftsMetadata = [
   },
   {
     description: "Is that an underbyte?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/fish.jpg",
+    external_url:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/", // <-- this can link to a page for the specific file too
+    image:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/fish.jpg",
     name: "Fish",
     attributes: [
       {
@@ -81,8 +89,10 @@ const nftsMetadata = [
   },
   {
     description: "So delicate.",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/flamingo.jpg",
+    external_url:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/", // <-- this can link to a page for the specific file too
+    image:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/flamingo.jpg",
     name: "Flamingo",
     attributes: [
       {
@@ -101,8 +111,10 @@ const nftsMetadata = [
   },
   {
     description: "Raaaar!",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/godzilla.jpg",
+    external_url:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/", // <-- this can link to a page for the specific file too
+    image:
+      "https://ipfs.io/ipfs/QmR4GGDdK8dsHfspLbcz864SaSUDUAVbF7Wc99NLJqqn2P/godzilla.jpg",
     name: "Godzilla",
     attributes: [
       {
