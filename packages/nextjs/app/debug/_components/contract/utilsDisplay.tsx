@@ -7,7 +7,6 @@ import {
   parseParamWithType,
 } from "~~/utils/scaffold-stark/contract";
 import {
-  isCairoByteArray,
   isCairoContractAddress,
   isCairoTuple,
   parseGenericType,
@@ -77,17 +76,10 @@ export const displayTxResult = (
       return parsedParam;
     }
 
-    // use quotation for byte arrays to prevent confusion
-    if (isCairoByteArray(type)) {
-      return `"${parsedParam.toString()}"`;
-    }
-
     return isCairoContractAddress(type) &&
       validateChecksumAddress(parsedParam) &&
       !asText ? (
       <Address address={parsedParam as `0x${string}`} />
-    ) : typeof parsedParam === "object" ? (
-      JSON.stringify(parsedParam, replacer, 2)
     ) : (
       parsedParam.toString()
     );

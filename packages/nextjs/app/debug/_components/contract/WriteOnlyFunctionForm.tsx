@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ContractInput,
   getFunctionInputKey,
@@ -10,9 +10,10 @@ import {
 } from "~~/app/debug/_components/contract";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import {
-  useSendTransaction,
+  useAccount,
+  useContractWrite,
   useNetwork,
-  useTransactionReceipt,
+  useWaitForTransaction,
 } from "@starknet-react/core";
 import { Abi } from "abi-wan-kanabi";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
@@ -20,7 +21,6 @@ import { Address } from "@starknet-react/chains";
 import { InvokeTransactionReceiptResponse } from "starknet";
 import { TxReceipt } from "./TxReceipt";
 import { useTransactor } from "~~/hooks/scaffold-stark";
-import { useAccount } from "~~/hooks/useAccount";
 
 type WriteOnlyFunctionFormProps = {
   abi: Abi;
@@ -39,49 +39,42 @@ export const WriteOnlyFunctionForm = ({
     getInitialFormState(abiFunction),
   );
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
-  const { status: walletStatus, isConnected, account, chainId } = useAccount();
+  const { status: walletStatus } = useAccount();
   const { chain } = useNetwork();
   const writeTxn = useTransactor();
   const { targetNetwork } = useTargetNetwork();
+  const writeDisabled =
+    !chain ||
+    chain?.network !== targetNetwork.network ||
+    walletStatus === "disconnected";
 
-  const writeDisabled = useMemo(
-    () =>
-      !chain ||
-      chain?.network !== targetNetwork.network ||
-      walletStatus === "disconnected",
-    [chain, targetNetwork.network, walletStatus],
-  );
+  // side effect to update error state when not connected
+  useEffect(() => {
+    setFormErrorMessage(
+      writeDisabled ? "Wallet not connected or in the wrong network" : null,
+    );
+  }, [writeDisabled]);
 
   const {
     data: result,
     isPending: isLoading,
-    sendAsync,
-    error,
-  } = useSendTransaction({
+    writeAsync,
+  } = useContractWrite({
     calls: [
       {
         contractAddress,
         entrypoint: abiFunction.name,
 
         // use infinity to completely flatten array from n dimensions to 1 dimension
-        // writing in starknet next still needs rawArgs parsing, use v2 parsing
         calldata: getParsedContractFunctionArgs(form, false).flat(Infinity),
       },
     ],
   });
 
-  // side effect for error logging
-  useEffect(() => {
-    if (error) {
-      console.error(error?.message);
-      console.error(error.stack);
-    }
-  }, [error]);
-
   const handleWrite = async () => {
-    if (sendAsync) {
+    if (writeAsync) {
       try {
-        const makeWriteWithParams = () => sendAsync();
+        const makeWriteWithParams = () => writeAsync();
         await writeTxn(makeWriteWithParams);
         onChange();
       } catch (e: any) {
@@ -99,7 +92,7 @@ export const WriteOnlyFunctionForm = ({
 
   const [displayedTxResult, setDisplayedTxResult] =
     useState<InvokeTransactionReceiptResponse>();
-  const { data: txResult } = useTransactionReceipt({
+  const { data: txResult } = useWaitForTransaction({
     hash: result?.transaction_hash,
   });
   useEffect(() => {
@@ -127,11 +120,6 @@ export const WriteOnlyFunctionForm = ({
   });
   const zeroInputs = inputs.length === 0;
 
-  const errorMsg = (() => {
-    if (writeDisabled) return "Wallet not connected or on wrong network";
-    return formErrorMessage;
-  })();
-
   return (
     <div className="py-5 space-y-3 first:pt-0 last:pb-1">
       <div
@@ -153,14 +141,14 @@ export const WriteOnlyFunctionForm = ({
           )}
           <div
             className={`flex ${
-              !!errorMsg &&
+              formErrorMessage &&
               "tooltip before:content-[attr(data-tip)] before:right-[-10px] before:left-auto before:transform-none"
             }`}
-            data-tip={`${errorMsg}`}
+            data-tip={`${formErrorMessage}`}
           >
             <button
               className="btn bg-gradient-dark btn-sm shadow-none border-none text-white"
-              disabled={writeDisabled || !!formErrorMessage || isLoading}
+              disabled={!!formErrorMessage || isLoading}
               onClick={handleWrite}
             >
               {isLoading && (

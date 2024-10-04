@@ -4,14 +4,21 @@ import React, { useCallback, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bars3Icon, BugAntIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowDownTrayIcon,
+  ArrowPathIcon,
+  ArrowUpTrayIcon,
+  Bars3Icon,
+  BugAntIcon,
+  PhotoIcon,
+} from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import { useTheme } from "next-themes";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
-import { useAccount, useNetwork, useProvider } from "@starknet-react/core";
+import { useAccount, useProvider } from "@starknet-react/core";
 
 type HeaderMenuLink = {
   label: string;
@@ -21,9 +28,24 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   {
-    label: "Example View 1",
-    href: "/exampleView1",
+    label: "My NFTs",
+    href: "/myNFTs",
     icon: <PhotoIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Transfers",
+    href: "/transfers",
+    icon: <ArrowPathIcon className="h-4 w-4" />,
+  },
+  {
+    label: "IPFS Upload",
+    href: "/ipfsUpload",
+    icon: <ArrowUpTrayIcon className="h-4 w-4" />,
+  },
+  {
+    label: "IPFS Download",
+    href: "/ipfsDownload",
+    icon: <ArrowDownTrayIcon className="h-4 w-4" />,
   },
   {
     label: "Debug Contracts",
@@ -76,42 +98,21 @@ export const Header = () => {
     useCallback(() => setIsDrawerOpen(false), []),
   );
   const { targetNetwork } = useTargetNetwork();
-  const isLocalNetwork = targetNetwork.network === devnet.network;
+  const isLocalNetwork = targetNetwork.id === devnet.id;
 
   const { provider } = useProvider();
-  const { address, status, chainId } = useAccount();
-  const { chain } = useNetwork();
+  const { address, status } = useAccount();
   const [isDeployed, setIsDeployed] = useState(true);
 
   useEffect(() => {
-    if (
-      status === "connected" &&
-      address &&
-      chainId === targetNetwork.id &&
-      chain.network === targetNetwork.network
-    ) {
-      provider
-        .getClassHashAt(address)
-        .then((classHash) => {
-          if (classHash) setIsDeployed(true);
-          else setIsDeployed(false);
-        })
-        .catch((e) => {
-          console.error("contreact cehc", e);
-          if (e.toString().includes("Contract not found")) {
-            setIsDeployed(false);
-          }
-        });
+    if (status === "connected" && address) {
+      provider.getContractVersion(address).catch((e) => {
+        if (e.toString().includes("Contract not found")) {
+          setIsDeployed(false);
+        }
+      });
     }
-  }, [
-    status,
-    address,
-    provider,
-    chainId,
-    targetNetwork.id,
-    targetNetwork.network,
-    chain.network,
-  ]);
+  }, [status, address, provider]);
 
   return (
     <div className="sticky lg:static top-0 navbar min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2">
