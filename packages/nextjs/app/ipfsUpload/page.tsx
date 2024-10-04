@@ -20,19 +20,28 @@ const IpfsUpload: NextPage = () => {
   const handleIpfsUpload = async () => {
     setLoading(true);
     const notificationId = notification.loading("Uploading to IPFS...");
-    try {
-      const uploadedItem = await addToIPFS(yourJSON);
-      notification.remove(notificationId);
-      notification.success("Uploaded to IPFS");
+    let attempt = 0;
+    const maxAttempts = 2;
 
-      setUploadedIpfsPath(uploadedItem.path);
-    } catch (error) {
-      notification.remove(notificationId);
-      notification.error("Error uploading to IPFS");
-      console.log(error);
-    } finally {
-      setLoading(false);
+    while (attempt < maxAttempts) {
+      try {
+        const uploadedItem = await addToIPFS(yourJSON);
+        notification.remove(notificationId);
+        notification.success("Uploaded to IPFS");
+        setUploadedIpfsPath(uploadedItem.path);
+        break;
+      } catch (error) {
+        attempt++;
+        if (attempt < maxAttempts) {
+          notification.info(`Retrying upload... (${attempt}/${maxAttempts})`);
+        } else {
+          notification.remove(notificationId);
+          notification.error("Error uploading to IPFS");
+          console.error("IPFS Upload Error:", error);
+        }
+      }
     }
+    setLoading(false);
   };
 
   return (
