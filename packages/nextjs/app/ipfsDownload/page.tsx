@@ -4,6 +4,7 @@ import { lazy, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { getMetadataFromIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
+import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
 const LazyReactJson = lazy(() => import("react-json-view"));
 
@@ -16,11 +17,12 @@ const IpfsDownload: NextPage = () => {
     setMounted(true);
   }, []);
 
+
   const handleIpfsDownload = async () => {
     setLoading(true);
     const notificationId = notification.loading("Getting data from IPFS...");
-    let attempt = 0;
-    const maxAttempts = 2;
+    let attempt = INITIAL_ATTEMPT;
+    const maxAttempts = MAX_ATTEMPTS;
     while (attempt < maxAttempts) {
       try {
         const metaData = await getMetadataFromIPFS(ipfsPath);

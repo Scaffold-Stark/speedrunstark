@@ -5,6 +5,7 @@ import type { NextPage } from "next";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { addToIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
 import nftsMetadata from "~~/utils/simpleNFT/nftsMetadata";
+import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
 const LazyReactJson = lazy(() => import("react-json-view"));
 
@@ -20,8 +21,8 @@ const IpfsUpload: NextPage = () => {
   const handleIpfsUpload = async () => {
     setLoading(true);
     const notificationId = notification.loading("Uploading to IPFS...");
-    let attempt = 0;
-    const maxAttempts = 2;
+    let attempt = INITIAL_ATTEMPT;
+    const maxAttempts = MAX_ATTEMPTS;
 
     while (attempt < maxAttempts) {
       try {
