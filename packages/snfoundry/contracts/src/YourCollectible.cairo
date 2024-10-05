@@ -7,6 +7,7 @@ pub trait IYourCollectible<T> {
 
 #[starknet::contract]
 mod YourCollectible {
+    use starknet::storage::Map;
     use contracts::components::Counter::CounterComponent;
     use contracts::components::ERC721Enumerable::ERC721EnumerableComponent;
     use core::num::traits::zero::Zero;
@@ -59,7 +60,7 @@ mod YourCollectible {
         enumerable: ERC721EnumerableComponent::Storage,
         // ERC721URIStorage variables
         // Mapping for token URIs
-        token_uris: LegacyMap<u256, ByteArray>,
+        token_uris: Map<u256, ByteArray>,
     }
 
     #[event]
