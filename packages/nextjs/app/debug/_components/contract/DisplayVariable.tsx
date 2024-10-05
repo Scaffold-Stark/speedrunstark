@@ -7,7 +7,7 @@ import { useAnimationConfig } from "~~/hooks/scaffold-stark";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
 import { Abi } from "abi-wan-kanabi";
 import { Address } from "@starknet-react/chains";
-import { useContractRead } from "@starknet-react/core";
+import { useReadContract } from "@starknet-react/core";
 import { BlockNumber } from "starknet";
 import { displayTxResult } from "./utilsDisplay";
 import { useTheme } from "next-themes";
@@ -31,7 +31,7 @@ export const DisplayVariable = ({
     isLoading,
     isFetching,
     refetch,
-  } = useContractRead({
+  } = useReadContract({
     address: contractAddress,
     functionName: abiFunction.name,
     abi: [...abi],
