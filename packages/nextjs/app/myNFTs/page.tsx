@@ -14,6 +14,10 @@ import { useState } from "react";
 const MyNFTs: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
   const [status, setStatus] = useState("Mint NFT");
+  const [isMinting, setIsMinting] = useState(false);
+  const [lastMintedTokenId, setLastMintedTokenId] = useState<number>();
+
+
 
   const { writeAsync: mintItem } = useScaffoldWriteContract({
     contractName: "YourCollectible",
@@ -24,18 +28,24 @@ const MyNFTs: NextPage = () => {
   const { data: tokenIdCounter, refetch } = useScaffoldReadContract({
     contractName: "YourCollectible",
     functionName: "current",
-    watch: false,
+    watch: true,
   });
 
   const handleMintItem = async () => {
     setStatus("Minting NFT");
+    setIsMinting(true)
+    const tokenIdCounterNumber = Number(tokenIdCounter);
+
     // circle back to the zero item if we've reached the end of the array
-    if (tokenIdCounter === undefined) {
+    if (tokenIdCounter === undefined || tokenIdCounterNumber === lastMintedTokenId) {
       setStatus("Mint NFT");
+      setIsMinting(false);
+      notification.warning(
+        "Cannot mint the same token again, please wait for the new token ID"
+      );
       return;
     }
 
-    const tokenIdCounterNumber = Number(tokenIdCounter);
     const currentTokenMetaData =
       nftsMetadata[tokenIdCounterNumber % nftsMetadata.length];
     const notificationId = notification.loading("Uploading to IPFS");
@@ -51,12 +61,17 @@ const MyNFTs: NextPage = () => {
       });
       setStatus("Updating NFT List");
       refetch();
+      setLastMintedTokenId(tokenIdCounterNumber);
+      setIsMinting(false)
     } catch (error) {
       notification.remove(notificationId);
       console.error(error);
       setStatus("Mint NFT");
+      setIsMinting(false)
     }
   };
+
+
 
   return (
     <>
@@ -73,7 +88,7 @@ const MyNFTs: NextPage = () => {
         ) : (
           <button
             className="btn btn-secondary text-white"
-            disabled={status !== "Mint NFT"}
+            disabled={status !== "Mint NFT" || isMinting}
             onClick={handleMintItem}
           >
             {status !== "Mint NFT" && (

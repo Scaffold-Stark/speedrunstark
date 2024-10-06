@@ -4,6 +4,7 @@ import { lazy, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { getMetadataFromIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
+import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
 const LazyReactJson = lazy(() => import("react-json-view"));
 
@@ -16,22 +17,31 @@ const IpfsDownload: NextPage = () => {
     setMounted(true);
   }, []);
 
+
   const handleIpfsDownload = async () => {
     setLoading(true);
-    const notificationId = notification.loading("Getting data from IPFS");
-    try {
-      const metaData = await getMetadataFromIPFS(ipfsPath);
-      notification.remove(notificationId);
-      notification.success("Downloaded from IPFS");
-
-      setYourJSON(metaData);
-    } catch (error) {
-      notification.remove(notificationId);
-      notification.error("Error downloading from IPFS");
-      console.log(error);
-    } finally {
-      setLoading(false);
+    const notificationId = notification.loading("Getting data from IPFS...");
+    let attempt = INITIAL_ATTEMPT;
+    const maxAttempts = MAX_ATTEMPTS;
+    while (attempt < maxAttempts) {
+      try {
+        const metaData = await getMetadataFromIPFS(ipfsPath);
+        notification.remove(notificationId);
+        notification.success("Downloaded from IPFS");
+        setYourJSON(metaData);
+        break;
+      } catch (error) {
+        attempt++;
+        if (attempt < maxAttempts) {
+          notification.info(`Retrying download... (${attempt}/${maxAttempts})`);
+        } else {
+          notification.remove(notificationId);
+          notification.error("Error downloading from IPFS");
+          console.error("IPFS Download Error:", error);
+        }
+      }
     }
+    setLoading(false);
   };
 
   return (

@@ -11,9 +11,9 @@ import {
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import {
   useAccount,
-  useSendTransaction,
+  useContractWrite,
   useNetwork,
-  useTransactionReceipt,
+  useWaitForTransaction,
 } from "@starknet-react/core";
 import { Abi } from "abi-wan-kanabi";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
@@ -59,7 +59,7 @@ export const WriteOnlyFunctionForm = ({
     data: result,
     isPending: isLoading,
     writeAsync,
-  } = useSendTransaction({
+  } = useContractWrite({
     calls: [
       {
         contractAddress,
@@ -92,7 +92,7 @@ export const WriteOnlyFunctionForm = ({
 
   const [displayedTxResult, setDisplayedTxResult] =
     useState<InvokeTransactionReceiptResponse>();
-  const { data: txResult } = useTransactionReceipt({
+  const { data: txResult } = useWaitForTransaction({
     hash: result?.transaction_hash,
   });
   useEffect(() => {
