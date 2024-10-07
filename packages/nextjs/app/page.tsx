@@ -1,70 +1,52 @@
 "use client";
 
-import Link from "next/link";
 import type { NextPage } from "next";
-import { Address } from "~~/components/scaffold-stark";
-import { useAccount } from "~~/hooks/useAccount";
-import { Address as AddressType } from "@starknet-react/chains";
 import Image from "next/image";
+import { useAccount } from "@starknet-react/core";
 
 const Home: NextPage = () => {
   const connectedAddress = useAccount();
-
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-Stark 2</span>
+        <div className="px-5 w-[90%] md:w-[75%]">
+          <h1 className="text-center mb-6">
+            <span className="block text-2xl mb-2">SpeedRunStark</span>
+            <span className="block text-4xl font-bold">
+              Challenge #2: 🏵 Token Vendor 🤖
+            </span>
           </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium text-[#00A3FF]">
-              Connected Address:
-            </p>
-            <Address address={connectedAddress.address as AddressType} />
-          </div>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.cairo
-            </code>{" "}
-            in{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              packages/snfoundry/contracts/src
-            </code>
-          </p>
-        </div>
-
-        <div className="bg-container flex-grow w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-              <div className="trapeze"></div>
-              <Image
-                src="/debug-icon.svg"
-                alt="icon"
-                width={25}
-                height={25}
-              ></Image>
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
+          <div className="flex flex-col items-center justify-center">
+            <Image
+              src="/hero2.png"
+              width="727"
+              height="231"
+              alt="challenge banner"
+              className="rounded-xl border-4 border-primary"
+            />
+            <div className="max-w-3xl">
+              <p className="text-center text-lg mt-8">
+                🤖 Smart contracts are kind of like &quot;always on&quot;
+                vending machines that anyone can access. Let&apos;s make a
+                decentralized, digital currency. Then, let&apos;s build an
+                unstoppable vending machine that will buy and sell the currency.
+                We&apos;ll learn about the &quot;approve&quot; pattern for
+                ERC20s and how contract to contract interactions work.
               </p>
-            </div>
-            <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-              <div className="trapeze"></div>
-              <Image
-                src="/explorer-icon.svg"
-                alt="icon"
-                width={20}
-                height={20}
-              ></Image>
-              <p>
-                Play around with Multiwrite transactions using
-                useScaffoldMultiWrite() hook
+              <p className="text-center text-lg">
+                🌟 The final deliverable is an app that lets users purchase your
+                ERC20 token, transfer it, and sell it back to the vendor. Deploy
+                your contracts on your public chain of choice and then deploy
+                your app to a public webserver. Submit the url on{" "}
+                <a
+                  href="https://www.speedrunstark.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  SpeedrunStark.com
+                </a>{" "}
+                !
               </p>
             </div>
           </div>
