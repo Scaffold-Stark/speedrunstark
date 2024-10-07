@@ -10,8 +10,7 @@
     "compile": "cd contracts && scarb build",
     "format": "prettier --write 'scripts-ts/**/*.{ts,tsx}' && cd contracts && scarb fmt",
     "format:check": "prettier --check 'scripts-ts/**/*.{ts,tsx}' && cd contracts && scarb fmt --check",
-    "postinstall": "shx cp -n .env.example .env",
-    "verify": "ts-node scripts-ts/verify-contracts.ts"
+    "postinstall": "shx cp -n .env.example .env"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -28,7 +27,7 @@
     "dotenv": "^16.3.1",
     "envfile": "^6.18.0",
     "prettier": "^2.8.8",
-    "starknet": "6.12.1",
+    "starknet": "6.7.0",
     "toml": "^3.0.0",
     "tslib": "^2.6.2"
   }

@@ -2230,6 +2230,7 @@ __metadata:
     "@starknet-react/typescript-config": 0.0.0
     "@testing-library/dom": ^10.4.0
     "@testing-library/react": ^16.0.1
+    "@types/humanize-duration": ^3.27.4
     "@types/node": ^20
     "@types/nprogress": ^0
     "@types/react": ^18
@@ -2246,6 +2247,7 @@ __metadata:
     eslint-config-next: 14.1.3
     ethers: ^6.12.0
     get-starknet-core: ^4.0.0
+    humanize-duration: ^3.32.0
     jsdom: ^25.0.1
     next: 14.1.3
     next-themes: ^0.2.1
@@ -2279,7 +2281,7 @@ __metadata:
     globals: ^15.8.0
     prettier: ^2.8.8
     shx: ^0.3.4
-    starknet: 6.12.1
+    starknet: 6.7.0
     toml: ^3.0.0
     ts-node: ^10.9.2
     tslib: ^2.6.2
@@ -2497,6 +2499,13 @@ __metadata:
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
   checksum: 8825d6e729e16445d9a1dd2fb1db2edc5ed400799064cd4d028150701031af012ba30d6d03fe9df40f4d7a437d0de6d2b256020152b7b09bde9f2e420afdffd9
+  languageName: node
+  linkType: hard
+
+"@types/humanize-duration@npm:^3.27.4":
+  version: 3.27.4
+  resolution: "@types/humanize-duration@npm:3.27.4"
+  checksum: aa7fa41af839021c846a1728d2f097b7885f80acbc5050623a9804d23fd8fee19d2654eaae331f000a4e551b88d99cd0b5f6cc97aa99f869b9205f6248066827
   languageName: node
   linkType: hard
 
@@ -6023,6 +6032,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"humanize-duration@npm:^3.32.0":
+  version: 3.32.1
+  resolution: "humanize-duration@npm:3.32.1"
+  checksum: 17f6f2ec09a931eb0bf7de1fc8ac01f90174f366f60390289bd0797c6e4545255bd5d770dd18909c9b21685d76cc190b3a8ec880d2ecc088a1ad032e0d2f57cb
+  languageName: node
+  linkType: hard
+
 "husky@npm:^9.0.11":
   version: 9.1.3
   resolution: "husky@npm:9.1.3"
@@ -8746,6 +8762,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"starknet-types@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "starknet-types@npm:0.0.4"
+  checksum: a83d306830696ea875b8b07541db47e515a4ddb7bfce0cf5555cce12c8ce0e697b984762720c7f27761dc4114b4e5d3f81006e82fc45e52b052afe8fc86240fa
+  languageName: node
+  linkType: hard
+
 "starknet@npm:6.12.1":
   version: 6.12.1
   resolution: "starknet@npm:6.12.1"
@@ -8763,6 +8786,25 @@ __metadata:
     ts-mixer: ^6.0.3
     url-join: ^4.0.1
   checksum: 58afeddde1e2fb0d8caae0cb615bd0b3d0aed04d27465af0607f77247731bbf7d1e4b2f0a99ff596e53175abfadf5d08353f4b838f96038f7a88b706c6bd0bb6
+  languageName: node
+  linkType: hard
+
+"starknet@npm:6.7.0":
+  version: 6.7.0
+  resolution: "starknet@npm:6.7.0"
+  dependencies:
+    "@noble/curves": ~1.4.0
+    "@scure/base": ~1.1.3
+    "@scure/starknet": ~1.0.0
+    abi-wan-kanabi: ^2.2.2
+    fetch-cookie: ^3.0.0
+    isomorphic-fetch: ^3.0.0
+    lossless-json: ^4.0.1
+    pako: ^2.0.4
+    starknet-types: ^0.0.4
+    ts-mixer: ^6.0.3
+    url-join: ^4.0.1
+  checksum: 3c4abda7bab3008c8f98728c4b23a47a2dc97b876c6a33a824da77907b63611fde2df22298aa4c512e3c81e3fe005dd7e288969f18b00299e6eae450a147769d
   languageName: node
   linkType: hard
 
