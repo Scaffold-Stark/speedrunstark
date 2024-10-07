@@ -29,13 +29,13 @@ const deployScript = async (): Promise<void> => {
   // const receipt = await provider.waitForTransaction(tx.transaction_hash);
 
   // ToDo Checkpoint 2: Deploy RiggedRoll contract
-  await deployContract({
-    contract: "RiggedRoll",
-    constructorArgs: {
-      dice_game_address: diceGameAddr,
-      owner: deployer.address,
-    },
-  });
+  //   await deployContract({
+  //     contract: "RiggedRoll",
+  //     constructorArgs: {
+  //       dice_game_address: diceGameAddr,
+  //       owner: deployer.address,
+  //     },
+  //   });
 };
 
 deployScript()
