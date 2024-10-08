@@ -9,9 +9,9 @@ pub trait IERC721Enumerable<TState> {
 #[starknet::component]
 pub mod ERC721EnumerableComponent {
     use starknet::storage::Map;
-    use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::token::erc721::ERC721Component;
-    use openzeppelin::token::erc721::interface::IERC721;
+    use openzeppelin_introspection::src5::SRC5Component;
+    use openzeppelin_token::erc721::ERC721Component;
+    use openzeppelin_token::erc721::interface::IERC721;
     use super::{IERC721Enumerable, ContractAddress};
 
     #[storage]
