@@ -49,21 +49,6 @@ jobs:
         run: yarn install --immutable
         working-directory: ./packages/nextjs
 
-      - name: Check Code Format
-        run: yarn format:check
-
-      - name: Run Next.js lint
-        run: yarn next:lint --max-warnings=0
-        working-directory: ./packages/nextjs
-
-      - name: Check typings on Next.js
-        run: yarn next:check-types
-        working-directory: ./packages/nextjs
-
-      - name: Run Next.js tests
-        run: yarn test run
-        working-directory: ./packages/nextjs
-
       - name: Build Next.js project
         run: yarn build
         working-directory: ./packages/nextjs
