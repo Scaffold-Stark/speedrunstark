@@ -24,6 +24,7 @@ pub mod Staker {
     use contracts::ExampleExternalContract::{
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait
     };
+    use starknet::storage::Map;
     use starknet::{get_block_timestamp, get_caller_address, get_contract_address};
     use super::{ContractAddress, IStaker, IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
@@ -45,7 +46,7 @@ pub mod Staker {
     #[storage]
     struct Storage {
         eth_token_dispatcher: IERC20CamelDispatcher,
-        balances: LegacyMap<ContractAddress, u256>,
+        balances: Map<ContractAddress, u256>,
         deadline: u64,
         open_for_withdraw: bool,
         external_contract_address: ContractAddress,
