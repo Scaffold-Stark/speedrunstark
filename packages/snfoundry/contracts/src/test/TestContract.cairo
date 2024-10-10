@@ -1,18 +1,18 @@
 use contracts::Staker::{IStakerDispatcherTrait, IStakerDispatcher};
-use contracts::mock_contracts::MockETHToken;
-use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-use openzeppelin::utils::serde::SerializedAppend;
+use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, ContractClassTrait, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan
+    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan, DeclareResultTrait, ContractClassTrait,
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
 fn RECIPIENT() -> ContractAddress {
     contract_address_const::<'RECIPIENT'>()
 }
+
 // Should deploy the MockETHToken contract
 fn deploy_mock_eth_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockETHToken").unwrap();
+    let erc20_class_hash = declare("MockETHToken").unwrap().contract_class();
     let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_ETH_IN_WEI
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
@@ -24,9 +24,9 @@ fn deploy_mock_eth_token() -> ContractAddress {
 // contract
 fn deploy_staker_contract() -> ContractAddress {
     let eth_token_address = deploy_mock_eth_token();
-    let external_class_hash = declare("ExampleExternalContract").unwrap();
+    let external_class_hash = declare("ExampleExternalContract").unwrap().contract_class();
     let (external_address, _) = external_class_hash.deploy(@array![]).unwrap();
-    let staker_class_hash = declare("Staker").unwrap();
+    let staker_class_hash = declare("Staker").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(eth_token_address);
     calldata.append_serde(external_address);

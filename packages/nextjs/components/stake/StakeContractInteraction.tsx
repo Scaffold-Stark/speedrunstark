@@ -32,29 +32,34 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
 
   const { targetNetwork } = useTargetNetwork();
 
-  // Contract Read Actions
-  const { data: threshold } = useScaffoldReadContract({
-    contractName: "Staker",
-    functionName: "threshold",
-    watch: true,
-  });
-  const { data: timeLeft } = useScaffoldReadContract({
-    contractName: "Staker",
-    functionName: "time_left",
-    watch: true,
-  });
+// Contract Read Actions
+const { data: threshold } = useScaffoldReadContract({
+  contractName: "Staker",
+  functionName: "threshold",
+  args: [],
+  watch: true,
+});
 
-  const { data: isStakingCompleted } = useScaffoldReadContract({
-    contractName: "Staker",
-    functionName: "completed",
-    watch: true,
-  });
-  const { data: myStake } = useScaffoldReadContract({
-    contractName: "Staker",
-    functionName: "balances",
-    args: [connectedAddress ?? ""],
-    watch: true,
-  });
+const { data: timeLeft } = useScaffoldReadContract({
+  contractName: "Staker",
+  functionName: "time_left",
+  args: [],
+  watch: true,
+});
+
+const { data: isStakingCompleted } = useScaffoldReadContract({
+  contractName: "Staker",
+  functionName: "completed",
+  args: [],
+  watch: true,
+});
+
+const { data: myStake } = useScaffoldReadContract({
+  contractName: "Staker",
+  functionName: "balances",
+  args: [connectedAddress ?? ""],
+  watch: true,
+});
 
   const { sendAsync: execute } = useScaffoldWriteContract({
     contractName: "Staker",
@@ -63,6 +68,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { sendAsync: withdrawETH } = useScaffoldWriteContract({
     contractName: "Staker",
     functionName: "withdraw",
+    args: [],
   });
 
   const { sendAsync: stakeEth } = useScaffoldMultiWriteContract({
