@@ -26,6 +26,7 @@ const TokenVendor: NextPage = () => {
   const { data: yourTokenSymbol } = useScaffoldReadContract({
     contractName: "YourToken",
     functionName: "symbol",
+    args: [],
   });
 
   const { data: yourTokenBalance } = useScaffoldReadContract({
@@ -46,6 +47,7 @@ const TokenVendor: NextPage = () => {
   const { data: tokensPerEth } = useScaffoldReadContract({
     contractName: "Vendor",
     functionName: "tokens_per_eth",
+    args: [],
   });
 
   const { sendAsync: transferTokens } = useScaffoldWriteContract({
