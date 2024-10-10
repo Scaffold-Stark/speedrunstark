@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAccount } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 import scaffoldConfig from "~~/scaffold.config";
 import { useGlobalState } from "~~/services/store/store";
 import { ChainWithAttributes } from "~~/utils/scaffold-stark";
@@ -27,7 +27,7 @@ export function useTargetNetwork(): { targetNetwork: ChainWithAttributes } {
   return {
     targetNetwork: {
       ...targetNetwork,
-      //   ...NETWORKS_EXTRA_DATA[targetNetwork.page.tsx],
+      //   ...NETWORKS_EXTRA_DATA[targetNetwork.id],
     },
   };
 }

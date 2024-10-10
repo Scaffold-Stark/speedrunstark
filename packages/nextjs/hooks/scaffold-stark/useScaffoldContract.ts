@@ -3,7 +3,7 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { ContractName } from "~~/utils/scaffold-stark/contract";
 import { useTargetNetwork } from "./useTargetNetwork";
 import { Contract, RpcProvider } from "starknet";
-import { useAccount } from "@starknet-react/core";
+import { useAccount } from "~~/hooks/useAccount";
 
 export const useScaffoldContract = <TContractName extends ContractName>({
   contractName,
@@ -14,7 +14,7 @@ export const useScaffoldContract = <TContractName extends ContractName>({
     useDeployedContractInfo(contractName);
 
   const { targetNetwork } = useTargetNetwork();
-  //const { account } = useAccount();
+  const { account } = useAccount();
   const publicNodeUrl = targetNetwork.rpcUrls.public.http[0];
 
   const publicClient = useMemo(() => {
