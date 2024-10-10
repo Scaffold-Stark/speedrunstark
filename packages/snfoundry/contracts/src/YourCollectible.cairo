@@ -7,13 +7,14 @@ pub trait IYourCollectible<T> {
 
 #[starknet::contract]
 mod YourCollectible {
+    use starknet::storage::Map;
     use contracts::components::Counter::CounterComponent;
     use contracts::components::ERC721Enumerable::ERC721EnumerableComponent;
     use core::num::traits::zero::Zero;
 
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::introspection::src5::SRC5Component;
-    use openzeppelin::token::erc721::{
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_introspection::src5::SRC5Component;
+    use openzeppelin_token::erc721::{
         ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly}
     };
 
@@ -59,7 +60,7 @@ mod YourCollectible {
         enumerable: ERC721EnumerableComponent::Storage,
         // ERC721URIStorage variables
         // Mapping for token URIs
-        token_uris: LegacyMap<u256, ByteArray>,
+        token_uris: Map<u256, ByteArray>,
     }
 
     #[event]

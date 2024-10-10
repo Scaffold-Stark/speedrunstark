@@ -7,7 +7,6 @@ pub trait ICounter<TState> {
 
 #[starknet::component]
 pub mod CounterComponent {
-    use starknet::ContractAddress;
     use super::{ICounter};
 
     #[storage]
