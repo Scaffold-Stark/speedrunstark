@@ -4,7 +4,7 @@ use contracts::components::ERC721Enumerable::{
 };
 
 use contracts::mock_contracts::Receiver;
-use openzeppelin::token::erc721::interface::{
+use openzeppelin_token::erc721::interface::{
     IERC721Dispatcher, IERC721DispatcherTrait, IERC721MetadataDispatcher,
     IERC721MetadataDispatcherTrait
 };
