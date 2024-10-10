@@ -13,7 +13,7 @@ pub trait IDiceGame<T> {
 pub mod DiceGame {
     use keccak::keccak_u256s_le_inputs;
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-    use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IDiceGame};
+    use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
     #[event]
     #[derive(Drop, starknet::Event)]

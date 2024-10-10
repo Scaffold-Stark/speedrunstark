@@ -16,7 +16,7 @@ mod RiggedRoll {
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::IERC20CamelDispatcherTrait;
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-    use super::{IRiggedRoll, IDiceGameDispatcher, IDiceGameDispatcherTrait};
+    use super::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
