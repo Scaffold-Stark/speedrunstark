@@ -19,7 +19,7 @@ const MyNFTs: NextPage = () => {
 
 
 
-  const { writeAsync: mintItem } = useScaffoldWriteContract({
+  const { sendAsync: mintItem } = useScaffoldWriteContract({
     contractName: "YourCollectible",
     functionName: "mint_item",
     args: [connectedAddress, ""],
