@@ -9,9 +9,9 @@ pub trait IYourCollectible<T> {
 mod YourCollectible {
     use starknet::storage::Map;
     use contracts::components::Counter::CounterComponent;
-    use contracts::components::ERC721Enumerable::ERC721EnumerableComponent;
     use core::num::traits::zero::Zero;
-
+    
+    use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_introspection::src5::SRC5Component;
     use openzeppelin_token::erc721::{
@@ -160,11 +160,11 @@ mod YourCollectible {
             let counter_component = get_dep_component!(@self, Counter);
             let token_id_counter = counter_component.current();
             let mut enumerable_component = get_dep_component_mut!(ref self, ERC721Enumerable);
-            if (token_id == token_id_counter) { // `Mint Token` case: Add token to `all_tokens` enumerable component
-                let length = enumerable_component.all_tokens_length.read();
-                enumerable_component.all_tokens_index.write(token_id, length);
-                enumerable_component.all_tokens.write(length, token_id);
-                enumerable_component.all_tokens_length.write(length + 1);
+            if (token_id == token_id_counter) { // `Mint Token` case: Add token to `ERC721Enumerable_all_tokens` enumerable component
+                let length = enumerable_component.ERC721Enumerable_all_tokens_len.read();
+                enumerable_component.ERC721Enumerable_all_tokens_index.write(token_id, length);
+                enumerable_component.ERC721Enumerable_all_tokens.write(length, token_id);
+                enumerable_component.ERC721Enumerable_all_tokens_len.write(length + 1);
             } else if (token_id < token_id_counter
                 + 1) { // `Transfer Token` Case: Remove token from owner and update enumerable component
                 // To prevent a gap in from's tokens array, we store the last token in the index of
@@ -172,42 +172,42 @@ mod YourCollectible {
                 let owner = self.owner_of(token_id);
                 if owner != to {
                     let last_token_index = self.balance_of(owner) - 1;
-                    let token_index = enumerable_component.owned_tokens_index.read(token_id);
+                    let token_index = enumerable_component.ERC721Enumerable_owned_tokens_index.read(token_id);
 
                     // When the token to delete is the last token, the swap operation is unnecessary
                     if (token_index != last_token_index) {
                         let last_token_id = enumerable_component
-                            .owned_tokens
+                            .ERC721Enumerable_owned_tokens
                             .read((owner, last_token_index));
                         // Move the last token to the slot of the to-delete token
                         enumerable_component
-                            .owned_tokens
+                            .ERC721Enumerable_owned_tokens
                             .write((owner, token_index), last_token_id);
                         // Update the moved token's index
-                        enumerable_component.owned_tokens_index.write(last_token_id, token_index);
+                        enumerable_component.ERC721Enumerable_owned_tokens_index.write(last_token_id, token_index);
                     }
 
                     // Clear the last slot
-                    enumerable_component.owned_tokens.write((owner, last_token_index), 0);
-                    enumerable_component.owned_tokens_index.write(token_id, 0);
+                    enumerable_component.ERC721Enumerable_owned_tokens.write((owner, last_token_index), 0);
+                    enumerable_component.ERC721Enumerable_owned_tokens_index.write(token_id, 0);
                 }
             }
-            if (to == Zero::zero()) { // `Burn Token` case: Remove token from `all_tokens` enumerable component
-                let last_token_index = enumerable_component.all_tokens_length.read() - 1;
-                let token_index = enumerable_component.all_tokens_index.read(token_id);
+            if (to == Zero::zero()) { // `Burn Token` case: Remove token from `ERC721Enumerable_all_tokens` enumerable component
+                let last_token_index = enumerable_component.ERC721Enumerable_all_tokens_len.read() - 1;
+                let token_index = enumerable_component.ERC721Enumerable_all_tokens_index.read(token_id);
 
-                let last_token_id = enumerable_component.all_tokens.read(last_token_index);
+                let last_token_id = enumerable_component.ERC721Enumerable_all_tokens.read(last_token_index);
 
-                enumerable_component.all_tokens.write(token_index, last_token_id);
-                enumerable_component.all_tokens_index.write(last_token_id, token_index);
+                enumerable_component.ERC721Enumerable_all_tokens.write(token_index, last_token_id);
+                enumerable_component.ERC721Enumerable_all_tokens_index.write(last_token_id, token_index);
 
-                enumerable_component.all_tokens_index.write(token_id, 0);
-                enumerable_component.all_tokens.write(last_token_index, 0);
-                enumerable_component.all_tokens_length.write(last_token_index);
-            } else if (to != auth) { // `Mint Token` and `Transfer Token` case: Add token owner to `owned_tokens` enumerable component
+                enumerable_component.ERC721Enumerable_all_tokens_index.write(token_id, 0);
+                enumerable_component.ERC721Enumerable_all_tokens.write(last_token_index, 0);
+                enumerable_component.ERC721Enumerable_all_tokens_len.write(last_token_index);
+            } else if (to != auth) { // `Mint Token` and `Transfer Token` case: Add token owner to `ERC721Enumerable_owned_tokens` enumerable component
                 let length = self.balance_of(to);
-                enumerable_component.owned_tokens.write((to, length), token_id);
-                enumerable_component.owned_tokens_index.write(token_id, length);
+                enumerable_component.ERC721Enumerable_owned_tokens.write((to, length), token_id);
+                enumerable_component.ERC721Enumerable_owned_tokens_index.write(token_id, length);
             }
         }
 
