@@ -1,6 +1,6 @@
 use contracts::YourCollectible::{IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait};
-use contracts::components::ERC721Enumerable::{
-    IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
+use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent::{
+    IERC721EnumerableComponentDispatcher, IERC721EnumerableComponentDispatcherTrait
 };
 
 use contracts::mock_contracts::Receiver;
@@ -8,7 +8,7 @@ use openzeppelin_token::erc721::interface::{
     IERC721Dispatcher, IERC721DispatcherTrait, IERC721MetadataDispatcher,
     IERC721MetadataDispatcherTrait
 };
-use openzeppelin::utils::serde::SerializedAppend;
+use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
 use starknet::{ContractAddress, contract_address_const};
 
@@ -37,8 +37,8 @@ fn deploy_receiver() -> ContractAddress {
     contract_address
 }
 
-#[test]
 // Test: Should be able to mint two NFT and transfer the frist item to another account
+#[test]
 fn test_mint_item() {
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
@@ -60,7 +60,7 @@ fn test_mint_item() {
     println!("Tester address new balance: {:?}", new_balance);
 
     // Should track tokens of owner by index
-    let erc721Enumerable = IERC721EnumerableDispatcher {
+    let erc721Enumerable = IERC721EnumerableComponentDispatcher {
         contract_address: your_collectible_contract_address
     };
     let index = new_balance - 1;
@@ -121,8 +121,8 @@ fn test_mint_item() {
 }
 
 
-#[test]
 // Test: Should be able to mint a NFT and transfer it to another account
+#[test]
 fn test_mint_item2() {
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
@@ -144,7 +144,7 @@ fn test_mint_item2() {
     println!("Tester address new balance: {:?}", new_balance);
 
     // Should track tokens of owner by index
-    let erc721Enumerable = IERC721EnumerableDispatcher {
+    let erc721Enumerable = IERC721EnumerableComponentDispatcher {
         contract_address: your_collectible_contract_address
     };
     let index = new_balance - 1;
