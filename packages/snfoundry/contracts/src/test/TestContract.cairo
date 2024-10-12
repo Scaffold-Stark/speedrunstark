@@ -1,6 +1,6 @@
 use contracts::YourCollectible::{IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait};
-use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent::{
-    IERC721EnumerableComponentDispatcher, IERC721EnumerableComponentDispatcherTrait
+use contracts::components::ERC721Enumerable::{
+    IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
 };
 
 use contracts::mock_contracts::Receiver;
@@ -9,12 +9,15 @@ use openzeppelin_token::erc721::interface::{
     IERC721MetadataDispatcherTrait
 };
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
+use snforge_std::{
+    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan,
+    DeclareResultTrait, ContractClassTrait,
+};
 use starknet::{ContractAddress, contract_address_const};
 
 // Should deploy the contract
 fn deploy_contract(name: ByteArray) -> ContractAddress {
-    let contract = declare(name).unwrap();
+    let contract = declare(name).unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(OWNER());
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
@@ -30,15 +33,15 @@ fn NEW_OWNER() -> ContractAddress {
     contract_address_const::<'NEW_OWNER'>()
 }
 fn deploy_receiver() -> ContractAddress {
-    let contract = declare("Receiver").unwrap();
+    let contract = declare("Receiver").unwrap().contract_class();
     let mut calldata = array![];
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
     println!("Receiver deployed on: {:?}", contract_address);
     contract_address
 }
 
-// Test: Should be able to mint two NFT and transfer the frist item to another account
 #[test]
+// Test: Should be able to mint two NFT and transfer the frist item to another account
 fn test_mint_item() {
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
@@ -60,7 +63,7 @@ fn test_mint_item() {
     println!("Tester address new balance: {:?}", new_balance);
 
     // Should track tokens of owner by index
-    let erc721Enumerable = IERC721EnumerableComponentDispatcher {
+    let erc721Enumerable = IERC721EnumerableDispatcher {
         contract_address: your_collectible_contract_address
     };
     let index = new_balance - 1;
@@ -121,8 +124,8 @@ fn test_mint_item() {
 }
 
 
-// Test: Should be able to mint a NFT and transfer it to another account
 #[test]
+// Test: Should be able to mint a NFT and transfer it to another account
 fn test_mint_item2() {
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
@@ -144,7 +147,7 @@ fn test_mint_item2() {
     println!("Tester address new balance: {:?}", new_balance);
 
     // Should track tokens of owner by index
-    let erc721Enumerable = IERC721EnumerableComponentDispatcher {
+    let erc721Enumerable = IERC721EnumerableDispatcher {
         contract_address: your_collectible_contract_address
     };
     let index = new_balance - 1;
