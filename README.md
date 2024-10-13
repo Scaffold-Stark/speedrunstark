@@ -86,7 +86,7 @@ You'll need to track individual `balances` using a LegacyMap:
 #[storage]
 struct Storage {
  eth_token_dispatcher: IERC20CamelDispatcher,
- balances: LegacyMap<ContractAddress, u256>,
+ balances: Map<ContractAddress, u256>,
  ...
 }
 ```
