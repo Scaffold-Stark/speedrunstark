@@ -14,8 +14,8 @@ pub trait IYourToken<T> {
 
 #[starknet::contract]
 mod YourToken {
-    use openzeppelin::token::erc20::interface::IERC20;
-    use openzeppelin::token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
+    use openzeppelin_token::erc20::interface::IERC20;
+    use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
 
     use super::{ContractAddress, IYourToken};
 
@@ -44,8 +44,8 @@ mod YourToken {
         let name = "Gold";
         let symbol = "GLD";
         self.erc20.initializer(name, symbol);
-    // Todo Checkpoint 1: Uncomment to set `fixed_supply`.
-    //let fixed_supply: u256 = 2_000_000_000_000_000_000_000; //2000 * 10^18
+        // Todo Checkpoint 1: Uncomment to set `fixed_supply`.
+    // let fixed_supply: u256 = 2_000_000_000_000_000_000_000; //2000 * 10^18
     // Todo Checkpoint 1: Call "fn mint()" `fixed_supply` tokens to `recipient`.
     }
 

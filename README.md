@@ -29,11 +29,11 @@ Before you begin, you need to install the following tools:
 
 ### Compatible versions
 
-- Starknet-devnet - v0.0.4
-- Scarb - v2.6.5
-- Snforge - v0.27.0
-- Cairo - v2.6.4
-- Rpc - v0.7.0
+- Starknet-devnet - v0.2.0
+- Scarb - v2.8.3
+- Snforge - v0.31.0
+- Cairo - v2.8.2
+- RPC - v0.7.1
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 

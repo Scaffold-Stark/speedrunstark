@@ -26,6 +26,7 @@ const TokenVendor: NextPage = () => {
   const { data: yourTokenSymbol } = useScaffoldReadContract({
     contractName: "YourToken",
     functionName: "symbol",
+    args: [],
   });
 
   const { data: yourTokenBalance } = useScaffoldReadContract({
@@ -48,7 +49,7 @@ const TokenVendor: NextPage = () => {
     functionName: "tokens_per_eth",
   });
 
-  const { writeAsync: transferTokens } = useScaffoldWriteContract({
+  const { sendAsync: transferTokens } = useScaffoldWriteContract({
     contractName: "YourToken",
     functionName: "transfer",
     args: [toAddress, multiplyTo1e18(tokensToSend)],
@@ -63,7 +64,7 @@ const TokenVendor: NextPage = () => {
     tokensPerEth as unknown as bigint,
   );
 
-  const { writeAsync: buy } = useScaffoldMultiWriteContract({
+  const { sendAsync: buy } = useScaffoldMultiWriteContract({
     calls: [
       {
         contractName: "Eth",
@@ -78,7 +79,7 @@ const TokenVendor: NextPage = () => {
     ],
   });
 
-  const { writeAsync: sell } = useScaffoldMultiWriteContract({
+  const { sendAsync: sell } = useScaffoldMultiWriteContract({
     calls: [
       {
         contractName: "YourToken",

@@ -13,15 +13,15 @@ pub trait IVendor<T> {
 mod Vendor {
     use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
     use core::traits::TryInto;
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::access::ownable::interface::IOwnable;
-    use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_access::ownable::interface::IOwnable;
+    use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::{get_caller_address, get_contract_address};
     use super::{ContractAddress, IVendor};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
-    // ToDo Checkpoint 2: Define const TokensPerEth 
+    // ToDo Checkpoint 2: Define const TokensPerEth
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
@@ -64,7 +64,7 @@ mod Vendor {
     ) {
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
-    // ToDo Checkpoint 2: Initialize the owner of the contract here.
+        // ToDo Checkpoint 2: Initialize the owner of the contract here.
     }
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {

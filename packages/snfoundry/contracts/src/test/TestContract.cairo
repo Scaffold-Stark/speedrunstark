@@ -1,10 +1,11 @@
 use contracts::Vendor::{IVendorDispatcher, IVendorDispatcherTrait};
 use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
 use contracts::mock_contracts::MockETHToken;
-use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-use openzeppelin::utils::serde::SerializedAppend;
+use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, ContractClassTrait, cheat_caller_address, cheat_block_timestamp, CheatSpan
+    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan,
+    DeclareResultTrait, ContractClassTrait,
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
@@ -15,9 +16,10 @@ fn RECIPIENT() -> ContractAddress {
 fn OTHER() -> ContractAddress {
     contract_address_const::<'OTHER'>()
 }
+
 // Should deploy the MockETHToken contract
 fn deploy_mock_eth_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockETHToken").unwrap();
+    let erc20_class_hash = declare("MockETHToken").unwrap().contract_class();
     let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_ETH_IN_WEI
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
@@ -28,7 +30,7 @@ fn deploy_mock_eth_token() -> ContractAddress {
 
 // Should deploy the YourToken contract
 fn deploy_your_token_token() -> ContractAddress {
-    let erc20_class_hash = declare("YourToken").unwrap();
+    let erc20_class_hash = declare("YourToken").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(RECIPIENT());
     let (your_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
@@ -40,7 +42,7 @@ fn deploy_your_token_token() -> ContractAddress {
 fn deploy_vendor_contract() -> ContractAddress {
     let eth_token_address = deploy_mock_eth_token();
     let your_token_address = deploy_your_token_token();
-    let vendor_class_hash = declare("Vendor").unwrap();
+    let vendor_class_hash = declare("Vendor").unwrap().contract_class();
     let tester_address = RECIPIENT();
     let mut calldata = array![];
     calldata.append_serde(eth_token_address);
