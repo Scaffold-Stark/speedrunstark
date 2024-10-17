@@ -66,7 +66,6 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { sendAsync: withdrawETH } = useScaffoldWriteContract({
     contractName: "Staker",
     functionName: "withdraw",
-    args: []
   });
 
   const { sendAsync: stakeEth } = useScaffoldMultiWriteContract({
