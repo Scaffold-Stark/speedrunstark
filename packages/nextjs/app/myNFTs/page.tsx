@@ -17,8 +17,6 @@ const MyNFTs: NextPage = () => {
   const [isMinting, setIsMinting] = useState(false);
   const [lastMintedTokenId, setLastMintedTokenId] = useState<number>();
 
-
-
   const { sendAsync: mintItem } = useScaffoldWriteContract({
     contractName: "YourCollectible",
     functionName: "mint_item",
@@ -33,15 +31,18 @@ const MyNFTs: NextPage = () => {
 
   const handleMintItem = async () => {
     setStatus("Minting NFT");
-    setIsMinting(true)
+    setIsMinting(true);
     const tokenIdCounterNumber = Number(tokenIdCounter);
 
     // circle back to the zero item if we've reached the end of the array
-    if (tokenIdCounter === undefined || tokenIdCounterNumber === lastMintedTokenId) {
+    if (
+      tokenIdCounter === undefined ||
+      tokenIdCounterNumber === lastMintedTokenId
+    ) {
       setStatus("Mint NFT");
       setIsMinting(false);
       notification.warning(
-        "Cannot mint the same token again, please wait for the new token ID"
+        "Cannot mint the same token again, please wait for the new token ID",
       );
       return;
     }
@@ -62,16 +63,14 @@ const MyNFTs: NextPage = () => {
       setStatus("Updating NFT List");
       refetch();
       setLastMintedTokenId(tokenIdCounterNumber);
-      setIsMinting(false)
+      setIsMinting(false);
     } catch (error) {
       notification.remove(notificationId);
       console.error(error);
       setStatus("Mint NFT");
-      setIsMinting(false)
+      setIsMinting(false);
     }
   };
-
-
 
   return (
     <>

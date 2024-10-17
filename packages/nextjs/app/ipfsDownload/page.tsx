@@ -17,7 +17,6 @@ const IpfsDownload: NextPage = () => {
     setMounted(true);
   }, []);
 
-
   const handleIpfsDownload = async () => {
     setLoading(true);
     const notificationId = notification.loading("Getting data from IPFS...");

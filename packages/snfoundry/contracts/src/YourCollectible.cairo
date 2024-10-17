@@ -7,16 +7,16 @@ pub trait IYourCollectible<T> {
 
 #[starknet::contract]
 mod YourCollectible {
-    use starknet::storage::Map;
     use contracts::components::Counter::CounterComponent;
     use core::num::traits::zero::Zero;
-    
-    use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_introspection::src5::SRC5Component;
+
+    use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent;
     use openzeppelin_token::erc721::{
         ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly}
     };
+    use starknet::storage::Map;
 
     use super::{IYourCollectible, ContractAddress};
 
@@ -172,7 +172,9 @@ mod YourCollectible {
                 let owner = self.owner_of(token_id);
                 if owner != to {
                     let last_token_index = self.balance_of(owner) - 1;
-                    let token_index = enumerable_component.ERC721Enumerable_owned_tokens_index.read(token_id);
+                    let token_index = enumerable_component
+                        .ERC721Enumerable_owned_tokens_index
+                        .read(token_id);
 
                     // When the token to delete is the last token, the swap operation is unnecessary
                     if (token_index != last_token_index) {
@@ -184,22 +186,33 @@ mod YourCollectible {
                             .ERC721Enumerable_owned_tokens
                             .write((owner, token_index), last_token_id);
                         // Update the moved token's index
-                        enumerable_component.ERC721Enumerable_owned_tokens_index.write(last_token_id, token_index);
+                        enumerable_component
+                            .ERC721Enumerable_owned_tokens_index
+                            .write(last_token_id, token_index);
                     }
 
                     // Clear the last slot
-                    enumerable_component.ERC721Enumerable_owned_tokens.write((owner, last_token_index), 0);
+                    enumerable_component
+                        .ERC721Enumerable_owned_tokens
+                        .write((owner, last_token_index), 0);
                     enumerable_component.ERC721Enumerable_owned_tokens_index.write(token_id, 0);
                 }
             }
             if (to == Zero::zero()) { // `Burn Token` case: Remove token from `ERC721Enumerable_all_tokens` enumerable component
-                let last_token_index = enumerable_component.ERC721Enumerable_all_tokens_len.read() - 1;
-                let token_index = enumerable_component.ERC721Enumerable_all_tokens_index.read(token_id);
+                let last_token_index = enumerable_component.ERC721Enumerable_all_tokens_len.read()
+                    - 1;
+                let token_index = enumerable_component
+                    .ERC721Enumerable_all_tokens_index
+                    .read(token_id);
 
-                let last_token_id = enumerable_component.ERC721Enumerable_all_tokens.read(last_token_index);
+                let last_token_id = enumerable_component
+                    .ERC721Enumerable_all_tokens
+                    .read(last_token_index);
 
                 enumerable_component.ERC721Enumerable_all_tokens.write(token_index, last_token_id);
-                enumerable_component.ERC721Enumerable_all_tokens_index.write(last_token_id, token_index);
+                enumerable_component
+                    .ERC721Enumerable_all_tokens_index
+                    .write(last_token_id, token_index);
 
                 enumerable_component.ERC721Enumerable_all_tokens_index.write(token_id, 0);
                 enumerable_component.ERC721Enumerable_all_tokens.write(last_token_index, 0);

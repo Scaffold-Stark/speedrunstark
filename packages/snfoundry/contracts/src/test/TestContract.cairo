@@ -9,8 +9,7 @@ use openzeppelin_token::erc721::interface::{
 };
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, cheat_caller_address, CheatSpan,
-    DeclareResultTrait, ContractClassTrait,
+    declare, cheat_caller_address, CheatSpan, DeclareResultTrait, ContractClassTrait,
 };
 use starknet::{ContractAddress, contract_address_const};
 
