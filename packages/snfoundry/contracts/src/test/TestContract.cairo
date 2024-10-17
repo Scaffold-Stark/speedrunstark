@@ -1,17 +1,16 @@
-use contracts::DiceGame::{IDiceGameDispatcher, IDiceGameDispatcherTrait, DiceGame};
+use contracts::DiceGame::{IDiceGameDispatcherTrait, DiceGame};
 use contracts::RiggedRoll::{IRiggedRollDispatcher, IRiggedRollDispatcherTrait};
 
-use contracts::mock_contracts::MockETHToken;
 use keccak::keccak_u256s_le_inputs;
-use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
-use openzeppelin::utils::serde::SerializedAppend;
+use openzeppelin_token::erc20::interface::{IERC20CamelDispatcherTrait};
+use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::cheatcodes::events::EventsFilterTrait;
 use snforge_std::{
-    declare, ContractClassTrait, spy_events, EventSpyAssertionsTrait, EventSpyTrait, Event,
-    cheat_caller_address, cheat_block_timestamp, CheatSpan
+    declare, ContractClassTrait, DeclareResultTrait, spy_events, EventSpyAssertionsTrait,
+    EventSpyTrait, cheat_caller_address, CheatSpan
 };
-use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-use starknet::{contract_address_const, get_block_timestamp};
+use starknet::{ContractAddress, get_block_number,};
+use starknet::{contract_address_const};
 
 fn OWNER() -> ContractAddress {
     contract_address_const::<'OWNER'>()
@@ -20,7 +19,7 @@ fn OWNER() -> ContractAddress {
 const ROLL_DICE_AMOUNT: u256 = 2000000000000000; // 0.002_ETH_IN_WEI
 // Should deploy the MockETHToken contract
 fn deploy_mock_eth_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockETHToken").unwrap();
+    let erc20_class_hash = declare("MockETHToken").unwrap().contract_class();
     let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_ETH_IN_WEI
     let reciever = OWNER();
     let mut calldata = array![];
@@ -33,7 +32,7 @@ fn deploy_mock_eth_token() -> ContractAddress {
 // Should deploy the DiceGame contract
 fn deploy_dice_game_contract() -> ContractAddress {
     let eth_token_address = deploy_mock_eth_token();
-    let dice_game_class_hash = declare("DiceGame").unwrap();
+    let dice_game_class_hash = declare("DiceGame").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(eth_token_address);
     let (dice_game_contract_address, _) = dice_game_class_hash.deploy(@calldata).unwrap();
@@ -43,7 +42,7 @@ fn deploy_dice_game_contract() -> ContractAddress {
 
 fn deploy_rigged_roll_contract() -> ContractAddress {
     let dice_game_contract_address = deploy_dice_game_contract();
-    let rigged_roll_class_hash = declare("RiggedRoll").unwrap();
+    let rigged_roll_class_hash = declare("RiggedRoll").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(dice_game_contract_address);
     calldata.append_serde(OWNER());

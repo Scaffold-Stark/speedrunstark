@@ -13,10 +13,10 @@ pub trait IRiggedRoll<T> {
 #[starknet::contract]
 mod RiggedRoll {
     use keccak::keccak_u256s_le_inputs;
-    use openzeppelin::access::ownable::OwnableComponent;
-    use openzeppelin::token::erc20::interface::IERC20CamelDispatcherTrait;
+    use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_token::erc20::interface::IERC20CamelDispatcherTrait;
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-    use super::{IRiggedRoll, IDiceGameDispatcher, IDiceGameDispatcherTrait};
+    use super::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
@@ -50,10 +50,12 @@ mod RiggedRoll {
 
     #[abi(embed_v0)]
     impl RiggedRollImpl of super::IRiggedRoll<ContractState> {
-        // ToDo Checkpoint 2: Implement the `rigged_roll()` function to predict the randomness in the DiceGame contract and only initiate a roll when it guarantees a win.
+        // ToDo Checkpoint 2: Implement the `rigged_roll()` function to predict the randomness in
+        // the DiceGame contract and only initiate a roll when it guarantees a win.
         fn rigged_roll(ref self: ContractState, amount: u256) {}
 
-        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Ether from the rigged contract to a specified address.
+        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Ether from the rigged
+        // contract to a specified address.
         fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256) {}
 
         fn last_dice_value(self: @ContractState) -> u256 {

@@ -1,4 +1,4 @@
-use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
 #[starknet::interface]
 pub trait IDiceGame<T> {
@@ -13,7 +13,7 @@ pub trait IDiceGame<T> {
 pub mod DiceGame {
     use keccak::keccak_u256s_le_inputs;
     use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
-    use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IDiceGame};
+    use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -54,7 +54,7 @@ pub mod DiceGame {
     #[abi(embed_v0)]
     impl DiceGameImpl of super::IDiceGame<ContractState> {
         fn roll_dice(ref self: ContractState, amount: u256) {
-            // >= 0.002 ETH 
+            // >= 0.002 ETH
             assert(amount >= 2000000000000000, 'Not enough ETH');
             let caller = get_caller_address();
             let this_contract = get_contract_address();

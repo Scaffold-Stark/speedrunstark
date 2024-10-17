@@ -47,7 +47,7 @@ const DiceGame: NextPage = () => {
     contractName: "DiceGame",
     functionName: "prize",
   });
-  const { writeAsync: multiContractWriteDice, isError: rollTheDiceError } =
+  const { sendAsync: multiContractWriteDice, isError: rollTheDiceError } =
     useScaffoldMultiWriteContract({
       calls: [
         createContractCall("Eth", "approve", [
@@ -60,7 +60,7 @@ const DiceGame: NextPage = () => {
       ],
     });
 
-  const { writeAsync: multiContractWriteRigged, isError: riggedRollError } =
+  const { sendAsync: multiContractWriteRigged, isError: riggedRollError } =
     useScaffoldMultiWriteContract({
       calls: [
         createContractCall("Eth", "approve", [
