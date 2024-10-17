@@ -240,21 +240,15 @@ export type ExtractAbiFunctionNamesScaffold<
 > = ExtractAbiFunctionsScaffold<TAbi, TAbiStateMutability>["name"];
 
 // helper function will only take from interfaces : //TODO: see if we can make it more generic
-// helper function will only take from interfaces : //TODO: see if we can make it more generic
 export type ExtractAbiFunctionsScaffold<
   TAbi extends Abi,
   TAbiStateMutability extends AbiStateMutability = AbiStateMutability,
 > = Extract<
   ExtractAbiInterfaces<TAbi>["items"][number],
-  | {
-      state_mutability: TAbiStateMutability;
-    }
-  | Extract<
-      TAbi[number],
-      {
-        type: "function";
-      }
-    >
+  {
+    type: "function";
+    state_mutability: TAbiStateMutability;
+  }
 >;
 
 // helper function will only take from interfaces : //TODO: see if we can make it more generic
@@ -333,6 +327,31 @@ export type AbiFunctionOutputs<
   TAbi extends Abi,
   TFunctionName extends string,
 > = ExtractAbiFunctionScaffold<TAbi, TFunctionName>["outputs"];
+
+/*export type AbiEventInputs<TAbi extends Abi, TEventName extends ExtractAbiEventNames<TAbi>> = ExtractAbiEvent<
+  TAbi,
+  TEventName
+>["inputs"];
+
+type IndexedEventInputs<
+  TContractName extends ContractName,
+  TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
+> = Extract<AbiEventInputs<ContractAbi<TContractName>, TEventName>[number], { indexed: true }>;
+
+export type EventFilters<
+  TContractName extends ContractName,
+  TEventName extends ExtractAbiEventNames<ContractAbi<TContractName>>,
+> = IsContractDeclarationMissing<
+  any,
+  IndexedEventInputs<TContractName, TEventName> extends never
+    ? never
+    : {
+      [Key in IsContractDeclarationMissing<
+        any,
+        IndexedEventInputs<TContractName, TEventName>["name"]
+      >]?: AbiParameterToPrimitiveType<Extract<IndexedEventInputs<TContractName, TEventName>, { name: Key }>>;
+    }
+>;*/
 
 export type UseScaffoldEventHistoryConfig<
   TContractName extends ContractName,
@@ -764,13 +783,11 @@ export function parseFunctionParams({
     args: inputs,
   });
 
-  console.debug({ formattedInputs });
-
   formattedInputs.forEach((inputItem) => {
     const { type: inputType, value: inputValue } = inputItem;
 
     parsedInputs.push(
-      parseParamWithType(inputType, inputValue, isRead, !!isReadArgsParsing),
+      deepParseValues(inputValue, isRead, inputType, !!isReadArgsParsing),
     );
   });
 
@@ -822,7 +839,10 @@ function formatInputForParsing({
           _formatInput(structValue, argIndex, variants as AbiParameter[]),
         ];
       });
-      return { type: structName, value: { variant: Object.fromEntries } };
+      return {
+        type: structName,
+        value: { variant: Object.fromEntries(formattedEntries) },
+      };
     }
 
     const { members } = structDef as AbiStruct;
