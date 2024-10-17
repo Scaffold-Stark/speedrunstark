@@ -8,6 +8,7 @@ pub trait IERC721Enumerable<TState> {
 
 #[starknet::component]
 pub mod ERC721EnumerableComponent {
+    use starknet::storage::Map;
     use openzeppelin_introspection::src5::SRC5Component;
     use openzeppelin_token::erc721::ERC721Component;
     use openzeppelin_token::erc721::interface::IERC721;
@@ -16,15 +17,15 @@ pub mod ERC721EnumerableComponent {
     #[storage]
     struct Storage {
         // Mapping from owner to list of owned token IDs
-        owned_tokens: LegacyMap<(ContractAddress, u256), u256>,
+        owned_tokens: Map<(ContractAddress, u256), u256>,
         // Mapping from token ID to index of the owner tokens list
-        owned_tokens_index: LegacyMap<u256, u256>,
+        owned_tokens_index: Map<u256, u256>,
         // Mapping with all token ids,
-        all_tokens: LegacyMap<u256, u256>,
+        all_tokens: Map<u256, u256>,
         // Helper to get the length of `all_tokens`
         all_tokens_length: u256,
         // Mapping from token id to position in the allTokens array
-        all_tokens_index: LegacyMap<u256, u256>
+        all_tokens_index: Map<u256, u256>
     }
 
     #[embeddable_as(ERC721EnumerableImpl)]

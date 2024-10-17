@@ -3,14 +3,13 @@ use contracts::components::ERC721Enumerable::{
     IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
 };
 
-use contracts::mock_contracts::Receiver;
 use openzeppelin_token::erc721::interface::{
     IERC721Dispatcher, IERC721DispatcherTrait, IERC721MetadataDispatcher,
     IERC721MetadataDispatcherTrait
 };
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan,
+    declare, cheat_caller_address, CheatSpan,
     DeclareResultTrait, ContractClassTrait,
 };
 use starknet::{ContractAddress, contract_address_const};
