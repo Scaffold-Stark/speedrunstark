@@ -3,18 +3,19 @@ use contracts::components::ERC721Enumerable::{
     IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
 };
 
-use contracts::mock_contracts::Receiver;
-use openzeppelin::token::erc721::interface::{
+use openzeppelin_token::erc721::interface::{
     IERC721Dispatcher, IERC721DispatcherTrait, IERC721MetadataDispatcher,
     IERC721MetadataDispatcherTrait
 };
-use openzeppelin::utils::serde::SerializedAppend;
-use snforge_std::{declare, ContractClassTrait, cheat_caller_address, CheatSpan};
+use openzeppelin_utils::serde::SerializedAppend;
+use snforge_std::{
+    declare, cheat_caller_address, CheatSpan, DeclareResultTrait, ContractClassTrait,
+};
 use starknet::{ContractAddress, contract_address_const};
 
 // Should deploy the contract
 fn deploy_contract(name: ByteArray) -> ContractAddress {
-    let contract = declare(name).unwrap();
+    let contract = declare(name).unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(OWNER());
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
@@ -30,7 +31,7 @@ fn NEW_OWNER() -> ContractAddress {
     contract_address_const::<'NEW_OWNER'>()
 }
 fn deploy_receiver() -> ContractAddress {
-    let contract = declare("Receiver").unwrap();
+    let contract = declare("Receiver").unwrap().contract_class();
     let mut calldata = array![];
     let (contract_address, _) = contract.deploy(@calldata).unwrap();
     println!("Receiver deployed on: {:?}", contract_address);
