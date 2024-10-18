@@ -156,5 +156,3 @@ export function createContractCall<
 ) {
   return { contractName, functionName, args };
 }
-import { error } from "console";
-import { id } from "ethers";
