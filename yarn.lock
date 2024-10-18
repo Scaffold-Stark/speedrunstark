@@ -716,15 +716,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/font@npm:^14.2.1":
-  version: 14.2.14
-  resolution: "@next/font@npm:14.2.14"
-  peerDependencies:
-    next: "*"
-  checksum: 67626fcf39d90f65cc69a734ddfb04ad7af69cc3ba33ba7b4cdb749a7dd5a5cbfc09f64041a15d0dac2a53dfe756769d8b356246a954c752e4cd888e4f821ec8
-  languageName: node
-  linkType: hard
-
 "@next/swc-darwin-arm64@npm:14.1.3":
   version: 14.1.3
   resolution: "@next/swc-darwin-arm64@npm:14.1.3"
@@ -2231,7 +2222,6 @@ __metadata:
   resolution: "@ss-2/nextjs@workspace:packages/nextjs"
   dependencies:
     "@heroicons/react": ^2.1.3
-    "@next/font": ^14.2.1
     "@radix-ui/react-icons": 1.3.0
     "@radix-ui/themes": 2.0.3
     "@starknet-io/types-js": ^0.7.7
