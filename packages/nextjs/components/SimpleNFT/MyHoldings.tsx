@@ -8,7 +8,6 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldRead
 import { notification } from "~~/utils/scaffold-stark";
 import { getMetadataFromIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
 import { NFTMetaData } from "~~/utils/simpleNFT/nftsMetadata";
-import { decodeBigIntArrayToText } from "~~/utils/scaffold-stark/contractsData";
 
 export interface Collectible extends Partial<NFTMetaData> {
   id: number;
