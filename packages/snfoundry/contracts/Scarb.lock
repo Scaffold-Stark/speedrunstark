@@ -6,7 +6,6 @@ name = "contracts"
 version = "0.2.0"
 dependencies = [
  "openzeppelin_access",
- "openzeppelin_introspection",
  "openzeppelin_token",
  "openzeppelin_utils",
  "snforge_std",
