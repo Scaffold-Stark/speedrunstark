@@ -2372,7 +2372,7 @@ __metadata:
     "@radix-ui/themes": 2.0.3
     "@starknet-io/types-js": ^0.7.7
     "@starknet-react/chains": ^3.1.0
-    "@starknet-react/core": ^3.5.0
+    "@starknet-react/core": ^3.6.0
     "@starknet-react/typescript-config": 0.0.0
     "@testing-library/dom": ^10.4.0
     "@testing-library/react": ^16.0.1
@@ -2452,7 +2452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@starknet-react/core@npm:^3.5.0":
+"@starknet-react/core@npm:^3.6.0":
   version: 3.6.0
   resolution: "@starknet-react/core@npm:3.6.0"
   dependencies:

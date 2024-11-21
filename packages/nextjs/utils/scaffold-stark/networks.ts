@@ -1,10 +1,10 @@
+import scaffoldConfig from "~~/scaffold.config";
 import { devnet, sepolia, mainnet, Chain } from "@starknet-react/chains";
 export const chains = {
   devnet,
   sepolia,
   mainnet,
 };
-import scaffoldConfig from "~~/scaffold.config";
 
 type ChainAttributes = {
   // color | [lightThemeColor, darkThemeColor]
