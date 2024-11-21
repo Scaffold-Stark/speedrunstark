@@ -1,7 +1,6 @@
 // To be used in JSON.stringify when a field might be bigint
 // https://wagmi.sh/react/faq#bigint-serialization
 import { Address } from "@starknet-react/chains";
-import { getChecksumAddress } from "starknet";
 
 export const replacer = (_key: string, value: unknown) => {
   if (typeof value === "bigint") return value.toString();

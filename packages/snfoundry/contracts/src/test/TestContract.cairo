@@ -1,61 +1,189 @@
-use contracts::YourContract::{IYourContractDispatcher, IYourContractDispatcherTrait};
-use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use contracts::YourCollectible::{IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait};
+use contracts::components::ERC721Enumerable::{
+    IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
+};
+
+use openzeppelin_token::erc721::interface::{
+    IERC721Dispatcher, IERC721DispatcherTrait, IERC721MetadataDispatcher,
+    IERC721MetadataDispatcherTrait
+};
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{declare, ContractClassTrait, DeclareResultTrait, cheat_caller_address, CheatSpan};
+use snforge_std::{
+    declare, cheat_caller_address, CheatSpan, DeclareResultTrait, ContractClassTrait,
+};
 use starknet::{ContractAddress, contract_address_const};
 
-// Real contract address deployed on Sepolia
-fn OWNER() -> ContractAddress {
-    contract_address_const::<0x02dA5254690b46B9C4059C25366D1778839BE63C142d899F0306fd5c312A5918>()
-}
-
-const ETH_CONTRACT_ADDRESS: felt252 =
-    0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7;
-
+// Should deploy the contract
 fn deploy_contract(name: ByteArray) -> ContractAddress {
-    let contract_class = declare(name).unwrap().contract_class();
+    let contract = declare(name).unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(OWNER());
-    let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
+    let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    println!("Contract deployed on: {:?}", contract_address);
+    contract_address
+}
+
+fn OWNER() -> ContractAddress {
+    contract_address_const::<'OWNER'>()
+}
+
+fn NEW_OWNER() -> ContractAddress {
+    contract_address_const::<'NEW_OWNER'>()
+}
+fn deploy_receiver() -> ContractAddress {
+    let contract = declare("Receiver").unwrap().contract_class();
+    let mut calldata = array![];
+    let (contract_address, _) = contract.deploy(@calldata).unwrap();
+    println!("Receiver deployed on: {:?}", contract_address);
     contract_address
 }
 
 #[test]
-fn test_set_greetings() {
-    let contract_address = deploy_contract("YourContract");
+// Test: Should be able to mint two NFT and transfer the frist item to another account
+fn test_mint_item() {
+    let your_collectible_contract_address = deploy_contract("YourCollectible");
+    let your_collectible_dispatcher = IYourCollectibleDispatcher {
+        contract_address: your_collectible_contract_address
+    };
+    let erc721 = IERC721Dispatcher { contract_address: your_collectible_contract_address };
+    let tester_address = deploy_receiver();
+    println!("Tester address: {:?}", tester_address);
+    let starting_balance = erc721.balance_of(tester_address);
+    println!("Starting balance: {:?}", starting_balance);
+    println!("Minting...");
+    let url: ByteArray = "QmfVMAmNM1kDEBYrC2TPzQDoCRFH6F5tE1e9Mr4FkkR5Xr";
+    let first_token_id = your_collectible_dispatcher.mint_item(tester_address, url.clone());
+    let expected_token_id = 1;
+    assert(first_token_id == expected_token_id, 'Token ID must be 1');
+    println!("Item minted! Token ID: {:?}", first_token_id);
+    let new_balance = erc721.balance_of(tester_address);
+    assert_eq!(new_balance, starting_balance + 1, "Starting Balance must be increased by 1");
+    println!("Tester address new balance: {:?}", new_balance);
 
-    let dispatcher = IYourContractDispatcher { contract_address };
+    // Should track tokens of owner by index
+    let erc721Enumerable = IERC721EnumerableDispatcher {
+        contract_address: your_collectible_contract_address
+    };
+    let index = new_balance - 1;
+    let first_token_id = erc721Enumerable.token_of_owner_by_index(tester_address, index);
+    println!("Token of owner({:?}) by index({:?}): {:?}", tester_address, index, first_token_id);
+    assert_eq!(first_token_id, expected_token_id, "Token must be 1");
 
-    let current_greeting = dispatcher.greeting();
-    let expected_greeting: ByteArray = "Building Unstoppable Apps!!!";
-    assert(current_greeting == expected_greeting, 'Should have the right message');
+    // mint another item
+    let url2: ByteArray = "QmVHi3c4qkZcH3cJynzDXRm5n7dzc9R9TUtUcfnWQvhdcw";
+    let second_token_id = your_collectible_dispatcher.mint_item(tester_address, url2);
+    let expected_token_id = 2;
+    assert(second_token_id == expected_token_id, 'Token ID must be 2');
+    println!("Item minted! Token ID: {:?}", second_token_id);
+    let new_balance = erc721.balance_of(tester_address);
+    assert_eq!(new_balance, starting_balance + 2, "Starting Balance must be increased by 2");
+    println!("Tester address New balance: {:?}", new_balance);
 
-    let new_greeting: ByteArray = "Learn Scaffold-Stark 2! :)";
-    dispatcher.set_greeting(new_greeting.clone(), 0); // we transfer 0 eth
-    assert(dispatcher.greeting() == new_greeting, 'Should allow set new message');
+    // transfer item
+    let new_owner = NEW_OWNER();
+    println!("new_owner address: {:?}", new_owner);
+    let new_owner_starting_balance = erc721.balance_of(new_owner);
+    println!("Starting balance new_owner: {:?}", new_owner_starting_balance);
+
+    println!("Transfering first item...");
+    // Change the caller address of the YourCollectible to the tester_address
+    cheat_caller_address(
+        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1)
+    );
+    erc721.transfer_from(tester_address, new_owner, first_token_id); // first_token_id = 1
+    let balance_new_owner = erc721.balance_of(new_owner);
+    assert(balance_new_owner == new_owner_starting_balance + 1, 'Balance must be increased by 1');
+    println!("New balance new_owner: {:?}", balance_new_owner);
+
+    let balance_tester = erc721.balance_of(tester_address);
+    assert(balance_tester == new_balance - 1, 'Balance must be decreased by 1');
+    println!("New balance tester: {:?}", balance_tester);
+
+    let erc721Metadata = IERC721MetadataDispatcher {
+        contract_address: your_collectible_contract_address
+    };
+    let token_uri = erc721Metadata.token_uri(first_token_id); // first_token_id = 1
+    println!("Token URI: {:?}", token_uri);
+
+    // owner_of
+    let owner = erc721.owner_of(first_token_id); // first_token_id = 1
+    assert(owner == new_owner, 'Owner must be new_owner');
+
+    let owner = erc721.owner_of(second_token_id); // second_token_id = 2    
+    assert(owner == tester_address, 'Owner must be tester_address');
+
+    let index = erc721Enumerable.token_of_owner_by_index(new_owner, balance_new_owner - 1);
+    println!("token of owner by index: {:?}", index);
+    assert(index == 1, 'Token must be 1');
+
+    let index = erc721Enumerable.token_of_owner_by_index(tester_address, balance_tester - 1);
+    println!("token of owner by index: {:?}", index);
+    assert(index == 2, 'Token must be 2');
 }
+
 
 #[test]
-#[fork("SEPOLIA_LATEST")]
-fn test_transfer() {
-    let user = OWNER();
-    let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
-    let your_contract_address = deploy_contract("YourContract");
-
-    let your_contract_dispatcher = IYourContractDispatcher {
-        contract_address: your_contract_address
+// Test: Should be able to mint a NFT and transfer it to another account
+fn test_mint_item2() {
+    let your_collectible_contract_address = deploy_contract("YourCollectible");
+    let your_collectible_dispatcher = IYourCollectibleDispatcher {
+        contract_address: your_collectible_contract_address
     };
-    let erc20_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
-    let amount_to_transfer = 500;
-    cheat_caller_address(eth_contract_address, user, CheatSpan::TargetCalls(1));
-    erc20_dispatcher.approve(your_contract_address, amount_to_transfer);
-    let approved_amount = erc20_dispatcher.allowance(user, your_contract_address);
-    assert(approved_amount == amount_to_transfer, 'Not the right amount approved');
+    let erc721 = IERC721Dispatcher { contract_address: your_collectible_contract_address };
+    let tester_address = deploy_receiver();
+    println!("Tester address: {:?}", tester_address);
+    let starting_balance = erc721.balance_of(tester_address);
+    println!("Starting balance: {:?}", starting_balance);
+    println!("Minting...");
+    let url: ByteArray = "QmfVMAmNM1kDEBYrC2TPzQDoCRFH6F5tE1e9Mr4FkkR5Xr";
+    let first_token_id = your_collectible_dispatcher.mint_item(tester_address, url.clone());
+    let expected_token_id = 1;
+    assert(first_token_id == expected_token_id, 'Token ID must be 1');
+    println!("Item minted! Token ID: {:?}", first_token_id);
+    let new_balance = erc721.balance_of(tester_address);
+    assert_eq!(new_balance, starting_balance + 1, "Starting Balance must be increased by 1");
+    println!("Tester address new balance: {:?}", new_balance);
 
-    let new_greeting: ByteArray = "Learn Scaffold-Stark 2! :)";
+    // Should track tokens of owner by index
+    let erc721Enumerable = IERC721EnumerableDispatcher {
+        contract_address: your_collectible_contract_address
+    };
+    let index = new_balance - 1;
+    let first_token_id = erc721Enumerable.token_of_owner_by_index(tester_address, index);
+    println!("Token of owner({:?}) by index({:?}): {:?}", tester_address, index, first_token_id);
+    assert_eq!(first_token_id, expected_token_id, "Token must be 1");
 
-    cheat_caller_address(your_contract_address, user, CheatSpan::TargetCalls(1));
-    your_contract_dispatcher.set_greeting(new_greeting.clone(), 500); // we transfer 0 eth
-    assert(your_contract_dispatcher.greeting() == new_greeting, 'Should allow set new message');
+    // transfer item
+    let new_owner = NEW_OWNER();
+    println!("new_owner address: {:?}", new_owner);
+    let new_owner_starting_balance = erc721.balance_of(new_owner);
+    println!("Starting balance new_owner: {:?}", new_owner_starting_balance);
+
+    println!("Transfering first item...");
+    // Change the caller address of the YourCollectible to the tester_address
+    cheat_caller_address(
+        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1)
+    );
+    erc721.transfer_from(tester_address, new_owner, first_token_id); // first_token_id = 1
+    let balance_new_owner = erc721.balance_of(new_owner);
+    assert(balance_new_owner == new_owner_starting_balance + 1, 'Balance must be increased by 1');
+    println!("New balance new_owner: {:?}", balance_new_owner);
+
+    let balance_tester = erc721.balance_of(tester_address);
+    assert(balance_tester == new_balance - 1, 'Balance must be decreased by 1');
+    println!("New balance tester: {:?}", balance_tester);
+
+    let erc721Metadata = IERC721MetadataDispatcher {
+        contract_address: your_collectible_contract_address
+    };
+    let token_uri = erc721Metadata.token_uri(first_token_id); // first_token_id = 1
+    println!("Token URI: {:?}", token_uri);
+
+    // owner_of
+    let owner = erc721.owner_of(first_token_id);
+    assert(owner == new_owner, 'Owner must be new_owner');
+
+    let index = erc721Enumerable.token_of_owner_by_index(new_owner, balance_new_owner - 1);
+    println!("token of owner by index: {:?}", index);
+    assert(index == 1, 'Token must be 1');
 }
-
