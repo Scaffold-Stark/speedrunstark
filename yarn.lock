@@ -2244,7 +2244,7 @@ __metadata:
     "@radix-ui/themes": 2.0.3
     "@starknet-io/types-js": ^0.7.7
     "@starknet-react/chains": ^3.1.0
-    "@starknet-react/core": ^3.5.0
+    "@starknet-react/core": ^3.6.0
     "@starknet-react/typescript-config": 0.0.0
     "@testing-library/dom": ^10.4.0
     "@testing-library/react": ^16.0.1
@@ -2321,7 +2321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@starknet-react/core@npm:^3.5.0":
+"@starknet-react/core@npm:^3.6.0":
   version: 3.6.0
   resolution: "@starknet-react/core@npm:3.6.0"
   dependencies:
@@ -2363,13 +2363,13 @@ __metadata:
   linkType: hard
 
 "@tanstack/react-query@npm:^5.25.0":
-  version: 5.60.6
-  resolution: "@tanstack/react-query@npm:5.60.6"
+  version: 5.61.0
+  resolution: "@tanstack/react-query@npm:5.61.0"
   dependencies:
     "@tanstack/query-core": 5.60.6
   peerDependencies:
     react: ^18 || ^19
-  checksum: be65cca4b6f19b8439d23d51a7615d093e33aae3b11b910dd481c0fb781dddc93d158ffc8fef43ee5a0355f59dcc86697f0e9054c245b900c106e26d147ee153
+  checksum: e63e5676aa6afe262845f064fd2c1624393511f027aa04a41f204966f677f37a268979dde212cf145b7827b527b2d444ec1bb245b6079ac757e4522bf6f09e6f
   languageName: node
   linkType: hard
 
@@ -3781,9 +3781,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001646, caniuse-lite@npm:^1.0.30001669":
-  version: 1.0.30001680
-  resolution: "caniuse-lite@npm:1.0.30001680"
-  checksum: 2641d2b18c5ab0a6663cb350c5adc81e5ede1a7677d1c7518a8053ada87bf6f206419e1820a2608f76fa5e4f7bea327cbe47df423783e571569a88c0ea645270
+  version: 1.0.30001683
+  resolution: "caniuse-lite@npm:1.0.30001683"
+  checksum: 66c5d4882f1e1a251b1fe63f8dc530165e980f11681cd96851c3da68d3464e66dc28479c4c0aaa6a1a781f96db451207688f4b57904b3d07cfd28ae306d34122
   languageName: node
   linkType: hard
 
@@ -7859,11 +7859,11 @@ __metadata:
   linkType: hard
 
 "psl@npm:^1.1.33":
-  version: 1.10.0
-  resolution: "psl@npm:1.10.0"
+  version: 1.11.0
+  resolution: "psl@npm:1.11.0"
   dependencies:
     punycode: ^2.3.1
-  checksum: e2662c74def5f4a4db214363be905835da1e989fc66b07a95c9c4bc3e733aada0045f031777d28510a241f7d682f792163a44a7cbbf20a953cdb6e981e3b565c
+  checksum: c4ab2533a41c993d7cc68c4174c7212df0e3ee7cfbc674da0df3e714a58537652f8838175239fb4dbd371c5e50d6ce475f57bc9e4e4014a1ca2ffc5414edc95d
   languageName: node
   linkType: hard
 
@@ -9039,21 +9039,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldts-core@npm:^6.1.61":
-  version: 6.1.61
-  resolution: "tldts-core@npm:6.1.61"
-  checksum: 659411060be80658bd492cf0f3a38223c0cc15e2ffb402e219e51dcfcffcdd581c00e63e494944d4e7ff0a0aeb321058f7811d9089fac455ae0c10b4f5beffd1
+"tldts-core@npm:^6.1.62":
+  version: 6.1.62
+  resolution: "tldts-core@npm:6.1.62"
+  checksum: 6b18535106712a092eb2f952602e2c30f70a9a2ec7c4e4d8e24f3cc77f8d273cd022ff451e67173fac021f6ac4b2fb30fde25c462bc16ccfccdd03526b27014d
   languageName: node
   linkType: hard
 
 "tldts@npm:^6.1.32":
-  version: 6.1.61
-  resolution: "tldts@npm:6.1.61"
+  version: 6.1.62
+  resolution: "tldts@npm:6.1.62"
   dependencies:
-    tldts-core: ^6.1.61
+    tldts-core: ^6.1.62
   bin:
     tldts: bin/cli.js
-  checksum: 1d2feafe6160147a2f5ea520ebc84c77153edacd0d69510726ee0c13b2fce8b84d1bad79f2c5337ac361d297d0d16815fe5d3c51c88a7822d2320a75f6d2dea3
+  checksum: 9b270ef1aa5048abd4ca9725fdcf462be246ad2bec978a4e658233734acf9dc8b560ea23aed63c395f90b9101cdec76daa304a4297b6e3f0487d28aa47bd8936
   languageName: node
   linkType: hard
 
