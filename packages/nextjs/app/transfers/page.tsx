@@ -55,11 +55,15 @@ const Transfers: NextPage = () => {
                       </th>
                       <td>
                         {" "}
-                        <Address address={event.args.from} />{" "}
+                        <Address
+                          address={`0x${event.args.from.toString(16)}`}
+                        />{" "}
                       </td>
                       <td>
                         {" "}
-                        <Address address={event.args.to} />{" "}
+                        <Address
+                          address={`0x${event.args.to.toString(16)}`}
+                        />{" "}
                       </td>
                     </tr>
                   );
