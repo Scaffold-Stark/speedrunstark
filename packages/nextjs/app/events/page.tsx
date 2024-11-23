@@ -52,9 +52,9 @@ const Events: NextPage = () => {
                     return (
                       <tr key={index}>
                         <td className="text-center">
-                          <Address 
-                          address={`0x${BigInt(event.args.buyer).toString(16)}`}
-                           />
+                          <Address
+                            address={`0x${BigInt(event.args.buyer).toString(16)}`}
+                          />
                         </td>
                         <td>{formatEther(event.args.eth_amount).toString()}</td>
                         <td>
