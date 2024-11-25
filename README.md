@@ -45,9 +45,9 @@ To ensure the proper functioning of scaffold-stark, your local `Scarb` version m
 scarb --version
 ```
 
-If your local Scarb version is not `2.8.3`, you need to install it.
+If your local Scarb version is not `2.8.5`, you need to install it.
 
-- Install Scarb `2.8.3` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
+- Install Scarb `2.8.5` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
 
 ### Starknet Foundry version
 
@@ -57,16 +57,16 @@ To ensure the proper functioning of the tests on scaffold-stark, your Starknet F
 snforge --version
 ```
 
-If your Starknet Foundry version is not `0.31.0`, you need to install it.
+If your Starknet Foundry version is not `0.33.0`, you need to install it.
 
-- Install Starknet Foundry `0.31.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
+- Install Starknet Foundry `0.33.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
 
 ### Compatible versions
 
 - Starknet-devnet - v0.2.0
-- Scarb - v2.8.3
-- Snforge - v0.31.0
-- Cairo - v2.8.2
+- Scarb - v2.8.5
+- Snforge - v0.33.0
+- Cairo - v2.8.5
 - RPC - v0.7.1
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
