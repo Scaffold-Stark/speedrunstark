@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Address as AddressType } from "@starknet-react/chains";
-import { getChecksumAddress, validateChecksumAddress } from "starknet";
+import {
+  getChecksumAddress,
+  validateAndParseAddress,
+  validateChecksumAddress,
+} from "starknet";
 import { devnet } from "@starknet-react/chains";
 import {
   CheckCircleIcon,
@@ -45,9 +49,14 @@ export const Address = ({
   const [ens, setEns] = useState<string | null>();
   const [ensAvatar, setEnsAvatar] = useState<string | null>();
   const [addressCopied, setAddressCopied] = useState(false);
-  const checkSumAddress = address ? getChecksumAddress(address) : undefined;
+
   const { targetNetwork } = useTargetNetwork();
   const { data: profile } = useConditionalStarkProfile(address);
+
+  const checkSumAddress = useMemo(() => {
+    if (!address) return undefined;
+    return getChecksumAddress(address);
+  }, [address]);
 
   //   const checkSumAddress = address ? address : undefined;
 
@@ -112,11 +121,11 @@ export const Address = ({
         )}
       </div>
       {disableAddressLink ? (
-        <span className={`ml-1.5 text-${size} font-normal text-neutral`}>
+        <span className={`ml-1.5 text-${size} font-normal`}>
           {profile?.name || displayAddress}
         </span>
       ) : targetNetwork.network === devnet.network ? (
-        <span className={`ml-1.5 text-${size} font-normal text-neutral`}>
+        <span className={`ml-1.5 text-${size} font-normal`}>
           <Link href={blockExplorerAddressLink}>
             {profile?.name || displayAddress}
           </Link>

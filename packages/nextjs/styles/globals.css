@@ -30,6 +30,7 @@ p {
 .modal-box {
   @apply min-h-[20rem] max-w-[25rem];
 }
+
 .btn.btn-ghost {
   @apply shadow-none;
 }

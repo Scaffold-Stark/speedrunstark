@@ -55,7 +55,9 @@ const Staking: NextPage = () => {
                 return (
                   <tr key={index}>
                     <td>
-                      <Address address={event.args.sender as `0x${string}`} />
+                      <Address
+                        address={`0x${BigInt(event.args.sender).toString(16)}`}
+                      />
                     </td>
                     <td>
                       {event.args.amount &&
