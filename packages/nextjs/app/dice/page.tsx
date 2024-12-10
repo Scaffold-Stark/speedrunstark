@@ -87,27 +87,28 @@ const DiceGame: NextPage = () => {
       watch: true,
     });
 
-  useEffect(() => {
-    if (rollsHistoryData?.length) {
-      const newRolls = (
-        rollsHistoryData?.map(({ args }) => {
-          return {
-            address: args.player,
-            amount: Number(args.amount),
-            roll: args.roll.toString(16).toUpperCase(),
-          };
-        }) || []
-      ).slice(0, MAX_TABLE_ROWS);
-      setRolls(newRolls);
-    }
-  }, [rollsHistoryData]);
+    useEffect(() => {
+      if (rollsHistoryData?.length) {
+        const newRolls = (
+          rollsHistoryData?.map(({ args }) => {
+            return {
+              address: `0x${BigInt(args.player).toString(16)}` as `0x${string}`, 
+              amount: Number(args.amount),                   
+              roll: args.roll.toString(16).toUpperCase(),
+            };
+          }) || []
+        ).slice(0, MAX_TABLE_ROWS);
+        setRolls(newRolls);
+      }
+    }, [rollsHistoryData]);
+    
 
   useEffect(() => {
     if (winnerHistoryData?.length) {
       const newWinners = (
         winnerHistoryData?.map(({ args }) => {
           return {
-            address: args.winner,
+            address: `0x${BigInt(args.winner).toString(16)}` as `0x${string}`,
             amount: args.amount,
           };
         }) || []
@@ -210,7 +211,6 @@ const DiceGame: NextPage = () => {
               />
             </div>
           </div>
-          {/*
             <button
               onClick={() => {
                 if (!rolled) {
@@ -223,7 +223,7 @@ const DiceGame: NextPage = () => {
               className="mt-2 btn btn-secondary bg-secondary btn-xl normal-case font-xl text-lg text-white"
             >
               Rigged Roll!
-            </button>*/}
+            </button>
 
           <div className="flex mt-8">
             {rolled ? (
