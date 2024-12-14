@@ -7,12 +7,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { decodeContractResponse } from "~~/app/debug/_components/contract";
 
-const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
-  text: string;
-  onCopy?: (text: string, result: boolean) => void;
-  children: React.ReactNode;
-}>;
-
 export const TxReceipt = (
   txResult:
     | string
@@ -33,7 +27,7 @@ export const TxReceipt = (
             aria-hidden="true"
           />
         ) : (
-          <TypedCopyToClipboard
+          <CopyToClipboard
             text={
               decodeContractResponse({
                 resp: txResult,
@@ -53,7 +47,7 @@ export const TxReceipt = (
               className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
               aria-hidden="true"
             />
-          </TypedCopyToClipboard>
+          </CopyToClipboard>
         )}
       </div>
       <div className="flex-wrap collapse collapse-arrow">
