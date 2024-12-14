@@ -18,6 +18,12 @@ type ClasshashProps = {
   size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl";
 };
 
+const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
+  text: string;
+  onCopy?: (text: string, result: boolean) => void;
+  children: React.ReactNode;
+}>;
+
 /**
  * Displays a Classhash and option to copy classHash.
  */
@@ -65,7 +71,7 @@ export const ClassHash = ({
           aria-hidden="true"
         />
       ) : (
-        <CopyToClipboard
+        <TypedCopyToClipboard
           text={classHash}
           onCopy={() => {
             setAddressCopied(true);
@@ -78,7 +84,7 @@ export const ClassHash = ({
             className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
             aria-hidden="true"
           />
-        </CopyToClipboard>
+        </TypedCopyToClipboard>
       )}
     </div>
   );

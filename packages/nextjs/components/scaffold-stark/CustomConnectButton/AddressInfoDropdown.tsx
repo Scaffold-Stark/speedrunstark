@@ -34,6 +34,12 @@ type AddressInfoDropdownProps = {
   ensAvatar?: string;
 };
 
+const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
+  text: string;
+  onCopy?: (text: string, result: boolean) => void;
+  children: React.ReactNode;
+}>;
+
 export const AddressInfoDropdown = ({
   address,
   ensAvatar,
@@ -122,7 +128,7 @@ export const AddressInfoDropdown = ({
                 <span className=" whitespace-nowrap">Copy address</span>
               </div>
             ) : (
-              <CopyToClipboard
+              <TypedCopyToClipboard
                 text={address}
                 onCopy={() => {
                   setAddressCopied(true);
@@ -138,7 +144,7 @@ export const AddressInfoDropdown = ({
                   />
                   <span className=" whitespace-nowrap">Copy address</span>
                 </div>
-              </CopyToClipboard>
+              </TypedCopyToClipboard>
             )}
           </li>
           <li className={selectingNetwork ? "hidden" : ""}>

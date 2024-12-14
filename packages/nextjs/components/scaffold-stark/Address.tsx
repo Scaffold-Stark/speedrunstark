@@ -36,6 +36,12 @@ const blockieSizeMap = {
   "3xl": 15,
 };
 
+const TypedCopyToClipboard = CopyToClipboard as unknown as React.FC<{
+  text: string;
+  onCopy?: (text: string, result: boolean) => void;
+  children: React.ReactNode;
+}>;
+
 /**
  * Displays an address (or ENS) with a Blockie image and option to copy address.
  */
@@ -145,7 +151,7 @@ export const Address = ({
           aria-hidden="true"
         />
       ) : (
-        <CopyToClipboard
+        <TypedCopyToClipboard
           text={checkSumAddress}
           onCopy={() => {
             setAddressCopied(true);
@@ -158,7 +164,7 @@ export const Address = ({
             className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
             aria-hidden="true"
           />
-        </CopyToClipboard>
+        </TypedCopyToClipboard>
       )}
     </div>
   );
