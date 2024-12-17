@@ -11,12 +11,12 @@ pub mod CounterComponent {
 
     #[storage]
     struct Storage {
-        value: u256
+        value: u256,
     }
 
     #[embeddable_as(CounterImpl)]
     impl Counter<
-        TContractState, +HasComponent<TContractState>
+        TContractState, +HasComponent<TContractState>,
     > of ICounter<ComponentState<TContractState>> {
         fn current(self: @ComponentState<TContractState>) -> u256 {
             self.value.read()

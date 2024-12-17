@@ -12,7 +12,7 @@ pub mod ERC721EnumerableComponent {
     use openzeppelin_token::erc721::ERC721Component;
     use openzeppelin_token::erc721::interface::IERC721;
     use starknet::storage::Map;
-    use super::{IERC721Enumerable, ContractAddress};
+    use super::{ContractAddress, IERC721Enumerable};
 
     #[storage]
     struct Storage {
@@ -25,7 +25,7 @@ pub mod ERC721EnumerableComponent {
         // Helper to get the length of `all_tokens`
         all_tokens_length: u256,
         // Mapping from token id to position in the allTokens array
-        all_tokens_index: Map<u256, u256>
+        all_tokens_index: Map<u256, u256>,
     }
 
     #[embeddable_as(ERC721EnumerableImpl)]
@@ -35,10 +35,10 @@ pub mod ERC721EnumerableComponent {
         impl ERC721: ERC721Component::HasComponent<TContractState>,
         +SRC5Component::HasComponent<TContractState>,
         +ERC721Component::ERC721HooksTrait<TContractState>,
-        +Drop<TContractState>
+        +Drop<TContractState>,
     > of IERC721Enumerable<ComponentState<TContractState>> {
         fn token_of_owner_by_index(
-            self: @ComponentState<TContractState>, owner: ContractAddress, index: u256
+            self: @ComponentState<TContractState>, owner: ContractAddress, index: u256,
         ) -> u256 {
             let erc721_component = get_dep_component!(self, ERC721);
             let balance = erc721_component.balance_of(owner);

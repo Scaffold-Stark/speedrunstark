@@ -14,11 +14,11 @@ mod YourCollectible {
 
     use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent;
     use openzeppelin_token::erc721::{
-        ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly}
+        ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly},
     };
     use starknet::storage::Map;
 
-    use super::{IYourCollectible, ContractAddress};
+    use super::{ContractAddress, IYourCollectible};
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
@@ -147,7 +147,7 @@ mod YourCollectible {
         impl Counter: CounterComponent::HasComponent<T>,
         impl HasComponent: ERC721Component::HasComponent<T>,
         +SRC5Component::HasComponent<T>,
-        +Drop<T>
+        +Drop<T>,
     > of ERC721Component::ERC721HooksTrait<T> {
         // Implement this to add custom logic to the ERC721 hooks
         // Similar to _beforeTokenTransfer in OpenZeppelin ERC721.sol
@@ -155,7 +155,7 @@ mod YourCollectible {
             ref self: ERC721Component::ComponentState<T>,
             to: ContractAddress,
             token_id: u256,
-            auth: ContractAddress
+            auth: ContractAddress,
         ) {
             let counter_component = get_dep_component!(@self, Counter);
             let token_id_counter = counter_component.current();
@@ -228,7 +228,7 @@ mod YourCollectible {
             ref self: ERC721Component::ComponentState<T>,
             to: ContractAddress,
             token_id: u256,
-            auth: ContractAddress
+            auth: ContractAddress,
         ) {}
     }
 }

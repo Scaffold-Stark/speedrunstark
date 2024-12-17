@@ -20,7 +20,7 @@ pub mod Receiver {
         #[substorage(v0)]
         erc721_receiver: ERC721ReceiverComponent::Storage,
         #[substorage(v0)]
-        src5: SRC5Component::Storage
+        src5: SRC5Component::Storage,
     }
 
     #[event]
@@ -29,7 +29,7 @@ pub mod Receiver {
         #[flat]
         ERC721ReceiverEvent: ERC721ReceiverComponent::Event,
         #[flat]
-        SRC5Event: SRC5Component::Event
+        SRC5Event: SRC5Component::Event,
     }
 
     #[constructor]
@@ -46,7 +46,7 @@ pub mod Receiver {
             operator: ContractAddress,
             from: ContractAddress,
             token_id: u256,
-            data: Span<felt252>
+            data: Span<felt252>,
         ) -> felt252 {
             if *data.at(0) == 'SUCCESS' {
                 self.erc721_receiver.on_erc721_received(operator, from, token_id, data)

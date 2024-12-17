@@ -1,16 +1,14 @@
 use contracts::YourCollectible::{IYourCollectibleDispatcher, IYourCollectibleDispatcherTrait};
 use contracts::components::ERC721Enumerable::{
-    IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait
+    IERC721EnumerableDispatcher, IERC721EnumerableDispatcherTrait,
 };
 
 use openzeppelin_token::erc721::interface::{
     IERC721Dispatcher, IERC721DispatcherTrait, IERC721MetadataDispatcher,
-    IERC721MetadataDispatcherTrait
+    IERC721MetadataDispatcherTrait,
 };
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{
-    declare, cheat_caller_address, CheatSpan, DeclareResultTrait, ContractClassTrait,
-};
+use snforge_std::{CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare};
 use starknet::{ContractAddress, contract_address_const};
 
 // Should deploy the contract
@@ -43,7 +41,7 @@ fn deploy_receiver() -> ContractAddress {
 fn test_mint_item() {
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
-        contract_address: your_collectible_contract_address
+        contract_address: your_collectible_contract_address,
     };
     let erc721 = IERC721Dispatcher { contract_address: your_collectible_contract_address };
     let tester_address = deploy_receiver();
@@ -62,7 +60,7 @@ fn test_mint_item() {
 
     // Should track tokens of owner by index
     let erc721Enumerable = IERC721EnumerableDispatcher {
-        contract_address: your_collectible_contract_address
+        contract_address: your_collectible_contract_address,
     };
     let index = new_balance - 1;
     let first_token_id = erc721Enumerable.token_of_owner_by_index(tester_address, index);
@@ -88,7 +86,7 @@ fn test_mint_item() {
     println!("Transfering first item...");
     // Change the caller address of the YourCollectible to the tester_address
     cheat_caller_address(
-        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1)
+        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
     erc721.transfer_from(tester_address, new_owner, first_token_id); // first_token_id = 1
     let balance_new_owner = erc721.balance_of(new_owner);
@@ -100,7 +98,7 @@ fn test_mint_item() {
     println!("New balance tester: {:?}", balance_tester);
 
     let erc721Metadata = IERC721MetadataDispatcher {
-        contract_address: your_collectible_contract_address
+        contract_address: your_collectible_contract_address,
     };
     let token_uri = erc721Metadata.token_uri(first_token_id); // first_token_id = 1
     println!("Token URI: {:?}", token_uri);
@@ -127,7 +125,7 @@ fn test_mint_item() {
 fn test_mint_item2() {
     let your_collectible_contract_address = deploy_contract("YourCollectible");
     let your_collectible_dispatcher = IYourCollectibleDispatcher {
-        contract_address: your_collectible_contract_address
+        contract_address: your_collectible_contract_address,
     };
     let erc721 = IERC721Dispatcher { contract_address: your_collectible_contract_address };
     let tester_address = deploy_receiver();
@@ -146,7 +144,7 @@ fn test_mint_item2() {
 
     // Should track tokens of owner by index
     let erc721Enumerable = IERC721EnumerableDispatcher {
-        contract_address: your_collectible_contract_address
+        contract_address: your_collectible_contract_address,
     };
     let index = new_balance - 1;
     let first_token_id = erc721Enumerable.token_of_owner_by_index(tester_address, index);
@@ -162,7 +160,7 @@ fn test_mint_item2() {
     println!("Transfering first item...");
     // Change the caller address of the YourCollectible to the tester_address
     cheat_caller_address(
-        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1)
+        your_collectible_contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
     erc721.transfer_from(tester_address, new_owner, first_token_id); // first_token_id = 1
     let balance_new_owner = erc721.balance_of(new_owner);
@@ -174,7 +172,7 @@ fn test_mint_item2() {
     println!("New balance tester: {:?}", balance_tester);
 
     let erc721Metadata = IERC721MetadataDispatcher {
-        contract_address: your_collectible_contract_address
+        contract_address: your_collectible_contract_address,
     };
     let token_uri = erc721Metadata.token_uri(first_token_id); // first_token_id = 1
     println!("Token URI: {:?}", token_uri);
