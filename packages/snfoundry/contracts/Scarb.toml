@@ -6,7 +6,7 @@ edition = "2023_11"
 # See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest.html
 
 [dependencies]
-starknet = "2.9.1"
+starknet = "2.9.2"
 # Change to just "openzeppelin" to use full features
 openzeppelin_access = "0.20.0"
 openzeppelin_token = "0.20.0"
@@ -14,7 +14,7 @@ openzeppelin_introspection = "0.20.0"
 
 [dev-dependencies]
 openzeppelin_utils = "0.20.0"
-snforge_std = "0.33.0"
+snforge_std = "0.34.0"
 assert_macros = "2.8.2"
 
 [[target.starknet-contract]]
