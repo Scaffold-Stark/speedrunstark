@@ -7,7 +7,7 @@ pub trait IYourToken<T> {
     fn transfer(ref self: T, recipient: ContractAddress, amount: u256) -> bool;
     fn approve(ref self: T, spender: ContractAddress, amount: u256) -> bool;
     fn transfer_from(
-        ref self: T, sender: ContractAddress, recipient: ContractAddress, amount: u256
+        ref self: T, sender: ContractAddress, recipient: ContractAddress, amount: u256,
     ) -> bool;
     fn allowance(self: @T, owner: ContractAddress, spender: ContractAddress) -> u256;
 }
@@ -17,7 +17,7 @@ mod YourToken {
     use openzeppelin_token::erc20::interface::IERC20;
     use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
 
-    use super::{ContractAddress, IYourToken};
+    use super::{ContractAddress};
 
     component!(path: ERC20Component, storage: erc20, event: ERC20Event);
 
@@ -28,15 +28,16 @@ mod YourToken {
     #[storage]
     struct Storage {
         #[substorage(v0)]
-        erc20: ERC20Component::Storage
+        erc20: ERC20Component::Storage,
     }
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
         #[flat]
-        ERC20Event: ERC20Component::Event
+        ERC20Event: ERC20Component::Event,
     }
+
 
     #[constructor]
     // Todo Checkpoint 1: Edit the constructor to mint the fixed supply of tokens to the recipient.
@@ -67,12 +68,12 @@ mod YourToken {
             ref self: ContractState,
             sender: ContractAddress,
             recipient: ContractAddress,
-            amount: u256
+            amount: u256,
         ) -> bool {
             self.erc20.transfer_from(sender, recipient, amount)
         }
         fn allowance(
-            self: @ContractState, owner: ContractAddress, spender: ContractAddress
+            self: @ContractState, owner: ContractAddress, spender: ContractAddress,
         ) -> u256 {
             self.erc20.allowance(owner, spender)
         }

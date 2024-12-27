@@ -4,8 +4,8 @@ use contracts::mock_contracts::MockETHToken;
 use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan,
-    DeclareResultTrait, ContractClassTrait,
+    CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare,
+    start_cheat_block_timestamp_global,
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
@@ -57,7 +57,7 @@ fn deploy_vendor_contract() -> ContractAddress {
     let eth_amount_wei: u256 = 1000000000000000000; // 1_ETH_IN_WEI
     let eth_token_dispatcher = IERC20CamelDispatcher { contract_address: eth_token_address };
     assert(
-        eth_token_dispatcher.transfer(vendor_contract_address, eth_amount_wei), 'Transfer failed'
+        eth_token_dispatcher.transfer(vendor_contract_address, eth_amount_wei), 'Transfer failed',
     );
     let vendor_eth_balance = eth_token_dispatcher.balanceOf(vendor_contract_address);
     println!("-- Vendor eth balance: {:?} ETH in wei", vendor_eth_balance);
@@ -68,7 +68,7 @@ fn deploy_vendor_contract() -> ContractAddress {
     let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
     let INITIAL_BALANCE: u256 = 1000000000000000000000; // 1000_GLD_IN_WEI
     assert(
-        your_token_dispatcher.transfer(vendor_contract_address, INITIAL_BALANCE), 'Transfer failed'
+        your_token_dispatcher.transfer(vendor_contract_address, INITIAL_BALANCE), 'Transfer failed',
     );
     let vendor_token_balance = your_token_dispatcher.balance_of(vendor_contract_address);
     println!("-- Vendor GLD token balance: {:?} GLD in wei", vendor_token_balance);
@@ -121,7 +121,7 @@ fn test_buy_tokens() {
     eth_token_dispatcher.approve(vendor_contract_address, eth_amount_wei);
     // check allowance
     let allowance = eth_token_dispatcher.allowance(tester_address, vendor_contract_address);
-    assert_eq!(allowance, eth_amount_wei, "Allowance should be equal to the bought amount");
+    assert(allowance == eth_amount_wei, 'Allowance should be equal');
 
     // Change the caller address of the your_token_address to the tester_address
     cheat_caller_address(vendor_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -133,7 +133,7 @@ fn test_buy_tokens() {
     let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_WEI
     let new_balance = your_token_dispatcher.balance_of(tester_address);
     println!("---- New token balance: {:?} GLD in wei", new_balance);
-    assert_eq!(new_balance, expected_balance, "Balance should be increased by the bought amount");
+    assert(new_balance == expected_balance, 'Balance should be increased');
 }
 
 // Should let us sell tokens and we should get the appropriate amount eth back...
@@ -157,7 +157,7 @@ fn test_sell_tokens() {
     your_token_dispatcher.approve(vendor_contract_address, gld_token_amount_wei);
     // check allowance
     let allowance = your_token_dispatcher.allowance(tester_address, vendor_contract_address);
-    assert_eq!(allowance, gld_token_amount_wei, "Allowance should be equal to the sold amount");
+    assert(allowance == gld_token_amount_wei, 'Allowance equal to sold amount');
 
     // Change the caller address of the your_token_address to the tester_address
     cheat_caller_address(vendor_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -167,7 +167,7 @@ fn test_sell_tokens() {
     println!("---- New token balance: {:?} GLD in wei", new_balance);
     let expected_balance = starting_balance
         - gld_token_amount_wei; // 2000 - 0.1 = 1999.9_GLD_IN_WEI
-    assert_eq!(new_balance, expected_balance, "Balance should be decreased by the sold amount");
+    assert(new_balance == expected_balance, 'Balance should be decreased');
 }
 
 //Should let the owner (and nobody else) withdraw the eth from the contract...
@@ -194,7 +194,7 @@ fn test_failing_withdraw_tokens() {
     eth_token_dispatcher.approve(vendor_contract_address, eth_amount_wei);
     // check allowance
     let allowance = eth_token_dispatcher.allowance(tester_address, vendor_contract_address);
-    assert_eq!(allowance, eth_amount_wei, "Allowance should be equal to the bought amount");
+    assert(allowance == eth_amount_wei, 'Allowance should be equal');
 
     // Change the caller address of the your_token_address to the tester_address
     cheat_caller_address(vendor_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -206,7 +206,7 @@ fn test_failing_withdraw_tokens() {
     let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_WEI
     let new_balance = your_token_dispatcher.balance_of(tester_address);
     println!("---- New token balance: {:?} GLD in wei", new_balance);
-    assert_eq!(new_balance, expected_balance, "Balance should be increased by the bought amount");
+    assert(new_balance == expected_balance, 'Balance should be increased');
 
     let vendor_eth_balance = eth_token_dispatcher.balanceOf(vendor_contract_address);
     println!("---- Vendor contract eth balance: {:?} ETH in wei", vendor_eth_balance);
@@ -221,9 +221,9 @@ fn test_failing_withdraw_tokens() {
     let balance_after_attemp_withdraw = eth_token_dispatcher.balanceOf(vendor_contract_address);
     println!(
         "---- Vendor contract eth balance after withdraw: {:?} ETH in wei",
-        balance_after_attemp_withdraw
+        balance_after_attemp_withdraw,
     );
-    assert_eq!(not_owner_balance, balance_after_attemp_withdraw, "Balance should be the same");
+    assert(not_owner_balance == balance_after_attemp_withdraw, 'Balance should be the same');
 }
 
 #[test]
@@ -251,7 +251,7 @@ fn test_success_withdraw_tokens() {
     let owner_eth_balance_before_withdraw = eth_token_dispatcher.balanceOf(owner_address);
     println!(
         "---- Owner token balance before withdraw: {:?} ETH in wei",
-        owner_eth_balance_before_withdraw
+        owner_eth_balance_before_withdraw,
     );
 
     let vendor_eth_balance = eth_token_dispatcher.balanceOf(vendor_contract_address);
@@ -263,12 +263,10 @@ fn test_success_withdraw_tokens() {
     vendor_dispatcher.withdraw();
     let eth_balance_after_withdraw = eth_token_dispatcher.balanceOf(owner_address);
     println!(
-        "---- Owner token balance after withdraw: {:?} ETH in wei", eth_balance_after_withdraw
+        "---- Owner token balance after withdraw: {:?} ETH in wei", eth_balance_after_withdraw,
     );
-    assert_eq!(
-        owner_eth_balance_before_withdraw + vendor_eth_balance,
-        eth_balance_after_withdraw,
-        "Balance should be the same"
+    assert(
+        owner_eth_balance_before_withdraw + vendor_eth_balance == eth_balance_after_withdraw,
+        'Balance should be the same',
     );
 }
-
