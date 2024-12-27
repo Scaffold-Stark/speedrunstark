@@ -1,9 +1,9 @@
-use contracts::Staker::{IStakerDispatcherTrait, IStakerDispatcher};
+use contracts::Staker::{IStakerDispatcher, IStakerDispatcherTrait};
 use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan,
-    DeclareResultTrait, ContractClassTrait,
+    CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare,
+    start_cheat_block_timestamp_global,
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
@@ -66,7 +66,7 @@ fn test_stake_functionality() {
     // Check if the allowance is set
     assert(
         eth_token_dispatcher.allowance(tester_address, staker_contract_address) == amount_to_stake,
-        'Allowance not set'
+        'Allowance not set',
     );
     // Change the caller address of the staker_contract to the tester_address
     cheat_caller_address(staker_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -101,7 +101,7 @@ fn test_execute_functionality() {
     // Check if the allowance is set
     assert(
         eth_token_dispatcher.allowance(tester_address, staker_contract_address) == amount_to_stake,
-        'Allowance not set'
+        'Allowance not set',
     );
     // Change the caller address of the staker_contract to the tester_address
     cheat_caller_address(staker_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -164,7 +164,7 @@ fn test_withdraw_functionality() {
     // Check if the allowance is set
     assert(
         eth_token_dispatcher.allowance(tester_address, staker_contract_address) == amount_to_stake,
-        'Allowance not set'
+        'Allowance not set',
     );
     // Change the caller address of the staker_contract to the tester_address
     cheat_caller_address(staker_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -199,6 +199,6 @@ fn test_withdraw_functionality() {
     assert_eq!(
         ending_balance,
         starting_balance + amount_to_stake,
-        "Balance should be increased by the stake amount"
+        "Balance should be increased by the stake amount",
     );
 }
