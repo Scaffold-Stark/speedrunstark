@@ -12,7 +12,7 @@ pub trait IDiceGame<T> {
 #[starknet::contract]
 pub mod DiceGame {
     use keccak::keccak_u256s_le_inputs;
-    use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
+    use starknet::{ContractAddress, get_block_number, get_caller_address, get_contract_address};
     use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 
     #[event]
@@ -41,7 +41,7 @@ pub mod DiceGame {
         eth_token: IERC20CamelDispatcher,
         nonce: u256,
         prize: u256,
-        last_dice_value: u256
+        last_dice_value: u256,
     }
 
     #[constructor]
