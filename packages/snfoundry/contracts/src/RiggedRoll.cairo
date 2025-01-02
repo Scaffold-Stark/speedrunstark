@@ -15,7 +15,7 @@ mod RiggedRoll {
     use keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::IERC20CamelDispatcherTrait;
-    use starknet::{ContractAddress, get_contract_address, get_block_number, get_caller_address};
+    use starknet::{ContractAddress, get_block_number, get_caller_address, get_contract_address};
     use super::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -30,19 +30,19 @@ mod RiggedRoll {
         dice_game: IDiceGameDispatcher,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
-        predicted_roll: u256
+        predicted_roll: u256,
     }
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
         #[flat]
-        OwnableEvent: OwnableComponent::Event
+        OwnableEvent: OwnableComponent::Event,
     }
 
     #[constructor]
     fn constructor(
-        ref self: ContractState, dice_game_address: ContractAddress, owner: ContractAddress
+        ref self: ContractState, dice_game_address: ContractAddress, owner: ContractAddress,
     ) {
         self.dice_game.write(IDiceGameDispatcher { contract_address: dice_game_address });
         self.ownable.initializer(owner);

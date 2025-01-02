@@ -87,21 +87,20 @@ const DiceGame: NextPage = () => {
       watch: true,
     });
 
-    useEffect(() => {
-      if (rollsHistoryData?.length) {
-        const newRolls = (
-          rollsHistoryData?.map(({ args }) => {
-            return {
-              address: `0x${BigInt(args.player).toString(16)}` as `0x${string}`, 
-              amount: Number(args.amount),                   
-              roll: args.roll.toString(16).toUpperCase(),
-            };
-          }) || []
-        ).slice(0, MAX_TABLE_ROWS);
-        setRolls(newRolls);
-      }
-    }, [rollsHistoryData]);
-    
+  useEffect(() => {
+    if (rollsHistoryData?.length) {
+      const newRolls = (
+        rollsHistoryData?.map(({ args }) => {
+          return {
+            address: `0x${BigInt(args.player).toString(16)}` as `0x${string}`,
+            amount: Number(args.amount),
+            roll: args.roll.toString(16).toUpperCase(),
+          };
+        }) || []
+      ).slice(0, MAX_TABLE_ROWS);
+      setRolls(newRolls);
+    }
+  }, [rollsHistoryData]);
 
   useEffect(() => {
     if (winnerHistoryData?.length) {
@@ -211,19 +210,19 @@ const DiceGame: NextPage = () => {
               />
             </div>
           </div>
-            <button
-              onClick={() => {
-                if (!rolled) {
-                  setRolled(true);
-                }
-                setIsRolling(true);
-                handleRigged();
-              }}
-              disabled={isRolling}
-              className="mt-2 btn btn-secondary bg-secondary btn-xl normal-case font-xl text-lg text-white"
-            >
-              Rigged Roll!
-            </button>
+          <button
+            onClick={() => {
+              if (!rolled) {
+                setRolled(true);
+              }
+              setIsRolling(true);
+              handleRigged();
+            }}
+            disabled={isRolling}
+            className="mt-2 btn btn-secondary bg-secondary btn-xl normal-case font-xl text-lg text-white"
+          >
+            Rigged Roll!
+          </button>
 
           <div className="flex mt-8">
             {rolled ? (

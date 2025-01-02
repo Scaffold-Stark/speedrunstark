@@ -1,4 +1,4 @@
-use contracts::DiceGame::{IDiceGameDispatcherTrait, DiceGame};
+use contracts::DiceGame::{DiceGame, IDiceGameDispatcherTrait};
 use contracts::RiggedRoll::{IRiggedRollDispatcher, IRiggedRollDispatcherTrait};
 
 use keccak::keccak_u256s_le_inputs;
@@ -6,10 +6,10 @@ use openzeppelin_token::erc20::interface::{IERC20CamelDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::cheatcodes::events::EventsFilterTrait;
 use snforge_std::{
-    declare, ContractClassTrait, DeclareResultTrait, spy_events, EventSpyAssertionsTrait,
-    EventSpyTrait, cheat_caller_address, CheatSpan
+    CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyAssertionsTrait, EventSpyTrait,
+    cheat_caller_address, declare, spy_events,
 };
-use starknet::{ContractAddress, get_block_number,};
+use starknet::{ContractAddress, get_block_number};
 use starknet::{contract_address_const};
 
 fn OWNER() -> ContractAddress {
@@ -61,12 +61,12 @@ fn get_roll(get_roll_less_than_5: bool, rigged_roll_dispatcher: IRiggedRollDispa
         let array = array![prev_block, dice_game_dispatcher.nonce()];
         expected_roll = keccak_u256s_le_inputs(array.span()) % 16;
         println!("-- Produced roll: {:?}", expected_roll);
-        if expected_roll <= 5 == get_roll_less_than_5 {
+        if (expected_roll <= 5) == get_roll_less_than_5 {
             break;
         }
         let eth_token_dispatcher = dice_game_dispatcher.eth_token_dispatcher();
         cheat_caller_address(
-            eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1)
+            eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
         );
         eth_token_dispatcher.approve(dice_game_contract_address, ROLL_DICE_AMOUNT);
         cheat_caller_address(dice_game_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -89,14 +89,14 @@ fn test_deploy_rigged_roll() {
 fn test_rigged_roll_fails() {
     let rigged_roll_contract_address = deploy_rigged_roll_contract();
     let rigged_roll_dispatcher = IRiggedRollDispatcher {
-        contract_address: rigged_roll_contract_address
+        contract_address: rigged_roll_contract_address,
     };
     let eth_amount_wei: u256 = 1000000000000000; // 0.001_ETH_IN_WEI
 
     let tester_address = OWNER();
     let eth_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().eth_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1)
+        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
     eth_token_dispatcher.approve(rigged_roll_contract_address, eth_amount_wei);
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -107,7 +107,7 @@ fn test_rigged_roll_fails() {
 fn test_rigged_roll_call_dice_game() {
     let rigged_roll_contract_address = deploy_rigged_roll_contract();
     let rigged_roll_dispatcher = IRiggedRollDispatcher {
-        contract_address: rigged_roll_contract_address
+        contract_address: rigged_roll_contract_address,
     };
     let dice_game_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher();
 
@@ -117,7 +117,7 @@ fn test_rigged_roll_call_dice_game() {
     let tester_address = OWNER();
     let eth_token_dispatcher = dice_game_dispatcher.eth_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1)
+        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
     eth_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
 
@@ -139,11 +139,11 @@ fn test_rigged_roll_call_dice_game() {
                         DiceGame::Roll {
                             player: rigged_roll_contract_address,
                             amount: ROLL_DICE_AMOUNT,
-                            roll: expected_roll
-                        }
-                    )
-                )
-            ]
+                            roll: expected_roll,
+                        },
+                    ),
+                ),
+            ],
         );
     let (_, event) = events.events.at(1);
     assert(event.keys.at(0) == @selector!("Winner"), 'Expected Winner event');
@@ -153,7 +153,7 @@ fn test_rigged_roll_call_dice_game() {
 fn test_rigged_roll_should_not_call_dice_game() {
     let rigged_roll_contract_address = deploy_rigged_roll_contract();
     let rigged_roll_dispatcher = IRiggedRollDispatcher {
-        contract_address: rigged_roll_contract_address
+        contract_address: rigged_roll_contract_address,
     };
     let dice_game_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher();
 
@@ -163,7 +163,7 @@ fn test_rigged_roll_should_not_call_dice_game() {
     let tester_address = OWNER();
     let eth_token_dispatcher = dice_game_dispatcher.eth_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1)
+        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
     eth_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
 
@@ -183,7 +183,7 @@ fn test_rigged_roll_should_not_call_dice_game() {
 fn test_withdraw() {
     let rigged_roll_contract_address = deploy_rigged_roll_contract();
     let rigged_roll_dispatcher = IRiggedRollDispatcher {
-        contract_address: rigged_roll_contract_address
+        contract_address: rigged_roll_contract_address,
     };
 
     let get_roll_less_than_5 = true;
@@ -192,7 +192,7 @@ fn test_withdraw() {
     let tester_address = OWNER();
     let eth_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().eth_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1)
+        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
     eth_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
 
@@ -210,6 +210,6 @@ fn test_withdraw() {
     assert_eq!(
         tester_address_new_balance,
         tester_address_prev_balance + rigged_roll_balance,
-        "Tester address should have the balance of the rigged_roll_contract_address"
+        "Tester address should have the balance of the rigged_roll_contract_address",
     );
 }

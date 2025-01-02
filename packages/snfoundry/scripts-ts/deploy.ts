@@ -4,6 +4,7 @@ import {
   executeDeployCalls,
   exportDeployments,
   deployer,
+  provider,
 } from "./deploy-contract";
 import { green } from "./helpers/colorize-log";
 
@@ -26,7 +27,7 @@ const deployScript = async (): Promise<void> => {
   const ethAmount = 50000000000000000n;
 
   const tx = await ethContract.invoke("transfer", [diceGameAddr, ethAmount]);
-  // const receipt = await provider.waitForTransaction(tx.transaction_hash);
+  const receipt = await provider.waitForTransaction(tx.transaction_hash);
 
   // ToDo Checkpoint 2: Deploy RiggedRoll contract
   //   await deployContract({
