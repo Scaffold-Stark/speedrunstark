@@ -22,10 +22,10 @@ const universalErc20Abi = [
   {
     type: "impl",
     name: "ERC20Impl",
-    interface_name: "openzeppelin_token::erc20::interface::IERC20",
+    interface_name: "openzeppelin::token::erc20::interface::IERC20",
   },
   {
-    name: "openzeppelin_token::erc20::interface::IERC20",
+    name: "openzeppelin::token::erc20::interface::IERC20",
     type: "interface",
     items: [
       {
@@ -177,11 +177,11 @@ const universalErc20Abi = [
   {
     name: "ERC20CamelOnlyImpl",
     type: "impl",
-    interface_name: "openzeppelin_token::erc20::interface::IERC20CamelOnly",
+    interface_name: "openzeppelin::token::erc20::interface::IERC20CamelOnly",
   },
   {
     type: "interface",
-    name: "openzeppelin_token::erc20::interface::IERC20CamelOnly",
+    name: "openzeppelin::token::erc20::interface::IERC20CamelOnly",
     items: [
       {
         name: "totalSupply",
@@ -238,7 +238,7 @@ const universalErc20Abi = [
   },
   {
     kind: "struct",
-    name: "openzeppelin_token::erc20_v070::erc20::ERC20::Transfer",
+    name: "openzeppelin::token::erc20_v070::erc20::ERC20::Transfer",
     type: "event",
     members: [
       {
@@ -260,13 +260,13 @@ const universalErc20Abi = [
   },
   {
     kind: "enum",
-    name: "openzeppelin_token::erc20_v070::erc20::ERC20::Event",
+    name: "openzeppelin::token::erc20_v070::erc20::ERC20::Event",
     type: "event",
     variants: [
       {
         kind: "nested",
         name: "Transfer",
-        type: "openzeppelin_token::erc20_v070::erc20::ERC20::Transfer",
+        type: "openzeppelin::token::erc20_v070::erc20::ERC20::Transfer",
       },
     ],
   },

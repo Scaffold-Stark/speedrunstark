@@ -22,11 +22,11 @@ pub trait IStaker<T> {
 #[starknet::contract]
 pub mod Staker {
     use contracts::ExampleExternalContract::{
-        IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait
+        IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait,
     };
     use starknet::storage::Map;
     use starknet::{get_block_timestamp, get_caller_address, get_contract_address};
-    use super::{ContractAddress, IStaker, IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    use super::{ContractAddress, IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IStaker};
 
     const THRESHOLD: u256 = 1000000000000000000; // ONE_ETH_IN_WEI: 10 ^ 18;
 
@@ -56,7 +56,7 @@ pub mod Staker {
     pub fn constructor(
         ref self: ContractState,
         eth_contract: ContractAddress,
-        external_contract_address: ContractAddress
+        external_contract_address: ContractAddress,
     ) {
         self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
         self.external_contract_address.write(external_contract_address);
@@ -69,7 +69,7 @@ pub mod Staker {
         // ToDo Checkpoint 1: Implement your `stake` function here
         // ToDo Checkpoint 3: Assert that the staking period has not ended
         fn stake(
-            ref self: ContractState, amount: u256
+            ref self: ContractState, amount: u256,
         ) { // Note: In UI and Debug contract `sender` should call `approve`` before to `transfer` the amount to the staker contract
         //self.emit(Stake { sender, amount }); // ToDo Checkpoint 1: Uncomment to emit the Stake
         //event
@@ -133,7 +133,7 @@ pub mod Staker {
         // `execute` function This function should call the `complete` function of the external
         // contract and transfer the staked amount to the external contract
         fn complete_transfer(
-            ref self: ContractState, amount: u256
+            ref self: ContractState, amount: u256,
         ) { // Note: Staker contract should approve to transfer the staked_amount to the external contract
         }
         // ToDo Checkpoint 3: Implement your not_completed function here

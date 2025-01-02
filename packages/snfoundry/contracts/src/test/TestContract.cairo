@@ -1,9 +1,9 @@
-use contracts::Staker::{IStakerDispatcherTrait, IStakerDispatcher};
+use contracts::Staker::{IStakerDispatcher, IStakerDispatcherTrait};
 use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
-    declare, cheat_caller_address, start_cheat_block_timestamp_global, CheatSpan,
-    DeclareResultTrait, ContractClassTrait,
+    CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare,
+    start_cheat_block_timestamp_global,
 };
 use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
 
@@ -66,7 +66,7 @@ fn test_stake_functionality() {
     // Check if the allowance is set
     assert(
         eth_token_dispatcher.allowance(tester_address, staker_contract_address) == amount_to_stake,
-        'Allowance not set'
+        'Allowance not set',
     );
     // Change the caller address of the staker_contract to the tester_address
     cheat_caller_address(staker_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -76,7 +76,7 @@ fn test_stake_functionality() {
     let expected_balance = starting_balance + amount_to_stake;
     let new_balance = staker_dispatcher.balances(tester_address);
     println!("-- New balance in Staker contract: {:?} wei", new_balance);
-    assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
+    assert(new_balance == expected_balance, 'Balance increased in stake');
 }
 
 // If enough is staked and time has passed, the external contract should be completed
@@ -101,7 +101,7 @@ fn test_execute_functionality() {
     // Check if the allowance is set
     assert(
         eth_token_dispatcher.allowance(tester_address, staker_contract_address) == amount_to_stake,
-        'Allowance not set'
+        'Allowance not set',
     );
     // Change the caller address of the staker_contract to the tester_address
     cheat_caller_address(staker_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -111,13 +111,13 @@ fn test_execute_functionality() {
     let expected_balance = starting_balance + amount_to_stake;
     let new_balance = staker_dispatcher.balances(tester_address);
     println!("-- New balance in Staker contract: {:?} wei", new_balance);
-    assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
+    assert(new_balance == expected_balance, 'Balance increased in stake');
 
     // Increase the block_timestamp by 15 seconds
     start_cheat_block_timestamp_global(get_block_timestamp() + 15);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
-    assert_eq!(time_left, 45, "There should be 45 seconds left");
+    assert(time_left == 45, 'There is 45 seconds');
 
     println!("-- Staking a full ETH ...");
     let amount_to_stake: u256 = 1_000_000_000_000_000_000; // 1_ETH_IN_WEI
@@ -131,7 +131,7 @@ fn test_execute_functionality() {
     start_cheat_block_timestamp_global(get_block_timestamp() + 45);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
-    assert_eq!(time_left, 0, "Time should be up now");
+    assert(time_left == 0, 'Time should be up now');
 
     println!("-- Calling execute function ...");
     staker_dispatcher.execute();
@@ -164,7 +164,7 @@ fn test_withdraw_functionality() {
     // Check if the allowance is set
     assert(
         eth_token_dispatcher.allowance(tester_address, staker_contract_address) == amount_to_stake,
-        'Allowance not set'
+        'Allowance not set',
     );
     // Change the caller address of the staker_contract to the tester_address
     cheat_caller_address(staker_contract_address, tester_address, CheatSpan::TargetCalls(1));
@@ -174,13 +174,13 @@ fn test_withdraw_functionality() {
     let expected_balance = starting_balance + amount_to_stake;
     let new_balance = staker_dispatcher.balances(tester_address);
     println!("-- New balance in Staker contract: {:?} wei", new_balance);
-    assert_eq!(new_balance, expected_balance, "Balance should be increased by the stake amount");
+    assert(new_balance == expected_balance, 'Balance increased in stake');
 
     // Increase the block_timestamp by 60 seconds
     start_cheat_block_timestamp_global(get_block_timestamp() + 60);
     let time_left = staker_dispatcher.time_left();
     println!("-- Time left: {:?} seconds", time_left);
-    assert_eq!(time_left, 0, "Time should be up now");
+    assert(time_left == 0, 'Time should be up now');
 
     println!("-- Calling execute function ...");
     staker_dispatcher.execute();
@@ -196,9 +196,5 @@ fn test_withdraw_functionality() {
     staker_dispatcher.withdraw();
     println!("-- Withdraw function called successfully");
     let ending_balance = eth_token_dispatcher.balanceOf(tester_address);
-    assert_eq!(
-        ending_balance,
-        starting_balance + amount_to_stake,
-        "Balance should be increased by the stake amount"
-    );
+    assert(ending_balance == starting_balance + amount_to_stake, 'Balance increased in stake');
 }
