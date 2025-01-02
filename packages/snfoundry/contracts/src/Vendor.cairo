@@ -60,7 +60,7 @@ mod Vendor {
     fn constructor(
         ref self: ContractState,
         eth_token_address: ContractAddress,
-        your_token_address: ContractAddress
+        your_token_address: ContractAddress,
     ) {
         self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
@@ -70,7 +70,7 @@ mod Vendor {
     impl VendorImpl of IVendor<ContractState> {
         // ToDo Checkpoint 2: Implement your function buy_tokens here.
         fn buy_tokens(
-            ref self: ContractState, eth_amount_wei: u256
+            ref self: ContractState, eth_amount_wei: u256,
         ) { // Note: In UI and Debug contract `buyer` should call `approve`` before to `transfer` the amount to the `Vendor` contract.
         }
 
