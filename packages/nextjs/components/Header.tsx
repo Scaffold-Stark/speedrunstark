@@ -4,6 +4,7 @@ import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { usePathname } from "next/navigation";
 import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import HeaderLogo from "./HeaderLogo";
+import Image from "next/image";
 
 type HeaderMenuLink = {
   label: string;
@@ -33,18 +34,27 @@ export const Header = () => {
   );
 
   return (
-    <div
-      className={`lg:static top-0 navbar min-h-0 flex-shrink-0 justify-between z-20 px-0 sm:px-2 bg-base-100 ${pathname !== "/" ? "border-b border-[#1c2d49] bg-base-400" : ""}`}
-    >
-      <div className="pl-8 sm:pl-0">
+    <div className="bg-[#4D58FF] px-6 py-4 flex justify-between">
+      <div>
         {pathname !== "/" && (
-          <button onClick={() => (window.location.href = "/")}>
+          <div onClick={() => (window.location.href = "/")}>
             <HeaderLogo />
-          </button>
+          </div>
         )}
       </div>
-      <div className="navbar-end flex-grow pr-8 py-[8px] sm:pr-0 leading-7">
-        <FaucetButton />
+      <div className="flex items-center gap-6">
+        <button className="uppercase border border-black px-4 pb-1 pt-1.5 text-sm text-[#333] bg-white">
+          language: EN:
+        </button>
+        <div className="flex items-center gap-2.5 cursor-pointer">
+          <Image
+            src={"/homescreen/person.png"}
+            alt="icon"
+            width={16}
+            height={16}
+          />
+          <p className="text-[15px]">0xda...ea12</p>
+        </div>
       </div>
     </div>
   );

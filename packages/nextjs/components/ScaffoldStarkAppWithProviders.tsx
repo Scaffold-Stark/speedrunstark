@@ -12,7 +12,6 @@ import {
   starkscan,
 } from "@starknet-react/core";
 import { Header } from "~~/components/Header";
-import { Footer } from "~~/components/Footer";
 import { ProgressBar } from "~~/components/scaffold-stark/ProgressBar";
 import { appChains } from "~~/services/web3/connectors";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
@@ -23,14 +22,11 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
 
   return (
-    <>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="relative flex flex-col flex-1">{children}</main>
-        <Footer />
-      </div>
+    <div className="flex flex-col h-screen overflow-hidden">
+      <Header />
+      <main className="relative flex-1">{children}</main>
       <Toaster />
-    </>
+    </div>
   );
 };
 export const ScaffoldStarkAppWithProviders = ({

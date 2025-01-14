@@ -2,25 +2,19 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-:root,
-[data-theme] {
-  background: oklch(var(--b2));
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   min-height: 100vh;
+  font-family: var(--font-aldrich) !important;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  margin-bottom: 0.5rem;
-  line-height: 1;
-}
-
-p {
-  margin: 1rem 0;
+.font-vt323 {
+  font-family: var(--font-vt323) !important;
 }
 
 .btn {
