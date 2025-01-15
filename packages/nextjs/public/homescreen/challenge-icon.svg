@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+  <g clip-path="url(#clip0_293_462)">
+    <path d="M27.9999 3.99878H26.6699V25.3313H27.9999V3.99878Z" fill="black"/>
+    <path d="M26.67 25.3313H25.3313V26.67H26.67V25.3313Z" fill="black"/>
+    <path d="M26.67 2.6687H25.3313V3.9987H26.67V2.6687Z" fill="black"/>
+    <path d="M25.3312 26.6699H2.6687V27.9999H25.3312V26.6699Z" fill="black"/>
+    <path d="M22.6712 21.3325H5.3374V22.6713H22.6712V21.3325Z" fill="black"/>
+    <path d="M22.6712 16.0039H5.3374V17.3339H22.6712V16.0039Z" fill="black"/>
+    <path d="M22.6714 10.6663H16.0039V11.9963H22.6714V10.6663Z" fill="black"/>
+    <path d="M22.6714 6.66748H16.0039V7.99748H22.6714V6.66748Z" fill="black"/>
+    <path d="M6.66758 2.66875V11.9963H7.99758V10.6662H9.33633V9.33625H10.6663V10.6662H11.9963V11.9963H13.3351V2.66875H25.3313V1.33H11.9963V0H3.99883V1.33H1.33008V2.66875H6.66758ZM9.33633 1.33H10.6663V2.66875H11.9963V5.3375H10.6663V2.66875H9.33633V1.33Z" fill="black"/>
+    <path d="M2.66883 25.3313H1.33008V26.67H2.66883V25.3313Z" fill="black"/>
+    <path d="M1.33 2.6687H0V25.3312H1.33V2.6687Z" fill="black"/>
+  </g>
+  <defs>
+    <clipPath id="clip0_293_462">
+      <rect width="28" height="28" fill="white"/>
+    </clipPath>
+  </defs>
+</svg>

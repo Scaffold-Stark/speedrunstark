@@ -22,7 +22,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-screen">
       <Header />
       <main className="relative flex-1">{children}</main>
       <Toaster />
