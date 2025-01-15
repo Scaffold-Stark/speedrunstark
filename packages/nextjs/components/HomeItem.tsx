@@ -17,6 +17,7 @@ interface IMenu {
   name: string;
   icon: string;
   theme?: keyof typeof MENU_THEMES;
+  onclick?: () => void;
   customTheme?: {
     textColor: string;
     bgColor: string;
@@ -29,11 +30,15 @@ export const HomeItem = ({
   icon,
   theme = "primary",
   customTheme,
+  onclick,
 }: IMenu) => {
   const colors = customTheme || MENU_THEMES[theme];
 
   return (
-    <div className="flex flex-col gap-2 items-center w-fit cursor-pointer">
+    <div
+      className="flex flex-col gap-2 items-center w-fit cursor-pointer"
+      onClick={onclick}
+    >
       <Image
         src={icon}
         alt="icon"

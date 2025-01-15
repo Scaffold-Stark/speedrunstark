@@ -1,8 +1,15 @@
 import Image from "next/image";
 
-export const ExpandIcon = () => {
+interface IProps {
+  onExpand: () => void;
+}
+
+export const ExpandIcon = ({ onExpand }: IProps) => {
   return (
-    <div className="p-1 border border-black w-fit rounded-full cursor-pointer bg-[#FF0]">
+    <div
+      className="p-1 border border-black w-fit rounded-full cursor-pointer bg-[#FF0]"
+      onClick={onExpand}
+    >
       <Image
         src={"/homescreen/expand-icon.svg"}
         alt="icon"

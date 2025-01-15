@@ -65,6 +65,61 @@ body {
   transform: translateX(calc(-50% - 2px));
 }
 
+.challenge-content p,
+.challenge-content h1,
+.challenge-content h2,
+.challenge-content h3,
+.challenge-content h4,
+.challenge-content ul {
+  color: #0c0c4f;
+}
+
+.challenge-content {
+  scrollbar-width: thin;
+  scrollbar-color: #4d58ff #ffffff;
+}
+
+.challenge-content::-webkit-scrollbar {
+  width: 6px;
+  background: #ffffff;
+}
+
+.challenge-content::-webkit-scrollbar-thumb {
+  background: #4d58ff;
+  border-radius: 3px;
+  position: relative;
+}
+
+.challenge-content::-webkit-scrollbar-thumb::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 25%,
+    white 25%,
+    white 35%,
+    transparent 35%,
+    transparent 45%,
+    white 45%,
+    white 55%,
+    transparent 55%,
+    transparent 65%,
+    white 65%,
+    white 75%,
+    transparent 75%
+  );
+}
+
+.challenge-content::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
 @media (max-width: 639px) {
   .footer-header-landing {
     background-size: auto 70px;

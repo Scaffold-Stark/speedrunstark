@@ -1,64 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
 import Image from "next/image";
-import { triggerAsyncId } from "async_hooks";
-
-const DATA_CHALLENGE = [
-  {
-    name: "Simple NFT Example",
-    isBurn: true,
-  },
-  {
-    name: "Decentralized Staking App",
-    isBurn: true,
-  },
-  {
-    name: "Token Vendor",
-    isBurn: true,
-  },
-  {
-    name: "Dice Game",
-  },
-  {
-    name: "Build a DEX",
-  },
-  {
-    name: "A State Channel Application",
-  },
-  {
-    name: "Multisig Wallet Challenge",
-    comming: true,
-  },
-  {
-    name: "Building Cohort Challenge",
-    comming: true,
-  },
-];
+import ReactMarkdown from "react-markdown";
+import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownComponents";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { DATA_CHALLENGE_V2 } from "~~/data-challenges/challenges";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+type FetchState = {
+  loading: boolean;
+  error: string | null;
+  data: string | null;
+};
+
 const ChallengeItem = ({
+  id,
   name,
   active,
   comming,
   isBurn,
+  onSelect,
 }: {
+  id: string;
   name: string;
   active?: boolean;
   comming?: boolean;
   isBurn?: boolean;
+  onSelect: (id: string) => void;
 }) => {
   return (
     <div
-      className="flex items-center gap-3 cursor-pointer p-4 border-b border-[#000] max-w-[300px] w-full"
+      className={`flex items-center gap-3 p-4 border-b border-[#000] max-w-[300px] w-full ${
+        comming ? "cursor-not-allowed" : "cursor-pointer"
+      }`}
       style={{
         background: active ? "#E5E5E5" : "white",
       }}
+      onClick={() => !comming && onSelect(id)}
     >
       <Image
         src={"/homescreen/challenge-icon.svg"}
@@ -83,37 +67,164 @@ const ChallengeItem = ({
 };
 
 export const ChallengeModal = ({ isOpen, onClose }: Props) => {
+  const [fetchState, setFetchState] = useState<FetchState>({
+    loading: false,
+    error: null,
+    data: null,
+  });
+  const [selectedId, setSelectedId] = useState<string>(DATA_CHALLENGE_V2[0].id);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleMoveonGithub = () => {
+    window.open(
+      `https://github.com/Scaffold-Stark/speedrunstark/tree/${selectedId}`,
+      "_blank",
+    );
+  };
+
+  const handleSelectChallenge = (id: string) => {
+    setSelectedId(id);
+  };
+
+  const handleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  useEffect(() => {
+    const getMarkdown = async () => {
+      setFetchState({
+        loading: true,
+        error: null,
+        data: null,
+      });
+
+      try {
+        const response = await fetch(
+          `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${selectedId}/README.md`,
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch markdown: ${response.statusText}`);
+        }
+
+        let markdownData = await response.text();
+        const baseUrl = `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${selectedId}/`;
+
+        markdownData = markdownData.replace(
+          /!\[(.*?)\]\((?!https?)(.*?)\)/g,
+          `![$1](${baseUrl}$2)`,
+        );
+
+        setFetchState({
+          loading: false,
+          error: null,
+          data: markdownData,
+        });
+      } catch (error) {
+        setFetchState({
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "An error occurred while fetching the content",
+          data: null,
+        });
+      }
+    };
+
+    if (selectedId) {
+      getMarkdown();
+    }
+  }, [selectedId]);
+
   return (
-    <>
-      <GenericModal
-        animate
-        isOpen={isOpen}
-        onClose={onClose}
-        className={`w-[1200px] mx-auto p-[1px] rounded-lg bg-white`}
-      >
-        <div className="w-full">
-          <div className="bg-[#4D58FF]  rounded-t-lg relative h-[60px] flex items-center justify-center">
-            <div className="flex items-center gap-1.5 absolute left-4">
-              <CloseIcon />
-              <ExpandIcon />
-            </div>
-            <p className="text-lg">Challenges</p>
+    <GenericModal
+      animate
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setSelectedId(DATA_CHALLENGE_V2[0].id);
+      }}
+      className={`w-[1220px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+    >
+      <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
+        <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
+          <Image
+            src="/homescreen/header-decore.svg"
+            alt="icon"
+            width={230}
+            height={40}
+            className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full h-full"
+          />
+
+          <div className="flex items-center gap-1.5 absolute z-30 left-4">
+            <CloseIcon
+              onClose={() => {
+                onClose();
+                setSelectedId(DATA_CHALLENGE_V2[0].id);
+              }}
+            />
+            <ExpandIcon onExpand={handleExpand} />
           </div>
-          <div className="flex">
+          <p className="text-lg relative z-30">Challenges</p>
+        </div>
+        <div
+          className={`flex ${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}
+        >
+          <div>
+            <p className="text-[#333333] font-vt323 text-center py-1">
+              12 challenges available
+            </p>
             <div>
-              <p className="text-[#333333] font-vt323 text-center py-1">
-                12 challenges available
-              </p>
-              <div className="pb-8 overflow-y-scroll">
-                {DATA_CHALLENGE.map((item) => (
-                  <ChallengeItem key={item.name} {...item} />
-                ))}
-              </div>
+              {DATA_CHALLENGE_V2.map((item) => (
+                <ChallengeItem
+                  key={item.id}
+                  {...item}
+                  active={item.id === selectedId}
+                  onSelect={handleSelectChallenge}
+                />
+              ))}
             </div>
-            <div></div>
+          </div>
+          <div
+            className={`p-4 w-full bg-[#E5E5E5] challenge-content min-h-[600px] ${
+              isExpanded
+                ? "h-full overflow-y-auto"
+                : "max-h-[600px] overflow-y-scroll"
+            }`}
+          >
+            {fetchState.loading && (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-[#4D58FF] loading loading-spinner loading-lg"></span>
+              </div>
+            )}
+
+            {fetchState.error && (
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <p className="text-lg font-semibold mb-2">
+                  Error loading challenge content
+                </p>
+                <p className="text-sm">{fetchState.error}</p>
+              </div>
+            )}
+
+            {!fetchState.loading && !fetchState.error && fetchState.data && (
+              <div>
+                <ReactMarkdown components={getMarkdownComponents()}>
+                  {fetchState.data}
+                </ReactMarkdown>
+                <button
+                  className="text-[#0C0C4F] mt-5 mx-auto rounded-full border border-[#0C0C4F] py-2 px-3 font-medium hover:bg-secondary-content flex items-center justify-center gap-1 text-center"
+                  onClick={handleMoveonGithub}
+                >
+                  View it on Github
+                  <ArrowTopRightOnSquareIcon className="w-[20px]" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      </GenericModal>
-    </>
+      </div>
+    </GenericModal>
   );
 };
