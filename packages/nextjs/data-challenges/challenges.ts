@@ -71,47 +71,4 @@ const allChallenges = [
 const firstChallenges = allChallenges.slice(0, 4);
 const lastChallenges = allChallenges.slice(4);
 
-export const DATA_CHALLENGE_V2 = [
-  {
-    id: "challenge-0-simple-nft",
-    name: "Simple NFT Example",
-    isBurn: true,
-  },
-  {
-    id: "challenge-1-decentralized-staking",
-    name: "Decentralized Staking App",
-    isBurn: true,
-  },
-  {
-    id: "challenge-2-token-vendor",
-    name: "Token Vendor",
-    isBurn: true,
-  },
-  {
-    id: "challenge-3-dice-game",
-    name: "Dice Game",
-    isBurn: true,
-  },
-  {
-    id: "build-a-dex",
-    name: "Build a DEX",
-    comming: true,
-  },
-  {
-    id: "state-channel-application",
-    name: "A State Channel Application",
-    comming: true,
-  },
-  {
-    id: "multisig-wallet-challenge",
-    name: "Multisig Wallet Challenge",
-    comming: true,
-  },
-  {
-    id: "svg-nft",
-    name: "Building Cohort Challenge",
-    comming: true,
-  },
-];
-
 export { firstChallenges, lastChallenges };

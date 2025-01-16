@@ -9,34 +9,7 @@ import { Readme } from "~~/components/Readme";
 import { RecentlyVied } from "~~/components/RecentlyVied";
 import { RoadmapModal } from "~~/components/Roadmap/RoadmapModal";
 import { VideoModal } from "~~/components/Videos/VideoModal";
-
-const DATA_MENU = [
-  {
-    icon: "/homescreen/challenges.png",
-    name: "Challenges",
-    type: "challenge",
-  },
-  {
-    icon: "/homescreen/mustwatch.png",
-    name: "Must Watch",
-    type: "video",
-  },
-  {
-    icon: "/homescreen/roadmap.png",
-    name: "Roadmap",
-    type: "roadmap",
-  },
-  {
-    icon: "/homescreen/starklings.png",
-    name: "starklings",
-    type: "starklings",
-  },
-  {
-    icon: "/homescreen/readme.png",
-    name: "read_me",
-    type: "readme",
-  },
-] as const;
+import { DATA_MENU } from "~~/mockup/data";
 
 const HomeScreen: React.FC = () => {
   const [openChallenge, setOpenChallenge] = useState(false);

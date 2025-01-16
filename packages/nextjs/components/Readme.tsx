@@ -1,13 +1,7 @@
 import Image from "next/image";
 import { CloseIcon } from "./icons/CloseIcon";
 import { NumberBox } from "./NumberBox";
-
-const DATA_JOURNEY = [
-  "Watch our foundational videos",
-  "Practice with Starklings",
-  "Solve Speedrun Challenges",
-  "Ship your first dApp",
-];
+import { DATA_JOURNEY } from "~~/mockup/data";
 
 export const Readme = () => {
   return (

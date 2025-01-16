@@ -6,7 +6,7 @@ import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownComponents";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { DATA_CHALLENGE_V2 } from "~~/data-challenges/challenges";
+import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
 
 type Props = {
   isOpen: boolean;
@@ -91,6 +91,12 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleCloseModal = () => {
+    onClose();
+    setIsExpanded(false);
+    setSelectedId(DATA_CHALLENGE_V2[0].id);
+  };
+
   useEffect(() => {
     const getMarkdown = async () => {
       setFetchState({
@@ -142,11 +148,8 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
     <GenericModal
       animate
       isOpen={isOpen}
-      onClose={() => {
-        onClose();
-        setSelectedId(DATA_CHALLENGE_V2[0].id);
-      }}
-      className={`shadow-modal max-w-[1220px] w-full mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      onClose={handleCloseModal}
+      className={`w-[1220px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
         <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
@@ -159,12 +162,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
           />
 
           <div className="flex items-center gap-1.5 absolute z-30 left-4">
-            <CloseIcon
-              onClose={() => {
-                onClose();
-                setSelectedId(DATA_CHALLENGE_V2[0].id);
-              }}
-            />
+            <CloseIcon onClose={handleCloseModal} />
             <ExpandIcon onExpand={handleExpand} />
           </div>
           <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>

@@ -4,6 +4,7 @@ import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
 import Image from "next/image";
 import { NumberBox } from "../NumberBox";
+import { ROADMAP_DETAIL_DATA } from "~~/mockup/data";
 
 type Props = {
   isOpen: boolean;
@@ -29,6 +30,35 @@ const RoadmapItem = ({
     >
       <Image src={icon} alt="icon" width={44} height={44} />
       <p className="text-black uppercase text-center">{title}</p>
+    </div>
+  );
+};
+
+const RoadmapDetail = ({
+  number,
+  title,
+  desc,
+  xUrl,
+}: {
+  number: number;
+  title: string;
+  desc: string;
+  xUrl?: string;
+}) => {
+  return (
+    <div>
+      <div className="border-b-2 border-dashed border-black p-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <NumberBox number={number} />
+          <p className="text-[#0C0C4F] text-xl mt-1 uppercase">{title}</p>
+        </div>
+        <button className="px-4 py-2 bg-[#4D58FF] font-vt323 uppercase">
+          Check latest updates on X
+        </button>
+      </div>
+      <div className="min-h-[150px]">
+        <p className="text-[#0C0C4F] p-4">{desc}</p>
+      </div>
     </div>
   );
 };
@@ -91,12 +121,22 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleCloseModal = () => {
+    onClose();
+    setIsExpanded(false);
+  };
+
+  // Find the active step data
+  const activeStepData = ROADMAP_DETAIL_DATA.find(
+    (item) => item.id === activeStep,
+  );
+
   return (
     <GenericModal
       animate
       isOpen={isOpen}
-      onClose={() => onClose()}
-      className={`shadow-modal max-w-[1220px] w-full mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      onClose={handleCloseModal}
+      className={`shadow-modal w-[1200px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
         <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
@@ -109,11 +149,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
           />
 
           <div className="flex items-center gap-1.5 absolute z-30 left-4">
-            <CloseIcon
-              onClose={() => {
-                onClose();
-              }}
-            />
+            <CloseIcon onClose={handleCloseModal} />
             <ExpandIcon onExpand={handleExpand} />
           </div>
           <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>
@@ -206,27 +242,14 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
               </div>
             </div>
           </div>
-          <div>
-            <div className="border-b-2 border-dashed border-black p-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <NumberBox number={1} />
-                <p className="text-[#0C0C4F] text-xl mt-1">
-                  COMPLETE SPEEDRUN STARK
-                </p>
-              </div>
-              <button className="px-4 py-2 bg-[#4D58FF] font-vt323 uppercase">
-                Check latest updates on X
-              </button>
-            </div>
-            <div className="min-h-[150px]">
-              <p className="text-[#0C0C4F] p-4">
-                Learn how to build on Starknet and discover its superpowers and
-                gotchas. Start your journey by watching our foundational videos,
-                practice with Starklings, solve Speedrun Challenges, and finally
-                ship your first dApp.
-              </p>
-            </div>
-          </div>
+          {activeStepData && (
+            <RoadmapDetail
+              number={activeStepData.number}
+              title={activeStepData.title}
+              desc={activeStepData.desc}
+              xUrl={activeStepData.xUrl}
+            />
+          )}
         </div>
       </div>
     </GenericModal>

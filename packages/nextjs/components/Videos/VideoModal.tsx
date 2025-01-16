@@ -114,11 +114,16 @@ export const VideoModal = ({ isOpen, onClose, title }: Props) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleCloseModal = () => {
+    onClose();
+    setIsExpanded(false);
+  };
+
   return (
     <GenericModal
       animate
       isOpen={isOpen}
-      onClose={() => onClose()}
+      onClose={handleCloseModal}
       className={`shadow-modal max-w-[1220px] w-full mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
@@ -132,11 +137,7 @@ export const VideoModal = ({ isOpen, onClose, title }: Props) => {
           />
 
           <div className="flex items-center gap-1.5 absolute z-30 left-4">
-            <CloseIcon
-              onClose={() => {
-                onClose();
-              }}
-            />
+            <CloseIcon onClose={handleCloseModal} />
             <ExpandIcon onExpand={handleExpand} />
           </div>
           <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>

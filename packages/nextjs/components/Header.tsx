@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import HeaderLogo from "./HeaderLogo";
 import Image from "next/image";
+import { LanguageButton } from "./Language/LanguageButton";
 
 type HeaderMenuLink = {
   label: string;
@@ -43,9 +44,7 @@ export const Header = () => {
         )}
       </div>
       <div className="flex items-center gap-6">
-        <button className="uppercase border border-black px-4 pb-1 pt-1.5 text-sm text-[#333] bg-white">
-          language: EN:
-        </button>
+        <LanguageButton />
         <div className="flex items-center gap-2.5 cursor-pointer">
           <Image
             src={"/homescreen/person.png"}
