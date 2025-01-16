@@ -49,7 +49,7 @@ export const LanguageModal = ({ isOpen, onClose, title }: Props) => {
         </div>
         <div className="grid grid-cols-3 gap-1 py-2 px-1">
           {DATA_LANGUAGE.map((item) => (
-            <ItemLanguage {...item} />
+            <ItemLanguage key={item.title} {...item} />
           ))}
         </div>
         <button className="uppercase w-full text-center py-2 bg-[#4D58FF] text-lg font-vt323">

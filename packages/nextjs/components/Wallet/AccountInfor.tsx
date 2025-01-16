@@ -3,11 +3,26 @@ import { useState } from "react";
 import { ConnectWalletModal } from "./ConnectWalletModal";
 import { DisconnectModal } from "./DisconnectModal";
 import { WalletAccountModal } from "./WalletAccountModal";
+import { Connector, useConnect } from "@starknet-react/core";
 
 export const AccountButton = () => {
   const [openAccount, setOpenAccount] = useState(false);
   const [openWallet, setOpenWallet] = useState(false);
   const [openDisconnect, setOpenDisconnect] = useState(false);
+
+  const { connectors, connect, error, status } = useConnect();
+
+  const handleConnectWallet = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    connector: Connector,
+  ) => {
+    if (connector.id === "burnet-wallet") {
+      console.log("burnet wallet");
+      return;
+    }
+    connect({ connector });
+    setOpenWallet(false);
+  };
 
   return (
     <div className="relative">
@@ -30,6 +45,8 @@ export const AccountButton = () => {
         isOpen={openWallet}
         title="Connect Wallet"
         onClose={() => setOpenWallet(false)}
+        handleConnectWallet={handleConnectWallet}
+        connectors={connectors}
       />
       <WalletAccountModal
         title="Your Account"
