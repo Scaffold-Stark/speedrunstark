@@ -7,6 +7,7 @@ import { ChallengeModal } from "~~/components/Challenges/ChallengeModal";
 import { HomeItem } from "~~/components/HomeItem";
 import { Readme } from "~~/components/Readme";
 import { RecentlyVied } from "~~/components/RecentlyVied";
+import { RoadmapModal } from "~~/components/Roadmap/RoadmapModal";
 import { VideoModal } from "~~/components/Videos/VideoModal";
 
 const DATA_MENU = [
@@ -40,6 +41,7 @@ const DATA_MENU = [
 const HomeScreen: React.FC = () => {
   const [openChallenge, setOpenChallenge] = useState(false);
   const [openVideo, setOpenVideo] = useState(false);
+  const [openRoadmap, setOpenRoadmap] = useState(false);
 
   const handleItemClick = (type: string) => {
     if (type === "challenge") {
@@ -47,6 +49,9 @@ const HomeScreen: React.FC = () => {
     }
     if (type === "video") {
       setOpenVideo(true);
+    }
+    if (type === "roadmap") {
+      setOpenRoadmap(true);
     }
   };
 
@@ -61,6 +66,11 @@ const HomeScreen: React.FC = () => {
         isOpen={openVideo}
         onClose={() => setOpenVideo(false)}
         title="Videos"
+      />
+      <RoadmapModal
+        isOpen={openRoadmap}
+        onClose={() => setOpenRoadmap(false)}
+        title="roadmap"
       />
       <Image
         src={"/homescreen/middle-screen.png"}

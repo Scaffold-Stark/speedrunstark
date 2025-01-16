@@ -120,6 +120,12 @@ body {
   background: #ffffff;
 }
 
+.shadow-modal {
+  box-shadow:
+    7px 4px 0px 0px #000,
+    0px 0px 41.5px 0px rgba(0, 0, 0, 0.17);
+}
+
 @media (max-width: 639px) {
   .footer-header-landing {
     background-size: auto 70px;
