@@ -11,6 +11,7 @@ import { DATA_CHALLENGE_V2 } from "~~/data-challenges/challenges";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  title: string;
 };
 
 type FetchState = {
@@ -66,7 +67,7 @@ const ChallengeItem = ({
   );
 };
 
-export const ChallengeModal = ({ isOpen, onClose }: Props) => {
+export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
   const [fetchState, setFetchState] = useState<FetchState>({
     loading: false,
     error: null,
@@ -166,7 +167,7 @@ export const ChallengeModal = ({ isOpen, onClose }: Props) => {
             />
             <ExpandIcon onExpand={handleExpand} />
           </div>
-          <p className="text-lg relative z-30">Challenges</p>
+          <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>
         </div>
         <div
           className={`flex ${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}
@@ -193,6 +194,17 @@ export const ChallengeModal = ({ isOpen, onClose }: Props) => {
                 : "max-h-[600px] overflow-y-scroll"
             }`}
           >
+            <div className="fixed z-50 bottom-5 transform -translate-x-[62%] left-[62%] flex items-center gap-2 bg-[#4D58FF] w-fit px-4 py-3 cursor-pointer">
+              <Image
+                src={"/homescreen/submit.svg"}
+                alt="icon"
+                width={20}
+                height={20}
+              />
+              <p className="text-lg font-vt323 uppercase !text-white">
+                Submit challenge
+              </p>
+            </div>
             {fetchState.loading && (
               <div className="w-full h-full flex items-center justify-center">
                 <span className="text-[#4D58FF] loading loading-spinner loading-lg"></span>
@@ -209,7 +221,7 @@ export const ChallengeModal = ({ isOpen, onClose }: Props) => {
             )}
 
             {!fetchState.loading && !fetchState.error && fetchState.data && (
-              <div>
+              <div className="relative">
                 <ReactMarkdown components={getMarkdownComponents()}>
                   {fetchState.data}
                 </ReactMarkdown>

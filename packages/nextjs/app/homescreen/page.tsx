@@ -7,6 +7,7 @@ import { ChallengeModal } from "~~/components/Challenges/ChallengeModal";
 import { HomeItem } from "~~/components/HomeItem";
 import { Readme } from "~~/components/Readme";
 import { RecentlyVied } from "~~/components/RecentlyVied";
+import { VideoModal } from "~~/components/Videos/VideoModal";
 
 const DATA_MENU = [
   {
@@ -17,7 +18,7 @@ const DATA_MENU = [
   {
     icon: "/homescreen/mustwatch.png",
     name: "Must Watch",
-    type: "mustwatch",
+    type: "video",
   },
   {
     icon: "/homescreen/roadmap.png",
@@ -38,10 +39,14 @@ const DATA_MENU = [
 
 const HomeScreen: React.FC = () => {
   const [openChallenge, setOpenChallenge] = useState(false);
+  const [openVideo, setOpenVideo] = useState(false);
 
   const handleItemClick = (type: string) => {
     if (type === "challenge") {
       setOpenChallenge(true);
+    }
+    if (type === "video") {
+      setOpenVideo(true);
     }
   };
 
@@ -50,6 +55,12 @@ const HomeScreen: React.FC = () => {
       <ChallengeModal
         isOpen={openChallenge}
         onClose={() => setOpenChallenge(false)}
+        title="Challenges"
+      />
+      <VideoModal
+        isOpen={openVideo}
+        onClose={() => setOpenVideo(false)}
+        title="Videos"
       />
       <Image
         src={"/homescreen/middle-screen.png"}
