@@ -6,7 +6,7 @@ export const AccountInfor = () => {
   const [openAccount, setOpenAccount] = useState(false);
 
   return (
-    <div>
+    <div className="relative">
       <div
         className="flex items-center gap-2.5 cursor-pointer"
         onClick={() => setOpenAccount(true)}
@@ -17,7 +17,7 @@ export const AccountInfor = () => {
           width={16}
           height={16}
         />
-        <p className="text-[15px]">0xda...ea12</p>
+        <p className="text-[15px] mt-1">0xda...ea12</p>
       </div>
       <WalletModal
         title="Your Account"

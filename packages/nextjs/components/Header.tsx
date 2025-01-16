@@ -32,7 +32,7 @@ export const Header = () => {
   const pathname = usePathname();
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), [])
+    useCallback(() => setIsDrawerOpen(false), []),
   );
 
   return (
