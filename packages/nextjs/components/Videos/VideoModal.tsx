@@ -1,37 +1,33 @@
-import { useEffect, useState } from "react";
-import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
+import React, { useState } from "react";
+import Image from "next/image";
+import { DATA_VIDEOS } from "~~/mockup/data";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
-import Image from "next/image";
+import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
+import { PlayVideoModal } from "./PlayVideoModal";
 
-type Props = {
+type Video = {
+  title: string;
+  date: string;
+  desc: string;
+  banner: string;
+};
+
+type VideoModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
 };
 
-const DATA_VIDEOS = [
-  {
-    title: "Session 1: Fundamentals",
-    date: "07/10/2024",
-    desc: "Welcome to the first session of our Bootcamp X, focused on Starknet fundamentals. This session provides a clear overview of Starknet",
-    banner: "/homescreen/video-section1.png",
-  },
-  {
-    title: "Session 2: architecture",
-    date: "07/10/2024",
-    desc: "Welcome to the first session of our Bootcamp X, focused on Starknet fundamentals. This session provides a clear overview of Starknet",
-    banner: "",
-  },
-  {
-    title: "Session 3: cairo",
-    date: "07/10/2024",
-    desc: "Welcome to the first session of our Bootcamp X, focused on Starknet fundamentals. This session provides a clear overview of Starknet",
-    banner: "",
-  },
-];
-
-const ItemVideo = ({ title }: { title: string }) => {
+const ItemVideo = ({
+  title,
+  isActive = false,
+  onClick,
+}: {
+  title: string;
+  isActive?: boolean;
+  onClick: () => void;
+}) => {
   const formatTitle = (text: string) => {
     const words = text.split(" ");
     const firstLine = words.slice(0, 2).join(" ");
@@ -46,16 +42,23 @@ const ItemVideo = ({ title }: { title: string }) => {
   };
 
   return (
-    <div className="flex flex-col items-center cursor-pointer">
-      <div className="hover:bg-[#E9EAF7] w-full flex items-center justify-center py-1">
+    <div
+      className="flex flex-col items-center cursor-pointer transition-all duration-200"
+      onClick={onClick}
+    >
+      <div
+        className={`w-full flex items-center justify-center py-1 transition-colors duration-200 ${isActive ? "bg-blue-100" : "hover:bg-gray-100"}`}
+      >
         <Image
           src="/homescreen/videos-icon.svg"
-          alt="icon"
+          alt="Video thumbnail"
           width={48}
           height={48}
         />
       </div>
-      <div className="bg-white text-black py-1 px-2 w-[152px] min-h-[48px] flex items-center justify-center border border-black">
+      <div
+        className={`bg-white text-black py-1 px-2 w-40 min-h-12 flex items-center justify-center border ${isActive ? "border-blue-500" : "border-black"}`}
+      >
         <p className="text-sm text-center uppercase leading-tight">
           {formatTitle(title)}
         </p>
@@ -65,72 +68,88 @@ const ItemVideo = ({ title }: { title: string }) => {
 };
 
 const DetailItemVideo = ({
-  title,
-  date,
-  desc,
-  banner,
+  video,
+  onClick,
 }: {
-  title: string;
-  date: string;
-  desc: string;
-  banner: string;
+  video: Video;
+  onClick: () => void;
 }) => {
+  const { title, date, desc, banner } = video;
+
   return (
     <div className="flex flex-col px-5 gap-2 h-full">
       <div className="flex-1 flex flex-col gap-4 overflow-y-auto">
-        <h3 className="text-xl text-black">{title}</h3>
-        <div>
-          <Image
-            src={banner}
-            alt="image"
-            width={400}
-            height={192}
-            className="rounded-xl"
-          />
-        </div>
+        <h3 className="text-xl text-black font-medium capitalize">{title}</h3>
+        {banner && (
+          <div className="relative w-full aspect-video">
+            <Image
+              src={banner}
+              alt={title}
+              width={400}
+              height={192}
+              className="rounded-xl object-cover"
+            />
+          </div>
+        )}
         <div className="flex-1">
           <p className="text-sm text-[#4D58FF]">{date}</p>
-          <p className="text-[#0C0C4F]">{desc}</p>
+          <p className="text-gray-800 leading-relaxed">{desc}</p>
         </div>
       </div>
-      <div>
-        <div className="bg-[#4D58FF] px-4 py-3 flex items-center justify-center gap-1.5 cursor-pointer">
-          <Image
-            src={"/homescreen/play-video.svg"}
-            alt="icon"
-            width={16}
-            height={16}
-          />
-          <p className="text-lg text-white uppercase font-vt323">play video</p>
-        </div>
-      </div>
+      <button
+        className="bg-[#4D58FF] px-4 py-3 flex items-center justify-center gap-2 w-full"
+        onClick={onClick}
+      >
+        <Image
+          src="/homescreen/play-video.svg"
+          alt="Play icon"
+          width={16}
+          height={16}
+        />
+        <span className="text-lg text-white uppercase font-vt323">
+          Play video
+        </span>
+      </button>
     </div>
   );
 };
-export const VideoModal = ({ isOpen, onClose, title }: Props) => {
-  const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
+  const [openPlayVideo, setOpenPlayVideo] = useState(false);
 
   const handleCloseModal = () => {
     onClose();
     setIsExpanded(false);
   };
 
+  if (!isOpen) return null;
+
+  if (openPlayVideo)
+    return (
+      <PlayVideoModal
+        isOpen={openPlayVideo}
+        onClose={() => setOpenPlayVideo(false)}
+        title={DATA_VIDEOS[selectedVideoIndex].title}
+        url={DATA_VIDEOS[selectedVideoIndex].url}
+      />
+    );
+
   return (
     <GenericModal
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`shadow-modal max-w-[1220px] w-full mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`shadow-modal w-[1200px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
-      <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
+      <div
+        className={`w-full h-full ${isExpanded ? "h-full flex flex-col" : ""}`}
+      >
         <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
-            alt="icon"
+            alt="Header decoration"
             width={230}
             height={40}
             className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full h-full"
@@ -138,28 +157,37 @@ export const VideoModal = ({ isOpen, onClose, title }: Props) => {
 
           <div className="flex items-center gap-1.5 absolute z-30 left-4">
             <CloseIcon onClose={handleCloseModal} />
-            <ExpandIcon onExpand={handleExpand} />
+            <ExpandIcon onExpand={() => setIsExpanded(!isExpanded)} />
           </div>
-          <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>
+          <h2 className="text-lg relative z-30 uppercase font-mono text-white">
+            {title}
+          </h2>
         </div>
-        <div
-          className={`py-7 grid grid-cols-3 ${isExpanded ? "flex-1 h-[calc(100%-60px)]" : "h-[70vh]"}`}
-        >
+
+        <div className={`grid grid-cols-3 py-5 min-h-[600px] h-full`}>
           <div className="col-span-2 px-6">
             <div className="mb-7 flex items-end gap-2">
-              <p className="text-xl text-black shrink-0">
+              <h3 className="text-xl text-black font-medium capitalize shrink-0">
                 Starknet Basecamp X Series
-              </p>
-              <div className="bg-black h-[1px] w-full mb-2"></div>
+              </h3>
+              <div className="bg-black h-px w-full mb-2" />
             </div>
-            <div className="flex items-center gap-2.5">
-              {DATA_VIDEOS.map((item) => (
-                <ItemVideo key={item.title} title={item.title} />
+            <div className="flex flex-wrap gap-4">
+              {DATA_VIDEOS.map((video, index) => (
+                <ItemVideo
+                  key={video.title}
+                  title={video.title}
+                  isActive={selectedVideoIndex === index}
+                  onClick={() => setSelectedVideoIndex(index)}
+                />
               ))}
             </div>
           </div>
-          <div className="col-span-1">
-            <DetailItemVideo {...DATA_VIDEOS[0]} />
+          <div className="col-span-1 h-full">
+            <DetailItemVideo
+              video={DATA_VIDEOS[selectedVideoIndex]}
+              onClick={() => setOpenPlayVideo(true)}
+            />
           </div>
         </div>
       </div>

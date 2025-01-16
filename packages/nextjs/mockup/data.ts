@@ -135,3 +135,27 @@ export const DATA_LANGUAGE = [
     language: "SPANISH",
   },
 ];
+
+export const DATA_VIDEOS = [
+  {
+    title: "Session 1: Fundamentals",
+    date: "19/09/2023",
+    desc: "In this video we cover why Cairo is a unique programming language, how Starknet solves Ethereum's scalability problem, how zero knowledge proofs are used, a high level overview of Starknet's architecture and we do a live example of how to use a wallet, a bridge and a block explorer.",
+    banner: "/homescreen/video-section1.png",
+    url: "https://youtu.be/8GH92wM4jB0?list=PLMXIoXErTTYX-ZSxlaYDxsR66l5a39IwA",
+  },
+  {
+    title: "Session 2: architecture",
+    date: "19/09/2023",
+    desc: "In this session we learn about Cairo’s syntax by solving Starklings, an interactive tutorial created by the community and inspired by Rustlings.",
+    banner: "/homescreen/video-section1.png",
+    url: "https://youtu.be/ofyhpQYTycs?list=PLMXIoXErTTYX-ZSxlaYDxsR66l5a39IwA",
+  },
+  {
+    title: "Session 3: cairo",
+    date: "22/09/2023",
+    desc: "In this session, Pierre shows how to write a Starknet smart contract from scratch, how to deploy it to Katana for local testing and how to deploy it to Starknet’s testnet using Starkli.",
+    banner: "/homescreen/video-section1.png",
+    url: "https://youtu.be/6oSHviHTTOo?list=PLMXIoXErTTYX-ZSxlaYDxsR66l5a39IwA",
+  },
+];

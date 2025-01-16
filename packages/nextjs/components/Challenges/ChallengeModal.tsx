@@ -149,7 +149,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`w-[1220px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`shadow-modal w-[1200px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
         <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
