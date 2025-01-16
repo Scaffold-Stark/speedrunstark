@@ -172,3 +172,14 @@ export const DATA_VIDEOS = [
     url: "https://youtu.be/6oSHviHTTOo?si=YlKF9XuwJg9cedRU",
   },
 ];
+
+export const DATA_WALLET = [
+  {
+    icon: "/homescreen/argent.png",
+    name: "Argent",
+  },
+  {
+    icon: "/homescreen/braavos.png",
+    name: "Braavos",
+  },
+];

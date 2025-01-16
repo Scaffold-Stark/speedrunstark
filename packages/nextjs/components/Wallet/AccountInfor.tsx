@@ -1,9 +1,13 @@
 import Image from "next/image";
 import { useState } from "react";
-import { WalletModal } from "./WalletModal";
+import { ConnectWalletModal } from "./ConnectWalletModal";
+import { DisconnectModal } from "./DisconnectModal";
+import { WalletAccountModal } from "./WalletAccountModal";
 
-export const AccountInfor = () => {
+export const AccountButton = () => {
   const [openAccount, setOpenAccount] = useState(false);
+  const [openWallet, setOpenWallet] = useState(false);
+  const [openDisconnect, setOpenDisconnect] = useState(false);
 
   return (
     <div className="relative">
@@ -19,10 +23,24 @@ export const AccountInfor = () => {
         />
         <p className="text-[15px] mt-1">0xda...ea12</p>
       </div>
-      <WalletModal
+      <div className="cursor-pointer" onClick={() => setOpenWallet(true)}>
+        Connect Wallet
+      </div>
+      <ConnectWalletModal
+        isOpen={openWallet}
+        title="Connect Wallet"
+        onClose={() => setOpenWallet(false)}
+      />
+      <WalletAccountModal
         title="Your Account"
         isOpen={openAccount}
         onClose={() => setOpenAccount(false)}
+        openDisconnect={() => setOpenDisconnect(true)}
+      />
+      <DisconnectModal
+        title="Disconnect"
+        isOpen={openDisconnect}
+        onClose={() => setOpenDisconnect(false)}
       />
     </div>
   );

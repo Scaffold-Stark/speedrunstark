@@ -4,9 +4,8 @@ import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { usePathname } from "next/navigation";
 import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import HeaderLogo from "./HeaderLogo";
-import Image from "next/image";
 import { LanguageButton } from "./Language/LanguageButton";
-import { AccountInfor } from "./Wallet/AccountInfor";
+import { AccountButton } from "./Wallet/AccountInfor";
 
 type HeaderMenuLink = {
   label: string;
@@ -46,7 +45,7 @@ export const Header = () => {
       </div>
       <div className="flex items-center gap-6">
         <LanguageButton />
-        <AccountInfor />
+        <AccountButton />
       </div>
     </div>
   );

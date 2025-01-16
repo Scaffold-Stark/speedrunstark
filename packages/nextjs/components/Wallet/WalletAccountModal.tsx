@@ -1,15 +1,20 @@
 import Image from "next/image";
-import { CloseIcon } from "../icons/CloseIcon";
 import { PersonIcon } from "../icons/Person";
 import { CodeIcon } from "../icons/Code";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  openDisconnect: () => void;
   title: string;
 };
 
-export const WalletModal = ({ isOpen, onClose, title }: Props) => {
+export const WalletAccountModal = ({
+  isOpen,
+  onClose,
+  title,
+  openDisconnect,
+}: Props) => {
   const handleCloseModal = () => {
     onClose();
   };
@@ -48,11 +53,16 @@ export const WalletModal = ({ isOpen, onClose, title }: Props) => {
                 width={16}
                 height={16}
                 className="cursor-pointer"
+                onClick={() => {
+                  openDisconnect();
+                  onClose();
+                }}
               />
             </div>
             <div className="h-[1px] w-full bg-black"></div>
             <div className="bg-white flex items-center gap-2.5 px-4 py-3">
               <CodeIcon color="black" width={16} />
+
               <p className="text-[15px] text-black mt-0.5 flex-1">
                 Completed Challenges
               </p>
@@ -64,5 +74,3 @@ export const WalletModal = ({ isOpen, onClose, title }: Props) => {
     </>
   );
 };
-
-export default WalletModal;
