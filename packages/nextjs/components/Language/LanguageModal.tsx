@@ -45,7 +45,7 @@ export const LanguageModal = ({ isOpen, onClose, title }: Props) => {
           <div className="flex items-center gap-1.5 absolute z-30 left-4">
             <CloseIcon onClose={onClose} />
           </div>
-          <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>
+          <p className="text-xl relative z-30 uppercase font-vt323">{title}</p>
         </div>
         <div className="grid grid-cols-3 gap-1 py-2 px-1">
           {DATA_LANGUAGE.map((item) => (

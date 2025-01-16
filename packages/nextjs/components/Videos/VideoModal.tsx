@@ -159,7 +159,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
             <CloseIcon onClose={handleCloseModal} />
             <ExpandIcon onExpand={() => setIsExpanded(!isExpanded)} />
           </div>
-          <h2 className="text-lg relative z-30 uppercase font-mono text-white">
+          <h2 className="text-xl relative z-30 uppercase font-vt323 text-white">
             {title}
           </h2>
         </div>

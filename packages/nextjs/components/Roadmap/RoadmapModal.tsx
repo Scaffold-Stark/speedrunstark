@@ -152,7 +152,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
             <CloseIcon onClose={handleCloseModal} />
             <ExpandIcon onExpand={handleExpand} />
           </div>
-          <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>
+          <p className="text-xl relative z-30 uppercase font-vt323">{title}</p>
         </div>
         <div className={`${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}>
           <div className="w-full bg-[#E5E5E5] p-8">

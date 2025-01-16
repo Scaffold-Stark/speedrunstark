@@ -43,7 +43,7 @@ export const PlayVideoModal = ({ isOpen, onClose, title, url }: Props) => {
             <CloseIcon onClose={handleCloseModal} />
             <ExpandIcon onExpand={handleExpand} />
           </div>
-          <p className="text-lg relative z-30 uppercase font-vt323">{title}</p>
+          <p className="text-xl relative z-30 uppercase font-vt323">{title}</p>
         </div>
         <div className="pb-1">
           <ReactPlayer

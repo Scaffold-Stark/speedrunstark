@@ -6,6 +6,7 @@ import { FaucetButton } from "~~/components/scaffold-stark/FaucetButton";
 import HeaderLogo from "./HeaderLogo";
 import Image from "next/image";
 import { LanguageButton } from "./Language/LanguageButton";
+import { AccountInfor } from "./Wallet/AccountInfor";
 
 type HeaderMenuLink = {
   label: string;
@@ -31,7 +32,7 @@ export const Header = () => {
   const pathname = usePathname();
   useOutsideClick(
     burgerMenuRef,
-    useCallback(() => setIsDrawerOpen(false), []),
+    useCallback(() => setIsDrawerOpen(false), [])
   );
 
   return (
@@ -45,15 +46,7 @@ export const Header = () => {
       </div>
       <div className="flex items-center gap-6">
         <LanguageButton />
-        <div className="flex items-center gap-2.5 cursor-pointer">
-          <Image
-            src={"/homescreen/person.png"}
-            alt="icon"
-            width={16}
-            height={16}
-          />
-          <p className="text-[15px]">0xda...ea12</p>
-        </div>
+        <AccountInfor />
       </div>
     </div>
   );
