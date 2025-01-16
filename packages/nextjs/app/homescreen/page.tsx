@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BackgroundTexture } from "~~/components/BackgroundTexture";
 import { ChallengeModal } from "~~/components/Challenges/ChallengeModal";
 import { HomeItem } from "~~/components/HomeItem";
@@ -9,7 +9,7 @@ import { Readme } from "~~/components/Readme";
 import { RecentlyVied } from "~~/components/RecentlyVied";
 import { RoadmapModal } from "~~/components/Roadmap/RoadmapModal";
 import { VideoModal } from "~~/components/Videos/VideoModal";
-import { DATA_MENU } from "~~/mockup/data";
+import { DATA_MENU, DATA_MENU_SOCIAL } from "~~/mockup/data";
 
 const HomeScreen: React.FC = () => {
   const [openChallenge, setOpenChallenge] = useState(false);
@@ -63,8 +63,18 @@ const HomeScreen: React.FC = () => {
             />
           ))}
         </div>
-        <div className="absolute right-6 z-40 transform top-1/4 -translate-y-1/4">
+
+        <div className="absolute right-0 z-40 transform top-1/4 -translate-y-1/4">
           <Readme />
+          <div className="flex flex-col mt-5 gap-8 items-end">
+            {DATA_MENU_SOCIAL.map((item) => (
+              <HomeItem
+                key={item.name}
+                {...item}
+                // onclick={() => handleItemClick(item.type)}
+              />
+            ))}
+          </div>
         </div>
         <div className="absolute bottom-10 z-40 transform left-1/2 -translate-x-1/2 max-w-[666px] w-full">
           <RecentlyVied />

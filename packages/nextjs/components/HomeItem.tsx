@@ -42,9 +42,9 @@ export const HomeItem = ({
       <Image
         src={icon}
         alt="icon"
-        width={52}
-        height={52}
-        className="min-h-[52px] min-w-[52px]"
+        width={45}
+        height={45}
+        className="min-h-[45px] min-w-[45px]"
       />
       <p
         className={`pb-0.5 pt-1.5 text-[13px] px-1 ${theme === "primary" ? "w-[110px]" : "w-[130px]"}  text-center uppercase`}
