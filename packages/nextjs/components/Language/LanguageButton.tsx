@@ -10,7 +10,7 @@ export const LanguageButton = () => {
         className="uppercase border border-black px-4 pb-1 pt-1.5 text-sm text-[#333] bg-white"
         onClick={() => setOpenLanguage(true)}
       >
-        language: EN:
+        language: EN
       </button>
       <LanguageModal
         title="choose your language"

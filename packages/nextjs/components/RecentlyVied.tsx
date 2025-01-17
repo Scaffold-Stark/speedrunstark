@@ -38,7 +38,7 @@ export const RecentlyVied = () => {
           height={40}
           className="absolute left-1/2 transform -translate-x-1/2 z-10"
         />
-        <div className="absolute left-6 transform top-1/2 -translate-y-1/2">
+        <div className="absolute left-6 transform top-1/2 -translate-y-1/2 z-50">
           <CloseIcon onClose={() => setDisplay(false)} />
         </div>
         <p className="font-vt323 uppercase text-xl relative z-10">

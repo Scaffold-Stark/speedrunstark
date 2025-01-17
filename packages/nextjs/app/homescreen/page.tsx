@@ -50,7 +50,7 @@ const HomeScreen: React.FC = () => {
         alt="logo"
         width={634}
         height={148}
-        className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        className="md:w-[634px] md:h-[148px] w-[320px] h-[90px] absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
       />
       <BackgroundTexture />
       <div className="relative z-40 h-full">
