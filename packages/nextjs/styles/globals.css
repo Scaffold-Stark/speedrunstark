@@ -126,6 +126,32 @@ body {
     0px 0px 41.5px 0px rgba(0, 0, 0, 0.17);
 }
 
+.coming-container {
+  position: relative;
+}
+
+.coming-text {
+  font-size: 14px;
+  background-color: #2835ff;
+  border-radius: 4px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.coming-tooltip {
+  position: absolute;
+  right: -360px;
+  top: 20%;
+  transform: translateY(-20%);
+  display: none;
+  z-index: 99;
+}
+
+.coming-text:hover + .coming-tooltip,
+.coming-tooltip:hover {
+  display: block;
+}
+
 @media (max-width: 639px) {
   .footer-header-landing {
     background-size: auto 70px;

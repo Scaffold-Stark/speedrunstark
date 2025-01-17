@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownComponents";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
+import { ComingSoon } from "../Tooltips/Comingsoon";
 
 type Props = {
   isOpen: boolean;
@@ -35,6 +36,7 @@ const ChallengeItem = ({
   isBurn?: boolean;
   onSelect: (id: string) => void;
 }) => {
+  const [isHovering, setIsHovering] = useState(false);
   return (
     <div
       className={`flex items-center gap-3 p-4 border-b border-[#000] max-w-[300px] w-full ${
@@ -61,7 +63,12 @@ const ChallengeItem = ({
         />
       )}
       {comming && (
-        <p className="text-sm bg-[#2835FF] rounded px-1">Coming Soon</p>
+        <div className="coming-container">
+          <p className="coming-text">Coming Soon</p>
+          <div className="coming-tooltip">
+            <ComingSoon />
+          </div>
+        </div>
       )}
     </div>
   );
