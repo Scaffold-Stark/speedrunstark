@@ -1,12 +1,14 @@
 import Image from "next/image";
 import { PersonIcon } from "../icons/Person";
 import { CodeIcon } from "../icons/Code";
+import { displayAddress } from "~~/utils/utils";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   openDisconnect: () => void;
   title: string;
+  address: string;
 };
 
 export const WalletAccountModal = ({
@@ -14,6 +16,7 @@ export const WalletAccountModal = ({
   onClose,
   title,
   openDisconnect,
+  address,
 }: Props) => {
   const handleCloseModal = () => {
     onClose();
@@ -46,7 +49,9 @@ export const WalletAccountModal = ({
           <div>
             <div className="bg-white flex items-center gap-2.5 px-4 py-3">
               <PersonIcon color="black" />
-              <p className="text-[15px] text-black mt-1 flex-1">0xda...ea12</p>
+              <p className="text-[15px] text-black mt-1 flex-1">
+                {displayAddress(address)}
+              </p>
               <Image
                 src={"/homescreen/disconnect-icon.svg"}
                 alt="icon"

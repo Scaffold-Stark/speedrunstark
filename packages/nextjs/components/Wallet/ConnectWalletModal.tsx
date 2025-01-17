@@ -3,6 +3,8 @@ import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
 import { useState } from "react";
 import { Connector, useConnect } from "@starknet-react/core";
+import { useLocalStorage } from "usehooks-ts";
+import toast from "react-hot-toast";
 
 type Props = {
   isOpen: boolean;
@@ -43,26 +45,61 @@ const ItemWallet = ({
 };
 
 export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
-  const [selectedWallet, setSelectedWallet] = useState<string>("");
-  const { connectors, connect, error, status } = useConnect();
+  const { connectors, connect, error, status, connectAsync } = useConnect();
+  const [selectedWallet, setSelectedWallet] = useState<Connector>(
+    connectors[0],
+  );
+  const [isBurnerWallet, setIsBurnerWallet] = useState(false);
+  const [, setLastConnectionTime] = useLocalStorage<number>(
+    "lastConnectedTime",
+    0,
+  );
+  const [, setConnectedChainId] = useLocalStorage<bigint>("chainId", 0n);
+  const [lastConnector, setLastConnector] = useLocalStorage<{
+    id: string;
+    ix?: number;
+  }>(
+    "lastUsedConnector",
+    { id: "" },
+    {
+      initializeWithValue: false,
+    },
+  );
 
   const handleCloseModal = () => {
     onClose();
+    setSelectedWallet(connectors[0]);
   };
 
-  const handleSelectWallet = (walletName: string) => {
-    setSelectedWallet(walletName);
+  const handleSelectWallet = (wallet: any) => {
+    setSelectedWallet(wallet);
   };
 
-  const handleConnectWallet = (
+  const handleConnectWallet = async (
     e: React.MouseEvent<HTMLButtonElement>,
     connector: Connector,
   ) => {
-    if (connector.id === "burnet-wallet") {
-      console.log("burnet wallet");
-      return;
+    try {
+      if (connector.id === "burner-wallet") {
+        setIsBurnerWallet(true);
+        return;
+      }
+      await connectAsync({ connector });
+      setLastConnector({ id: connector.id });
+      setLastConnectionTime(Date.now());
+
+      if (connector?.chainId) {
+        const chainId = await connector.chainId();
+        setConnectedChainId(BigInt(chainId.toString()));
+        localStorage.setItem("chainId", chainId.toString());
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+      setIsBurnerWallet(false);
+      setLastConnector({ id: "" });
+    } finally {
+      handleCloseModal();
     }
-    connect({ connector });
   };
 
   return (
@@ -93,17 +130,18 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
             key={connector?.id}
             icon={connector.icon.dark ?? ""}
             name={connector.name}
-            isActive={selectedWallet === connector.name}
-            onClick={() => handleSelectWallet(connector.name)}
+            isActive={selectedWallet?.name === connector.name}
+            // onClick={() => handleSelectWallet(connector.name)}
+            onClick={() => handleSelectWallet(connector)}
           />
         ))}
       </div>
       <div className="px-1 pb-1">
         <button
           className="py-2 px-4 font-vt323 text-lg bg-[#4D58FF] w-full uppercase"
-          // onClick={(e) => {
-          //   handleConnectWallet(e, connector);
-          // }}
+          onClick={(e) => {
+            handleConnectWallet(e, selectedWallet);
+          }}
         >
           connect
         </button>

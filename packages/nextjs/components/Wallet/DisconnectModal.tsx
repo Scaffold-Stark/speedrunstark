@@ -1,6 +1,7 @@
 import Image from "next/image";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import { CloseIcon } from "../icons/CloseIcon";
+import { useDisconnect } from "@starknet-react/core";
 
 type Props = {
   isOpen: boolean;
@@ -9,6 +10,14 @@ type Props = {
 };
 
 export const DisconnectModal = ({ isOpen, onClose, title }: Props) => {
+  const { disconnect } = useDisconnect();
+  const handleDisconnectWallet = () => {
+    disconnect();
+    onClose();
+    localStorage.removeItem("lastUsedConnector");
+    localStorage.removeItem("chainId");
+  };
+
   const handleCloseModal = () => {
     onClose();
   };
@@ -46,10 +55,16 @@ export const DisconnectModal = ({ isOpen, onClose, title }: Props) => {
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3 px-1">
-        <button className="uppercase py-2 px-4 bg-[#4D58FF] font-vt323 text-lg">
+        <button
+          className="uppercase py-2 px-4 bg-[#4D58FF] font-vt323 text-lg"
+          onClick={handleCloseModal}
+        >
           Cancel
         </button>
-        <button className="bg-[#FF282C] uppercase py-2 px-4 font-vt323 text-lg">
+        <button
+          className="bg-[#FF282C] uppercase py-2 px-4 font-vt323 text-lg"
+          onClick={handleDisconnectWallet}
+        >
           Disconnect
         </button>
       </div>
