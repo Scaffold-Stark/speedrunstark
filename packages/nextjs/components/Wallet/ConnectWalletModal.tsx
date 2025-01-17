@@ -45,7 +45,7 @@ const ItemWallet = ({
 };
 
 export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
-  const { connectors, connect, error, status, connectAsync } = useConnect();
+  const { connectors, connectAsync } = useConnect();
   const [selectedWallet, setSelectedWallet] = useState<Connector>(
     connectors[0],
   );
@@ -93,6 +93,7 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
         setConnectedChainId(BigInt(chainId.toString()));
         localStorage.setItem("chainId", chainId.toString());
       }
+      toast.success("Connect wallet successfully!");
     } catch (error) {
       toast.error(`${error}`);
       setIsBurnerWallet(false);

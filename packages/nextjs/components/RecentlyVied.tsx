@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { HomeItem } from "./HomeItem";
 import { CloseIcon } from "./icons/CloseIcon";
+import { useState } from "react";
 
 const DATA_MENU_BOT = [
   {
@@ -23,6 +24,10 @@ const DATA_MENU_BOT = [
 ];
 
 export const RecentlyVied = () => {
+  const [dislay, setDisplay] = useState(true);
+
+  if (!dislay) return null;
+
   return (
     <div>
       <div className="flex items-center justify-center bg-[#4D58FF] py-2.5 px-6 relative">
@@ -34,7 +39,7 @@ export const RecentlyVied = () => {
           className="absolute left-1/2 transform -translate-x-1/2 z-10"
         />
         <div className="absolute left-6 transform top-1/2 -translate-y-1/2">
-          <CloseIcon />
+          <CloseIcon onClose={() => setDisplay(false)} />
         </div>
         <p className="font-vt323 uppercase text-xl relative z-10">
           recently vied

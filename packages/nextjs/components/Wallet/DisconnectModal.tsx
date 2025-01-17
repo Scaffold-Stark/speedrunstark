@@ -2,6 +2,7 @@ import Image from "next/image";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import { CloseIcon } from "../icons/CloseIcon";
 import { useDisconnect } from "@starknet-react/core";
+import toast from "react-hot-toast";
 
 type Props = {
   isOpen: boolean;
@@ -12,10 +13,15 @@ type Props = {
 export const DisconnectModal = ({ isOpen, onClose, title }: Props) => {
   const { disconnect } = useDisconnect();
   const handleDisconnectWallet = () => {
-    disconnect();
-    onClose();
-    localStorage.removeItem("lastUsedConnector");
-    localStorage.removeItem("chainId");
+    try {
+      disconnect();
+      onClose();
+      localStorage.removeItem("lastUsedConnector");
+      localStorage.removeItem("chainId");
+      toast.success("Disconnect wallet successfully!");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleCloseModal = () => {
