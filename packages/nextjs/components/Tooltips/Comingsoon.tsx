@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export const ComingSoon = () => {
   return (
-    <div className="w-[325px] relative">
+    <div className="lg:w-[325px] w-[270px] relative">
       <Image
         src={"/homescreen/arrow-tooltip.svg"}
         width={20}
@@ -11,7 +11,7 @@ export const ComingSoon = () => {
         className="absolute -left-3 top-2 z-[99]"
       />
       <div className="bg-[#4D58FF] p-2 flex items-center justify-between">
-        <p className="text-white font-vt323 text-xl">Challenge</p>
+        <p className="text-white font-vt323 lg:text-xl text-base">Challenge</p>
         <p className="text-sm text-[#2835FF] px-1 pt-0.5 bg-white rounded">
           Coming Soon
         </p>

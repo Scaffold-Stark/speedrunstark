@@ -7,8 +7,9 @@ import ReactMarkdown from "react-markdown";
 import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownComponents";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
-import { ComingSoon } from "../Tooltips/Comingsoon";
 import { SubmitChallenge } from "./SubmitChallenge";
+import { ChallengeModalDetail } from "./ChallengeModalDetailMB";
+import { ChallengeItem } from "./ChallengeItem";
 
 type Props = {
   isOpen: boolean;
@@ -22,60 +23,8 @@ type FetchState = {
   data: string | null;
 };
 
-const ChallengeItem = ({
-  id,
-  name,
-  active,
-  comming,
-  isBurn,
-  onSelect,
-}: {
-  id: string;
-  name: string;
-  active?: boolean;
-  comming?: boolean;
-  isBurn?: boolean;
-  onSelect: (id: string) => void;
-}) => {
-  const [isHovering, setIsHovering] = useState(false);
-  return (
-    <div
-      className={`flex items-center gap-3 p-4 border-b border-[#000] max-w-[300px] w-full ${
-        comming ? "cursor-not-allowed" : "cursor-pointer"
-      }`}
-      style={{
-        background: active ? "#E5E5E5" : "white",
-      }}
-      onClick={() => !comming && onSelect(id)}
-    >
-      <Image
-        src={"/homescreen/challenge-icon.svg"}
-        alt="icon"
-        width={18}
-        height={18}
-      />
-      <p className="text-black w-full truncate flex-1">{name}</p>
-      {isBurn && (
-        <Image
-          src={"/homescreen/fire-icon.svg"}
-          alt="icon"
-          width={18}
-          height={18}
-        />
-      )}
-      {comming && (
-        <div className="coming-container">
-          <p className="coming-text">Coming Soon</p>
-          <div className="coming-tooltip">
-            <ComingSoon />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
 export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
+  const [openDetailMB, setOpenDetailMB] = useState(false);
   const [fetchState, setFetchState] = useState<FetchState>({
     loading: false,
     error: null,
@@ -152,6 +101,17 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
     }
   }, [selectedId]);
 
+  if (openDetailMB)
+    return (
+      <ChallengeModalDetail
+        isOpen={openDetailMB}
+        title={"Challenge"}
+        content={fetchState.data}
+        onClose={() => setOpenDetailMB(false)}
+        loading={fetchState.loading}
+      />
+    );
+
   return (
     <GenericModal
       animate
@@ -160,7 +120,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
       className={`md:shadow-modal max-w-[1200px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
-        <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
+        <div className="bg-[#4D58FF] relative md:rounded-t-lg h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
             alt="icon"
@@ -176,7 +136,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
           <p className="text-xl relative z-30 uppercase font-vt323">{title}</p>
         </div>
         <div
-          className={`flex ${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}
+          className={`flex flex-col md:flex-row ${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}
         >
           <div>
             <p className="text-[#333333] font-vt323 text-center py-1">
@@ -189,12 +149,13 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
                   {...item}
                   active={item.id === selectedId}
                   onSelect={handleSelectChallenge}
+                  onOpenDetail={() => setOpenDetailMB(true)}
                 />
               ))}
             </div>
           </div>
           <div
-            className={`p-4 w-full bg-[#E5E5E5] challenge-content min-h-[600px] ${
+            className={`lg:block hidden p-4 w-full bg-[#E5E5E5] challenge-content min-h-[600px] ${
               isExpanded
                 ? "h-full overflow-y-auto"
                 : "max-h-[600px] overflow-y-scroll"
@@ -202,13 +163,13 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
           >
             <SubmitChallenge />
             {fetchState.loading && (
-              <div className="w-[800px] h-full flex items-center justify-center">
+              <div className="w-[850px] h-full flex items-center justify-center">
                 <span className="text-[#4D58FF] loading loading-spinner loading-lg"></span>
               </div>
             )}
 
             {fetchState.error && (
-              <div className="w-[800px] h-full flex flex-col items-center justify-center">
+              <div className="w-[850px] h-full flex flex-col items-center justify-center">
                 <p className="text-lg font-semibold mb-2">
                   Error loading challenge content
                 </p>

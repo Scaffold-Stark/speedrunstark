@@ -108,10 +108,10 @@ export const SubmitChallenge = () => {
   };
 
   return (
-    <div>
+    <div className="flex justify-center">
       <div
         onClick={() => setOpenSubmit(true)}
-        className="fixed z-50 bottom-5 transform -translate-x-[62%] left-[62%] flex items-center gap-2 bg-[#4D58FF] w-fit px-4 py-3 cursor-pointer"
+        className="fixed z-[99] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-4 py-3 cursor-pointer"
       >
         <Image
           src={"/homescreen/submit.svg"}
@@ -125,10 +125,10 @@ export const SubmitChallenge = () => {
       </div>
       {openSubmit && (
         <section
-          className={`absolute z-[99] left-1/2 transform -translate-x-1/2 md:shadow-modal max-w-[850px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+          className={`overflow-hidden absolute z-[90] md:top-1/2 top-0 left-1/2 transform md:-translate-y-1/2 -translate-x-1/2 md:shadow-modal max-w-[850px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
         >
           <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
-            <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
+            <div className="bg-[#4D58FF] relative md:rounded-t-lg h-[60px] flex items-center justify-center">
               <Image
                 src="/homescreen/header-decore.svg"
                 alt="icon"
@@ -146,7 +146,7 @@ export const SubmitChallenge = () => {
               </p>
             </div>
           </div>
-          <div className="p-4 bg-[#E5E5E5]">
+          <div className="p-4 md:bg-[#E5E5E5] bg-white md:h-full h-[calc(100vh-112px)]">
             <div className="flex flex-col gap-2">
               <div
                 className="w-full h-[2px] opacity-50"
