@@ -1707,7 +1707,7 @@ __metadata:
     sharp: ^0.29.0
     starknet: 5.25.0
     starknet-dev: "npm:starknet@6.7.0"
-    tailwindcss: ^3.3.0
+    tailwindcss: latest
     type-fest: ^4.6.0
     typescript: ^5
     usehooks-ts: ^2.13.0
@@ -8259,7 +8259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3.3.0":
+"tailwindcss@npm:latest":
   version: 3.4.17
   resolution: "tailwindcss@npm:3.4.17"
   dependencies:

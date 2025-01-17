@@ -30,7 +30,7 @@ export const LanguageModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={onClose}
-      className={`w-[500px] mx-auto p-[1px] bg-white rounded-none`}
+      className={`max-w-[500px] w-full md:rounded-t-lg rounded-none mx-auto md:p-[1px] bg-white`}
     >
       <div className={`w-ful`}>
         <div className="bg-[#4D58FF] relative h-[60px] flex items-center justify-center">
@@ -39,7 +39,7 @@ export const LanguageModal = ({ isOpen, onClose, title }: Props) => {
             alt="icon"
             width={230}
             height={40}
-            className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full h-full"
+            className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full h-full md:rounded-t-lg rounded-none "
           />
 
           <div className="flex items-center gap-1.5 absolute z-30 left-4">

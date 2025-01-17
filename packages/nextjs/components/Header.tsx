@@ -35,7 +35,7 @@ export const Header = () => {
   );
 
   return (
-    <div className="bg-[#4D58FF] px-6 py-4 flex justify-between">
+    <div className="bg-[#4D58FF] md:px-6 md:py-4 px-4 py-3 flex justify-between">
       <div>
         {pathname !== "/" && (
           <div onClick={() => (window.location.href = "/")}>
@@ -43,7 +43,7 @@ export const Header = () => {
           </div>
         )}
       </div>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center md:gap-6 gap-2">
         <LanguageButton />
         <AccountButton />
       </div>

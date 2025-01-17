@@ -10,8 +10,15 @@ type Props = {
   onClose: () => void;
   title: string;
   url: string;
+  desc: string;
 };
-export const PlayVideoModal = ({ isOpen, onClose, title, url }: Props) => {
+export const PlayVideoModal = ({
+  isOpen,
+  onClose,
+  title,
+  url,
+  desc,
+}: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCloseModal = () => {
@@ -27,10 +34,10 @@ export const PlayVideoModal = ({ isOpen, onClose, title, url }: Props) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`w-[1220px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`xl:w-[1200px] w-screen mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
-      <div>
-        <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
+      <div className="w-full h-full">
+        <div className="bg-[#4D58FF] relative md:rounded-t-lg h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
             alt="icon"
@@ -45,13 +52,17 @@ export const PlayVideoModal = ({ isOpen, onClose, title, url }: Props) => {
           </div>
           <p className="text-xl relative z-30 uppercase font-vt323">{title}</p>
         </div>
-        <div className="pb-1">
+        <div className="md:pb-1 md:h-[700px] h-[221px]">
           <ReactPlayer
             url={`${url}`}
             width={"100%"}
-            height={isExpanded ? "calc(95vh - 65px)" : 700}
+            height={isExpanded ? "calc(95vh - 65px)" : "100%"}
             playing
           />
+        </div>
+        <div className="md:hidden block p-4">
+          <p className="text-black text-base">{title}</p>
+          <p className="mt-2 text-sm text-[#0C0C4F]">{desc}</p>
         </div>
       </div>
     </GenericModal>

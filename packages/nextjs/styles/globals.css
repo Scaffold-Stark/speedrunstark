@@ -202,3 +202,13 @@ body {
     text-align: center;
   }
 }
+
+@media (max-width: 768px) {
+  .shadow-modal {
+    box-shadow: none;
+  }
+  .section-modal-inside {
+    height: 100%;
+    width: 100vw;
+  }
+}

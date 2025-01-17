@@ -18,7 +18,7 @@ export const getMarkdownComponents = (): Components => {
       </h3>
     ),
     p: ({ children }) => (
-      <p className="text-primary text-base sm:text-xs lg:text-sm text-justify max-w-[860px] sm:max-w-[400px] sm:overflow-auto ">
+      <p className="text-primary text-base sm:text-xs lg:text-sm text-justify sm:overflow-auto ">
         {children}
       </p>
     ),

@@ -47,7 +47,7 @@ export const HomeItem = ({
         className="min-h-[45px] min-w-[45px]"
       />
       <p
-        className={`pb-0.5 pt-1.5 text-[13px] px-1 ${theme === "primary" ? "w-[110px]" : "w-[130px]"}  text-center uppercase`}
+        className={`md:pb-0.5 md:pt-1.5 md:text-[13px] text-[10px] md:px-1 ${theme === "primary" ? "md:w-[110px] w-[90px]" : "md:w-[130px] w-[100px]"}  text-center uppercase`}
         style={{
           backgroundColor: colors.bgColor,
           color: colors.textColor,

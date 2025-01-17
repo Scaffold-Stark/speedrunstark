@@ -59,7 +59,7 @@ const ItemVideo = ({
       <div
         className={`bg-white text-black py-1 px-2 w-40 min-h-12 flex items-center justify-center border ${isActive ? "border-blue-500" : "border-black"}`}
       >
-        <p className="text-sm text-center uppercase leading-tight">
+        <p className="md:text-sm text-xs text-center uppercase leading-tight">
           {formatTitle(title)}
         </p>
       </div>
@@ -133,6 +133,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
         onClose={() => setOpenPlayVideo(false)}
         title={DATA_VIDEOS[selectedVideoIndex].title}
         url={DATA_VIDEOS[selectedVideoIndex].url}
+        desc={DATA_VIDEOS[selectedVideoIndex].desc}
       />
     );
 
@@ -141,12 +142,12 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`shadow-modal w-[1200px] mx-auto p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`md:shadow-modal max-w-[1200px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div
         className={`w-full h-full ${isExpanded ? "h-full flex flex-col" : ""}`}
       >
-        <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
+        <div className="bg-[#4D58FF] relative md:rounded-t-lg rounded-none h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
             alt="Header decoration"
@@ -164,26 +165,40 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
           </h2>
         </div>
 
-        <div className={`grid grid-cols-3 py-5 min-h-[600px] h-full`}>
-          <div className="col-span-2 px-6">
+        <div
+          className={`grid md:grid-cols-3 grid-cols-1 py-5 min-h-[600px] h-full md:max-h-max max-h-[calc(100vh-114px)] overflow-y-auto`}
+        >
+          <div className="md:col-span-2 col-span-1 md:px-6 px-3">
             <div className="mb-7 flex items-end gap-2">
-              <h3 className="text-xl text-black font-medium capitalize shrink-0">
+              <h3 className="md:text-xl text-base text-black font-medium capitalize shrink-0">
                 Starknet Basecamp X Series
               </h3>
               <div className="bg-black h-px w-full mb-2" />
             </div>
-            <div className="flex flex-wrap gap-4">
+            <div className="md:flex hidden flex-wrap gap-4">
               {DATA_VIDEOS.map((video, index) => (
                 <ItemVideo
                   key={video.title}
                   title={video.title}
                   isActive={selectedVideoIndex === index}
-                  onClick={() => setSelectedVideoIndex(index)}
+                  onClick={() => {
+                    setSelectedVideoIndex(index);
+                  }}
+                />
+              ))}
+            </div>
+            <div className="md:hidden flex flex-wrap gap-4">
+              {DATA_VIDEOS.map((video, index) => (
+                <ItemVideo
+                  key={video.title}
+                  title={video.title}
+                  isActive={selectedVideoIndex === index}
+                  onClick={() => setOpenPlayVideo(true)}
                 />
               ))}
             </div>
           </div>
-          <div className="col-span-1 h-full">
+          <div className="md:block hidden col-span-1 h-full">
             <DetailItemVideo
               video={DATA_VIDEOS[selectedVideoIndex]}
               onClick={() => setOpenPlayVideo(true)}

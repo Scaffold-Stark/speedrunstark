@@ -7,7 +7,7 @@ interface IProps {
 export const ExpandIcon = ({ onExpand }: IProps) => {
   return (
     <div
-      className="p-1 border border-black w-fit rounded-full cursor-pointer bg-[#FF0]"
+      className="md:block hidden p-1 border border-black w-fit rounded-full cursor-pointer bg-[#FF0]"
       onClick={onExpand}
     >
       <Image

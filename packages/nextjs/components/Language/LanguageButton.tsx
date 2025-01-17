@@ -7,7 +7,7 @@ export const LanguageButton = () => {
   return (
     <div>
       <button
-        className="uppercase border border-black px-4 pb-1 pt-1.5 text-sm text-[#333] bg-white"
+        className="uppercase border border-black md:py-0 py-1 px-2 md:px-4 md:pb-1 md:pt-1.5 md:text-sm text-xs text-[#333] bg-white"
         onClick={() => setOpenLanguage(true)}
       >
         language: EN

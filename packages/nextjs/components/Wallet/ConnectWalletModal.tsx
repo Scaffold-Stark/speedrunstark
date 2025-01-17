@@ -108,7 +108,7 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`w-[320px] mx-auto p-[1px] rounded-none bg-white`}
+      className={`w-[320px] mx-auto md:p-[1px] rounded-none bg-white`}
     >
       <div className="bg-[#4D58FF] relative h-[60px] flex items-center justify-center">
         <Image

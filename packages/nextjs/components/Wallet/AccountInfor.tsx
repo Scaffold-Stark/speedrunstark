@@ -30,7 +30,10 @@ export const AccountButton = () => {
       )}
       {!address ? (
         <div>
-          <div className="cursor-pointer" onClick={() => setOpenWallet(true)}>
+          <div
+            className="cursor-pointer text-center md:text-base text-xs"
+            onClick={() => setOpenWallet(true)}
+          >
             Connect Wallet
           </div>
           <ConnectWalletModal
