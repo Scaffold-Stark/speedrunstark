@@ -1,6 +1,7 @@
 export const ROADMAP_DETAIL_DATA = [
   {
     id: "learn",
+    icon: "/homescreen/roadmap-learn.svg",
     title: "COMPLETE SPEEDRUN STARK",
     number: 1,
     desc: "Learn how to build on Starknet and discover its superpowers and gotchas. Start your journey by watching our foundational videos, practice with Starklings, solve Speedrun Challenges, and finally ship your first dApp.",
@@ -8,6 +9,7 @@ export const ROADMAP_DETAIL_DATA = [
   },
   {
     id: "build",
+    icon: "/homescreen/roadmap-build.svg",
     title: "Join a hackathon",
     number: 2,
     desc: "Dive into a collaborative and high-energy environment where innovation thrives. Hackathons offer an opportunity to showcase your technical and creative skills, build a prototype, and solve real-world problems alongside like-minded individuals. It's the perfect stage to launch your ideas into action.",
@@ -15,6 +17,7 @@ export const ROADMAP_DETAIL_DATA = [
   },
   {
     id: "hack",
+    icon: "/homescreen/roadmap-hack.svg",
     title: "Connect at Hacker House",
     number: 3,
     desc: "Expand your network by engaging with a community of builders, developers, and visionaries at Hacker House events. Share knowledge, gather feedback, and form strategic partnerships to refine your project and align with industry trends.",
@@ -22,6 +25,7 @@ export const ROADMAP_DETAIL_DATA = [
   },
   {
     id: "seed",
+    icon: "/homescreen/roadmap-seed.svg",
     title: "Apply for Seed Funding",
     number: 4,
     desc: "Turn your vision into reality by securing initial capital. With a polished pitch and a well-thought-out business model, approach investors and accelerators that align with your goals. Seed funding will fuel the next stage of development and growth.",
@@ -29,6 +33,7 @@ export const ROADMAP_DETAIL_DATA = [
   },
   {
     id: "demo",
+    icon: "/homescreen/roadmap-demo.svg",
     title: "Present at Demo Day",
     number: 5,
     desc: "Showcase your progress and potential to a room filled with investors, mentors, and industry leaders. Use this opportunity to demonstrate traction, share your vision, and captivate stakeholders to take your project to the next level.",
@@ -36,6 +41,7 @@ export const ROADMAP_DETAIL_DATA = [
   },
   {
     id: "fund",
+    icon: "/homescreen/roadmap-fund.svg",
     title: "Raise Funds",
     number: 6,
     desc: "Build on the momentum from Demo Day by engaging with investors, negotiating terms, and finalizing deals. Secure the funding needed to scale your operations, expand your team, and establish your presence in the market. Each step brings you closer to long-term success.",

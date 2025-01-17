@@ -29,7 +29,7 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#0F0F6D] h-full relative px-8 py-6">
+    <div className="bg-[#0F0F6D] h-full relative md:px-8 px-3 md:py-6 py-3">
       <ChallengeModal
         isOpen={openChallenge}
         onClose={() => setOpenChallenge(false)}

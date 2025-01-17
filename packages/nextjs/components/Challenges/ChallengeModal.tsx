@@ -8,6 +8,7 @@ import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownCompo
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
 import { ComingSoon } from "../Tooltips/Comingsoon";
+import { SubmitChallenge } from "./SubmitChallenge";
 
 type Props = {
   isOpen: boolean;
@@ -199,25 +200,15 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
                 : "max-h-[600px] overflow-y-scroll"
             }`}
           >
-            <div className="fixed z-50 bottom-5 transform -translate-x-[62%] left-[62%] flex items-center gap-2 bg-[#4D58FF] w-fit px-4 py-3 cursor-pointer">
-              <Image
-                src={"/homescreen/submit.svg"}
-                alt="icon"
-                width={20}
-                height={20}
-              />
-              <p className="text-lg font-vt323 uppercase !text-white">
-                Submit challenge
-              </p>
-            </div>
+            <SubmitChallenge />
             {fetchState.loading && (
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="w-[800px] h-full flex items-center justify-center">
                 <span className="text-[#4D58FF] loading loading-spinner loading-lg"></span>
               </div>
             )}
 
             {fetchState.error && (
-              <div className="w-full h-full flex flex-col items-center justify-center">
+              <div className="w-[800px] h-full flex flex-col items-center justify-center">
                 <p className="text-lg font-semibold mb-2">
                   Error loading challenge content
                 </p>

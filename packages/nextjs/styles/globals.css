@@ -7,6 +7,9 @@
   padding: 0;
   box-sizing: border-box;
 }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   min-height: 100vh;
@@ -210,5 +213,60 @@ body {
   .section-modal-inside {
     height: 100%;
     width: 100vw;
+    overflow-y: scroll;
   }
 }
+
+/* start roadmap mb */
+
+.roadmap-mb__background {
+  height: 100%;
+  background-color: #a8a8a8;
+}
+
+.roadmap-mb__progress {
+  height: 100%;
+  background-image: linear-gradient(
+    to bottom,
+    #2835ff var(--progress, 15%),
+    transparent 15%
+  );
+  transition: background-image 0.3s ease-out;
+}
+
+.roadmap-mb__dotted-line {
+  height: 100%;
+  width: 3px;
+  background-image: linear-gradient(to bottom, #d1d5db 50%, transparent 50%);
+  background-size: 1px 30px;
+}
+
+.roadmap-mb__progress {
+  animation: progress linear forwards;
+  animation-timeline: scroll();
+  will-change: background-image;
+}
+
+@property --progress {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+@keyframes progress {
+  0% {
+    --progress: 0%;
+  }
+  100% {
+    --progress: 100%;
+  }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .roadmap-mb__progress {
+    animation: none;
+    transition: --progress 0.3s ease-out;
+  }
+}
+
+/* end roadmap mb */

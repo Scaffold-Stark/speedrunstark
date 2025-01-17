@@ -144,9 +144,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
       onClose={handleCloseModal}
       className={`md:shadow-modal max-w-[1200px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
-      <div
-        className={`w-full h-full ${isExpanded ? "h-full flex flex-col" : ""}`}
-      >
+      <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
         <div className="bg-[#4D58FF] relative md:rounded-t-lg rounded-none h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
@@ -166,7 +164,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
         </div>
 
         <div
-          className={`grid md:grid-cols-3 grid-cols-1 py-5 min-h-[600px] h-full md:max-h-max max-h-[calc(100vh-114px)] overflow-y-auto`}
+          className={`grid md:grid-cols-3 grid-cols-1 py-5 min-h-[600px] h-full max-h-[calc(100vh-114px)] overflow-y-auto`}
         >
           <div className="md:col-span-2 col-span-1 md:px-6 px-3">
             <div className="mb-7 flex items-end gap-2">

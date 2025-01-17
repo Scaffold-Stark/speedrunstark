@@ -1,66 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
 import Image from "next/image";
-import { NumberBox } from "../NumberBox";
+import { RoadmapDetail, RoadmapItem, RoadmapItemMB } from "./RoadmapItem";
 import { ROADMAP_DETAIL_DATA } from "~~/mockup/data";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-};
-
-const RoadmapItem = ({
-  icon,
-  title,
-  active,
-  onClick,
-}: {
-  icon: string;
-  title: string;
-  active?: boolean;
-  onClick: () => void;
-}) => {
-  return (
-    <div
-      className={`${active ? "bg-white border-2 border-[#2835FF] shadow-md" : "bg-[#DCDCDC] border border-[#ADADAD]"} cursor-pointer w-[124px] h-[124px] flex flex-col items-center justify-center gap-1`}
-      onClick={onClick}
-    >
-      <Image src={icon} alt="icon" width={44} height={44} />
-      <p className="text-black uppercase text-center">{title}</p>
-    </div>
-  );
-};
-
-const RoadmapDetail = ({
-  number,
-  title,
-  desc,
-  xUrl,
-}: {
-  number: number;
-  title: string;
-  desc: string;
-  xUrl?: string;
-}) => {
-  return (
-    <div>
-      <div className="border-b-2 border-dashed border-black p-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <NumberBox number={number} />
-          <p className="text-[#0C0C4F] text-xl mt-1 uppercase">{title}</p>
-        </div>
-        <button className="px-4 py-2 bg-[#4D58FF] font-vt323 uppercase">
-          Check latest updates on X
-        </button>
-      </div>
-      <div className="min-h-[150px]">
-        <p className="text-[#0C0C4F] p-4">{desc}</p>
-      </div>
-    </div>
-  );
 };
 
 const ProgressBar = ({
@@ -106,6 +55,33 @@ const ProgressBar = ({
   );
 };
 
+const RoadmapMB = () => {
+  return (
+    <div>
+      <div className="relative">
+        <div className="roadmap-mb__background absolute z-10 w-[45px] flex justify-center">
+          <div className="roadmap-mb__dotted-line" />
+        </div>
+
+        <div className="roadmap-mb__progress absolute z-20 w-[45px] flex justify-center">
+          <div className="roadmap-mb__dotted-line" />
+        </div>
+
+        <div className="flex flex-col gap-10 pt-10">
+          {ROADMAP_DETAIL_DATA.map((item) => (
+            <RoadmapItemMB key={item.id} {...item} />
+          ))}
+        </div>
+      </div>
+      <div className="sticky bottom-4 z-[99] w-full flex justify-center">
+        <button className="w-[208px] px-4 py-2 bg-[#4D58FF] font-vt323 uppercase">
+          Check latest updates on X
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeStep, setActiveStep] = useState("learn");
@@ -124,6 +100,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
   const handleCloseModal = () => {
     onClose();
     setIsExpanded(false);
+    setActiveStep("learn");
   };
 
   // Find the active step data
@@ -136,10 +113,10 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`md:shadow-modal max-w-[1200px] w-full mx-auto md:p-[1px] rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`md:shadow-modal max-w-[1200px] w-full mx-auto xl:p-[1px] xl:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
-        <div className="bg-[#4D58FF] relative rounded-t-lg h-[60px] flex items-center justify-center">
+        <div className="bg-[#4D58FF] relative xl:rounded-t-lg h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
             alt="icon"
@@ -154,7 +131,9 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
           </div>
           <p className="text-xl relative z-30 uppercase font-vt323">{title}</p>
         </div>
-        <div className={`${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}>
+        <div
+          className={`md:block hidden ${isExpanded ? "flex-1 h-[calc(100%-60px)]" : ""}`}
+        >
           <div className="w-full bg-[#E5E5E5] p-8">
             <div className="flex justify-between items-end">
               {/* Left side */}
@@ -169,7 +148,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
                 </div>
                 <ProgressBar
                   isActive={isProgressActive("learn")}
-                  className="w-[150px] h-[90px] mt-4"
+                  className="xl:w-[150px] w-[80px] h-[90px] mt-4"
                   fromStep="learn"
                   toStep="build"
                 />
@@ -182,7 +161,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
                   />
                   <ProgressBar
                     isActive={isProgressActive("build")}
-                    className="w-[90px] h-[60px] ml-[18px]"
+                    className="w-[90px] xl:h-[60px] h-[30px] ml-[18px]"
                     fromStep="build"
                     toStep="hack"
                   />
@@ -214,7 +193,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
                   />
                   <ProgressBar
                     isActive={isProgressActive("demo")}
-                    className="w-[150px] h-[90px] mt-4"
+                    className="xl:w-[150px] w-[80px] h-[90px] mt-4"
                     fromStep="demo"
                     toStep="fund"
                   />
@@ -227,7 +206,7 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
                 </div>
                 <ProgressBar
                   isActive={isProgressActive("seed")}
-                  className="w-[90px] h-[60px] ml-4"
+                  className="w-[90px] xl:h-[60px] h-[30px] ml-4"
                   fromStep="seed"
                   toStep="demo"
                 />
@@ -250,6 +229,9 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
               xUrl={activeStepData.xUrl}
             />
           )}
+        </div>
+        <div className="md:hidden block">
+          <RoadmapMB />
         </div>
       </div>
     </GenericModal>
