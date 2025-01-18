@@ -31,7 +31,7 @@ To ensure the proper functioning of scaffold-stark, your local `starknet-devnet`
 starknet-devnet --version
 ```
 
-If your local starknet-devnet version is not `0.2.3``, you need to install it.
+If your local starknet-devnet version is not `0.2.3`, you need to install it.
 
 Install Starknet-devnet `0.2.3` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
