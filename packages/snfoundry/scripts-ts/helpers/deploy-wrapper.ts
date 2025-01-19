@@ -14,7 +14,7 @@ function main() {
   const argv = yargs(process.argv.slice(2))
     .option("network", {
       type: "string",
-      choices: ["sepolia", "mainnet", "devnet"],
+      choices: ["devnet", "sepolia", "mainnet"],
       default: "devnet",
     })
     .option("fee", { type: "string", choices: ["eth", "strk"], default: "eth" })
