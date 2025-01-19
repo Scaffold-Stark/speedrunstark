@@ -55,19 +55,31 @@ To ensure the proper functioning of the tests on scaffold-stark, your Starknet F
 snforge --version
 ```
 
-If your Starknet Foundry version is not `0.34.0`, you need to install it.
+If your Starknet Foundry version is not `0.35.1`, you need to install it.
 
-- Install Starknet Foundry `0.34.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
+- Install Starknet Foundry `0.35.1` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
 
 ### Compatible versions
 
 - Starknet-devnet - v0.2.3
 - Scarb - v2.9.2
-- Snforge - v0.34.0
+- Snforge - v0.35.1
 - Cairo - v2.9.2
 - RPC - v0.7.1
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
+
+### Docker Option for Environment Setup
+
+<details>
+
+For an alternative to local installations, you can use Docker to set up the environment.
+
+- Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.9.2` image.
+
+For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+</details>
 
 Then download the challenge to your computer and install dependencies by running:
 
