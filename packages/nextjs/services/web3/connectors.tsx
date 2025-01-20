@@ -24,7 +24,7 @@ function getConnectors() {
   const connectors: InjectedConnector[] = [argent(), braavos()];
 
   if (
-    targetNetworks.some((network) => (network.network as string) === "devnet")
+    targetNetworks.some((network) => (network?.network as string) === "devnet")
   ) {
     const burnerConnector = new BurnerConnector();
     connectors.push(burnerConnector as unknown as InjectedConnector);

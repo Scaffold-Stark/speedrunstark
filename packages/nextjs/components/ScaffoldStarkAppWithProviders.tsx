@@ -13,7 +13,7 @@ import {
 } from "@starknet-react/core";
 import { Header } from "~~/components/Header";
 import { ProgressBar } from "~~/components/scaffold-stark/ProgressBar";
-import { appChains } from "~~/services/web3/connectors";
+import { appChains, connectors } from "~~/services/web3/connectors";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
 import provider from "~~/services/web3/provider";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
@@ -41,11 +41,6 @@ export const ScaffoldStarkAppWithProviders = ({
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const { connectors } = useInjectedConnectors({
-    // Show these connectors if the user has no connector installed.
-    recommended: [argent(), braavos(), new BurnerConnector()],
-  });
 
   return (
     <StarknetConfig

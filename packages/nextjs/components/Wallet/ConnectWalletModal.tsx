@@ -172,9 +172,9 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 py-4 px-8">
-            {connectors.map((connector) => (
+            {connectors.map((connector, index) => (
               <ItemWallet
-                key={connector?.id}
+                key={connector?.id || index}
                 icon={connector.icon.dark ?? ""}
                 name={connector.name}
                 isActive={selectedWallet?.name === connector.name}
