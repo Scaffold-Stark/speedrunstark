@@ -142,10 +142,10 @@ export const Address = ({
         //     }, 800);
         //   }}
         // >
-          <DocumentDuplicateIcon
-            className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
-            aria-hidden="true"
-          />
+        <DocumentDuplicateIcon
+          className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
+          aria-hidden="true"
+        />
         // </CopyToClipboard>
       )}
     </div>
