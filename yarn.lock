@@ -1647,6 +1647,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scaffold-stark/stark-burner@npm:^0.1.8":
+  version: 0.1.8
+  resolution: "@scaffold-stark/stark-burner@npm:0.1.8"
+  dependencies:
+    "@starknet-io/types-js": ^0.7.7
+  peerDependencies:
+    "@starknet-react/chains": ^3.1.0
+    "@starknet-react/core": ^3.6.0
+    starknet: ^6.12.0
+  checksum: 0bab97de85f244b4b670dd3ef4799a408c4fba18e2d7440925d08957725e2a379d240a906cab033d78c374ec0b98724f67305b12f62cd8738133d05114548f42
+  languageName: node
+  linkType: hard
+
 "@scure/base@npm:~1.1.3":
   version: 1.1.9
   resolution: "@scure/base@npm:1.1.9"
@@ -1679,6 +1692,8 @@ __metadata:
     "@next/font": ^14.2.4
     "@radix-ui/react-icons": 1.3.0
     "@radix-ui/themes": 2.0.3
+    "@scaffold-stark/stark-burner": ^0.1.8
+    "@starknet-io/types-js": ^0.7.10
     "@starknet-react/chains": ^0.1.7
     "@starknet-react/core": ^2.3.0
     "@types/node": ^20
@@ -1715,6 +1730,13 @@ __metadata:
     zustand: ^4.1.2
   languageName: unknown
   linkType: soft
+
+"@starknet-io/types-js@npm:^0.7.10, @starknet-io/types-js@npm:^0.7.7":
+  version: 0.7.10
+  resolution: "@starknet-io/types-js@npm:0.7.10"
+  checksum: 8f71c57d0f101ebbde91e3016b73ab70ce3329ccb7463764a27a61db42b9ea14b690bd620a6b2dd4303e890b4a9212bdd40626962e0320e82e0c600fd3be5abf
+  languageName: node
+  linkType: hard
 
 "@starknet-react/chains@npm:^0.1.7":
   version: 0.1.7

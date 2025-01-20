@@ -77,7 +77,6 @@ export const DATA_MENU = [
   },
 ] as const;
 
-
 export const DATA_MENU_BOT = [
   {
     icon: "/homescreen/mustwatch.png",

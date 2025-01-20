@@ -33,15 +33,15 @@ export const WalletAccountModal = ({
       const accounts: BurnerAccount[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key?.startsWith('burner-')) {
+        if (key?.startsWith("burner-")) {
           try {
-            const accountData = JSON.parse(localStorage.getItem(key) || '');
+            const accountData = JSON.parse(localStorage.getItem(key) || "");
             accounts.push({
               address: accountData.address,
-              privateKey: accountData.privateKey
+              privateKey: accountData.privateKey,
             });
           } catch (error) {
-            console.error('Error parsing burner account:', error);
+            console.error("Error parsing burner account:", error);
           }
         }
       }
@@ -125,7 +125,7 @@ export const WalletAccountModal = ({
             {burnerAccounts.length > 0 && (
               <>
                 <div className="h-[1px] w-full bg-black"></div>
-                <div 
+                <div
                   className="bg-white flex items-center gap-2.5 px-4 py-3 cursor-pointer hover:bg-gray-50"
                   onClick={toggleBurnerList}
                 >
@@ -139,7 +139,11 @@ export const WalletAccountModal = ({
                     Burner Accounts ({burnerAccounts.length})
                   </p>
                   <Image
-                    src={showBurnerList ? "/homescreen/arrow-up.svg" : "/homescreen/arrow-down.svg"}
+                    src={
+                      showBurnerList
+                        ? "/homescreen/arrow-up.svg"
+                        : "/homescreen/arrow-down.svg"
+                    }
                     alt="arrow"
                     width={12}
                     height={12}
@@ -150,8 +154,8 @@ export const WalletAccountModal = ({
                 {showBurnerList && (
                   <div className="bg-white px-4 py-2 max-h-[200px] overflow-y-auto">
                     {burnerAccounts.map((account, index) => (
-                      <div 
-                        key={account.address} 
+                      <div
+                        key={account.address}
                         className="flex items-center gap-2 py-2 hover:bg-gray-50 rounded px-2"
                       >
                         <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">

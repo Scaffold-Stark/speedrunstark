@@ -1,7 +1,7 @@
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
-import {  useState } from "react";
+import { useState } from "react";
 import { Connector, useConnect } from "@starknet-react/core";
 import { useLocalStorage } from "usehooks-ts";
 import toast from "react-hot-toast";
@@ -49,12 +49,12 @@ const ItemWallet = ({
 export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
   const { connectors, connectAsync, connect } = useConnect();
   const [selectedWallet, setSelectedWallet] = useState<Connector>(
-    connectors[0]
+    connectors[0],
   );
   const [showBurnerAccounts, setShowBurnerAccounts] = useState(false);
   const [, setLastConnectionTime] = useLocalStorage<number>(
     "lastConnectedTime",
-    0
+    0,
   );
   const [, setConnectedChainId] = useLocalStorage<bigint>("chainId", 0n);
   const [, setLastConnector] = useLocalStorage<{
@@ -65,7 +65,7 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
     { id: "" },
     {
       initializeWithValue: false,
-    }
+    },
   );
 
   const handleCloseModal = () => {
@@ -80,10 +80,10 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
 
   const handleConnectBurner = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number
+    ix: number,
   ) => {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet"
+      (it) => it.id == "burner-wallet",
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -96,7 +96,7 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
 
   const handleConnectWallet = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    connector: Connector
+    connector: Connector,
   ) => {
     try {
       if (connector.id === "burner-wallet") {
@@ -120,8 +120,6 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
       setLastConnector({ id: "" });
     }
   };
-
-  console.log(connectors);
 
   return (
     <GenericModal

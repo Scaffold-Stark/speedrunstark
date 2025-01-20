@@ -4,7 +4,11 @@ import { CloseIcon } from "./icons/CloseIcon";
 import { useState } from "react";
 import { DATA_MENU_BOT } from "~~/mockup/data";
 
-export const RecentlyVied = ({onClickItem} : {onClickItem  : (type : string) => void}) => {
+export const RecentlyVied = ({
+  onClickItem,
+}: {
+  onClickItem: (type: string) => void;
+}) => {
   const [dislay, setDisplay] = useState(true);
 
   if (!dislay) return null;
