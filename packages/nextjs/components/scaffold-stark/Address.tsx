@@ -133,20 +133,20 @@ export const Address = ({
           aria-hidden="true"
         />
       ) : (
-        <CopyToClipboard
-          text={checkSumAddress}
-          onCopy={() => {
-            setAddressCopied(true);
-            setTimeout(() => {
-              setAddressCopied(false);
-            }, 800);
-          }}
-        >
+        // <CopyToClipboard
+        //   text={checkSumAddress}
+        //   onCopy={() => {
+        //     setAddressCopied(true);
+        //     setTimeout(() => {
+        //       setAddressCopied(false);
+        //     }, 800);
+        //   }}
+        // >
           <DocumentDuplicateIcon
             className="ml-1.5 text-xl font-normal text-sky-600 h-5 w-5 cursor-pointer"
             aria-hidden="true"
           />
-        </CopyToClipboard>
+        // </CopyToClipboard>
       )}
     </div>
   );
