@@ -3,6 +3,7 @@ import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWit
 import "~~/styles/globals.css";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 import { Aldrich, VT323 } from "next/font/google";
+import localFont from "next/font/local";
 
 export const metadata: Metadata = {
   title: "SpeedRun Stark",
@@ -24,10 +25,17 @@ const vt323 = VT323({
   display: "swap",
 });
 
+const digital = localFont({
+  src: "../../../packages/nextjs/public/fonts/DigitalNumbers-Regular.ttf",
+  variable: "--font-digital",
+});
+
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning>
-      <body className={`${aldrich.variable} ${vt323.variable}`}>
+      <body
+        className={`${aldrich.variable} ${vt323.variable} ${digital.variable}`}
+      >
         <ThemeProvider enableSystem>
           <ScaffoldStarkAppWithProviders>
             {children}

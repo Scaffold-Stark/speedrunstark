@@ -16,6 +16,10 @@ body {
   font-family: var(--font-aldrich) !important;
 }
 
+.font-digital {
+  font-family: var(--font-digital) !important;
+}
+
 .font-vt323 {
   font-family: var(--font-vt323) !important;
 }

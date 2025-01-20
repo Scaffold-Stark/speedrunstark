@@ -37,11 +37,9 @@ export const Header = () => {
   return (
     <div className="bg-[#4D58FF] md:px-6 md:py-4 px-2 py-3 flex justify-between">
       <div>
-        {pathname !== "/" && (
-          <div onClick={() => (window.location.href = "/")}>
-            <HeaderLogo />
-          </div>
-        )}
+        <div onClick={() => (window.location.href = "/")}>
+          <HeaderLogo />
+        </div>
       </div>
       <div className="flex items-center md:gap-6 gap-2">
         <LanguageButton />

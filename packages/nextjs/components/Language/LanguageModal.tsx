@@ -30,9 +30,9 @@ export const LanguageModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={onClose}
-      className={`max-w-[500px] w-full  mx-auto md:p-[1px] bg-white`}
+      className={`md:w-[500px] w-full mx-auto md:p-[1px] bg-white`}
     >
-      <div className={`w-full`}>
+      <div>
         <div className="bg-[#4D58FF] relative h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
@@ -113,10 +113,10 @@ export const RoadmapModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`md:shadow-modal max-w-[1200px] w-full mx-auto xl:p-[1px] xl:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`md:shadow-modal max-w-[1200px] w-full mx-auto xl:p-[1px] md:rounded-t-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
-        <div className="bg-[#4D58FF] relative xl:rounded-t-lg h-[60px] flex items-center justify-center">
+        <div className="bg-[#4D58FF] relative md:rounded-t-lg h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
             alt="icon"
