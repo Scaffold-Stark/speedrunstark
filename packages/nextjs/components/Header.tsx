@@ -35,7 +35,7 @@ export const Header = () => {
   );
 
   return (
-    <div className="bg-[#4D58FF] md:px-6 md:py-4 px-4 py-3 flex justify-between">
+    <div className="bg-[#4D58FF] md:px-6 md:py-4 px-2 py-3 flex justify-between">
       <div>
         {pathname !== "/" && (
           <div onClick={() => (window.location.href = "/")}>

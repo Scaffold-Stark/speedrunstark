@@ -5,14 +5,36 @@ import { DisconnectModal } from "./DisconnectModal";
 import { WalletAccountModal } from "./WalletAccountModal";
 import { useAccount } from "@starknet-react/core";
 import { displayAddress } from "~~/utils/utils";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import { WrongNetworkDropdown } from "../scaffold-stark/CustomConnectButton/WrongNetworkDropdown";
+import ConnectModal from "../scaffold-stark/CustomConnectButton/ConnectModal";
 
 export const AccountButton = () => {
   const [openAccount, setOpenAccount] = useState(false);
   const [openWallet, setOpenWallet] = useState(false);
   const [openDisconnect, setOpenDisconnect] = useState(false);
-  const { address } = useAccount();
+  const { address, chainId, status } = useAccount();
+  const { targetNetwork } = useTargetNetwork();
 
-  return (
+  return status == "disconnected" ? (
+    <div>
+      <div
+        className="cursor-pointer text-center md:text-base text-xs"
+        onClick={() => setOpenWallet(true)}
+      >
+        Connect Wallet
+      </div>
+      <ConnectWalletModal
+        title="Connect Wallet"
+        isOpen={openWallet}
+        onClose={() => setOpenWallet(false)}
+      />
+    </div>
+  ) : chainId !== targetNetwork.id ? (
+    <p className="cursor-pointer text-center md:text-base text-xs">
+      <WrongNetworkDropdown />
+    </p>
+  ) : (
     <div className="relative">
       {address && (
         <div
@@ -28,29 +50,13 @@ export const AccountButton = () => {
           <p className="text-[15px] mt-1">{displayAddress(address)}</p>
         </div>
       )}
-      {!address ? (
-        <div>
-          <div
-            className="cursor-pointer text-center md:text-base text-xs"
-            onClick={() => setOpenWallet(true)}
-          >
-            Connect Wallet
-          </div>
-          <ConnectWalletModal
-            isOpen={openWallet}
-            title="Connect Wallet"
-            onClose={() => setOpenWallet(false)}
-          />
-        </div>
-      ) : (
-        <WalletAccountModal
-          title="Your Account"
-          isOpen={openAccount}
-          address={address}
-          onClose={() => setOpenAccount(false)}
-          openDisconnect={() => setOpenDisconnect(true)}
-        />
-      )}
+      <WalletAccountModal
+        title="Your Account"
+        isOpen={openAccount}
+        address={address ?? ""}
+        onClose={() => setOpenAccount(false)}
+        openDisconnect={() => setOpenDisconnect(true)}
+      />
 
       <DisconnectModal
         title="Disconnect"
