@@ -57,7 +57,7 @@ const ItemVideo = ({
         />
       </div>
       <div
-        className={`bg-white text-black py-1 px-2 w-40 min-h-12 flex items-center justify-center border ${isActive ? "border-blue-500" : "border-black"}`}
+        className={`bg-white min-w-[164px] text-black py-1 px-2 w-full min-h-12 flex items-center justify-center border ${isActive ? "border-blue-500" : "border-black"}`}
       >
         <p className="md:text-sm text-xs text-center uppercase leading-tight">
           {formatTitle(title)}
@@ -185,7 +185,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
                 />
               ))}
             </div>
-            <div className="md:hidden flex flex-wrap gap-4">
+            <div className="md:hidden grid grid-cols-2 gap-4">
               {DATA_VIDEOS.map((video, index) => (
                 <ItemVideo
                   key={video.title}

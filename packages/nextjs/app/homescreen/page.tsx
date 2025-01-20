@@ -65,7 +65,9 @@ const HomeScreen: React.FC = () => {
         </div>
 
         <div className="absolute right-0 z-40 transform top-1/4 -translate-y-1/4">
-          <Readme />
+          <div className="md:block hidden">
+            <Readme />
+          </div>
           <div className="flex flex-col mt-5 gap-8 items-end">
             {DATA_MENU_SOCIAL.map((item) => (
               <HomeItem
@@ -76,8 +78,8 @@ const HomeScreen: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className="absolute bottom-10 z-40 transform left-1/2 -translate-x-1/2 max-w-[666px] w-full">
-          <RecentlyVied />
+        <div className="md:block hidden absolute bottom-10 z-40 transform left-1/2 -translate-x-1/2 max-w-[666px] w-full">
+          <RecentlyVied onClickItem={handleItemClick} />
         </div>
       </div>
     </div>

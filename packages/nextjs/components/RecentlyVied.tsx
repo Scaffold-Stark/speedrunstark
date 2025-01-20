@@ -2,28 +2,9 @@ import Image from "next/image";
 import { HomeItem } from "./HomeItem";
 import { CloseIcon } from "./icons/CloseIcon";
 import { useState } from "react";
+import { DATA_MENU_BOT } from "~~/mockup/data";
 
-const DATA_MENU_BOT = [
-  {
-    icon: "/homescreen/mustwatch.png",
-    name: "Must Watch",
-  },
-  {
-    icon: "/homescreen/starklings.png",
-    name: "starklings",
-  },
-
-  {
-    icon: "/homescreen/readme.png",
-    name: "read_me",
-  },
-  {
-    icon: "/homescreen/roadmap.png",
-    name: "Roadmap",
-  },
-];
-
-export const RecentlyVied = () => {
+export const RecentlyVied = ({onClickItem} : {onClickItem  : (type : string) => void}) => {
   const [dislay, setDisplay] = useState(true);
 
   if (!dislay) return null;
@@ -47,7 +28,12 @@ export const RecentlyVied = () => {
       </div>
       <div className="flex gap-8 bg-white p-5 justify-between overflow-x-auto">
         {DATA_MENU_BOT.map((item) => (
-          <HomeItem key={item?.name} {...item} theme="secondary" />
+          <HomeItem
+            key={item?.name}
+            {...item}
+            theme="secondary"
+            onclick={() => onClickItem(item.type)}
+          />
         ))}
       </div>
     </div>

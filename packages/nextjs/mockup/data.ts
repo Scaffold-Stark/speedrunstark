@@ -77,6 +77,31 @@ export const DATA_MENU = [
   },
 ] as const;
 
+
+export const DATA_MENU_BOT = [
+  {
+    icon: "/homescreen/mustwatch.png",
+    name: "Must Watch",
+    type: "video",
+  },
+  {
+    icon: "/homescreen/starklings.png",
+    name: "starklings",
+    type: "starklings",
+  },
+
+  {
+    icon: "/homescreen/readme.png",
+    name: "read_me",
+    type: "readme",
+  },
+  {
+    icon: "/homescreen/roadmap.png",
+    name: "Roadmap",
+    type: "roadmap",
+  },
+];
+
 export const DATA_MENU_SOCIAL = [
   {
     icon: "/homescreen/telegram.png",
