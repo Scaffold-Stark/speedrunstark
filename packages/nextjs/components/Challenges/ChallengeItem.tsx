@@ -15,17 +15,19 @@ export const ChallengeItem = ({
   active?: boolean;
   comming?: boolean;
   isBurn?: boolean;
-  onSelect: (id: string) => void;
-  onOpenDetail?: any;
+  onSelect: () => void;
+  onOpenDetail?: () => void;
 }) => {
   const handleClick = () => {
-    const isMediumScreen = window.matchMedia("(min-width: 768px)").matches;
+    if (comming) return;
 
-    if (!isMediumScreen) {
+    const isMediumScreen = window.matchMedia("(min-width: 768px)").matches;
+    if (!isMediumScreen && onOpenDetail) {
       onOpenDetail();
     }
-    onSelect(id);
+    onSelect();
   };
+
   return (
     <div
       className={`flex items-center gap-3 p-4 border-b border-[#000] md:max-w-[300px] w-full ${

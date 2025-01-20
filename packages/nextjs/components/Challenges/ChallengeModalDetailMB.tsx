@@ -4,6 +4,7 @@ import { CloseIcon } from "../icons/CloseIcon";
 import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownComponents";
 import ReactMarkdown from "react-markdown";
 import { SubmitChallenge } from "./SubmitChallenge";
+import { Challenge } from "~~/mockup/type";
 
 type Props = {
   isOpen: boolean;
@@ -11,6 +12,7 @@ type Props = {
   title: string;
   content: any;
   loading: boolean;
+  challenge: Challenge;
 };
 
 export const ChallengeModalDetail = ({
@@ -19,6 +21,7 @@ export const ChallengeModalDetail = ({
   title,
   content,
   loading,
+  challenge,
 }: Props) => {
   const handleCloseModal = () => {
     onClose();
@@ -55,7 +58,7 @@ export const ChallengeModalDetail = ({
 
           {!loading && content && (
             <div>
-              <SubmitChallenge />
+              <SubmitChallenge challenge={challenge} />
               <ReactMarkdown components={getMarkdownComponents()}>
                 {content}
               </ReactMarkdown>

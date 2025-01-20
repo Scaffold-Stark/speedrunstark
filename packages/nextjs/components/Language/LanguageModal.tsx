@@ -30,16 +30,16 @@ export const LanguageModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={onClose}
-      className={`max-w-[500px] w-full md:rounded-t-lg rounded-none mx-auto md:p-[1px] bg-white`}
+      className={`max-w-[500px] w-full  mx-auto md:p-[1px] bg-white`}
     >
-      <div className={`w-ful`}>
+      <div className={`w-full`}>
         <div className="bg-[#4D58FF] relative h-[60px] flex items-center justify-center">
           <Image
             src="/homescreen/header-decore.svg"
             alt="icon"
             width={230}
             height={40}
-            className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full h-full md:rounded-t-lg rounded-none "
+            className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full h-full"
           />
 
           <div className="flex items-center gap-1.5 absolute z-30 left-4">

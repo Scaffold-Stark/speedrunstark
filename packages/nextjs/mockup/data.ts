@@ -102,41 +102,87 @@ export const DATA_CHALLENGE_V2 = [
     id: "challenge-0-simple-nft",
     name: "Simple NFT Example",
     isBurn: true,
+    challenge: "Challenge #0",
+    inputURL: [
+      {
+        id: "deployed",
+        title: "Enter Deployed URL",
+        placeholder: "Enter deployed URL...",
+      },
+    ],
   },
   {
     id: "challenge-1-decentralized-staking",
     name: "Decentralized Staking App",
     isBurn: true,
+    challenge: "Challenge #1",
+    inputURL: [
+      {
+        id: "deployed",
+        title: "Enter Deployed URL",
+        placeholder: "Enter deployed URL...",
+      },
+      {
+        id: "nft",
+        title: "Enter Simple NFT Contract",
+        placeholder: "Enter NFT contract...",
+      },
+      {
+        id: "staker",
+        title: "Enter Staker Contract",
+        placeholder: "Enter staker contract...",
+      },
+    ],
   },
   {
     id: "challenge-2-token-vendor",
     name: "Token Vendor",
     isBurn: true,
+    challenge: "Challenge #2",
+    inputURL: [
+      {
+        id: "deployed",
+        title: "Enter Deployed URL",
+        placeholder: "Enter deployed URL...",
+      },
+    ],
   },
   {
     id: "challenge-3-dice-game",
     name: "Dice Game",
     isBurn: true,
+    challenge: "Challenge #3",
+    inputURL: [
+      {
+        id: "deployed",
+        title: "Enter Deployed URL",
+        placeholder: "Enter deployed URL...",
+      },
+    ],
   },
   {
     id: "build-a-dex",
     name: "Build a DEX",
     comming: true,
+    challenge: "Challenge #4",
   },
   {
     id: "state-channel-application",
     name: "A State Channel Application",
     comming: true,
+    challenge: "Challenge #5",
   },
   {
     id: "multisig-wallet-challenge",
     name: "Multisig Wallet Challenge",
     comming: true,
+    challenge: "Challenge #6",
   },
   {
     id: "svg-nft",
     name: "Building Cohort Challenge",
     comming: true,
+    challenge: "Challenge #7",
   },
 ];
 

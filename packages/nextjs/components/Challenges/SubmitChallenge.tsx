@@ -2,6 +2,8 @@ import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
 import { useState } from "react";
+import { DynamicSequentialInputs } from "./DynamicSequentialInputs";
+import { Challenge } from "~~/mockup/type";
 
 interface InputField {
   id: string;
@@ -9,95 +11,11 @@ interface InputField {
   placeholder: string;
 }
 
-interface InputURLProps {
-  title: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-}
-
-interface DynamicSequentialInputsProps {
-  inputFields: InputField[];
-}
-
-const InputURL: React.FC<InputURLProps> = ({
-  title,
-  value,
-  onChange,
-  placeholder,
-}) => {
-  return (
-    <div className="flex flex-col gap-1">
-      <p className="!text-black">{title}</p>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="!text-[#4D58FF] border-none outline-none px-2 bg-transparent caret-[#4D58FF] appearance-none selection:bg-[#4D58FF/20]"
-      />
-    </div>
-  );
-};
-
-const DynamicSequentialInputs: React.FC<DynamicSequentialInputsProps> = ({
-  inputFields,
-}) => {
-  // Initialize state with a record of string values
-  const [inputValues, setInputValues] = useState<Record<string, string>>(() =>
-    inputFields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {}),
-  );
-
-  const handleInputChange = (id: string, value: string): void => {
-    setInputValues((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const shouldShowInput = (index: number): boolean => {
-    if (index === 0) return true;
-
-    const previousInputs = inputFields.slice(0, index);
-    return previousInputs.every((field) => inputValues[field.id]?.trim());
-  };
-
-  return (
-    <div className="mt-4 pb-8 flex flex-col gap-5">
-      {inputFields.map(
-        (field, index) =>
-          shouldShowInput(index) && (
-            <InputURL
-              key={field.id}
-              title={field.title}
-              value={inputValues[field.id]}
-              onChange={(value) => handleInputChange(field.id, value)}
-              placeholder={field.placeholder}
-            />
-          ),
-      )}
-    </div>
-  );
-};
-
-export const SubmitChallenge = () => {
+export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openSubmit, setOpenSubmit] = useState(false);
 
-  const sampleInputs: InputField[] = [
-    {
-      id: "deployed",
-      title: "Enter Deployed URL",
-      placeholder: "Enter deployed URL...",
-    },
-    {
-      id: "nft",
-      title: "Enter Simple NFT Contract",
-      placeholder: "Enter NFT contract...",
-    },
-    {
-      id: "staker",
-      title: "Enter Staker Contract",
-      placeholder: "Enter staker contract...",
-    },
-  ];
+  const sampleInputs: InputField[] = [];
 
   const handleCloseModal = () => {
     setOpenSubmit(false);
@@ -142,7 +60,7 @@ export const SubmitChallenge = () => {
                 <ExpandIcon onExpand={handleExpand} />
               </div>
               <p className="text-xl relative z-30 uppercase font-vt323 !text-white">
-                Challenge 01: Simple NFT Example
+                {challenge?.challenge}: {challenge?.name}
               </p>
             </div>
           </div>
@@ -156,11 +74,11 @@ export const SubmitChallenge = () => {
                 }}
               />
               <h3 className="text-black text-[22px]">
-                Challenge 01: Simple NFT Example
+                {challenge?.challenge}: {challenge?.name}
               </h3>
               <div>
                 <p className="text-sm !text-[#939393]">
-                  You have to add 1 Deploy URL and 3 Contract Addresses.
+                  You have to add 1 Deploy URL.
                 </p>
                 <ul className="text-sm !text-[#939393] list-disc list-inside ml-3">
                   <li>

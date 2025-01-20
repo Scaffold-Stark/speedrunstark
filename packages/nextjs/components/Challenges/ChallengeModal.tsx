@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
+import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
+import { ChallengeModalDetail } from "./ChallengeModalDetailMB";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
+import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
-import Image from "next/image";
-import ReactMarkdown from "react-markdown";
+import { ChallengeItem } from "./ChallengeItem";
+import { SubmitChallenge } from "./SubmitChallenge";
 import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownComponents";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
-import { SubmitChallenge } from "./SubmitChallenge";
-import { ChallengeModalDetail } from "./ChallengeModalDetailMB";
-import { ChallengeItem } from "./ChallengeItem";
+import ReactMarkdown from "react-markdown";
+import { Challenge } from "~~/mockup/type";
 
 type Props = {
   isOpen: boolean;
@@ -30,18 +31,20 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
     error: null,
     data: null,
   });
-  const [selectedId, setSelectedId] = useState<string>(DATA_CHALLENGE_V2[0].id);
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge>(
+    DATA_CHALLENGE_V2[0],
+  );
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMoveonGithub = () => {
     window.open(
-      `https://github.com/Scaffold-Stark/speedrunstark/tree/${selectedId}`,
+      `https://github.com/Scaffold-Stark/speedrunstark/tree/${selectedChallenge.id}`,
       "_blank",
     );
   };
 
-  const handleSelectChallenge = (id: string) => {
-    setSelectedId(id);
+  const handleSelectChallenge = (challenge: Challenge) => {
+    setSelectedChallenge(challenge);
   };
 
   const handleExpand = () => {
@@ -51,7 +54,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
   const handleCloseModal = () => {
     onClose();
     setIsExpanded(false);
-    setSelectedId(DATA_CHALLENGE_V2[0].id);
+    setSelectedChallenge(DATA_CHALLENGE_V2[0]);
   };
 
   useEffect(() => {
@@ -64,7 +67,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
 
       try {
         const response = await fetch(
-          `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${selectedId}/README.md`,
+          `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${selectedChallenge.id}/README.md`,
         );
 
         if (!response.ok) {
@@ -72,7 +75,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
         }
 
         let markdownData = await response.text();
-        const baseUrl = `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${selectedId}/`;
+        const baseUrl = `https://raw.githubusercontent.com/Scaffold-Stark/speedrunstark/${selectedChallenge.id}/`;
 
         markdownData = markdownData.replace(
           /!\[(.*?)\]\((?!https?)(.*?)\)/g,
@@ -96,12 +99,12 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
       }
     };
 
-    if (selectedId) {
+    if (selectedChallenge.id) {
       getMarkdown();
     }
-  }, [selectedId]);
+  }, [selectedChallenge.id]);
 
-  if (openDetailMB)
+  if (openDetailMB) {
     return (
       <ChallengeModalDetail
         isOpen={openDetailMB}
@@ -109,8 +112,12 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
         content={fetchState.data}
         onClose={() => setOpenDetailMB(false)}
         loading={fetchState.loading}
+        challenge={selectedChallenge}
       />
     );
+  }
+
+  console.log(selectedChallenge);
 
   return (
     <GenericModal
@@ -140,15 +147,15 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
         >
           <div>
             <p className="text-[#333333] font-vt323 text-center py-1">
-              12 challenges available
+              {DATA_CHALLENGE_V2.length} challenges available
             </p>
             <div>
-              {DATA_CHALLENGE_V2.map((item) => (
+              {DATA_CHALLENGE_V2.map((challenge) => (
                 <ChallengeItem
-                  key={item.id}
-                  {...item}
-                  active={item.id === selectedId}
-                  onSelect={handleSelectChallenge}
+                  key={challenge.id}
+                  {...challenge}
+                  active={challenge.id === selectedChallenge.id}
+                  onSelect={() => handleSelectChallenge(challenge)}
                   onOpenDetail={() => setOpenDetailMB(true)}
                 />
               ))}
@@ -161,7 +168,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
                 : "max-h-[600px] overflow-y-scroll"
             }`}
           >
-            <SubmitChallenge />
+            <SubmitChallenge challenge={selectedChallenge} />
             {fetchState.loading && (
               <div className="w-[850px] h-full flex items-center justify-center">
                 <span className="text-[#4D58FF] loading loading-spinner loading-lg"></span>

@@ -45,7 +45,7 @@ export const RecentlyVied = () => {
           recently vied
         </p>
       </div>
-      <div className="flex gap-8 bg-white p-5 justify-between">
+      <div className="flex gap-8 bg-white p-5 justify-between overflow-x-auto">
         {DATA_MENU_BOT.map((item) => (
           <HomeItem key={item?.name} {...item} theme="secondary" />
         ))}
