@@ -123,11 +123,6 @@ export const DATA_CHALLENGE_V2 = [
         placeholder: "Enter deployed URL...",
       },
       {
-        id: "nft",
-        title: "Enter Simple NFT Contract",
-        placeholder: "Enter NFT contract...",
-      },
-      {
         id: "staker",
         title: "Enter Staker Contract",
         placeholder: "Enter staker contract...",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface InputField {
   id: string;
@@ -10,19 +10,22 @@ interface InputURLProps {
   title: string;
   value: string;
   onChange: (value: string) => void;
+  onPaste: (value: string) => void;
   placeholder: string;
   error?: string;
   isChecking?: boolean;
 }
 
 interface DynamicSequentialInputsProps {
-  inputFields: InputField[];
+  inputFields?: InputField[];
+  onSubmit?: (isAllValidated: boolean) => void;
 }
 
 const InputURL: React.FC<InputURLProps> = ({
   title,
   value,
   onChange,
+  onPaste,
   placeholder,
   error,
   isChecking,
@@ -34,6 +37,11 @@ const InputURL: React.FC<InputURLProps> = ({
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onPaste={(e) => {
+          e.preventDefault();
+          const pastedText = e.clipboardData.getData("text");
+          onPaste(pastedText);
+        }}
         placeholder={placeholder}
         className={`!text-[#4D58FF] border-none outline-none px-2 bg-transparent caret-[#4D58FF] appearance-none`}
       />
@@ -45,7 +53,7 @@ const InputURL: React.FC<InputURLProps> = ({
 
 export const DynamicSequentialInputs: React.FC<
   DynamicSequentialInputsProps
-> = ({ inputFields }) => {
+> = ({ inputFields = [], onSubmit }) => {
   const [inputValues, setInputValues] = useState<Record<string, string>>(() =>
     inputFields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {}),
   );
@@ -56,31 +64,73 @@ export const DynamicSequentialInputs: React.FC<
   }>({});
 
   const validateUrl = (url: string): boolean => {
-    return url.toLowerCase().includes("vercel");
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const checkAllInputsValidated = (): boolean => {
+    return inputFields.every(
+      (field) =>
+        inputValues[field.id]?.trim() &&
+        validateUrl(inputValues[field.id]) &&
+        validatedInputs[field.id] &&
+        !checking[field.id] &&
+        !errors[field.id],
+    );
+  };
+
+  useEffect(() => {
+    const allValidated = checkAllInputsValidated();
+    onSubmit?.(allValidated);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [validatedInputs, errors, checking, inputValues]);
+
+  const validateAndUpdateInput = async (
+    id: string,
+    value: string,
+  ): Promise<void> => {
+    if (value.trim()) {
+      setChecking((prev) => ({ ...prev, [id]: true }));
+
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        const isValid = validateUrl(value);
+        if (!isValid) {
+          setErrors((prev) => ({
+            ...prev,
+            [id]: "<ERROR> Invalid URL",
+          }));
+          setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+        } else {
+          setErrors((prev) => ({ ...prev, [id]: "" }));
+          setValidatedInputs((prev) => ({ ...prev, [id]: true }));
+        }
+      } finally {
+        setChecking((prev) => ({ ...prev, [id]: false }));
+      }
+    } else {
+      setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+      setErrors((prev) => ({ ...prev, [id]: "" }));
+    }
   };
 
   const handleInputChange = (id: string, value: string): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "" }));
     setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+    validateAndUpdateInput(id, value);
+  };
 
-    if (value.trim()) {
-      setChecking((prev) => ({ ...prev, [id]: true }));
-
-      setTimeout(() => {
-        const isValid = validateUrl(value);
-        if (!isValid) {
-          setErrors((prev) => ({
-            ...prev,
-            [id]: "<ERROR> Invalid URL_Please use vercel URL",
-          }));
-          setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-        } else {
-          setValidatedInputs((prev) => ({ ...prev, [id]: true }));
-        }
-        setChecking((prev) => ({ ...prev, [id]: false }));
-      }, 2000);
-    }
+  const handlePaste = (id: string, value: string): void => {
+    setInputValues((prev) => ({ ...prev, [id]: value }));
+    setErrors((prev) => ({ ...prev, [id]: "" }));
+    setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+    validateAndUpdateInput(id, value);
   };
 
   const shouldShowInput = (index: number): boolean => {
@@ -91,12 +141,15 @@ export const DynamicSequentialInputs: React.FC<
       const value = inputValues[field.id]?.trim();
       return (
         value &&
+        validateUrl(value) &&
         validatedInputs[field.id] &&
         !checking[field.id] &&
         !errors[field.id]
       );
     });
   };
+
+  if (!inputFields?.length) return null;
 
   return (
     <div className="mt-4 pb-8 flex flex-col gap-5">
@@ -108,6 +161,7 @@ export const DynamicSequentialInputs: React.FC<
               title={field.title}
               value={inputValues[field.id]}
               onChange={(value) => handleInputChange(field.id, value)}
+              onPaste={(value) => handlePaste(field.id, value)}
               placeholder={field.placeholder}
               error={errors[field.id]}
               isChecking={checking[field.id]}

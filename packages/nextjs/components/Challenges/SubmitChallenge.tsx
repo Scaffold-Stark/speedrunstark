@@ -1,21 +1,15 @@
+import { useState } from "react";
+import { ConfirmSubmitModal } from "./ConfirmSubmitModal";
+import { DynamicSequentialInputs } from "./DynamicSequentialInputs";
+import { Challenge } from "~~/mockup/type";
 import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
-import { useState } from "react";
-import { DynamicSequentialInputs } from "./DynamicSequentialInputs";
-import { Challenge } from "~~/mockup/type";
-
-interface InputField {
-  id: string;
-  title: string;
-  placeholder: string;
-}
 
 export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openSubmit, setOpenSubmit] = useState(false);
-
-  const sampleInputs: InputField[] = [];
+  const [openConfirmSubmit, setOpenConfirmSubmit] = useState(false);
 
   const handleCloseModal = () => {
     setOpenSubmit(false);
@@ -25,11 +19,17 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleSubmit = (isAllValidated: boolean) => {
+    if (isAllValidated) {
+      setOpenConfirmSubmit(true);
+    }
+  };
+
   return (
     <div className="flex justify-center">
       <div
         onClick={() => setOpenSubmit(true)}
-        className="fixed z-[99] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-4 py-3 cursor-pointer"
+        className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-4 py-3 cursor-pointer"
       >
         <Image
           src={"/homescreen/submit.svg"}
@@ -43,9 +43,9 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
       </div>
       {openSubmit && (
         <section
-          className={`overflow-hidden absolute z-[90] md:top-1/2 top-0 left-1/2 transform md:-translate-y-1/2 -translate-x-1/2 md:shadow-modal max-w-[850px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+          className={`overflow-hidden absolute z-[98] md:top-1/2 top-0 left-1/2 transform md:-translate-y-1/2 -translate-x-1/2 md:shadow-modal max-w-[850px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
         >
-          <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
+          <div className={`w-full`}>
             <div className="bg-[#4D58FF] relative md:rounded-t-lg h-[60px] flex items-center justify-center">
               <Image
                 src="/homescreen/header-decore.svg"
@@ -78,7 +78,7 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
               </h3>
               <div>
                 <p className="text-sm !text-[#939393]">
-                  You have to add 1 Deploy URL.
+                  You have to add {challenge.inputURL?.length} Deploy URL.
                 </p>
                 <ul className="text-sm !text-[#939393] list-disc list-inside ml-3">
                   <li>
@@ -89,9 +89,9 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
                   <li>
                     Make sure that repo is{" "}
                     <span className="uppercase text-[#2835FF]">public</span> or
-                    github user “
-                    <span className="text-[#2835FF]">0xquantum3labs</span>” has
-                    read access.
+                    github user &quot;
+                    <span className="text-[#2835FF]">0xquantum3labs</span>&quot;
+                    has read access.
                   </li>
                 </ul>
               </div>
@@ -104,10 +104,16 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
               />
             </div>
             <div className="mt-4 pb-8 flex flex-col gap-5">
-              <DynamicSequentialInputs inputFields={sampleInputs} />
+              <DynamicSequentialInputs
+                inputFields={challenge.inputURL}
+                onSubmit={handleSubmit}
+              />
             </div>
           </div>
         </section>
+      )}
+      {openConfirmSubmit && (
+        <ConfirmSubmitModal onClose={() => setOpenConfirmSubmit(false)} />
       )}
     </div>
   );

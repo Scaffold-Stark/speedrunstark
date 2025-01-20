@@ -117,8 +117,6 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
     );
   }
 
-  console.log(selectedChallenge);
-
   return (
     <GenericModal
       animate
