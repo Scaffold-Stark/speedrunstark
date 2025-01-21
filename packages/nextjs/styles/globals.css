@@ -86,9 +86,14 @@ body {
 }
 
 .challenge-content a,
-.challenge-content code {
+.challenge-content code,
+.challenge-content details {
   font-size: 14px;
   color: #0c0c4f;
+}
+
+.challenge-content details {
+  cursor: pointer;
 }
 
 .challenge-content h1 {

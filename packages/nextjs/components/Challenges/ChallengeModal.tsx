@@ -11,6 +11,7 @@ import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownCompo
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import { Challenge } from "~~/mockup/type";
+import rehypeRaw from "rehype-raw";
 
 type Props = {
   isOpen: boolean;
@@ -184,7 +185,10 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
 
             {!fetchState.loading && !fetchState.error && fetchState.data && (
               <div className="relative">
-                <ReactMarkdown components={getMarkdownComponents()}>
+                <ReactMarkdown
+                  rehypePlugins={[rehypeRaw]}
+                  components={getMarkdownComponents()}
+                >
                   {fetchState.data}
                 </ReactMarkdown>
                 <button
