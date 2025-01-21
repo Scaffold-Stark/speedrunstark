@@ -144,6 +144,11 @@ export const DATA_CHALLENGE_V2 = [
         title: "Enter Deployed URL",
         placeholder: "Enter deployed URL...",
       },
+      {
+        id: "github",
+        title: "Enter Github URL",
+        placeholder: "Enter Github URL...",
+      },
     ],
   },
   {
@@ -161,6 +166,11 @@ export const DATA_CHALLENGE_V2 = [
         id: "staker",
         title: "Enter Staker Contract",
         placeholder: "Enter staker contract...",
+      },
+      {
+        id: "github",
+        title: "Enter Github URL",
+        placeholder: "Enter Github URL...",
       },
     ],
   },
@@ -180,6 +190,11 @@ export const DATA_CHALLENGE_V2 = [
         title: "Enter Vendor Contract",
         placeholder: "Enter vendor contract...",
       },
+      {
+        id: "github",
+        title: "Enter Github URL",
+        placeholder: "Enter Github URL...",
+      },
     ],
   },
   {
@@ -197,6 +212,11 @@ export const DATA_CHALLENGE_V2 = [
         id: "dicegame",
         title: "Enter Dice Game Contract",
         placeholder: "Enter Dice Game contract...",
+      },
+      {
+        id: "github",
+        title: "Enter Github URL",
+        placeholder: "Enter Github URL...",
       },
     ],
   },

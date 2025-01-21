@@ -72,15 +72,30 @@ export const DynamicSequentialInputs: React.FC<
     }
   };
 
+  const shouldValidateUrl = (title: string): boolean => {
+    const lowerTitle = title.toLowerCase();
+    return !lowerTitle.includes("contract") && !lowerTitle.includes("contact");
+  };
+
   const checkAllInputsValidated = (): boolean => {
-    return inputFields.every(
-      (field) =>
-        inputValues[field.id]?.trim() &&
-        validateUrl(inputValues[field.id]) &&
+    return inputFields.every((field) => {
+      const value = inputValues[field.id]?.trim();
+      if (!value) return false;
+
+      // Skip URL validation for contract/contact fields
+      if (!shouldValidateUrl(field.title)) {
+        return (
+          validatedInputs[field.id] && !checking[field.id] && !errors[field.id]
+        );
+      }
+
+      return (
+        validateUrl(value) &&
         validatedInputs[field.id] &&
         !checking[field.id] &&
-        !errors[field.id],
-    );
+        !errors[field.id]
+      );
+    });
   };
 
   useEffect(() => {
@@ -92,6 +107,7 @@ export const DynamicSequentialInputs: React.FC<
   const validateAndUpdateInput = async (
     id: string,
     value: string,
+    title: string,
   ): Promise<void> => {
     if (value.trim()) {
       setChecking((prev) => ({ ...prev, [id]: true }));
@@ -99,16 +115,21 @@ export const DynamicSequentialInputs: React.FC<
       try {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const isValid = validateUrl(value);
-        if (!isValid) {
-          setErrors((prev) => ({
-            ...prev,
-            [id]: "<ERROR> Invalid URL",
-          }));
-          setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-        } else {
+        if (!shouldValidateUrl(title)) {
           setErrors((prev) => ({ ...prev, [id]: "" }));
           setValidatedInputs((prev) => ({ ...prev, [id]: true }));
+        } else {
+          const isValid = validateUrl(value);
+          if (!isValid) {
+            setErrors((prev) => ({
+              ...prev,
+              [id]: "<ERROR> Invalid URL",
+            }));
+            setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+          } else {
+            setErrors((prev) => ({ ...prev, [id]: "" }));
+            setValidatedInputs((prev) => ({ ...prev, [id]: true }));
+          }
         }
       } finally {
         setChecking((prev) => ({ ...prev, [id]: false }));
@@ -119,18 +140,22 @@ export const DynamicSequentialInputs: React.FC<
     }
   };
 
-  const handleInputChange = (id: string, value: string): void => {
+  const handleInputChange = (
+    id: string,
+    value: string,
+    title: string,
+  ): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "" }));
     setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-    validateAndUpdateInput(id, value);
+    validateAndUpdateInput(id, value, title);
   };
 
-  const handlePaste = (id: string, value: string): void => {
+  const handlePaste = (id: string, value: string, title: string): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "" }));
     setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-    validateAndUpdateInput(id, value);
+    validateAndUpdateInput(id, value, title);
   };
 
   const shouldShowInput = (index: number): boolean => {
@@ -139,6 +164,16 @@ export const DynamicSequentialInputs: React.FC<
     const previousInputs = inputFields.slice(0, index);
     return previousInputs.every((field) => {
       const value = inputValues[field.id]?.trim();
+
+      if (!shouldValidateUrl(field.title)) {
+        return (
+          value &&
+          validatedInputs[field.id] &&
+          !checking[field.id] &&
+          !errors[field.id]
+        );
+      }
+
       return (
         value &&
         validateUrl(value) &&
@@ -160,8 +195,10 @@ export const DynamicSequentialInputs: React.FC<
               key={field.id}
               title={field.title}
               value={inputValues[field.id]}
-              onChange={(value) => handleInputChange(field.id, value)}
-              onPaste={(value) => handlePaste(field.id, value)}
+              onChange={(value) =>
+                handleInputChange(field.id, value, field.title)
+              }
+              onPaste={(value) => handlePaste(field.id, value, field.title)}
               placeholder={field.placeholder}
               error={errors[field.id]}
               isChecking={checking[field.id]}
