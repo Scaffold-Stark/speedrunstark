@@ -72,13 +72,35 @@ body {
   transform: translateX(calc(-50% - 2px));
 }
 
+/* start edit desc challenge's style */
+
 .challenge-content p,
+.challenge-content strong,
 .challenge-content h1,
 .challenge-content h2,
 .challenge-content h3,
 .challenge-content h4,
 .challenge-content ul {
   color: #0c0c4f;
+  margin: 8px 0;
+}
+
+.challenge-content a,
+.challenge-content code {
+  font-size: 14px;
+  color: #0c0c4f;
+}
+
+.challenge-content h1 {
+  font-size: xx-large;
+}
+
+.challenge-content h2 {
+  font-size: x-large;
+}
+
+.challenge-content h3 {
+  font-size: large;
 }
 
 .challenge-content {
@@ -126,6 +148,8 @@ body {
 .challenge-content::-webkit-scrollbar-track {
   background: #ffffff;
 }
+
+/* end edit desc challenge's style */
 
 .shadow-modal {
   box-shadow:

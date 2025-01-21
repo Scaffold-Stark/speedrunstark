@@ -29,7 +29,7 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
     <div className="flex justify-center">
       <div
         onClick={() => setOpenSubmit(true)}
-        className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-4 py-3 cursor-pointer"
+        className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-5 cursor-pointer"
       >
         <Image
           src={"/homescreen/submit.svg"}
