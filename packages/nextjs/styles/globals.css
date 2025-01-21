@@ -246,6 +246,11 @@ body {
     width: 100vw;
     overflow-y: scroll;
   }
+  .challenge-content a,
+  .challenge-content code {
+    font-size: 12px;
+    color: #0c0c4f;
+  }
 }
 
 /* start roadmap mb */

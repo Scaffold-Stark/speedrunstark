@@ -174,6 +174,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
               <div className="bg-black h-px w-full mb-2" />
             </div>
             <div className="md:flex hidden flex-wrap gap-4">
+              {/* display on PC screen */}
               {DATA_VIDEOS.map((video, index) => (
                 <ItemVideo
                   key={video.title}
@@ -186,12 +187,16 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
               ))}
             </div>
             <div className="md:hidden grid grid-cols-2 gap-4">
+              {/* display on responsive screen */}
               {DATA_VIDEOS.map((video, index) => (
                 <ItemVideo
                   key={video.title}
                   title={video.title}
                   isActive={selectedVideoIndex === index}
-                  onClick={() => setOpenPlayVideo(true)}
+                  onClick={() => {
+                    setOpenPlayVideo(true);
+                    setSelectedVideoIndex(index);
+                  }}
                 />
               ))}
             </div>
