@@ -145,6 +145,11 @@ export const DATA_CHALLENGE_V2 = [
         placeholder: "Enter deployed URL...",
       },
       {
+        id: "sc",
+        title: "Enter Deployed Smart Contract",
+        placeholder: "Enter contract...",
+      },
+      {
         id: "github",
         title: "Enter Github URL",
         placeholder: "Enter Github URL...",
