@@ -36,7 +36,13 @@ export const RecentlyVied = ({
             key={item?.name}
             {...item}
             theme="secondary"
-            onclick={() => onClickItem(item.type)}
+            onclick={() => {
+              if (item.url) {
+                window.open(item.url, "_blank");
+              } else {
+                onClickItem(item.type);
+              }
+            }}
           />
         ))}
       </div>

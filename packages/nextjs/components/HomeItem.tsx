@@ -16,6 +16,8 @@ export const MENU_THEMES = {
 interface IMenu {
   name: string;
   icon: string;
+  type?: string;
+  url?: string;
   theme?: keyof typeof MENU_THEMES;
   onclick?: () => void;
   customTheme?: {

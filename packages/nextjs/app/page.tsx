@@ -14,6 +14,7 @@ const Home = () => {
   const [openChallenge, setOpenChallenge] = useState(false);
   const [openVideo, setOpenVideo] = useState(false);
   const [openRoadmap, setOpenRoadmap] = useState(false);
+  const [openReadme, setOpenReadme] = useState(false);
   const handleItemClick = (type: string) => {
     if (type === "challenge") {
       setOpenChallenge(true);
@@ -23,6 +24,9 @@ const Home = () => {
     }
     if (type === "roadmap") {
       setOpenRoadmap(true);
+    }
+    if (type === "readme") {
+      setOpenReadme(true);
     }
   };
 
@@ -52,28 +56,41 @@ const Home = () => {
       />
       <BackgroundTexture />
       <div className="relative z-40 h-full">
-        <div className="flex flex-col gap-8">
-          {DATA_MENU.map((item) => (
-            <HomeItem
-              key={item.name}
-              {...item}
-              onclick={() => handleItemClick(item.type)}
-            />
-          ))}
-        </div>
-
-        <div className="absolute right-0 z-40 transform top-1/4 -translate-y-1/4">
-          <div className="md:block hidden">
-            <Readme />
-          </div>
-          <div className="flex flex-col mt-5 gap-8 items-end">
-            {DATA_MENU_SOCIAL.map((item) => (
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-8">
+            {DATA_MENU.map((item) => (
               <HomeItem
                 key={item.name}
                 {...item}
-                // onclick={() => handleItemClick(item.type)}
+                onclick={() => {
+                  if (item.url) {
+                    window.open(item.url, "_blank");
+                  } else {
+                    handleItemClick(item.type);
+                  }
+                }}
               />
             ))}
+          </div>
+          <div className="md:mt-[8%]">
+            {/* <div className="md:block hidden"> */}
+            <Readme openReadme={openReadme} setOpenReadme={setOpenReadme} />
+            {/* </div> */}
+            <div className="flex flex-col md:mt-5 mt-0 gap-8 items-end">
+              {DATA_MENU_SOCIAL.map((item) => (
+                <HomeItem
+                  key={item.name}
+                  {...item}
+                  onclick={() => {
+                    if (item.url) {
+                      window.open(item.url, "_blank");
+                    } else {
+                      handleItemClick(item.type);
+                    }
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
         <div className="md:block hidden absolute bottom-10 z-40 transform left-1/2 -translate-x-1/2 max-w-[666px] w-full">

@@ -2,16 +2,20 @@ import Image from "next/image";
 import { CloseIcon } from "./icons/CloseIcon";
 import { NumberBox } from "./NumberBox";
 import { DATA_JOURNEY } from "~~/mockup/data";
-import { useState } from "react";
 
-export const Readme = () => {
-  const [display, setDisplay] = useState(true);
-  if (!display) return null;
+export const Readme = ({
+  openReadme,
+  setOpenReadme,
+}: {
+  openReadme: boolean;
+  setOpenReadme: (value: boolean) => void;
+}) => {
+  if (!openReadme) return null;
   return (
-    <div className="p-0.5 bg-white w-fit">
+    <div className="p-0.5 bg-white md:w-fit w-screen md:relative fixed left-0 top-0 md:h-fit h-[calc(100vh-52px)]">
       <div className="p-2.5 bg-[#4D58FF] flex justify-center relative">
         <div className="absolute left-2.5 transform -translate-y-1/2 top-1/2">
-          <CloseIcon onClose={() => setDisplay(false)} />
+          <CloseIcon onClose={() => setOpenReadme(false)} />
         </div>
         <p className="uppercase text-xl font-vt323">read me</p>
       </div>

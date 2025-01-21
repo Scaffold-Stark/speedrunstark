@@ -57,6 +57,7 @@ export const PlayVideoModal = ({
             url={`${url}`}
             width={"100%"}
             height={isExpanded ? "calc(95vh - 65px)" : "100%"}
+            controls={true}
             playing
           />
         </div>

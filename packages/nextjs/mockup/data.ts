@@ -54,26 +54,31 @@ export const DATA_MENU = [
     icon: "/homescreen/challenges.png",
     name: "Challenges",
     type: "challenge",
+    url: "",
   },
   {
     icon: "/homescreen/mustwatch.png",
     name: "Must Watch",
     type: "video",
+    url: "",
   },
   {
     icon: "/homescreen/roadmap.png",
     name: "Roadmap",
     type: "roadmap",
+    url: "",
   },
   {
     icon: "/homescreen/starklings.png",
     name: "starklings",
     type: "starklings",
+    url: "https://starklings.app/",
   },
   {
     icon: "/homescreen/readme.png",
     name: "read_me",
     type: "readme",
+    url: "",
   },
 ] as const;
 
@@ -82,22 +87,26 @@ export const DATA_MENU_BOT = [
     icon: "/homescreen/mustwatch.png",
     name: "Must Watch",
     type: "video",
+    url: "",
   },
   {
     icon: "/homescreen/starklings.png",
     name: "starklings",
     type: "starklings",
+    url: "https://starklings.app/",
   },
 
   {
     icon: "/homescreen/readme.png",
     name: "read_me",
     type: "readme",
+    url: "",
   },
   {
     icon: "/homescreen/roadmap.png",
     name: "Roadmap",
     type: "roadmap",
+    url: "",
   },
 ];
 
@@ -106,11 +115,13 @@ export const DATA_MENU_SOCIAL = [
     icon: "/homescreen/telegram.png",
     name: "Telegram",
     type: "telegram",
+    url: "https://t.me/+wO3PtlRAreo4MDI9",
   },
   {
     icon: "/homescreen/x.png",
     name: "X_social",
     type: "x_social",
+    url: "https://twitter.com/ScaffoldStark",
   },
 ];
 
