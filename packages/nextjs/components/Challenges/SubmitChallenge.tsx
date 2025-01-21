@@ -90,8 +90,10 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
                     Make sure that repo is{" "}
                     <span className="uppercase text-[#2835FF]">public</span> or
                     github user &quot;
-                    <span className="text-[#2835FF]">0xquantum3labs</span>&quot;
-                    has read access.
+                    <span className="text-[#2835FF]">0xquantum3labs</span>
+                    &quot;, &quot;
+                    <span className="text-[#2835FF]">Nadai2010</span>&quot; has
+                    read access.
                   </li>
                 </ul>
               </div>
