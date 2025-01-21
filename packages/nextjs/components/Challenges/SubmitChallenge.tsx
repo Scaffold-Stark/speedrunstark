@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ConfirmSubmitModal } from "./ConfirmSubmitModal";
 import { DynamicSequentialInputs } from "./DynamicSequentialInputs";
 import { Challenge } from "~~/mockup/type";
 import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
 import { ExpandIcon } from "../icons/ExpandIcon";
+import { useOutsideClick } from "~~/hooks/scaffold-stark";
 
 export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openSubmit, setOpenSubmit] = useState(false);
   const [openConfirmSubmit, setOpenConfirmSubmit] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const handleCloseModal = () => {
     setOpenSubmit(false);
@@ -24,6 +26,8 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
       setOpenConfirmSubmit(true);
     }
   };
+
+  useOutsideClick(modalRef, () => setOpenSubmit(false));
 
   return (
     <div className="flex justify-center">
@@ -43,6 +47,7 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
       </div>
       {openSubmit && (
         <section
+          ref={modalRef}
           className={`overflow-hidden absolute z-[98] md:top-1/2 top-0 left-1/2 transform md:-translate-y-1/2 -translate-x-1/2 md:shadow-modal max-w-[850px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
         >
           <div className={`w-full`}>

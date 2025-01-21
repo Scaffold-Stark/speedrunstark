@@ -175,6 +175,11 @@ export const DATA_CHALLENGE_V2 = [
         title: "Enter Deployed URL",
         placeholder: "Enter deployed URL...",
       },
+      {
+        id: "vendor",
+        title: "Enter Vendor Contract",
+        placeholder: "Enter vendor contract...",
+      },
     ],
   },
   {
@@ -187,6 +192,11 @@ export const DATA_CHALLENGE_V2 = [
         id: "deployed",
         title: "Enter Deployed URL",
         placeholder: "Enter deployed URL...",
+      },
+      {
+        id: "dicegame",
+        title: "Enter Dice Game Contract",
+        placeholder: "Enter Dice Game contract...",
       },
     ],
   },
