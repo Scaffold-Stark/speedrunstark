@@ -135,6 +135,9 @@ module.exports = {
       fontFamily: {
         sans: ["Space Grotesk", "sans-serif"],
       },
+      lineClamp: {
+        7: "8",
+      },
     },
   },
 };

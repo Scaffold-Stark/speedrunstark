@@ -121,7 +121,7 @@ export const DATA_MENU_SOCIAL = [
     icon: "/homescreen/x.png",
     name: "X_social",
     type: "x_social",
-    url: "https://twitter.com/ScaffoldStark",
+    url: "https://x.com/Starknet",
   },
 ];
 

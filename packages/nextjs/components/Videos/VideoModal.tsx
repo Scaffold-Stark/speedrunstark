@@ -69,10 +69,12 @@ const ItemVideo = ({
 
 const DetailItemVideo = ({
   video,
+  isExpanded,
   onClick,
 }: {
   video: Video;
   onClick: () => void;
+  isExpanded: boolean;
 }) => {
   const { title, date, desc, banner } = video;
 
@@ -85,15 +87,19 @@ const DetailItemVideo = ({
             <Image
               src={banner}
               alt={title}
-              width={400}
+              width={600}
               height={192}
-              className="rounded-xl object-cover"
+              className="rounded-xl w-full"
             />
           </div>
         )}
         <div className="flex-1">
           <p className="text-sm text-[#4D58FF]">{date}</p>
-          <p className="text-gray-800 leading-relaxed">{desc}</p>
+          <p
+            className={`text-gray-800 leading-relaxed ${!isExpanded && "line-clamp-[8]"}`}
+          >
+            {desc}
+          </p>
         </div>
       </div>
       <button
@@ -205,6 +211,7 @@ export const VideoModal = ({ isOpen, onClose, title }: VideoModalProps) => {
             <DetailItemVideo
               video={DATA_VIDEOS[selectedVideoIndex]}
               onClick={() => setOpenPlayVideo(true)}
+              isExpanded={isExpanded}
             />
           </div>
         </div>

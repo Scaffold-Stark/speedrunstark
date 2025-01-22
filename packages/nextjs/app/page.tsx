@@ -56,7 +56,7 @@ const Home = () => {
       />
       <BackgroundTexture />
       <div className="relative z-40 h-full">
-        <div className="flex justify-between">
+        <div className="flex justify-between h-[85%]">
           <div className="flex flex-col gap-8">
             {DATA_MENU.map((item) => (
               <HomeItem
@@ -72,11 +72,9 @@ const Home = () => {
               />
             ))}
           </div>
-          <div className="md:mt-[8%]">
-            {/* <div className="md:block hidden"> */}
-            <Readme openReadme={openReadme} setOpenReadme={setOpenReadme} />
-            {/* </div> */}
-            <div className="flex flex-col md:mt-5 mt-0 gap-8 items-end">
+          <div>
+            <div className="flex flex-col gap-8 items-end h-full md:justify-end justify-start">
+              <Readme openReadme={openReadme} setOpenReadme={setOpenReadme} />
               {DATA_MENU_SOCIAL.map((item) => (
                 <HomeItem
                   key={item.name}

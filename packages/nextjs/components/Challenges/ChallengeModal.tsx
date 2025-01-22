@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { DATA_CHALLENGE_V2 } from "~~/mockup/data";
-import { ChallengeModalDetail } from "./ChallengeModalDetailMB";
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
@@ -12,6 +11,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import ReactMarkdown from "react-markdown";
 import { Challenge } from "~~/mockup/type";
 import rehypeRaw from "rehype-raw";
+import { ChallengeModalDetailMB } from "./ChallengeModalDetailMB";
 
 type Props = {
   isOpen: boolean;
@@ -107,8 +107,9 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
 
   if (openDetailMB) {
     return (
-      <ChallengeModalDetail
+      <ChallengeModalDetailMB
         isOpen={openDetailMB}
+        id={selectedChallenge.id}
         title={"Challenge"}
         content={fetchState.data}
         onClose={() => setOpenDetailMB(false)}

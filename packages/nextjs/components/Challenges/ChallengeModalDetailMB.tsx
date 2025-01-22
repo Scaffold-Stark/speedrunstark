@@ -5,19 +5,23 @@ import { getMarkdownComponents } from "../GetMarkdownComponents/GetMarkdownCompo
 import ReactMarkdown from "react-markdown";
 import { SubmitChallenge } from "./SubmitChallenge";
 import { Challenge } from "~~/mockup/type";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import rehypeRaw from "rehype-raw";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  id: string;
   title: string;
   content: any;
   loading: boolean;
   challenge: Challenge;
 };
 
-export const ChallengeModalDetail = ({
+export const ChallengeModalDetailMB = ({
   isOpen,
   onClose,
+  id,
   title,
   content,
   loading,
@@ -26,7 +30,12 @@ export const ChallengeModalDetail = ({
   const handleCloseModal = () => {
     onClose();
   };
-
+  const handleMoveonGithub = () => {
+    window.open(
+      `https://github.com/Scaffold-Stark/speedrunstark/tree/${id}`,
+      "_blank",
+    );
+  };
   return (
     <GenericModal
       animate
@@ -59,9 +68,19 @@ export const ChallengeModalDetail = ({
           {!loading && content && (
             <div>
               {/* <SubmitChallenge challenge={challenge} /> */}
-              <ReactMarkdown components={getMarkdownComponents()}>
+              <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
+                components={getMarkdownComponents()}
+              >
                 {content}
               </ReactMarkdown>
+              <button
+                className="text-[#0C0C4F] mt-5 mx-auto rounded-full border border-[#0C0C4F] py-2 px-3 font-medium hover:bg-secondary-content flex items-center justify-center gap-1 text-center"
+                onClick={handleMoveonGithub}
+              >
+                View it on Github
+                <ArrowTopRightOnSquareIcon className="w-[20px]" />
+              </button>
             </div>
           )}
         </div>
