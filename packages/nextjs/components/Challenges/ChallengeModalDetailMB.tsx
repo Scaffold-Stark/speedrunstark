@@ -58,7 +58,7 @@ export const ChallengeModalDetail = ({
 
           {!loading && content && (
             <div>
-              <SubmitChallenge challenge={challenge} />
+              {/* <SubmitChallenge challenge={challenge} /> */}
               <ReactMarkdown components={getMarkdownComponents()}>
                 {content}
               </ReactMarkdown>
