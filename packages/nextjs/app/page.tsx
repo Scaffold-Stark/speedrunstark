@@ -72,9 +72,11 @@ const Home = () => {
               />
             ))}
           </div>
-          <div>
-            <div className="flex flex-col gap-8 items-end h-full md:justify-end justify-start">
+          <div className="flex flex-col md:justify-end justify-start items-end">
+            <div className="md:flex-1">
               <Readme openReadme={openReadme} setOpenReadme={setOpenReadme} />
+            </div>
+            <div className="flex flex-col gap-8">
               {DATA_MENU_SOCIAL.map((item) => (
                 <HomeItem
                   key={item.name}
