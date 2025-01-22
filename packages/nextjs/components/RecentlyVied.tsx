@@ -27,7 +27,7 @@ export const RecentlyVied = ({
           <CloseIcon onClose={() => setDisplay(false)} />
         </div>
         <p className="font-vt323 uppercase text-xl relative z-10">
-          recently vied
+          recently viewed
         </p>
       </div>
       <div className="flex gap-8 bg-white p-5 justify-between overflow-x-auto">

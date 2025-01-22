@@ -124,7 +124,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
       animate
       isOpen={isOpen}
       onClose={handleCloseModal}
-      className={`md:shadow-modal max-w-[1200px] w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
+      className={`md:shadow-modal xl:max-w-[1200px] max-w-screen-md w-full mx-auto md:p-[1px] md:rounded-lg bg-white ${isExpanded ? "h-[95vh]" : ""}`}
     >
       <div className={`w-full ${isExpanded ? "h-full flex flex-col" : ""}`}>
         <div className="bg-[#4D58FF] relative md:rounded-t-lg h-[60px] flex items-center justify-center">
@@ -162,7 +162,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
             </div>
           </div>
           <div
-            className={`lg:block hidden p-4 w-full bg-[#E5E5E5] challenge-content min-h-[600px] ${
+            className={`md:block hidden p-4 w-full bg-[#E5E5E5] challenge-content min-h-[600px] ${
               isExpanded
                 ? "h-full overflow-y-auto"
                 : "max-h-[600px] overflow-y-scroll"
