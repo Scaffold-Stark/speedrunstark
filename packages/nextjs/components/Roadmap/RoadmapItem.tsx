@@ -41,7 +41,10 @@ export const RoadmapDetail = ({
           <NumberBox number={number} />
           <p className="text-[#0C0C4F] text-xl mt-1 uppercase">{title}</p>
         </div>
-        <button className="px-4 py-2 bg-[#4D58FF] font-vt323 uppercase">
+        <button
+          className="px-4 py-2 bg-[#4D58FF] font-vt323 uppercase"
+          onClick={() => window.open(xUrl, "_blank")}
+        >
           Check latest updates on X
         </button>
       </div>

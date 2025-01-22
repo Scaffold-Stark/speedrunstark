@@ -5,7 +5,7 @@ export const ROADMAP_DETAIL_DATA = [
     title: "COMPLETE SPEEDRUN STARK",
     number: 1,
     desc: "Learn how to build on Starknet and discover its superpowers and gotchas. Start your journey by watching our foundational videos, practice with Starklings, solve Speedrun Challenges, and finally ship your first dApp.",
-    xUrl: "",
+    xUrl: "https://x.com/Starknet",
   },
   {
     id: "build",
@@ -13,7 +13,7 @@ export const ROADMAP_DETAIL_DATA = [
     title: "Join a hackathon",
     number: 2,
     desc: "Dive into a collaborative and high-energy environment where innovation thrives. Hackathons offer an opportunity to showcase your technical and creative skills, build a prototype, and solve real-world problems alongside like-minded individuals. It's the perfect stage to launch your ideas into action.",
-    xUrl: "",
+    xUrl: "https://x.com/Starknet",
   },
   {
     id: "hack",
@@ -21,7 +21,7 @@ export const ROADMAP_DETAIL_DATA = [
     title: "Connect at Hacker House",
     number: 3,
     desc: "Expand your network by engaging with a community of builders, developers, and visionaries at Hacker House events. Share knowledge, gather feedback, and form strategic partnerships to refine your project and align with industry trends.",
-    xUrl: "",
+    xUrl: "https://x.com/Starknet",
   },
   {
     id: "seed",
@@ -29,7 +29,7 @@ export const ROADMAP_DETAIL_DATA = [
     title: "Apply for Seed Funding",
     number: 4,
     desc: "Turn your vision into reality by securing initial capital. With a polished pitch and a well-thought-out business model, approach investors and accelerators that align with your goals. Seed funding will fuel the next stage of development and growth.",
-    xUrl: "",
+    xUrl: "https://x.com/Starknet",
   },
   {
     id: "demo",
@@ -37,7 +37,7 @@ export const ROADMAP_DETAIL_DATA = [
     title: "Present at Demo Day",
     number: 5,
     desc: "Showcase your progress and potential to a room filled with investors, mentors, and industry leaders. Use this opportunity to demonstrate traction, share your vision, and captivate stakeholders to take your project to the next level.",
-    xUrl: "",
+    xUrl: "https://x.com/Starknet",
   },
   {
     id: "fund",
@@ -45,7 +45,7 @@ export const ROADMAP_DETAIL_DATA = [
     title: "Raise Funds",
     number: 6,
     desc: "Build on the momentum from Demo Day by engaging with investors, negotiating terms, and finalizing deals. Secure the funding needed to scale your operations, expand your team, and establish your presence in the market. Each step brings you closer to long-term success.",
-    xUrl: "",
+    xUrl: "https://x.com/Starknet",
   },
 ];
 

@@ -74,7 +74,10 @@ const RoadmapMB = () => {
         </div>
       </div>
       <div className="sticky bottom-4 z-[99] w-full flex justify-center">
-        <button className="w-[208px] px-4 py-2 bg-[#4D58FF] font-vt323 uppercase">
+        <button
+          className="w-[208px] px-4 py-2 bg-[#4D58FF] font-vt323 uppercase"
+          onClick={() => window.open("https://x.com/Starknet", "_blank")}
+        >
           Check latest updates on X
         </button>
       </div>
