@@ -7,7 +7,6 @@ import { useAccount } from "@starknet-react/core";
 import { displayAddress } from "~~/utils/utils";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { WrongNetworkDropdown } from "../scaffold-stark/CustomConnectButton/WrongNetworkDropdown";
-import ConnectModal from "../scaffold-stark/CustomConnectButton/ConnectModal";
 
 export const AccountButton = () => {
   const [openAccount, setOpenAccount] = useState(false);

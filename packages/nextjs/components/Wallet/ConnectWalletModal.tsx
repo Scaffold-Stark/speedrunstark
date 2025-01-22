@@ -1,7 +1,7 @@
 import GenericModal from "../scaffold-stark/CustomConnectButton/GenericModal";
 import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Connector, useConnect } from "@starknet-react/core";
 import { useLocalStorage } from "usehooks-ts";
 import toast from "react-hot-toast";
@@ -57,7 +57,7 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
     0,
   );
   const [, setConnectedChainId] = useLocalStorage<bigint>("chainId", 0n);
-  const [, setLastConnector] = useLocalStorage<{
+  const [lastConnector, setLastConnector] = useLocalStorage<{
     id: string;
     ix?: number;
   }>(
@@ -120,6 +120,25 @@ export const ConnectWalletModal = ({ isOpen, onClose, title }: Props) => {
       setLastConnector({ id: "" });
     }
   };
+
+  useEffect(() => {
+    if (lastConnector?.id) {
+      const connector = connectors.find(
+        (connector) => connector.id === lastConnector.id,
+      );
+      if (connector) {
+        if (
+          lastConnector.id === "burner-wallet" &&
+          lastConnector.ix !== undefined
+        ) {
+          // Reconnect burner wallet
+          (connector as BurnerConnector).burnerAccount =
+            burnerAccounts[lastConnector.ix];
+        }
+        connect({ connector });
+      }
+    }
+  }, [lastConnector, connectors, connect]);
 
   return (
     <GenericModal
