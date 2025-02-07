@@ -168,7 +168,7 @@ export const ChallengeModal = ({ isOpen, onClose, title }: Props) => {
                 : "max-h-[600px] overflow-y-scroll"
             }`}
           >
-            {/* <SubmitChallenge challenge={selectedChallenge} /> */}
+            <SubmitChallenge challenge={selectedChallenge} />
             {fetchState.loading && (
               <div className="w-[850px] h-full flex items-center justify-center">
                 <span className="text-[#4D58FF] loading loading-spinner loading-lg"></span>

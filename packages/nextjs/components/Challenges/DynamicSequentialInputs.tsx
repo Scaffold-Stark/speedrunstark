@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 
 interface InputField {
   id: string;
@@ -19,6 +19,8 @@ interface InputURLProps {
 interface DynamicSequentialInputsProps {
   inputFields?: InputField[];
   onSubmit?: (isAllValidated: boolean) => void;
+  inputValues: Record<string, string>;
+  setInputValues: Dispatch<SetStateAction<Record<string, string>>>;
 }
 
 const InputURL: React.FC<InputURLProps> = ({
@@ -35,7 +37,7 @@ const InputURL: React.FC<InputURLProps> = ({
       <p className="!text-black">{title}</p>
       <input
         type="text"
-        value={value}
+        value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         onPaste={(e) => {
           e.preventDefault();
@@ -53,10 +55,7 @@ const InputURL: React.FC<InputURLProps> = ({
 
 export const DynamicSequentialInputs: React.FC<
   DynamicSequentialInputsProps
-> = ({ inputFields = [], onSubmit }) => {
-  const [inputValues, setInputValues] = useState<Record<string, string>>(() =>
-    inputFields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {}),
-  );
+> = ({ inputFields = [], onSubmit, inputValues, setInputValues }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [checking, setChecking] = useState<{ [key: string]: boolean }>({});
   const [validatedInputs, setValidatedInputs] = useState<{

@@ -170,7 +170,12 @@ export const DATA_CHALLENGE_V2 = [
       {
         id: "staker",
         title: "Enter Staker Contract",
-        placeholder: "Enter staker contract...",
+        placeholder: "Enter Staker contract...",
+      },
+      {
+        id: "external",
+        title: "Enter ExampleExternal Contract",
+        placeholder: "Enter ExampleExternal contract...",
       },
       {
         id: "github",
@@ -193,7 +198,12 @@ export const DATA_CHALLENGE_V2 = [
       {
         id: "vendor",
         title: "Enter Vendor Contract",
-        placeholder: "Enter vendor contract...",
+        placeholder: "Enter Vendor contract...",
+      },
+      {
+        id: "yourToken",
+        title: "Enter YourToken Contract",
+        placeholder: "Enter YourToken contract...",
       },
       {
         id: "github",
@@ -215,8 +225,13 @@ export const DATA_CHALLENGE_V2 = [
       },
       {
         id: "dicegame",
-        title: "Enter Dice Game Contract",
-        placeholder: "Enter Dice Game contract...",
+        title: "Enter DiceGame Contract",
+        placeholder: "Enter DiceGame contract...",
+      },
+      {
+        id: "riggedRoll",
+        title: "Enter RiggedRoll Contract",
+        placeholder: "Enter RiggedRoll contract...",
       },
       {
         id: "github",

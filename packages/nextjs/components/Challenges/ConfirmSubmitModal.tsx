@@ -1,13 +1,28 @@
 import Image from "next/image";
 import { CloseIcon } from "../icons/CloseIcon";
 
-export const ConfirmSubmitModal = ({ onClose }: { onClose: () => void }) => {
+export const ConfirmSubmitModal = ({
+  onClose,
+  onSubmit,
+  loading,
+}: {
+  onClose: () => void;
+  onSubmit: () => void;
+  loading: boolean;
+}) => {
   return (
     <div className="overflow-hidden absolute z-[98] md:top-1/2 top-0 left-1/2 transform md:-translate-y-1/2 -translate-x-1/2 md:shadow-modal max-w-[320px] w-full mx-auto md:p-[1px] bg-white">
       <div className={`w-full pb-1`}>
         <div className="bg-[#4D58FF] relative h-[60px] flex items-center justify-center">
           <div className="flex items-center gap-1.5 absolute z-30 left-4">
-            <CloseIcon onClose={onClose} />
+            <CloseIcon
+              onClose={() => {
+                if (loading) {
+                  return;
+                }
+                onClose();
+              }}
+            />
           </div>
           <p className="text-xl relative z-30 uppercase font-vt323 !text-white">
             confirmation
@@ -24,7 +39,12 @@ export const ConfirmSubmitModal = ({ onClose }: { onClose: () => void }) => {
         </div>
         <div className="flex items-center gap-2.5 px-1">
           <div
-            onClick={onClose}
+            onClick={() => {
+              if (loading) {
+                return;
+              }
+              onClose();
+            }}
             className="uppercase w-full text-center py-2 bg-[#FF282C] flex justify-center items-center gap-2 cursor-pointer"
           >
             <Image
@@ -38,15 +58,24 @@ export const ConfirmSubmitModal = ({ onClose }: { onClose: () => void }) => {
             </p>
           </div>
           <div
-            onClick={onClose} //add submit here
+            onClick={() => {
+              if (loading) {
+                return;
+              }
+              onSubmit();
+            }}
             className="uppercase w-full text-center py-2 bg-[#4D58FF] flex justify-center items-center gap-2 cursor-pointer"
           >
-            <Image
-              src={"/homescreen/submit.svg"}
-              alt="icon"
-              width={24}
-              height={24}
-            />
+            {loading ? (
+              <span className="text-white loading loading-spinner loading-xs" />
+            ) : (
+              <Image
+                src={"/homescreen/submit.svg"}
+                alt="icon"
+                width={24}
+                height={24}
+              />
+            )}
             <p className="md:text-lg text-sm font-vt323 uppercase !text-white">
               confirm
             </p>
