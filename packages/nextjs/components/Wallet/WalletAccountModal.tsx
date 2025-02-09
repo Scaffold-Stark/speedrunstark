@@ -2,7 +2,9 @@ import Image from "next/image";
 import { PersonIcon } from "../icons/Person";
 import { CodeIcon } from "../icons/Code";
 import { displayAddress } from "~~/utils/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import axios from "axios";
 
 type Props = {
   isOpen: boolean;
@@ -12,11 +14,6 @@ type Props = {
   address: string;
 };
 
-type BurnerAccount = {
-  address: string;
-  privateKey: string;
-};
-
 export const WalletAccountModal = ({
   isOpen,
   onClose,
@@ -24,42 +21,39 @@ export const WalletAccountModal = ({
   openDisconnect,
   address,
 }: Props) => {
-  const [burnerAccounts, setBurnerAccounts] = useState<BurnerAccount[]>([]);
-  const [showBurnerList, setShowBurnerList] = useState(false);
+  const [completedCount, setCompletedCount] = useState<undefined | number>(
+    undefined
+  );
+  const [requestError, setRequestError] = useState<any>(undefined);
+  const request = useCallback(() => {
+    setRequestError(undefined);
+    axios
+      .get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/challenges/${address}`)
+      .then((response) => {
+        if (
+          response &&
+          response.data &&
+          response.data.completedChallenges &&
+          Array.isArray(response.data.completedChallenges)
+        ) {
+          setCompletedCount(response.data.completedChallenges.length);
+        } else {
+          setRequestError("request unknown error");
+        }
+      })
+      .catch((error) => {
+        setRequestError(error);
+      });
+  }, [address]);
 
   useEffect(() => {
-    // Load burner accounts from localStorage
-    const loadBurnerAccounts = () => {
-      const accounts: BurnerAccount[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key?.startsWith("burner-")) {
-          try {
-            const accountData = JSON.parse(localStorage.getItem(key) || "");
-            accounts.push({
-              address: accountData.address,
-              privateKey: accountData.privateKey,
-            });
-          } catch (error) {
-            console.error("Error parsing burner account:", error);
-          }
-        }
-      }
-      setBurnerAccounts(accounts);
-    };
-
-    if (isOpen) {
-      loadBurnerAccounts();
+    if (!isOpen || !address) {
+      return;
     }
-  }, [isOpen]);
-
+    request();
+  }, [address, isOpen, request]);
   const handleCloseModal = () => {
-    setShowBurnerList(false);
     onClose();
-  };
-
-  const toggleBurnerList = () => {
-    setShowBurnerList(!showBurnerList);
   };
 
   if (!isOpen) return null;
@@ -115,61 +109,28 @@ export const WalletAccountModal = ({
             <div className="h-[1px] w-full bg-black"></div>
             <div className="bg-white flex items-center gap-2.5 px-4 py-3">
               <CodeIcon color="black" width={16} />
-              <p className="text-[15px] text-black mt-0.5 flex-1">
-                Completed Challenges
-              </p>
-              <p className="text-black">04</p>
-            </div>
-
-            {/* Burner Accounts Section */}
-            {burnerAccounts.length > 0 && (
-              <>
-                <div className="h-[1px] w-full bg-black"></div>
-                <div
-                  className="bg-white flex items-center gap-2.5 px-4 py-3 cursor-pointer hover:bg-gray-50"
-                  onClick={toggleBurnerList}
-                >
-                  <Image
-                    src="/homescreen/burner-wallet-icon.svg"
-                    alt="burner"
-                    width={16}
-                    height={16}
-                  />
-                  <p className="text-[15px] text-black mt-0.5 flex-1">
-                    Burner Accounts ({burnerAccounts.length})
+              <div className="mt-0.5 flex-1 flex flex-col">
+                <p className="text-[15px] text-black ">Completed Challenges</p>
+                {requestError && (
+                  <p className="text-[12px] text-red-900">
+                    Query completed challenges failed.
                   </p>
-                  <Image
-                    src={
-                      showBurnerList
-                        ? "/homescreen/arrow-up.svg"
-                        : "/homescreen/arrow-down.svg"
-                    }
-                    alt="arrow"
-                    width={12}
-                    height={12}
-                  />
-                </div>
-
-                {/* Burner Accounts List */}
-                {showBurnerList && (
-                  <div className="bg-white px-4 py-2 max-h-[200px] overflow-y-auto">
-                    {burnerAccounts.map((account, index) => (
-                      <div
-                        key={account.address}
-                        className="flex items-center gap-2 py-2 hover:bg-gray-50 rounded px-2"
-                      >
-                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">
-                          {index + 1}
-                        </div>
-                        <p className="text-[13px] text-black flex-1">
-                          {displayAddress(account.address)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
                 )}
-              </>
-            )}
+              </div>
+
+              {requestError ? (
+                <ReloadIcon
+                  className="text-red-900 z-50 cursor-pointer"
+                  onClick={() => {
+                    request();
+                  }}
+                />
+              ) : completedCount ? (
+                <p className="text-black">{`0${completedCount}`}</p>
+              ) : (
+                <span className="text-black loading loading-spinner loading-xs"></span>
+              )}
+            </div>
           </div>
         </div>
       </div>
