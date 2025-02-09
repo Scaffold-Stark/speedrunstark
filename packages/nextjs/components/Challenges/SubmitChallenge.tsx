@@ -11,17 +11,20 @@ import { useAccount } from "@starknet-react/core";
 import { socket } from "~~/services/socket";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import { WrongNetworkDropdown } from "../scaffold-stark/CustomConnectButton/WrongNetworkDropdown";
 
 export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
+  const { targetNetwork } = useTargetNetwork();
   const [isExpanded, setIsExpanded] = useState(false);
   const [openSubmit, setOpenSubmit] = useState(false);
   const [openConfirmSubmit, setOpenConfirmSubmit] = useState(false);
   const [inputValues, setInputValues] = useState<Record<string, string>>(() =>
     (challenge.inputURL || []).reduce(
       (acc, field) => ({ ...acc, [field.id]: "" }),
-      {},
-    ),
+      {}
+    )
   );
   const [socketTopic, setSocketTopic] = useState<string | null>(null);
   const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
@@ -89,20 +92,26 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
   return (
     <div className="flex justify-center">
       {address ? (
-        <div
-          onClick={() => setOpenSubmit(true)}
-          className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-5 cursor-pointer"
-        >
-          <Image
-            src={"/homescreen/submit.svg"}
-            alt="icon"
-            width={20}
-            height={20}
-          />
-          <p className="text-lg font-vt323 uppercase !text-white">
-            Submit challenge
-          </p>
-        </div>
+        targetNetwork.id === chainId ? (
+          <div
+            onClick={() => setOpenSubmit(true)}
+            className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-5 cursor-pointer"
+          >
+            <Image
+              src={"/homescreen/submit.svg"}
+              alt="icon"
+              width={20}
+              height={20}
+            />
+            <p className="text-lg font-vt323 uppercase !text-white">
+              Submit challenge
+            </p>
+          </div>
+        ) : (
+          <div className="fixed z-[95] md:bottom-5 bottom-3 transform flex justify-center items-center md:w-fit !text-white">
+            <WrongNetworkDropdown />
+          </div>
+        )
       ) : (
         <div className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#ADADAD] md:w-fit w-[90%] px-5 cursor-pointer">
           <p className="text-lg font-vt323 uppercase !text-white">
@@ -200,13 +209,13 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
             const payload = composeSubmission(
               challenge,
               address || "",
-              inputValues,
+              inputValues
             );
             setLoading(true);
             axios
               .post(
                 `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/verify`,
-                payload,
+                payload
               )
               .then((response) => {
                 if (response && response.data && response.data.verificationId) {

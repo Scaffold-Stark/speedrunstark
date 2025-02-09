@@ -26,8 +26,8 @@ export const NetworkOptions = ({ hidden = false }: NetworkOptionsProps) => {
               type="button"
               onClick={() => switchNetwork(allowedNetwork.network)}
             >
-              <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
-              <span>
+              <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0 text-white" />
+              <span className="text-white">
                 Switch to{" "}
                 <span
                   style={{

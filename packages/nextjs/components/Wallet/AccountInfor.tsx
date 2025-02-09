@@ -30,9 +30,9 @@ export const AccountButton = () => {
       />
     </div>
   ) : chainId !== targetNetwork.id ? (
-    <p className="cursor-pointer text-center md:text-base text-xs">
+    <div className="cursor-pointer text-center md:text-base text-xs">
       <WrongNetworkDropdown />
-    </p>
+    </div>
   ) : (
     <div className="relative">
       {address && (
