@@ -106,7 +106,7 @@ export const DynamicSequentialInputs: React.FC<
   const validateAndUpdateInput = async (
     id: string,
     value: string,
-    title: string,
+    title: string
   ): Promise<void> => {
     if (value.trim()) {
       setChecking((prev) => ({ ...prev, [id]: true }));
@@ -142,7 +142,7 @@ export const DynamicSequentialInputs: React.FC<
   const handleInputChange = (
     id: string,
     value: string,
-    title: string,
+    title: string
   ): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "" }));
@@ -157,53 +157,22 @@ export const DynamicSequentialInputs: React.FC<
     validateAndUpdateInput(id, value, title);
   };
 
-  const shouldShowInput = (index: number): boolean => {
-    if (index === 0) return true;
-
-    const previousInputs = inputFields.slice(0, index);
-    return previousInputs.every((field) => {
-      const value = inputValues[field.id]?.trim();
-
-      if (!shouldValidateUrl(field.title)) {
-        return (
-          value &&
-          validatedInputs[field.id] &&
-          !checking[field.id] &&
-          !errors[field.id]
-        );
-      }
-
-      return (
-        value &&
-        validateUrl(value) &&
-        validatedInputs[field.id] &&
-        !checking[field.id] &&
-        !errors[field.id]
-      );
-    });
-  };
-
   if (!inputFields?.length) return null;
 
   return (
     <div className="mt-4 pb-8 flex flex-col gap-5">
-      {inputFields.map(
-        (field, index) =>
-          shouldShowInput(index) && (
-            <InputURL
-              key={field.id}
-              title={field.title}
-              value={inputValues[field.id]}
-              onChange={(value) =>
-                handleInputChange(field.id, value, field.title)
-              }
-              onPaste={(value) => handlePaste(field.id, value, field.title)}
-              placeholder={field.placeholder}
-              error={errors[field.id]}
-              isChecking={checking[field.id]}
-            />
-          ),
-      )}
+      {inputFields.map((field) => (
+        <InputURL
+          key={field.id}
+          title={field.title}
+          value={inputValues[field.id]}
+          onChange={(value) => handleInputChange(field.id, value, field.title)}
+          onPaste={(value) => handlePaste(field.id, value, field.title)}
+          placeholder={field.placeholder}
+          error={errors[field.id]}
+          isChecking={checking[field.id]}
+        />
+      ))}
     </div>
   );
 };
