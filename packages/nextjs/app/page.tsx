@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BackgroundTexture } from "~~/components/BackgroundTexture";
 import { ChallengeModal } from "~~/components/Challenges/ChallengeModal";
 import { HomeItem } from "~~/components/HomeItem";
@@ -8,6 +8,7 @@ import { Readme } from "~~/components/Readme";
 import { RecentlyVied } from "~~/components/RecentlyVied";
 import { RoadmapModal } from "~~/components/Roadmap/RoadmapModal";
 import { VideoModal } from "~~/components/Videos/VideoModal";
+import { useSubmitChallenge } from "~~/hooks/useSubmitChallenge";
 import { DATA_MENU, DATA_MENU_SOCIAL } from "~~/mockup/data";
 
 const Home = () => {
@@ -15,6 +16,8 @@ const Home = () => {
   const [openVideo, setOpenVideo] = useState(false);
   const [openRoadmap, setOpenRoadmap] = useState(false);
   const [openReadme, setOpenReadme] = useState(false);
+  useSubmitChallenge();
+
   const handleItemClick = (type: string) => {
     if (type === "challenge") {
       setOpenChallenge(true);

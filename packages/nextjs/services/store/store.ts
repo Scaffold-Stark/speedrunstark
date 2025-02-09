@@ -16,6 +16,10 @@ type GlobalState = {
   setNativeCurrencyPrice: (newNativeCurrencyPriceState: number) => void;
   targetNetwork: ChainWithAttributes;
   setTargetNetwork: (newTargetNetwork: ChainWithAttributes) => void;
+  submissionTopic: string | undefined;
+  setSubmissionTopic: (topic: string | undefined) => void;
+  submissionStatus: string | undefined;
+  setSubmissionStatus: (status: string | undefined) => void;
 };
 
 export const useGlobalState = create<GlobalState>((set) => ({
@@ -25,4 +29,10 @@ export const useGlobalState = create<GlobalState>((set) => ({
   targetNetwork: scaffoldConfig.targetNetworks[0],
   setTargetNetwork: (newTargetNetwork: ChainWithAttributes) =>
     set(() => ({ targetNetwork: newTargetNetwork })),
+  submissionTopic: undefined,
+  setSubmissionTopic: (topic: string | undefined) =>
+    set(() => ({ submissionTopic: topic })),
+  submissionStatus: undefined,
+  setSubmissionStatus: (status: string | undefined) =>
+    set(() => ({ submissionStatus: status })),
 }));

@@ -8,11 +8,11 @@ import { ExpandIcon } from "../icons/ExpandIcon";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { composeSubmission } from "~~/utils/submission";
 import { useAccount } from "@starknet-react/core";
-import { socket } from "~~/services/socket";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { WrongNetworkDropdown } from "../scaffold-stark/CustomConnectButton/WrongNetworkDropdown";
+import { useGlobalState } from "~~/services/store/store";
 
 export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
   const { address, chainId } = useAccount();
@@ -26,52 +26,14 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
       {}
     )
   );
-  const [socketTopic, setSocketTopic] = useState<string | null>(null);
-  const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+  const { submissionStatus, submissionTopic, setSubmissionTopic } =
+    useGlobalState();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setInputValues({});
-    setSubmissionStatus(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [challenge, openSubmit]);
-
-  useEffect(() => {
-    if (!socketTopic) {
-      return;
-    }
-    console.log("subscribed topic: ", socketTopic);
-    function onConnect() {
-      setSubmissionStatus("0% Waiting for server verification");
-    }
-
-    function onDisconnect() {
-      toast.error("CONNECTION DISCONNECTED UNEXPECTED");
-    }
-
-    function onSubmissionEvent(data: any) {
-      if (data && data.status && data.progress && data.message) {
-        setSubmissionStatus(`${data.progress}% ${data.message}`);
-        if (data.progress === 100) {
-          if (data.success) {
-            toast.success("SUCCESSFULLY SUBMITTED");
-          } else {
-            toast.error("YOUR SUBMISSION FAILED");
-          }
-        }
-      }
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on(`verification:${socketTopic}`, onSubmissionEvent);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off(`verification:${socketTopic}`, onSubmissionEvent);
-    };
-  }, [socketTopic]);
 
   const handleCloseModal = () => {
     setOpenSubmit(false);
@@ -205,6 +167,10 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
           loading={loading}
           onClose={() => setOpenConfirmSubmit(false)}
           onSubmit={() => {
+            if (submissionTopic) {
+              toast.error("ONE SUBMISSION IS STILL IN PROGRESS.");
+              return;
+            }
             setOpenConfirmSubmit(false);
             const payload = composeSubmission(
               challenge,
@@ -219,7 +185,7 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
               )
               .then((response) => {
                 if (response && response.data && response.data.verificationId) {
-                  setSocketTopic(response.data.verificationId);
+                  setSubmissionTopic(response.data.verificationId);
                 } else {
                   toast.error("Submit failed for unknown error...");
                 }
