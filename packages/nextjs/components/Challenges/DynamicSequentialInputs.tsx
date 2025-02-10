@@ -1,4 +1,11 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 interface InputField {
   id: string;
@@ -103,41 +110,41 @@ export const DynamicSequentialInputs: React.FC<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [validatedInputs, errors, checking, inputValues]);
 
-  const validateAndUpdateInput = async (
-    id: string,
-    value: string,
-    title: string,
-  ): Promise<void> => {
-    if (value.trim()) {
-      setChecking((prev) => ({ ...prev, [id]: true }));
+  const validateAndUpdateInput = useCallback(
+    async (id: string, value: string, title: string): Promise<void> => {
+      setErrors((prev) => ({ ...prev, [id]: "" }));
+      setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+      if (value.trim()) {
+        setChecking((prev) => ({ ...prev, [id]: true }));
 
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        if (!shouldValidateUrl(title)) {
-          setErrors((prev) => ({ ...prev, [id]: "" }));
-          setValidatedInputs((prev) => ({ ...prev, [id]: true }));
-        } else {
-          const isValid = validateUrl(value);
-          if (!isValid) {
-            setErrors((prev) => ({
-              ...prev,
-              [id]: "<ERROR> Invalid URL",
-            }));
-            setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-          } else {
+        try {
+          if (!shouldValidateUrl(title)) {
             setErrors((prev) => ({ ...prev, [id]: "" }));
             setValidatedInputs((prev) => ({ ...prev, [id]: true }));
+          } else {
+            const isValid = validateUrl(value);
+            if (!isValid) {
+              setErrors((prev) => ({
+                ...prev,
+                [id]: "<ERROR> Invalid URL",
+              }));
+              setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+            } else {
+              setErrors((prev) => ({ ...prev, [id]: "" }));
+              setValidatedInputs((prev) => ({ ...prev, [id]: true }));
+            }
           }
+        } finally {
+          setChecking((prev) => ({ ...prev, [id]: false }));
         }
-      } finally {
-        setChecking((prev) => ({ ...prev, [id]: false }));
+      } else {
+        setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+        setErrors((prev) => ({ ...prev, [id]: "" }));
       }
-    } else {
-      setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-      setErrors((prev) => ({ ...prev, [id]: "" }));
-    }
-  };
+    },
+    [],
+  );
+  const debounced = useDebounceCallback(validateAndUpdateInput, 500);
 
   const handleInputChange = (
     id: string,
@@ -145,15 +152,11 @@ export const DynamicSequentialInputs: React.FC<
     title: string,
   ): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
-    setErrors((prev) => ({ ...prev, [id]: "" }));
-    setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-    validateAndUpdateInput(id, value, title);
+    debounced(id, value, title);
   };
 
   const handlePaste = (id: string, value: string, title: string): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
-    setErrors((prev) => ({ ...prev, [id]: "" }));
-    setValidatedInputs((prev) => ({ ...prev, [id]: false }));
     validateAndUpdateInput(id, value, title);
   };
 

@@ -26,8 +26,7 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
       {},
     ),
   );
-  const { submissionStatus, submissionTopic, setSubmissionTopic } =
-    useGlobalState();
+  const { submissionStatus, setSubmissionTopic } = useGlobalState();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
