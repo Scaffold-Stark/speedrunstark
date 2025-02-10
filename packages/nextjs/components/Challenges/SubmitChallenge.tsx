@@ -23,8 +23,8 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
   const [inputValues, setInputValues] = useState<Record<string, string>>(() =>
     (challenge.inputURL || []).reduce(
       (acc, field) => ({ ...acc, [field.id]: "" }),
-      {}
-    )
+      {},
+    ),
   );
   const { submissionStatus, submissionTopic, setSubmissionTopic } =
     useGlobalState();
@@ -167,21 +167,17 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
           loading={loading}
           onClose={() => setOpenConfirmSubmit(false)}
           onSubmit={() => {
-            if (submissionTopic) {
-              toast.error("ONE SUBMISSION IS STILL IN PROGRESS.");
-              return;
-            }
             setOpenConfirmSubmit(false);
             const payload = composeSubmission(
               challenge,
               address || "",
-              inputValues
+              inputValues,
             );
             setLoading(true);
             axios
               .post(
                 `${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/verify`,
-                payload
+                payload,
               )
               .then((response) => {
                 if (response && response.data && response.data.verificationId) {

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BackgroundTexture } from "~~/components/BackgroundTexture";
 import { ChallengeModal } from "~~/components/Challenges/ChallengeModal";
 import { HomeItem } from "~~/components/HomeItem";

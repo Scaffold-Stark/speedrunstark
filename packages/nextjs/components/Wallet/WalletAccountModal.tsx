@@ -22,7 +22,7 @@ export const WalletAccountModal = ({
   address,
 }: Props) => {
   const [completedCount, setCompletedCount] = useState<undefined | number>(
-    undefined
+    undefined,
   );
   const [requestError, setRequestError] = useState<any>(undefined);
   const request = useCallback(() => {
@@ -125,7 +125,7 @@ export const WalletAccountModal = ({
                     request();
                   }}
                 />
-              ) : completedCount ? (
+              ) : completedCount !== undefined ? (
                 <p className="text-black">{`0${completedCount}`}</p>
               ) : (
                 <span className="text-black loading loading-spinner loading-xs"></span>

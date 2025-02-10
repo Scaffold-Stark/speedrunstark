@@ -106,7 +106,7 @@ export const DynamicSequentialInputs: React.FC<
   const validateAndUpdateInput = async (
     id: string,
     value: string,
-    title: string
+    title: string,
   ): Promise<void> => {
     if (value.trim()) {
       setChecking((prev) => ({ ...prev, [id]: true }));
@@ -142,7 +142,7 @@ export const DynamicSequentialInputs: React.FC<
   const handleInputChange = (
     id: string,
     value: string,
-    title: string
+    title: string,
   ): void => {
     setInputValues((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "" }));
