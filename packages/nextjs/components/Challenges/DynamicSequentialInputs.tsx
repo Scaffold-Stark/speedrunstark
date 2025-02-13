@@ -78,22 +78,10 @@ export const DynamicSequentialInputs: React.FC<
     }
   };
 
-  const shouldValidateUrl = (title: string): boolean => {
-    const lowerTitle = title.toLowerCase();
-    return !lowerTitle.includes("contract") && !lowerTitle.includes("contact");
-  };
-
   const checkAllInputsValidated = (): boolean => {
     return inputFields.every((field) => {
       const value = inputValues[field.id]?.trim();
       if (!value) return false;
-
-      // Skip URL validation for contract/contact fields
-      if (!shouldValidateUrl(field.title)) {
-        return (
-          validatedInputs[field.id] && !checking[field.id] && !errors[field.id]
-        );
-      }
 
       return (
         validateUrl(value) &&
@@ -116,23 +104,17 @@ export const DynamicSequentialInputs: React.FC<
       setValidatedInputs((prev) => ({ ...prev, [id]: false }));
       if (value.trim()) {
         setChecking((prev) => ({ ...prev, [id]: true }));
-
         try {
-          if (!shouldValidateUrl(title)) {
+          const isValid = validateUrl(value);
+          if (!isValid) {
+            setErrors((prev) => ({
+              ...prev,
+              [id]: "<ERROR> Invalid URL",
+            }));
+            setValidatedInputs((prev) => ({ ...prev, [id]: false }));
+          } else {
             setErrors((prev) => ({ ...prev, [id]: "" }));
             setValidatedInputs((prev) => ({ ...prev, [id]: true }));
-          } else {
-            const isValid = validateUrl(value);
-            if (!isValid) {
-              setErrors((prev) => ({
-                ...prev,
-                [id]: "<ERROR> Invalid URL",
-              }));
-              setValidatedInputs((prev) => ({ ...prev, [id]: false }));
-            } else {
-              setErrors((prev) => ({ ...prev, [id]: "" }));
-              setValidatedInputs((prev) => ({ ...prev, [id]: true }));
-            }
           }
         } finally {
           setChecking((prev) => ({ ...prev, [id]: false }));

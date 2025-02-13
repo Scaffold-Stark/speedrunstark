@@ -4,7 +4,7 @@ import { CodeIcon } from "../icons/Code";
 import { displayAddress } from "~~/utils/utils";
 import { useState, useEffect, useCallback } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import axios from "axios";
+import { getCompletedChallenges } from "~~/services/api";
 
 type Props = {
   isOpen: boolean;
@@ -27,19 +27,9 @@ export const WalletAccountModal = ({
   const [requestError, setRequestError] = useState<any>(undefined);
   const request = useCallback(() => {
     setRequestError(undefined);
-    axios
-      .get(`${process.env.NEXT_PUBLIC_SERVER_BASE_URL}/challenges/${address}`)
-      .then((response) => {
-        if (
-          response &&
-          response.data &&
-          response.data.completedChallenges &&
-          Array.isArray(response.data.completedChallenges)
-        ) {
-          setCompletedCount(response.data.completedChallenges.length);
-        } else {
-          setRequestError("request unknown error");
-        }
+    getCompletedChallenges(address)
+      .then((completedChallenges) => {
+        setCompletedCount(completedChallenges.length);
       })
       .catch((error) => {
         setRequestError(error);

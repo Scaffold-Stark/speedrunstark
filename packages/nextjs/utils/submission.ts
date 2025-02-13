@@ -19,20 +19,31 @@ const composeContracts = (
   return [];
 };
 
+export const getChallengeId = (challengeId: string) => {
+  const parts = challengeId.split("-");
+  const challengeIndex = parts.length > 1 ? parts[1] : "";
+  return `challenge-${challengeIndex}`;
+};
+
 export const composeSubmission = (
   challenge: Challenge,
   address: string,
   form: Record<string, string>,
 ) => {
-  const parts = challenge.id.split("-");
-  const challengeIndex = parts.length > 1 ? parts[1] : "";
   return {
     address,
-    challengeId: `challenge-${challengeIndex}`,
+    challengeId: getChallengeId(challenge.id),
     submission: {
       deployedUrl: form["deployed"] || "",
       contracts: composeContracts(challenge, form),
       repoUrl: form["github"] || "",
     },
   };
+};
+
+export const removeAnsiComprehensive = (str: string): string => {
+  return str.replace(
+    /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+    "",
+  );
 };

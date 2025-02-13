@@ -10,13 +10,11 @@ import { composeSubmission } from "~~/utils/submission";
 import { useAccount } from "@starknet-react/core";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { WrongNetworkDropdown } from "../scaffold-stark/CustomConnectButton/WrongNetworkDropdown";
 import { useGlobalState } from "~~/services/store/store";
+import { SubmitChallengeButton } from "./SubmitChallengeButton";
 
 export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
-  const { address, chainId } = useAccount();
-  const { targetNetwork } = useTargetNetwork();
+  const { address } = useAccount();
   const [isExpanded, setIsExpanded] = useState(false);
   const [openSubmit, setOpenSubmit] = useState(false);
   const [openConfirmSubmit, setOpenConfirmSubmit] = useState(false);
@@ -26,7 +24,7 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
       {},
     ),
   );
-  const { submissionStatus, setSubmissionTopic } = useGlobalState();
+  const { setSubmissionTopic } = useGlobalState();
   const [loading, setLoading] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -52,34 +50,10 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
 
   return (
     <div className="flex justify-center">
-      {address ? (
-        targetNetwork.id === chainId ? (
-          <div
-            onClick={() => setOpenSubmit(true)}
-            className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#4D58FF] md:w-fit w-[90%] px-5 cursor-pointer"
-          >
-            <Image
-              src={"/homescreen/submit.svg"}
-              alt="icon"
-              width={20}
-              height={20}
-            />
-            <p className="text-lg font-vt323 uppercase !text-white">
-              Submit challenge
-            </p>
-          </div>
-        ) : (
-          <div className="fixed z-[95] md:bottom-5 bottom-3 transform flex justify-center items-center md:w-fit !text-white">
-            <WrongNetworkDropdown />
-          </div>
-        )
-      ) : (
-        <div className="fixed z-[95] md:bottom-5 bottom-3 transform  flex justify-center items-center gap-2 bg-[#ADADAD] md:w-fit w-[90%] px-5 cursor-pointer">
-          <p className="text-lg font-vt323 uppercase !text-white">
-            wallet not connected
-          </p>
-        </div>
-      )}
+      <SubmitChallengeButton
+        setOpenSubmit={setOpenSubmit}
+        challengeId={challenge.id}
+      />
       {openSubmit && (
         <section
           ref={modalRef}
@@ -153,11 +127,6 @@ export const SubmitChallenge = ({ challenge }: { challenge: Challenge }) => {
                 setInputValues={setInputValues}
               />
             </div>
-            {submissionStatus && (
-              <div className="pb-8 flex flex-row items-center text-black">
-                {submissionStatus}
-              </div>
-            )}
           </div>
         </section>
       )}
