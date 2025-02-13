@@ -46,7 +46,7 @@ export const useSubmitChallenge = () => {
       return;
     }
     toast.dismiss();
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading("Starting verification...");
 
     function onConnect() {
       toast.loading("0% Waiting for server verification", { id: toastId });
