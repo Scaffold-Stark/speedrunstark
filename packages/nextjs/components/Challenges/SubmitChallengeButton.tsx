@@ -29,12 +29,18 @@ export const SubmitChallengeButton = ({
     if (submissionTopic) {
       return;
     }
-    getCompletedChallenges(address).then((response) => {
-      const parsedChallengeId = getChallengeId(challengeId);
-      const isCompleted = response.includes(parsedChallengeId);
-      setSubmitted(isCompleted);
-      setShowSubmitButton(!isCompleted);
-    });
+    getCompletedChallenges(address)
+      .then((response) => {
+        const parsedChallengeId = getChallengeId(challengeId);
+        const isCompleted = response.includes(parsedChallengeId);
+        setSubmitted(isCompleted);
+        setShowSubmitButton(!isCompleted);
+      })
+      .catch((e) => {
+        console.error(e);
+        setShowSubmitButton(false);
+        setSubmitted(false);
+      });
   }, [address, challengeId, submissionTopic]);
 
   if (!address) {
