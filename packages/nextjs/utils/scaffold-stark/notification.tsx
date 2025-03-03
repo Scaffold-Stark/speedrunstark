@@ -1,5 +1,5 @@
 import React from "react";
-import { ToastPosition, toast } from "react-hot-toast";
+import { type Toast, ToastPosition, toast } from "react-hot-toast";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import {
   CheckCircleIcon,
@@ -44,9 +44,9 @@ const Notification = ({
   position = DEFAULT_POSITION,
 }: NotificationProps) => {
   return toast.custom(
-    (t) => (
+    (t: Toast) => (
       <div
-        className={`flex flex-row items-start justify-between max-w-sm rounded-xl shadow-center shadow-accent bg-base-200 p-4 transform-gpu relative transition-all duration-500 ease-in-out space-x-2
+        className={`flex flex-row items-start justify-between max-w-3xl max-h-96 rounded-xl shadow-center shadow-accent bg-base-200 p-4 transform-gpu relative transition-all duration-500 ease-in-out space-x-2 overflow-y-scroll
         ${
           position.substring(0, 3) == "top"
             ? `hover:translate-y-1 ${t.visible ? "top-0" : "-top-96"}`
@@ -61,7 +61,7 @@ const Notification = ({
             icon ? "mt-1" : ""
           }`}
         >
-          {content}
+          {status == "error" ? "Error: See the console for more details." : content}
         </div>
 
         <div
