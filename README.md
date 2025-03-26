@@ -207,7 +207,7 @@ You'll have 60 seconds after deploying until the deadline is reached, you can ad
 
 ![stakerUI](./packages/nextjs/public/ch1-staker.png)
 
-> 👩‍💻 You can call `yarn deploy:reset` any time you want a fresh contract, it will get re-deployed even if there are no changes on it.  
+> 👩‍💻 You can call `yarn deploy` any time you want a fresh contract, it will get re-deployed even if there are no changes on it.  
 > You may need it when you want to reload the _"Time Left"_ of your tests.
 
 Your `Staker UI` tab should be almost done and working at this point.
