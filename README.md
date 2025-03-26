@@ -49,7 +49,7 @@ If your local Scarb version is not `2.9.4`, you need to install it.
 
 ### Starknet Foundry version
 
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.38.2. To accomplish this, first check your Starknet Foundry version:
+To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be `0.38.2`. To accomplish this, first check your Starknet Foundry version:
 
 ```sh
 snforge --version
