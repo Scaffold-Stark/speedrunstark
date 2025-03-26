@@ -100,7 +100,8 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
       {isStakingCompleted && (
         <div className="flex flex-col items-center gap-2 bg-base-100 border-8 border-secondary  rounded-xl p-6 mt-12 w-full max-w-lg">
           <p className="block m-0 font-semibold text-neutral">
-            🎉 &nbsp; Staking App triggered `ExampleExternalContract` &nbsp; 🎉{" "}
+            🎉 &nbsp; Staking App triggered `ExampleExternalContract` &nbsp;
+            🎉{" "}
           </p>
           <div className="flex items-center">
             <ETHToPrice
