@@ -29,10 +29,10 @@ Before you begin, you need to install the following tools:
 
 ### Compatible versions
 
-- Starknet-devnet - v0.2.3
-- Scarb - v2.9.2
-- Snforge - v0.35.1
-- Cairo - v2.9.2
+- Starknet-devnet - v0.2.4
+- Scarb - v2.9.4
+- Snforge - v0.38.2
+- Cairo - v2.9.4
 - Rpc - v0.7.1
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
@@ -43,7 +43,7 @@ Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Re
 
 For an alternative to local installations, you can use Docker to set up the environment.
 - Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.9.2` image.
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.9.4` image.
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
 </details>
 
@@ -78,7 +78,7 @@ yarn start
 
 📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:reset` for a completely fresh deploy.
+> 👩‍💻 Rerun `yarn deploy` whenever you need to deploy completely new contracts to the frontend. If you want to keep previous deployments and avoid overwriting changes, use `yarn deploy:no-reset` instead.
 
 ---
 
@@ -96,7 +96,7 @@ In order to complete this checkpoint, you need to connect to devnet using the sa
 
 (Your frontend address is the address in the top right of <http://localhost:3000>)
 
-> You can `yarn deploy:reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 ### 🥅 Goals
 
@@ -164,7 +164,7 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 
 > 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor ETH and Token balances.
 
-> You can `yarn deploy:reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 ![TokenVendorBuy](./packages/nextjs/public/ch2-TokenVendorBalance.png)
 

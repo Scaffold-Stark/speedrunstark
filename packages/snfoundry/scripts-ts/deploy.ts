@@ -47,6 +47,7 @@ const deployScript = async (): Promise<void> => {
 //     ],
 //     {
 //       maxFee: 1e15,
+//       version: 0x3,
 //     }
 //   );
 // };
