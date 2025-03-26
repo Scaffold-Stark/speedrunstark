@@ -22,7 +22,6 @@
     "@keplr-wallet/provider-extension": "^0.12.175",
     "@keplr-wallet/types": "^0.12.175",
     "@keplr-wallet/unit": "^0.12.175",
-    "@next/font": "^14.2.1",
     "@radix-ui/react-icons": "1.3.0",
     "@radix-ui/themes": "2.0.3",
     "@scaffold-stark/stark-burner": "^0.1.9",

@@ -2213,15 +2213,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/font@npm:^14.2.1":
-  version: 14.2.15
-  resolution: "@next/font@npm:14.2.15"
-  peerDependencies:
-    next: "*"
-  checksum: a9b79a69ff810352e9dd5fb3480b6f5ecf77f397f214bf31a999c208cce5a82d1c1bb46d6fe1553d38953d3ce313365ce492793d85757920961043acde041391
-  languageName: node
-  linkType: hard
-
 "@next/swc-darwin-arm64@npm:13.5.10":
   version: 13.5.10
   resolution: "@next/swc-darwin-arm64@npm:13.5.10"
@@ -3971,7 +3962,6 @@ __metadata:
     "@keplr-wallet/provider-extension": ^0.12.175
     "@keplr-wallet/types": ^0.12.175
     "@keplr-wallet/unit": ^0.12.175
-    "@next/font": ^14.2.1
     "@radix-ui/react-icons": 1.3.0
     "@radix-ui/themes": 2.0.3
     "@scaffold-stark/stark-burner": ^0.1.9
