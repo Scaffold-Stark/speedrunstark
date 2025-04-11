@@ -11,7 +11,7 @@ pub mod ERC721EnumerableComponent {
     use openzeppelin_introspection::src5::SRC5Component;
     use openzeppelin_token::erc721::ERC721Component;
     use openzeppelin_token::erc721::interface::IERC721;
-    use starknet::storage::Map;
+    use starknet::storage::{Map, StorageMapReadAccess, StoragePointerReadAccess};
     use super::{ContractAddress, IERC721Enumerable};
 
     #[storage]

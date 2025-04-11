@@ -16,7 +16,10 @@ mod YourCollectible {
     use openzeppelin_token::erc721::{
         ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly},
     };
-    use starknet::storage::Map;
+    use starknet::storage::{
+        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
+        StoragePointerWriteAccess,
+    };
 
     use super::{ContractAddress, IYourCollectible};
 
