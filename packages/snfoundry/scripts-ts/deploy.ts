@@ -1,4 +1,4 @@
-import { Abi, Contract } from "starknet";
+import { Abi, Contract, constants } from "starknet";
 import {
   deployContract,
   executeDeployCalls,
@@ -17,7 +17,12 @@ const deployScript = async (): Promise<void> => {
       eth_token_address:
         "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
     },
+    options: {
+      maxFee: BigInt(5000000000000),
+      version: constants.TRANSACTION_VERSION.V3,
+    },
   });
+
   const ethAbi = preDeployedContracts.devnet.Eth.abi as Abi;
   const ethAddress = preDeployedContracts.devnet.Eth.address as `0x${string}`;
 
@@ -26,8 +31,14 @@ const deployScript = async (): Promise<void> => {
   // 0.05 Eth
   const ethAmount = 50000000000000000n;
 
-  const tx = await ethContract.invoke("transfer", [diceGameAddr, ethAmount]);
-  const receipt = await provider.waitForTransaction(tx.transaction_hash);
+  const tx = await ethContract.populate("transfer", [diceGameAddr, ethAmount]);
+
+  const { transaction_hash: txH } = await deployer.execute(tx, {
+    version: constants.TRANSACTION_VERSION.V3,
+    maxFee: BigInt(5000000000000),
+  });
+
+  const txReceipt = await provider.waitForTransaction(txH);
 
   // ToDo Checkpoint 2: Deploy RiggedRoll contract
   //   await deployContract({
