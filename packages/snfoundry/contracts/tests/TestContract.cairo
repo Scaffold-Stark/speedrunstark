@@ -28,12 +28,8 @@ fn OWNER() -> ContractAddress {
 fn NEW_OWNER() -> ContractAddress {
     contract_address_const::<'NEW_OWNER'>()
 }
-fn deploy_receiver() -> ContractAddress {
-    let contract = declare("Receiver").unwrap().contract_class();
-    let mut calldata = array![];
-    let (contract_address, _) = contract.deploy(@calldata).unwrap();
-    println!("Receiver deployed on: {:?}", contract_address);
-    contract_address
+fn TEST_ADDRESS() -> ContractAddress {
+    contract_address_const::<'TEST_ADDRESS'>()
 }
 
 #[test]
@@ -44,7 +40,7 @@ fn test_mint_item() {
         contract_address: your_collectible_contract_address,
     };
     let erc721 = IERC721Dispatcher { contract_address: your_collectible_contract_address };
-    let tester_address = deploy_receiver();
+    let tester_address = TEST_ADDRESS();
     println!("Tester address: {:?}", tester_address);
     let starting_balance = erc721.balance_of(tester_address);
     println!("Starting balance: {:?}", starting_balance);
@@ -128,7 +124,7 @@ fn test_mint_item2() {
         contract_address: your_collectible_contract_address,
     };
     let erc721 = IERC721Dispatcher { contract_address: your_collectible_contract_address };
-    let tester_address = deploy_receiver();
+    let tester_address = TEST_ADDRESS();
     println!("Tester address: {:?}", tester_address);
     let starting_balance = erc721.balance_of(tester_address);
     println!("Starting balance: {:?}", starting_balance);

@@ -7,10 +7,11 @@ pub trait ICounter<TState> {
 
 #[starknet::component]
 pub mod CounterComponent {
-    use super::{ICounter};
+    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+    use super::ICounter;
 
     #[storage]
-    struct Storage {
+    pub struct Storage {
         value: u256,
     }
 
