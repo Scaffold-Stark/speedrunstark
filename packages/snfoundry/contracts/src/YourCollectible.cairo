@@ -6,20 +6,16 @@ pub trait IYourCollectible<T> {
 }
 
 #[starknet::contract]
-mod YourCollectible {
+pub mod YourCollectible {
     use contracts::components::Counter::CounterComponent;
-    use core::num::traits::zero::Zero;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_introspection::src5::SRC5Component;
 
     use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent;
-    use openzeppelin_token::erc721::{
-        ERC721Component, interface::{IERC721Metadata, IERC721MetadataCamelOnly},
-    };
-    use starknet::storage::{
-        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
-        StoragePointerWriteAccess,
-    };
+    use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent::InternalTrait as EnumerableInternalTrait;
+    use openzeppelin_token::erc721::ERC721Component;
+    use openzeppelin_token::erc721::interface::IERC721Metadata;
+    use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
 
     use super::{ContractAddress, IYourCollectible};
 
@@ -37,8 +33,6 @@ mod YourCollectible {
     #[abi(embed_v0)]
     impl ERC721Impl = ERC721Component::ERC721Impl<ContractState>;
     #[abi(embed_v0)]
-    impl ERC721CamelOnlyImpl = ERC721Component::ERC721CamelOnlyImpl<ContractState>;
-    #[abi(embed_v0)]
     impl SRC5Impl = SRC5Component::SRC5Impl<ContractState>;
     #[abi(embed_v0)]
     impl ERC721EnumerableImpl =
@@ -50,9 +44,9 @@ mod YourCollectible {
 
 
     #[storage]
-    struct Storage {
+    pub struct Storage {
         #[substorage(v0)]
-        erc721: ERC721Component::Storage,
+        pub erc721: ERC721Component::Storage,
         #[substorage(v0)]
         src5: SRC5Component::Storage,
         #[substorage(v0)]
@@ -60,9 +54,9 @@ mod YourCollectible {
         #[substorage(v0)]
         token_id_counter: CounterComponent::Storage,
         #[substorage(v0)]
-        enumerable: ERC721EnumerableComponent::Storage,
+        pub enumerable: ERC721EnumerableComponent::Storage,
         // ERC721URIStorage variables
-        // Mapping for token URIs
+        // Mapping for token URIs string format
         token_uris: Map<u256, ByteArray>,
     }
 
@@ -86,24 +80,23 @@ mod YourCollectible {
         let base_uri: ByteArray = "https://ipfs.io/ipfs/";
 
         self.erc721.initializer(name, symbol, base_uri);
+        self.enumerable.initializer();
         self.ownable.initializer(owner);
     }
 
     #[abi(embed_v0)]
-    impl YourCollectibleImpl of IYourCollectible<ContractState> {
+    pub impl YourCollectibleImpl of IYourCollectible<ContractState> {
         fn mint_item(ref self: ContractState, recipient: ContractAddress, uri: ByteArray) -> u256 {
             self.token_id_counter.increment();
             let token_id = self.token_id_counter.current();
-            // let data_sucess = array!['SUCCESS'].span(); // ERC721Receiver data
-            // self.erc721.safe_mint(recipient, token_id, data_sucess);
-            self.erc721.mint(recipient, token_id);
+            self.erc721.mint(recipient, token_id); // Todo: use `safe_mint instead of mint
             self.set_token_uri(token_id, uri);
             token_id
         }
     }
 
     #[abi(embed_v0)]
-    impl WrappedIERC721MetadataImpl of IERC721Metadata<ContractState> {
+    pub impl WrappedIERC721MetadataImpl of IERC721Metadata<ContractState> {
         // Override token_uri to use the internal ERC721URIStorage _token_uri function
         fn token_uri(self: @ContractState, token_id: u256) -> ByteArray {
             self._token_uri(token_id)
@@ -113,14 +106,6 @@ mod YourCollectible {
         }
         fn symbol(self: @ContractState) -> ByteArray {
             self.erc721.symbol()
-        }
-    }
-
-    #[abi(embed_v0)]
-    impl WrappedIERC721MetadataCamelOnlyImpl of IERC721MetadataCamelOnly<ContractState> {
-        // Override tokenURI to use the internal ERC721URIStorage _token_uri function
-        fn tokenURI(self: @ContractState, tokenId: u256) -> ByteArray {
-            self._token_uri(tokenId)
         }
     }
 
@@ -144,94 +129,17 @@ mod YourCollectible {
         }
     }
 
-    impl ERC721EnumerableHooksImpl<
-        T,
-        impl ERC721Enumerable: ERC721EnumerableComponent::HasComponent<T>,
-        impl Counter: CounterComponent::HasComponent<T>,
-        impl HasComponent: ERC721Component::HasComponent<T>,
-        +SRC5Component::HasComponent<T>,
-        +Drop<T>,
-    > of ERC721Component::ERC721HooksTrait<T> {
-        // Implement this to add custom logic to the ERC721 hooks
-        // Similar to _beforeTokenTransfer in OpenZeppelin ERC721.sol
+    // Implement this to add custom logic to the ERC721 hooks before mint/mint_item, transfer,
+    // transfer_from Similar to _beforeTokenTransfer in OpenZeppelin ERC721.sol
+    impl ERC721HooksImpl of ERC721Component::ERC721HooksTrait<ContractState> {
         fn before_update(
-            ref self: ERC721Component::ComponentState<T>,
+            ref self: ERC721Component::ComponentState<ContractState>,
             to: ContractAddress,
             token_id: u256,
             auth: ContractAddress,
         ) {
-            let counter_component = get_dep_component!(@self, Counter);
-            let token_id_counter = counter_component.current();
-            let mut enumerable_component = get_dep_component_mut!(ref self, ERC721Enumerable);
-            if (token_id == token_id_counter) { // `Mint Token` case: Add token to `ERC721Enumerable_all_tokens` enumerable component
-                let length = enumerable_component.ERC721Enumerable_all_tokens_len.read();
-                enumerable_component.ERC721Enumerable_all_tokens_index.write(token_id, length);
-                enumerable_component.ERC721Enumerable_all_tokens.write(length, token_id);
-                enumerable_component.ERC721Enumerable_all_tokens_len.write(length + 1);
-            } else if (token_id < token_id_counter
-                + 1) { // `Transfer Token` Case: Remove token from owner and update enumerable component
-                // To prevent a gap in from's tokens array, we store the last token in the index of
-                // the token to delete, and then delete the last slot (swap and pop).
-                let owner = self.owner_of(token_id);
-                if owner != to {
-                    let last_token_index = self.balance_of(owner) - 1;
-                    let token_index = enumerable_component
-                        .ERC721Enumerable_owned_tokens_index
-                        .read(token_id);
-
-                    // When the token to delete is the last token, the swap operation is unnecessary
-                    if (token_index != last_token_index) {
-                        let last_token_id = enumerable_component
-                            .ERC721Enumerable_owned_tokens
-                            .read((owner, last_token_index));
-                        // Move the last token to the slot of the to-delete token
-                        enumerable_component
-                            .ERC721Enumerable_owned_tokens
-                            .write((owner, token_index), last_token_id);
-                        // Update the moved token's index
-                        enumerable_component
-                            .ERC721Enumerable_owned_tokens_index
-                            .write(last_token_id, token_index);
-                    }
-
-                    // Clear the last slot
-                    enumerable_component
-                        .ERC721Enumerable_owned_tokens
-                        .write((owner, last_token_index), 0);
-                    enumerable_component.ERC721Enumerable_owned_tokens_index.write(token_id, 0);
-                }
-            }
-            if (to == Zero::zero()) { // `Burn Token` case: Remove token from `ERC721Enumerable_all_tokens` enumerable component
-                let last_token_index = enumerable_component.ERC721Enumerable_all_tokens_len.read()
-                    - 1;
-                let token_index = enumerable_component
-                    .ERC721Enumerable_all_tokens_index
-                    .read(token_id);
-
-                let last_token_id = enumerable_component
-                    .ERC721Enumerable_all_tokens
-                    .read(last_token_index);
-
-                enumerable_component.ERC721Enumerable_all_tokens.write(token_index, last_token_id);
-                enumerable_component
-                    .ERC721Enumerable_all_tokens_index
-                    .write(last_token_id, token_index);
-
-                enumerable_component.ERC721Enumerable_all_tokens_index.write(token_id, 0);
-                enumerable_component.ERC721Enumerable_all_tokens.write(last_token_index, 0);
-                enumerable_component.ERC721Enumerable_all_tokens_len.write(last_token_index);
-            } else if (to != auth) { // `Mint Token` and `Transfer Token` case: Add token owner to `ERC721Enumerable_owned_tokens` enumerable component
-                let length = self.balance_of(to);
-                enumerable_component.ERC721Enumerable_owned_tokens.write((to, length), token_id);
-                enumerable_component.ERC721Enumerable_owned_tokens_index.write(token_id, length);
-            }
+            let mut contract_state = self.get_contract_mut();
+            contract_state.enumerable.before_update(to, token_id);
         }
-
-        fn after_update(
-            ref self: ERC721Component::ComponentState<T>,
-            to: ContractAddress,
-            token_id: u256,
-            auth: ContractAddress,
-        ) {}
     }
 }
