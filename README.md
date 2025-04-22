@@ -147,13 +147,13 @@ In this tab you can start your transaction proposal to either add or remove owne
 
 > Quorum is the number of signatures required to execute a transaction.
 
-![add-signer-tx](./packages/nextjs/public/ch6-add-signer-tx.png)
+![add-signer-tx](./packages/nextjs/public/ch6-fill-add-signer-form.png)
 
 > You will see the new transaction in the UI (this is all offchain)..
 
 ![add-signer-tx-pool](./packages/nextjs/public/ch6-transaction-confirm.png)
 
-> Click on "Exec" to execute it, will be marked as "Completed", and will appear in the "Events" session with the rest of executed transactions.
+> Click on "Execute" to execute it, will be marked as "Completed", and will appear in the "Transaction Events" session with the rest of executed transactions.
 
 ![add-signer-tx-confirmed](./packages/nextjs/public/ch6-transaction-execute.png)
 
