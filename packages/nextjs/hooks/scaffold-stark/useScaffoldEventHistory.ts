@@ -232,7 +232,6 @@ export const useScaffoldEventHistory = <
 
   return {
     data: eventHistoryData,
-    // Include contract loading state in the isLoading status
     isLoading: isLoading || deployedContractLoading,
     error: error,
   };
