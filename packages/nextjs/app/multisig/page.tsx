@@ -15,6 +15,8 @@ import { ManageTransaction } from "./_components/ManageTransaction";
 import { useMultisigStore } from "./lib/multisigStore";
 import { useMultisigOperations } from "./hooks/useMultisigOperations";
 import TransactionList from "./_components/TransactionList";
+import { notification } from "~~/utils/scaffold-stark/notification";
+import { isAddress } from "~~/utils/scaffold-stark/common";
 
 const MultisigPage = () => {
   const { account } = useAccount();
@@ -176,6 +178,11 @@ const MultisigPage = () => {
 
   const handleCreateTransferTransaction = useCallback(async () => {
     if (!transferRecipient || !transferAmount) return;
+
+    if (contractEthBalance < transferAmount) {
+      notification.error("Insufficient balance");
+      return;
+    }
 
     setLoading(true);
     try {

@@ -17,7 +17,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
   quorum,
 }) => {
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+    <div className="border border-gradient p-6 rounded-lg shadow-md">
       <div className="flex items-center gap-2 justify-between mb-3">
         <h3 className="text-xl font-semibold ">Wallet Information</h3>
         <ResetDataButton />
@@ -58,16 +58,14 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
 
       <div className="mt-4">
         <h4 className="font-semibold mb-2">Current Signers:</h4>
-        {loadingSigners ? (
-          <div className="text-gray-400">Loading signers...</div>
-        ) : signers.length === 0 ? (
+        {signers.length === 0 ? (
           <div className="text-gray-400">No signers found</div>
         ) : (
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {signers.map((address, index) => (
               <div
                 key={index}
-                className="text-sm p-2 rounded bg-gray-700 flex justify-between items-center"
+                className="text-sm p-2 rounded border border-gradient flex justify-between items-center"
               >
                 <div className="flex items-center gap-2">
                   <BlockieAvatar
@@ -86,7 +84,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
                   </CopyToClipboard>
                 </div>
                 {convertFeltToAddress(address) === account?.address && (
-                  <span className="text-xs bg-blue-600 px-2 py-1 rounded ml-2">
+                  <span className="text-xs bg-blue-600 px-2 py-1 rounded ml-2 text-white">
                     You
                   </span>
                 )}
@@ -99,7 +97,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
       <button
         onClick={loadSigners}
         disabled={loadingSigners || !account || !deployedContractData}
-        className="mt-4 w-full rounded-md py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+        className="text-white mt-4 w-full rounded-md py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
       >
         {loadingSigners ? "Loading..." : "Refresh Signers"}
       </button>

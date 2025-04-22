@@ -89,7 +89,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2.5">
-          <div className="font-medium">ID: {formatAddress(tx.id)}</div>{" "}
+          <div className="text-white font-medium">ID: {formatAddress(tx.id)}</div>{" "}
           <div>
             <CopyToClipboard
               text={tx.id}
@@ -97,14 +97,14 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 notification.success("Copy successfully!");
               }}
             >
-              <button className="bg-gray-800 rounded-xl px-2 py-1 text-[10px]">
+              <button className="text-white bg-gray-800 rounded-xl px-2 py-1 text-[10px]">
                 Copy
               </button>
             </CopyToClipboard>
           </div>
         </div>
         <span
-          className={`text-xs px-2 py-1 rounded ${
+          className={`text-white text-xs px-2 py-1 rounded ${
             tx.executed
               ? "bg-green-800"
               : tx.confirmations >= quorum
@@ -144,7 +144,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             disabled={
               loading || hasUserConfirmed(tx) || tx.confirmations == quorum
             }
-            className="flex-1 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+            className="text-white flex-1 py-1 text-xs rounded bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
           >
             {hasUserConfirmed(tx) ? "Confirmed" : "Confirm"}
           </button>
@@ -155,7 +155,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
               revokeConfirmation(tx.id);
             }}
             disabled={loading || !hasUserConfirmed(tx)}
-            className="flex-1 py-1 text-xs rounded bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+            className="text-white flex-1 py-1 text-xs rounded bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
           >
             Revoke
           </button>
@@ -166,7 +166,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
               executeTransaction(tx.id);
             }}
             disabled={loading || tx.confirmations < quorum}
-            className="flex-1 py-1 text-xs rounded bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+            className="text-white flex-1 py-1 text-xs rounded bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
           >
             {tx.confirmations >= quorum
               ? "Execute"

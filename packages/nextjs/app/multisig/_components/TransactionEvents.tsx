@@ -9,7 +9,7 @@ const TransactionEvents: React.FC<TransactionEventsProps> = ({
   executedTxEvents,
 }) => {
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+    <div className="border border-gradient p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-3">Transaction Events</h3>
 
       <div className="space-y-4">
@@ -24,7 +24,7 @@ const TransactionEvents: React.FC<TransactionEventsProps> = ({
               {submittedTxEvents.slice(0, 5).map((event, index) => (
                 <div
                   key={index}
-                  className="text-sm p-2 my-1 rounded bg-gray-700"
+                  className="text-sm p-2 my-1 rounded border border-primary"
                 >
                   <div className="space-y-2">
                     <div className="font-mono text-xs">
@@ -62,7 +62,7 @@ const TransactionEvents: React.FC<TransactionEventsProps> = ({
               {confirmedTxEvents.slice(0, 5).map((event, index) => (
                 <div
                   key={index}
-                  className="text-sm p-2 my-1 rounded bg-gray-700"
+                  className="text-sm p-2 my-1 rounded border border-primary"
                 >
                   <div className="space-y-3">
                     <div className="font-mono text-xs">
@@ -100,7 +100,7 @@ const TransactionEvents: React.FC<TransactionEventsProps> = ({
               {executedTxEvents.slice(0, 5).map((event, index) => (
                 <div
                   key={index}
-                  className="text-sm p-2 my-1 rounded bg-gray-700"
+                  className="text-sm p-2 my-1 rounded border border-primary"
                 >
                   <div className="font-mono text-xs">
                     ID: {formatAddress(event.args.id.toString())}

@@ -38,21 +38,23 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
       return signers.length + 1;
     } else if (selectedOption === "remove") {
       return signers.length - 1;
+    } else {
+      return signers.length;
     }
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+    <div className="border border-gradient p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-semibold mb-4">Manage Transaction</h3>
 
       <div className="space-y-4">
         <div>
           <label className="block text-sm mb-1">Action:</label>
-          <div className="block w-full px-1 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div className="block w-full px-1 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <select
               value={selectedOption}
               onChange={handleSelectChange}
-              className="bg-gray-700 w-full outline-none border-none"
+              className="w-full outline-none bg-transparent border-none"
             >
               <option value="add">Add Signer</option>
               <option value="remove">Remove Signer</option>
@@ -70,7 +72,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 value={address}
                 onChange={handleSignerChange}
                 placeholder="Enter wallet address"
-                className="block w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -82,7 +84,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 max={getMaxQuorumValue()}
                 value={newQuorum}
                 onChange={handleNewQuorumChange}
-                className="block w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </>
@@ -97,7 +99,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 value={address}
                 onChange={handleSignerChange}
                 placeholder="Enter wallet address"
-                className="block w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -109,7 +111,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 max={getMaxQuorumValue()}
                 value={newQuorum}
                 onChange={handleNewQuorumChange}
-                className="block w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </>
@@ -124,7 +126,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 value={transferRecipient || ""}
                 onChange={(e) => setTransferRecipient(e.target.value)}
                 placeholder="Enter recipient wallet address"
-                className="block w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -160,7 +162,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
             !account ||
             !deployedContractData
           }
-          className="w-full rounded-md py-2 font-medium bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+          className="text-white w-full rounded-md py-2 font-medium bg-green-600 hover:bg-green-700 disabled:bg-[#6d6d6ebf] disabled:cursor-not-allowed"
         >
           {loading ? "Processing..." : "Create Transaction"}
         </button>
