@@ -80,13 +80,13 @@ export const useScaffoldEventHistory = <
       setIsLoading(false);
       return;
     }
-    
+
     setIsLoading(true);
     try {
       if (deployedContractLoading) {
         return;
       }
-      
+
       if (!deployedContractData) {
         throw new Error("Contract not found");
       }
