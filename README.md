@@ -1,6 +1,6 @@
 # 🚩 Challenge 6: 👛 Multisig Wallet
 
-# NEED HERO IMAGE HERE
+![hero-6](./packages/nextjs/public/hero6.png)
 
 👩‍👩‍👧‍👧 A multisig wallet is a smart contract that acts like a wallet, allowing us to secure assets by requiring multiple accounts to "vote" on transactions. Think of it as a treasure chest that can only be opened when all key parties agree.
 
@@ -47,17 +47,16 @@ This is a smart contract that acts as an offchain signature-based shared wallet 
 
 At a high-level, the contract core functions are carried out as follows:
 
-**Offchain: ⛓🙅🏻‍♂️** - Generation of a packed hash (bytes32) for a function call with specific parameters through a public view function . - It is signed by one of the signers associated to the multisig, and added to an array of signatures (`bytes[] memory signatures`)
+**Offchain: ⛓🙅🏻‍♂️** - Generate a transaction information struct with the function selector and calldata, and hash it. It is signed by the signers associated to the multisig, and added to the `Multisig_tx_info` mapping.
 
 **Onchain: ⛓🙆🏻‍♂️**
 
-- `bytes[] memory signatures` is then passed into `executeTransaction` as well as the necessary info to use `recover()` to obtain the public address that ought to line up with one of the signers of the wallet.
-  - This method, plus some conditional logic to avoid any duplicate entries from a single signer, is how votes for a specific transaction (hashed tx) are assessed.
-- If it's a success, the tx is passed to the `call(){}` function of the deployed MetaMultiSigWallet contract (this contract), thereby passing the `onlySelf` modifier for any possible calls to internal txs such as (`addSigner()`,`removeSigner()`,`transferFunds()`,`updateSignaturesRequired()`).
+- New signers are added to the `Multisig_is_signer` mapping, to check if a signer is in the multisig, we check the `Multisig_is_signer` mapping.
+- If it's a success, the tx is passed to the `execute_transaction(){}` function of the deployed MultiSigWallet contract (this contract), asserting is_signer for any possible calls to internal txs such as (`add_signer()`,`remove_signer()`,`transfer_funds()`,`change_quorum()`).
 
 **Cool Stuff that is Showcased: 😎**
 
-- Normal internal functions, such as changing the signers, and adding or removing signers, are treated as external function calls when `call()` is used with the respective transaction hash.
+- Normal internal functions, such as changing the signers, and adding or removing signers, are treated as external function calls when `execute_transaction()` is used with the respective calldata.
 - Showcases use of an array (see constructor) populating a mapping to store pertinent information within the deployed smart contract storage location within the EVM in a more efficient manner.
 
 > 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
