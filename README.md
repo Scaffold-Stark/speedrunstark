@@ -98,9 +98,9 @@ Then download the challenge to your computer and install dependencies by running
 
 ```sh
 
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-6-multisign-wallet
-cd challenge-6-multisign-wallet
-git checkout challenge-6-multisign-wallet
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-6-multisig-wallet
+cd challenge-6-multisig-wallet
+git checkout challenge-6-multisig-wallet
 yarn install
 ```
 
@@ -113,14 +113,14 @@ yarn chain
 > in a second terminal window, 🛰 deploy your contract (locally):
 
 ```sh
-cd challenge-6-multisign-wallet
+cd challenge-6-multisig-wallet
 yarn deploy
 ```
 
 > in a third terminal window, start your 📱 frontend:
 
 ```sh
-cd challenge-6-multisign-wallet
+cd challenge-6-multisig-wallet
 yarn start
 ```
 
@@ -152,7 +152,7 @@ In this tab you can start your transaction proposal to either add or remove owne
 
 ![add-signer-tx-pool](./packages/nextjs/public/ch6-transaction-confirm.png)
 
-> Click on "Execute" to execute it, will be marked as "Completed", and will appear in the "Transaction Events" session with the rest of executed transactions.
+> Click on "Execute" to execute it, will be marked as "Completed", and will appear in the "Transaction Events" section with the rest of executed transactions.
 
 ![add-signer-tx-confirmed](./packages/nextjs/public/ch6-transaction-execute.png)
 
@@ -163,9 +163,9 @@ In this tab you can start your transaction proposal to either add or remove owne
 ## Checkpoint 2: Transfer Funds 💸
 
 > 💰 Use the faucet to send your multisig contract some funds.
-> You can find the address in the "Wallet Information" session and "Debug Contracts" tabs.
+> You can find the address in the "Wallet Information" section and "Debug Contracts" tabs.
 
-> Create a transaction in the "Manage Transaction" session to send some funds to one of your signers, or to any other address of your choice:
+> Create a transaction in the "Manage Transaction" section to send some funds to one of your signers, or to any other address of your choice:
 
 ![create-transfer](./packages/nextjs/public/ch6-create-transfer.png)
 
