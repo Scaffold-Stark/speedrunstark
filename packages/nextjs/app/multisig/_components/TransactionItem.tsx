@@ -89,7 +89,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2.5">
-          <div className="text-white font-medium">ID: {formatAddress(tx.id)}</div>{" "}
+          <div className="text-white font-medium">
+            ID: {formatAddress(tx.id)}
+          </div>{" "}
           <div>
             <CopyToClipboard
               text={tx.id}
