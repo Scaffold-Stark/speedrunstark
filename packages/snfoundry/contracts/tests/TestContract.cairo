@@ -1,5 +1,5 @@
 use contracts::YourCollectible::YourCollectible;
-use contracts::YourCollectible::YourCollectible::{YourCollectibleImpl, WrappedIERC721MetadataImpl};
+use contracts::YourCollectible::YourCollectible::{WrappedIERC721MetadataImpl, YourCollectibleImpl};
 use openzeppelin_token::erc721::ERC721Component;
 use openzeppelin_token::erc721::ERC721Component::{ERC721Impl, InternalImpl as ERC721InternalImpl};
 use openzeppelin_token::erc721::extensions::erc721_enumerable::ERC721EnumerableComponent;

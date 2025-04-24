@@ -10,13 +10,11 @@ pub mod YourCollectible {
     use contracts::components::Counter::CounterComponent;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_introspection::src5::SRC5Component;
-
+    use openzeppelin_token::erc721::ERC721Component;
     use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent;
     use openzeppelin_token::erc721::extensions::ERC721EnumerableComponent::InternalTrait as EnumerableInternalTrait;
-    use openzeppelin_token::erc721::ERC721Component;
     use openzeppelin_token::erc721::interface::IERC721Metadata;
     use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
-
     use super::{ContractAddress, IYourCollectible};
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
