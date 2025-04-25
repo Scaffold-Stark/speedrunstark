@@ -1,0 +1,2 @@
+.devcontainer.json merge=keeptheirs
+.tool-versions merge=keeptheirs
