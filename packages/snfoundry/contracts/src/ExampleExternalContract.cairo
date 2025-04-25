@@ -7,7 +7,7 @@ pub trait IExampleExternalContract<T> {
 #[starknet::contract]
 mod ExampleExternalContract {
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
-    
+
     #[storage]
     struct Storage {
         completed: bool,
