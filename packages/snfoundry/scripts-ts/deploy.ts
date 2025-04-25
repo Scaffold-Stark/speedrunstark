@@ -23,15 +23,15 @@ const deployScript = async (): Promise<void> => {
     },
   });
 
-  const ethAbi = preDeployedContracts.devnet.Eth.abi as Abi;
-  const ethAddress = preDeployedContracts.devnet.Eth.address as `0x${string}`;
+  const strkAbi = preDeployedContracts.devnet.Strk.abi as Abi;
+  const strkAddress = preDeployedContracts.devnet.Strk.address as `0x${string}`;
 
-  const ethContract = new Contract(ethAbi, ethAddress, deployer);
+  const strkContract = new Contract(strkAbi, strkAddress, deployer);
 
   // 0.05 Eth
   const ethAmount = 50000000000000000n;
 
-  const tx = await ethContract.populate("transfer", [diceGameAddr, ethAmount]);
+  const tx = await strkContract.populate("transfer", [diceGameAddr, ethAmount]);
 
   const { transaction_hash: txH } = await deployer.execute(tx, {
     version: constants.TRANSACTION_VERSION.V3,
@@ -50,11 +50,17 @@ const deployScript = async (): Promise<void> => {
   //   });
 };
 
-deployScript()
-  .then(async () => {
+const main = async (): Promise<void> => {
+  try {
+    await deployScript();
     await executeDeployCalls();
     exportDeployments();
 
-    console.log(green("All Setup Done"));
-  })
-  .catch(console.error);
+    console.log(green("All Setup Done!"));
+  } catch (err) {
+    console.log(err);
+    process.exit(1); //exit with error so that non subsequent scripts are run
+  }
+};
+
+main();

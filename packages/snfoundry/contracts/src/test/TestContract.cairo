@@ -1,7 +1,7 @@
 use contracts::DiceGame::{DiceGame, IDiceGameDispatcherTrait};
 use contracts::RiggedRoll::{IRiggedRollDispatcher, IRiggedRollDispatcherTrait};
 
-use keccak::keccak_u256s_le_inputs;
+use core::keccak::keccak_u256s_le_inputs;
 use openzeppelin_token::erc20::interface::{IERC20CamelDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::cheatcodes::events::EventsFilterTrait;
@@ -10,10 +10,10 @@ use snforge_std::{
     cheat_caller_address, declare, spy_events,
 };
 use starknet::{ContractAddress, get_block_number};
-use starknet::{contract_address_const};
+use core::traits::TryInto;
 
 fn OWNER() -> ContractAddress {
-    contract_address_const::<'OWNER'>()
+    'OWNER'.try_into().unwrap()
 }
 
 const ROLL_DICE_AMOUNT: u256 = 2000000000000000; // 0.002_ETH_IN_WEI
