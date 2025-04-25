@@ -1,3 +1,2 @@
 app/page.tsx merge=keepmine
-app/token-vendor merge=keepmine
 components/Header.tsx merge=keepmine
