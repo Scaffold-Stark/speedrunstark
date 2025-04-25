@@ -4,7 +4,7 @@ import React, { useCallback, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, BugAntIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
 import { useTheme } from "next-themes";
@@ -22,8 +22,9 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   {
-    label: "Home",
-    href: "/",
+    label: "Example View 1",
+    href: "/exampleView1",
+    icon: <PhotoIcon className="h-4 w-4" />,
   },
   {
     label: "Debug Contracts",
@@ -49,11 +50,10 @@ export const HeaderMenuLinks = () => {
             <Link
               href={href}
               passHref
-              className={`${
-                isActive
-                  ? "!bg-gradient-nav !text-white active:bg-gradient-nav shadow-md"
-                  : ""
-              } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
+              className={`${isActive
+                ? "!bg-gradient-nav !text-white active:bg-gradient-nav shadow-md"
+                : ""
+                } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
             >
               {icon}
               <span>{label}</span>
@@ -175,9 +175,8 @@ export const Header = () => {
         <CustomConnectButton />
         {/* <FaucetButton /> */}
         <SwitchTheme
-          className={`pointer-events-auto ${
-            isLocalNetwork ? "mb-1 lg:mb-0" : ""
-          }`}
+          className={`pointer-events-auto ${isLocalNetwork ? "mb-1 lg:mb-0" : ""
+            }`}
         />
       </div>
     </div>
