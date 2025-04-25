@@ -339,22 +339,6 @@ export const abi: any = [
         ],
         state_mutability: "view",
       },
-      {
-        type: "function",
-        name: "transaction_state",
-        inputs: [
-          {
-            name: "transaction_id",
-            type: "core::integer::u256",
-          },
-        ],
-        outputs: [
-          {
-            type: "contracts::YourContract::TransactionState",
-          },
-        ],
-        state_mutability: "view",
-      },
     ],
   },
   {
@@ -528,16 +512,6 @@ export const abi: any = [
       {
         name: "Err",
         type: "core::integer::u64",
-      },
-    ],
-  },
-  {
-    type: "enum",
-    name: "contracts::YourContract::TransactionState",
-    variants: [
-      {
-        name: "NotFound",
-        type: "()",
       },
     ],
   },

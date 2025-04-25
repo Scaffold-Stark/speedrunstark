@@ -18,6 +18,7 @@ mod Vendor {
     use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
     use starknet::{get_caller_address, get_contract_address};
     use super::{ContractAddress, IVendor};
+    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
