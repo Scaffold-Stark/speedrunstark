@@ -18,7 +18,7 @@ snforge_std = "0.41.0"
 assert_macros = "2.9.4"
 
 [[target.starknet-contract]]
-casm = true # taggle this to `false` to speed up compilation/script tests
+casm = true # taggle this to "false" to speed up compilation/script tests
 
 [tool.scarb]
 allow-prebuilt-plugins = ["snforge_std"]
