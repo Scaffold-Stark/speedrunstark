@@ -1,2 +1,4 @@
+.husky/** merge=keeptheirs
+
 .devcontainer.json merge=keeptheirs
 .tool-versions merge=keeptheirs
