@@ -25,7 +25,7 @@ pub mod Staker {
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait,
     };
     use starknet::storage::{
-        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess, StoragePointerWriteAccess,
+        Map, StorageMapReadAccess, StoragePointerReadAccess, StoragePointerWriteAccess,
     };
     use starknet::{get_block_timestamp, get_caller_address, get_contract_address};
     use super::{ContractAddress, IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IStaker};
