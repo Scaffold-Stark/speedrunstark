@@ -7,17 +7,18 @@ use openzeppelin_token::erc721::extensions::erc721_enumerable::ERC721EnumerableC
     ERC721EnumerableImpl, InternalImpl as EnumerableInternalTrait,
 };
 use snforge_std::{CheatSpan, cheat_caller_address, test_address};
-use starknet::{ContractAddress, contract_address_const};
+use starknet::{ContractAddress};
+use core::traits::TryInto;
 
 // Constants
 fn OWNER() -> ContractAddress {
-    contract_address_const::<'OWNER'>()
+    'OWNER'.try_into().unwrap()
 }
 fn NEW_OWNER() -> ContractAddress {
-    contract_address_const::<'NEW_OWNER'>()
+    'NEW_OWNER'.try_into().unwrap()
 }
 fn TESTER_ADDRESS() -> ContractAddress {
-    contract_address_const::<'TESTER_ADDRESS'>()
+    'TESTER_ADDRESS'.try_into().unwrap()
 }
 
 // Component states
