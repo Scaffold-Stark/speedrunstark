@@ -5,4 +5,5 @@
 **/__test__/ merge=keepmine
 **/__tests__/ merge=keepmine
 
-*.lock -text # ignore lock files
+# ignore lock files
+*.lock -text
