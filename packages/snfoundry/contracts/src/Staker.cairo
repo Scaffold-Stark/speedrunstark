@@ -1,4 +1,4 @@
-use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use starknet::ContractAddress;
 
 #[starknet::interface]
@@ -13,7 +13,7 @@ pub trait IStaker<T> {
     fn deadline(self: @T) -> u64;
     fn example_external_contract(self: @T) -> ContractAddress;
     fn open_for_withdraw(self: @T) -> bool;
-    fn token_dispatcher(self: @T) -> IERC20CamelDispatcher;
+    fn token_dispatcher(self: @T) -> IERC20Dispatcher;
     fn threshold(self: @T) -> u256;
     fn total_balance(self: @T) -> u256;
     fn time_left(self: @T) -> u64;
@@ -25,10 +25,11 @@ pub mod Staker {
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait,
     };
     use starknet::storage::{
-        Map, StorageMapReadAccess, StoragePointerReadAccess, StoragePointerWriteAccess,
+        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
+        StoragePointerWriteAccess,
     };
     use starknet::{get_block_timestamp, get_caller_address, get_contract_address};
-    use super::{ContractAddress, IERC20CamelDispatcher, IERC20CamelDispatcherTrait, IStaker};
+    use super::{ContractAddress, IERC20Dispatcher, IERC20DispatcherTrait, IStaker};
 
     const THRESHOLD: u256 = 1000000000000000000; // ONE_STRK_IN_FRI: 10 ^ 18;
 
@@ -47,7 +48,7 @@ pub mod Staker {
 
     #[storage]
     struct Storage {
-        token_dispatcher: IERC20CamelDispatcher,
+        token_dispatcher: IERC20Dispatcher,
         balances: Map<ContractAddress, u256>,
         deadline: u64,
         open_for_withdraw: bool,
@@ -60,7 +61,7 @@ pub mod Staker {
         strk_contract: ContractAddress,
         external_contract_address: ContractAddress,
     ) {
-        self.token_dispatcher.write(IERC20CamelDispatcher { contract_address: strk_contract });
+        self.token_dispatcher.write(IERC20Dispatcher { contract_address: strk_contract });
         self.external_contract_address.write(external_contract_address);
         // ToDo Checkpoint 2: Set the deadline to 60 seconds from now. Implement your code here.
 
@@ -105,7 +106,7 @@ pub mod Staker {
             THRESHOLD
         }
 
-        fn token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
+        fn token_dispatcher(self: @ContractState) -> IERC20Dispatcher {
             self.token_dispatcher.read()
         }
 
