@@ -5,7 +5,7 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
-import { ETHToPrice } from "~~/components/stake/ETHToPrice";
+import { STARKToPrice } from "~~/components/stake/STRKToPrice";
 import { Address } from "~~/components/scaffold-stark";
 import humanizeDuration from "humanize-duration";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
@@ -104,7 +104,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             🎉{" "}
           </p>
           <div className="flex items-center">
-            <ETHToPrice
+            <STARKToPrice
               value={
                 exampleExternalContractBalance != null
                   ? `${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}`
@@ -152,7 +152,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
           <p className="block text-xl mt-0 mb-1 font-semibold">Total Staked</p>
           <div className="flex space-x-2">
             {
-              <ETHToPrice
+              <STARKToPrice
                 value={
                   stakerContractBalance != null
                     ? `${formatEther(Number(stakerContractBalance))}${targetNetwork.nativeCurrency.symbol}`
@@ -162,7 +162,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             }
             <span>/</span>
             {
-              <ETHToPrice
+              <STARKToPrice
                 value={
                   threshold
                     ? `${formatEther(Number(threshold))} ${targetNetwork.nativeCurrency.symbol}`

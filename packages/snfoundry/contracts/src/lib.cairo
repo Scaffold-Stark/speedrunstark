@@ -1,7 +1,7 @@
 mod ExampleExternalContract;
 mod Staker;
 mod mock_contracts {
-    pub mod MockETHToken;
+    pub mod MockSTRKToken;
 }
 #[cfg(test)]
 mod test {

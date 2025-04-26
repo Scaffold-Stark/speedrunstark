@@ -6,11 +6,11 @@
 
 🦸 A superpower of Smart contracts is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code.
 
-🏦 Build a `Staker.cairo` contract that collects **ETH** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allows users to `withdraw()`.
+🏦 Build a `Staker.cairo` contract that collects **STRK** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of STRK, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **STRK** is collected, allows users to `withdraw()`.
 
 🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake {sender: ContractAddress, amount: u256}` Starknet event to list all stakes.
 
-🌟 The final deliverable is deploying a Dapp that lets users send ether to a contract and stake if the conditions are met, then `yarn vercel` your app to a public webserver.
+🌟 The final deliverable is deploying a Dapp that lets users send stark to a contract and stake if the conditions are met, then `yarn vercel` your app to a public webserver.
 
 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
 
@@ -116,17 +116,17 @@ struct Storage {
 }
 ```
 
-And also track a constant threshold at 1 ether.
+And also track a constant threshold at 1 stark.
 
 ```cairo
 const THRESHOLD: u256 = 1000000000000000000;
 ```
 
-### Checkpoint 1.1: Handling ETH Transactions in Starknet
+### Checkpoint 1.1: Handling STRK Transactions in Starknet
 
-In Starknet, `ETH` is managed as a token, which means you cannot directly `send value` through a transaction. Meaning you must `approve` ETH spending and then `transfer` it using a contract. This involves utilizing the predeployed `ETH contract address` in Starknet.
+In Starknet, `STRK` is managed as a token, which means you cannot directly `send value` through a transaction. Meaning you must `approve` STRK spending and then `transfer` it using a contract. This involves utilizing the predeployed `STRK contract address` in Starknet.
 
-In this challenge, we’ll demonstrate how to handle ETH transactions by passing the ETH contract address as an argument to the contract constructor.
+In this challenge, we’ll demonstrate how to handle STRK transactions by passing the STRK contract address as an argument to the contract constructor.
 
 First, you have to define your constructor function in the `Staker` contract:
 
@@ -158,13 +158,13 @@ Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
 use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 ```
 
-In the constructor function, instantiate the `IERC20CamelDispatcher` struct with the address of the ETH contract address:
+In the constructor function, instantiate the `IERC20CamelDispatcher` struct with the address of the STRK contract address:
 
 ```cairo
 self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
 ```
 
-With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage ETH transactions effectively.
+With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage STRK transactions effectively.
 
 ---
 
@@ -186,7 +186,7 @@ With the dispatcher set up, you can now utilize functions defined in the interfa
 
 ### State Machine
 
-> ⚙️ Think of your smart contract like a _state machine_. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of ETH, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
+> ⚙️ Think of your smart contract like a _state machine_. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of STRK, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
 
 Set a `deadline` of `get_block_timestamp() + 60` in the constructor to allow 60 seconds for users to stake.
 
@@ -232,7 +232,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 ### 🥅 Goals
 
 - [ ] Can you see `time_left()` counting down in the Staker UI tab when you trigger a transaction with the faucet button?
-- [ ] If enough ETH is staked by the deadline, does your `execute()` function correctly call `complete()` and stake the ETH?
+- [ ] If enough STRK is staked by the deadline, does your `execute()` function correctly call `complete()` and stake the STRK?
 - [ ] If the threshold isn't met by the deadline, are you able to `withdraw()` your funds?
 
 ---
@@ -241,7 +241,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ### 🥅 Goals
 
-- [ ] If you send ETH directly to the contract address does it update your `balance` and the `balance` of the contract?
+- [ ] If you send STRK directly to the contract address does it update your `balance` and the `balance` of the contract?
 
 ### ⚔️ Side Quests
 
@@ -272,7 +272,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+⛽️ You will need to get some `STRK` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 > 📝 If you plan on submitting this challenge, be sure to set your deadline to at least block.timestamp + 72 hours
 
