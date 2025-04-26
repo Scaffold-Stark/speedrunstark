@@ -1,5 +1,6 @@
 use contracts::YourCollectible::YourCollectible;
 use contracts::YourCollectible::YourCollectible::{WrappedIERC721MetadataImpl, YourCollectibleImpl};
+use core::traits::TryInto;
 use openzeppelin_token::erc721::ERC721Component;
 use openzeppelin_token::erc721::ERC721Component::{ERC721Impl, InternalImpl as ERC721InternalImpl};
 use openzeppelin_token::erc721::extensions::erc721_enumerable::ERC721EnumerableComponent;
@@ -7,8 +8,7 @@ use openzeppelin_token::erc721::extensions::erc721_enumerable::ERC721EnumerableC
     ERC721EnumerableImpl, InternalImpl as EnumerableInternalTrait,
 };
 use snforge_std::{CheatSpan, cheat_caller_address, test_address};
-use starknet::{ContractAddress};
-use core::traits::TryInto;
+use starknet::ContractAddress;
 
 // Constants
 fn OWNER() -> ContractAddress {
