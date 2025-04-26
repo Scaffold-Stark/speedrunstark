@@ -1,15 +1,14 @@
 use contracts::Staker::{IStakerDispatcher, IStakerDispatcherTrait};
+use core::traits::TryInto;
 use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
     CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare,
     start_cheat_block_timestamp_global,
 };
-use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
+use starknet::{ContractAddress, get_block_timestamp};
 
-fn RECIPIENT() -> ContractAddress {
-    contract_address_const::<'RECIPIENT'>()
-}
+const RECIPIENT: ContractAddress ='RECIPIENT'.try_into().unwrap();
 
 // Should deploy the MockETHToken contract
 fn deploy_mock_eth_token() -> ContractAddress {
@@ -17,7 +16,7 @@ fn deploy_mock_eth_token() -> ContractAddress {
     let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_ETH_IN_WEI
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
-    calldata.append_serde(RECIPIENT());
+    calldata.append_serde(RECIPIENT);
     let (eth_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
     eth_token_address
 }
@@ -41,7 +40,7 @@ fn test_deploy_mock_eth_token() {
     let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_ETH_IN_WEI
     let contract_address = deploy_mock_eth_token();
     let eth_token_dispatcher = IERC20CamelDispatcher { contract_address };
-    assert(eth_token_dispatcher.balanceOf(RECIPIENT()) == INITIAL_BALANCE, 'Balance should be > 0');
+    assert(eth_token_dispatcher.balanceOf(RECIPIENT) == INITIAL_BALANCE, 'Balance should be > 0');
 }
 
 // Staker contract balance should go up by the staked amount
@@ -51,7 +50,7 @@ fn test_stake_functionality() {
     let staker_dispatcher = IStakerDispatcher { contract_address: staker_contract_address };
     let eth_token_dispatcher = staker_dispatcher.eth_token_dispatcher();
 
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
     println!("-- Tester address: {:?}", tester_address);
     let starting_balance = staker_dispatcher.balances(tester_address);
     println!("-- Starting balance in Staker contract: {:?} wei", starting_balance);
@@ -86,7 +85,7 @@ fn test_execute_functionality() {
     let staker_dispatcher = IStakerDispatcher { contract_address: staker_contract_address };
     let eth_token_dispatcher = staker_dispatcher.eth_token_dispatcher();
 
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
     println!("-- Tester address: {:?}", tester_address);
     let starting_balance = staker_dispatcher.balances(tester_address);
     println!("-- Starting balance in Staker contract: {:?} wei", starting_balance);
@@ -149,7 +148,7 @@ fn test_withdraw_functionality() {
     let staker_dispatcher = IStakerDispatcher { contract_address: staker_contract_address };
     let eth_token_dispatcher = staker_dispatcher.eth_token_dispatcher();
 
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
     println!("-- Tester address: {:?}", tester_address);
     let starting_balance = staker_dispatcher.balances(tester_address);
     println!("-- Starting balance in Staker contract: {:?} wei", starting_balance);
