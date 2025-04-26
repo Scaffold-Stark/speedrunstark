@@ -11,15 +11,8 @@ use snforge_std::{CheatSpan, cheat_caller_address, test_address};
 use starknet::ContractAddress;
 
 // Constants
-fn OWNER() -> ContractAddress {
-    'OWNER'.try_into().unwrap()
-}
-fn NEW_OWNER() -> ContractAddress {
-    'NEW_OWNER'.try_into().unwrap()
-}
-fn TESTER_ADDRESS() -> ContractAddress {
-    'TESTER_ADDRESS'.try_into().unwrap()
-}
+const NEW_OWNER: ContractAddress = 'NEW_OWNER'.try_into().unwrap();
+const TESTER_ADDRESS: ContractAddress = 'TESTER_ADDRESS'.try_into().unwrap();
 
 // Component states
 type EnumerableComponentState =
@@ -54,7 +47,7 @@ fn setup() {
 // Test: Should be able to mint "two" NFTs and transfer the first item to another account
 fn test_mint_item() {
     setup();
-    let tester_address = TESTER_ADDRESS();
+    let tester_address = TESTER_ADDRESS;
     let mut contract_state = CONTRACT_STATE();
     let contract_address = test_address(); // mock contract address
 
@@ -88,7 +81,7 @@ fn test_mint_item() {
     println!("Tester address New balance: {:?}", new_balance);
 
     // transfer item
-    let new_owner = NEW_OWNER();
+    let new_owner = NEW_OWNER;
     println!("new_owner address: 0x{:x}", new_owner);
     let new_owner_starting_balance = contract_state.erc721.balance_of(new_owner);
     println!("Starting balance new_owner: {:?}", new_owner_starting_balance);
@@ -131,7 +124,7 @@ fn test_mint_item() {
 // Test: Should be able to mint a NFT and transfer it to another account
 fn test_mint_item2() {
     setup();
-    let tester_address = TESTER_ADDRESS();
+    let tester_address = TESTER_ADDRESS;
     let mut contract_state = CONTRACT_STATE();
     let contract_address = test_address(); // mock contract address
 
@@ -155,7 +148,7 @@ fn test_mint_item2() {
     assert_eq!(first_token_id, expected_token_id, "Token must be 1");
 
     // transfer item
-    let new_owner = NEW_OWNER();
+    let new_owner = NEW_OWNER;
     println!("new_owner address: 0x{:x}", new_owner);
     let new_owner_starting_balance = contract_state.erc721.balance_of(new_owner);
     println!("Starting balance new_owner: {:?}", new_owner_starting_balance);
