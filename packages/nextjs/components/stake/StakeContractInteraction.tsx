@@ -9,7 +9,7 @@ import { ETHToPrice } from "~~/components/stake/ETHToPrice";
 import { Address } from "~~/components/scaffold-stark";
 import humanizeDuration from "humanize-duration";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
 function formatEther(weiValue: number) {
   const etherValue = weiValue / 1e18;
@@ -23,10 +23,10 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { data: ExampleExternalContact } = useDeployedContractInfo(
     "ExampleExternalContract",
   );
-  const { value: stakerContractBalance } = useScaffoldEthBalance({
+  const { value: stakerContractBalance } = useScaffoldStrkBalance({
     address: StakerContract?.address,
   });
-  const { value: exampleExternalContractBalance } = useScaffoldEthBalance({
+  const { value: exampleExternalContractBalance } = useScaffoldStrkBalance({
     address: ExampleExternalContact?.address,
   });
 
@@ -71,7 +71,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { sendAsync: stakeEth } = useScaffoldMultiWriteContract({
     calls: [
       {
-        contractName: "Eth",
+        contractName: "Strk",
         functionName: "approve",
         args: [StakerContract?.address ?? "", 5 * 10 ** 17],
       },
@@ -117,9 +117,8 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
         </div>
       )}
       <div
-        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${
-          !isStakingCompleted ? "mt-24" : ""
-        }`}
+        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${!isStakingCompleted ? "mt-24" : ""
+          }`}
       >
         <div className="flex flex-col w-full items-center">
           <p className="block text-2xl mt-0 mb-2 font-semibold">
