@@ -13,8 +13,8 @@ import { formatEther } from "ethers";
 import {
   getTokenPrice,
   multiplyTo1e18,
-} from "~~/utils/scaffold-stark/priceInWei";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+} from "~~/utils/scaffold-stark/priceInFri";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
 const TokenVendor: NextPage = () => {
   const [toAddress, setToAddress] = useState("");
@@ -45,9 +45,9 @@ const TokenVendor: NextPage = () => {
     args: [vendorContractData?.address ?? ""],
   });
 
-  const { data: tokensPerEth } = useScaffoldReadContract({
+  const { data: tokensPerStrk } = useScaffoldReadContract({
     contractName: "Vendor",
-    functionName: "tokens_per_eth",
+    functionName: "tokens_per_strk",
   });
 
   const { sendAsync: transferTokens } = useScaffoldWriteContract({
@@ -56,26 +56,26 @@ const TokenVendor: NextPage = () => {
     args: [toAddress, multiplyTo1e18(tokensToSend)],
   });
 
-  const { value: vendorContractBalance } = useScaffoldEthBalance({
+  const { value: vendorContractBalance } = useScaffoldStrkBalance({
     address: vendorContractData?.address,
   });
 
-  const eth_to_spent = getTokenPrice(
+  const strk_to_spent = getTokenPrice(
     tokensToBuy,
-    tokensPerEth as unknown as bigint,
+    tokensPerStrk as unknown as bigint,
   );
 
   const { sendAsync: buy } = useScaffoldMultiWriteContract({
     calls: [
       {
-        contractName: "Eth",
+        contractName: "Strk",
         functionName: "approve",
-        args: [vendorContractData?.address ?? "", eth_to_spent],
+        args: [vendorContractData?.address ?? "", strk_to_spent],
       },
       {
         contractName: "Vendor",
         functionName: "buy_tokens",
-        args: [eth_to_spent],
+        args: [strk_to_spent],
       },
     ],
   });
@@ -96,7 +96,7 @@ const TokenVendor: NextPage = () => {
   });
 
   // FixMe: Read symbol from contract
-  const ethSymbol = "ETH";
+  const strkSymbol = "STRK";
 
   const wrapInTryCatch =
     (fn: () => Promise<any>, errorMessageFnDescription: string) => async () => {
@@ -138,11 +138,11 @@ const TokenVendor: NextPage = () => {
             </div>
           </div>
           <div>
-            Vendor eth balance:
+            Vendor strk balance:
             <span className="px-1">
               {parseFloat(formatEther(vendorContractBalance?.toString() || 0n))}
             </span>
-            <span className="font-bold ml-1">{ethSymbol}</span>
+            <span className="font-bold ml-1">{strkSymbol}</span>
           </div>*/}
         </div>
 
@@ -150,7 +150,7 @@ const TokenVendor: NextPage = () => {
         {/*
           <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
             <div className="text-xl">Buy tokens</div>
-            <div>{Number(tokensPerEth)} tokens per ETH</div>
+            <div>{Number(tokensPerEth)} tokens per STRK</div>
             <div className="w-full flex flex-col space-y-2">
               <IntegerInput
                 placeholder="amount of tokens to buy"
@@ -197,7 +197,7 @@ const TokenVendor: NextPage = () => {
         {/* {!!yourTokenBalance && (
           <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
             <div className="text-xl">Sell tokens</div>
-            <div>{Number(tokensPerEth)} tokens per ETH</div>
+            <div>{Number(tokensPerStrk)} tokens per STRK</div>
             <div className="w-full flex flex-col space-y-2">
               <IntegerInput
                 placeholder="amount of tokens to sell"

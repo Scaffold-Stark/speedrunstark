@@ -1,12 +1,12 @@
 use starknet::ContractAddress;
 #[starknet::interface]
 pub trait IVendor<T> {
-    fn buy_tokens(ref self: T, eth_amount_wei: u256);
+    fn buy_tokens(ref self: T, strk_amount_fri: u256);
     fn withdraw(ref self: T);
     fn sell_tokens(ref self: T, amount_tokens: u256);
-    fn tokens_per_eth(self: @T) -> u256;
+    fn tokens_per_strk(self: @T) -> u256;
     fn your_token(self: @T) -> ContractAddress;
-    fn eth_token(self: @T) -> ContractAddress;
+    fn strk_token(self: @T) -> ContractAddress;
 }
 
 #[starknet::contract]
@@ -22,7 +22,7 @@ mod Vendor {
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
-    // ToDo Checkpoint 2: Define const TokensPerEth
+    // ToDo Checkpoint 2: Define const TokensPerStrk
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
@@ -30,7 +30,7 @@ mod Vendor {
 
     #[storage]
     struct Storage {
-        eth_token: IERC20CamelDispatcher,
+        strk_token: IERC20CamelDispatcher,
         your_token: IYourTokenDispatcher,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
@@ -48,7 +48,7 @@ mod Vendor {
     #[derive(Drop, starknet::Event)]
     struct BuyTokens {
         buyer: ContractAddress,
-        eth_amount: u256,
+        strk_amount: u256,
         tokens_amount: u256,
     }
 
@@ -60,18 +60,19 @@ mod Vendor {
     // Todo Checkpoint 2: Edit the constructor to initialize the owner of the contract.
     fn constructor(
         ref self: ContractState,
-        eth_token_address: ContractAddress,
+        strk_token_address: ContractAddress,
         your_token_address: ContractAddress,
     ) {
-        self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
+        self.strk_token.write(IERC20CamelDispatcher { contract_address: strk_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
         // ToDo Checkpoint 2: Initialize the owner of the contract here.
+        self.ownable.initializer(get_caller_address());
     }
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {
         // ToDo Checkpoint 2: Implement your function buy_tokens here.
         fn buy_tokens(
-            ref self: ContractState, eth_amount_wei: u256,
+            ref self: ContractState, strk_amount_fri: u256,
         ) { // Note: In UI and Debug contract `buyer` should call `approve`` before to `transfer` the amount to the `Vendor` contract.
         }
 
@@ -82,7 +83,7 @@ mod Vendor {
         fn sell_tokens(ref self: ContractState, amount_tokens: u256) {}
 
         // ToDo Checkpoint 2: Modify to return the amount of tokens per 1 ETH.
-        fn tokens_per_eth(self: @ContractState) -> u256 {
+        fn tokens_per_strk(self: @ContractState) -> u256 {
             0
         }
 
@@ -90,8 +91,8 @@ mod Vendor {
             self.your_token.read().contract_address
         }
 
-        fn eth_token(self: @ContractState) -> ContractAddress {
-            self.eth_token.read().contract_address
+        fn strk_token(self: @ContractState) -> ContractAddress {
+            self.strk_token.read().contract_address
         }
     }
 }

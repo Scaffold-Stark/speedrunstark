@@ -36,7 +36,7 @@ const Events: NextPage = () => {
               <thead>
                 <tr>
                   <th className="bg-secondary text-white">Buyer</th>
-                  <th className="bg-secondary text-white">Amount of ETH</th>
+                  <th className="bg-secondary text-white">Amount of STRK</th>
                   <th className="bg-secondary text-white">Amount of Tokens</th>
                 </tr>
               </thead>
@@ -56,7 +56,7 @@ const Events: NextPage = () => {
                             address={`0x${BigInt(event.args.buyer).toString(16)}`}
                           />
                         </td>
-                        <td>{formatEther(event.args.eth_amount).toString()}</td>
+                        <td>{formatEther(event.args.strk_amount).toString()}</td>
                         <td>
                           {formatEther(event.args.tokens_amount).toString()}
                         </td>
@@ -84,7 +84,7 @@ const Events: NextPage = () => {
               <thead>
                 <tr>
                   <th className="bg-secondary text-white">Seller</th>
-                  <th className="bg-secondary text-white">Amount of ETH</th>
+                  <th className="bg-secondary text-white">Amount of STRK</th>
                   <th className="bg-secondary text-white">Amount of Tokens</th>
                 </tr>
               </thead>
@@ -104,7 +104,7 @@ const Events: NextPage = () => {
                           address={`0x${BigInt(event.args.seller).toString(16)}`}
                            />
                         </td>
-                        <td>{formatEther(event.args.eth_amount).toString()}</td>
+                        <td>{formatEther(event.args.strk_amount).toString()}</td>
                         <td>
                           {formatEther(event.args.tokens_amount).toString()}
                         </td>
