@@ -246,15 +246,26 @@ fn test_success_withdraw_tokens() {
     println!("---- Vendor contract strk balance: {:?} STRK in fri", vendor_strk_balance);
 
     println!("-- Withdrawing strk from Vendor contract ...");
-    // Change the caller address of the vendor_contract_address to the owner_address
-    cheat_caller_address(vendor_contract_address, owner_address, CheatSpan::TargetCalls(1));
+
+    // The deployer is the actual owner of the contract
+    let deployer_address = get_contract_address();
+    println!("---- Deployer address (contract owner): {:?}", deployer_address);
+
+    // Get the deployer's balance before withdraw
+    let deployer_balance_before = strk_token_dispatcher.balance_of(deployer_address);
+    println!("---- Deployer balance before withdraw: {:?} STRK in fri", deployer_balance_before);
+
+    // We need to cheat the caller address to be the deployer when calling withdraw
+    cheat_caller_address(vendor_contract_address, deployer_address, CheatSpan::TargetCalls(1));
     vendor_dispatcher.withdraw();
-    let strk_balance_after_withdraw = strk_token_dispatcher.balance_of(owner_address);
-    println!(
-        "---- Owner token balance after withdraw: {:?} STRK in fri", strk_balance_after_withdraw,
-    );
+
+    // Check the deployer's balance after withdraw
+    let deployer_balance_after = strk_token_dispatcher.balance_of(deployer_address);
+    println!("---- Deployer balance after withdraw: {:?} STRK in fri", deployer_balance_after);
+
+    // Assert that the deployer's balance increased by the vendor's balance
     assert(
-        owner_strk_balance_before_withdraw + vendor_strk_balance == strk_balance_after_withdraw,
+        deployer_balance_before + vendor_strk_balance == deployer_balance_after,
         'Balance should be the same',
     );
 }
