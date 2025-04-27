@@ -150,7 +150,7 @@ const TokenVendor: NextPage = () => {
         {/*
           <div className="flex flex-col items-center space-y-4 bg-base-100 border-8 border-secondary rounded-xl p-6 mt-8 w-full max-w-lg">
             <div className="text-xl">Buy tokens</div>
-            <div>{Number(tokensPerEth)} tokens per STRK</div>
+            <div>{Number(tokensPerStrk)} tokens per STRK</div>
             <div className="w-full flex flex-col space-y-2">
               <IntegerInput
                 placeholder="amount of tokens to buy"
