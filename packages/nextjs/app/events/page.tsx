@@ -56,7 +56,9 @@ const Events: NextPage = () => {
                             address={`0x${BigInt(event.args.buyer).toString(16)}`}
                           />
                         </td>
-                        <td>{formatEther(event.args.strk_amount).toString()}</td>
+                        <td>
+                          {formatEther(event.args.strk_amount).toString()}
+                        </td>
                         <td>
                           {formatEther(event.args.tokens_amount).toString()}
                         </td>
