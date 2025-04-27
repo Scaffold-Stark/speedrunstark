@@ -66,7 +66,6 @@ mod Vendor {
         self.strk_token.write(IERC20Dispatcher { contract_address: strk_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
         // ToDo Checkpoint 2: Initialize the owner of the contract here.
-        self.ownable.initializer(get_caller_address());
     }
     #[abi(embed_v0)]
     impl VendorImpl of IVendor<ContractState> {
