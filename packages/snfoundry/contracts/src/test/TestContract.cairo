@@ -20,7 +20,7 @@ fn OTHER() -> ContractAddress {
 // Should deploy the MockSTRKToken contract
 fn deploy_mock_strk_token() -> ContractAddress {
     let erc20_class_hash = declare("MockSTRKToken").unwrap().contract_class();
-    let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_STRK_IN_WEI
+    let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_STRK_IN_FRI
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
     calldata.append_serde(RECIPIENT());
@@ -54,7 +54,7 @@ fn deploy_vendor_contract() -> ContractAddress {
     // send strk to vendor contract
     // change the caller address of the strk_token_address to be tester_address
     cheat_caller_address(strk_token_address, tester_address, CheatSpan::TargetCalls(1));
-    let strk_amount_fri: u256 = 1000000000000000000; // 1_STRK_IN_WEI
+    let strk_amount_fri: u256 = 1000000000000000000; // 1_STRK_IN_FRI
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     assert(
         strk_token_dispatcher.transfer(vendor_contract_address, strk_amount_fri), 'Transfer failed',
@@ -66,7 +66,7 @@ fn deploy_vendor_contract() -> ContractAddress {
     // Change the caller address of the your_token_address to be tester_address
     cheat_caller_address(your_token_address, tester_address, CheatSpan::TargetCalls(1));
     let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
-    let INITIAL_BALANCE: u256 = 1000000000000000000000; // 1000_GLD_IN_WEI
+    let INITIAL_BALANCE: u256 = 1000000000000000000000; // 1000_GLD_IN_FRI
     assert(
         your_token_dispatcher.transfer(vendor_contract_address, INITIAL_BALANCE), 'Transfer failed',
     );
@@ -77,7 +77,7 @@ fn deploy_vendor_contract() -> ContractAddress {
 
 #[test]
 fn test_deploy_mock_strk_token() {
-    let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_STRK_IN_WEI
+    let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_STRK_IN_FRI
     let contract_address = deploy_mock_strk_token();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address };
     assert(strk_token_dispatcher.balance_of(RECIPIENT()) == INITIAL_BALANCE, 'Balance should be > 0');
@@ -85,7 +85,7 @@ fn test_deploy_mock_strk_token() {
 
 #[test]
 fn test_deploy_your_token() {
-    let MINIMUN_SUPPLY: u256 = 1000000000000000000000; // 1000_GLD_IN_WEI
+    let MINIMUN_SUPPLY: u256 = 1000000000000000000000; // 1000_GLD_IN_FRI
     let contract_address = deploy_your_token_token();
     let your_token_dispatcher = IYourTokenDispatcher { contract_address };
     let total_supply = your_token_dispatcher.total_supply();
@@ -111,11 +111,11 @@ fn test_buy_tokens() {
     let tester_address = RECIPIENT();
 
     println!("-- Tester address: {:?}", tester_address);
-    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_WEI
+    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_FRI
     println!("---- Starting token balance: {:?} GLD in fri", starting_balance);
 
     println!("-- Buying 0.001 STRK worth of tokens ...");
-    let strk_amount_fri: u256 = 1000000000000000; // 0.001_STRK_IN_WEI
+    let strk_amount_fri: u256 = 1000000000000000; // 0.001_STRK_IN_FRI
     // Change the caller address of the STRK_token_contract to the tester_address
     cheat_caller_address(strk_token_address, tester_address, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(vendor_contract_address, strk_amount_fri);
@@ -128,9 +128,9 @@ fn test_buy_tokens() {
     vendor_dispatcher.buy_tokens(strk_amount_fri);
     println!("-- Bought 0.001 STRK worth of tokens");
     let tokens_per_strk: u256 = vendor_dispatcher.tokens_per_strk(); // 100 tokens per STRK
-    let expected_tokens = strk_amount_fri * tokens_per_strk; // 0.1_GLD_IN_WEI ;
+    let expected_tokens = strk_amount_fri * tokens_per_strk; // 0.1_GLD_IN_FRI ;
     println!("---- Expect to receive: {:?} GLD in fri", expected_tokens);
-    let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_WEI
+    let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_FRI
     let new_balance = your_token_dispatcher.balance_of(tester_address);
     println!("---- New token balance: {:?} GLD in fri", new_balance);
     assert(new_balance == expected_balance, 'Balance should be increased');
@@ -147,11 +147,11 @@ fn test_sell_tokens() {
     let tester_address = RECIPIENT();
 
     println!("-- Tester address: {:?}", tester_address);
-    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_WEI
+    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_FRI
     println!("---- Starting token balance: {:?} GLD in fri", starting_balance);
 
     println!("-- Selling back 0.1 GLD tokens ...");
-    let gld_token_amount_fri: u256 = 100000000000000000; // 0.1_GLD_IN_WEI
+    let gld_token_amount_fri: u256 = 100000000000000000; // 0.1_GLD_IN_FRI
     // Change the caller address of the your_token_contract to the tester_address
     cheat_caller_address(your_token_address, tester_address, CheatSpan::TargetCalls(1));
     your_token_dispatcher.approve(vendor_contract_address, gld_token_amount_fri);
@@ -166,7 +166,7 @@ fn test_sell_tokens() {
     let new_balance = your_token_dispatcher.balance_of(tester_address);
     println!("---- New token balance: {:?} GLD in fri", new_balance);
     let expected_balance = starting_balance
-        - gld_token_amount_fri; // 2000 - 0.1 = 1999.9_GLD_IN_WEI
+        - gld_token_amount_fri; // 2000 - 0.1 = 1999.9_GLD_IN_FRI
     assert(new_balance == expected_balance, 'Balance should be decreased');
 }
 
@@ -184,11 +184,11 @@ fn test_failing_withdraw_tokens() {
     let tester_address = RECIPIENT();
 
     println!("-- Tester address: {:?}", tester_address);
-    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_WEI
+    let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_FRI
     println!("---- Starting token balance: {:?} GLD in fri", starting_balance);
 
     println!("-- Buying 0.1 STRK worth of tokens ...");
-    let strk_amount_fri: u256 = 100000000000000000; // 0.1_STRK_IN_WEI
+    let strk_amount_fri: u256 = 100000000000000000; // 0.1_STRK_IN_FRI
     // Change the caller address of the STRK_token_contract to the tester_address
     cheat_caller_address(strk_token_address, tester_address, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(vendor_contract_address, strk_amount_fri);
@@ -201,9 +201,9 @@ fn test_failing_withdraw_tokens() {
     vendor_dispatcher.buy_tokens(strk_amount_fri);
     println!("-- Bought 0.1 STRK worth of tokens");
     let tokens_per_strk: u256 = vendor_dispatcher.tokens_per_strk(); // 100 tokens per STRK
-    let expected_tokens = strk_amount_fri * tokens_per_strk; // 10_GLD_IN_WEI ;
+    let expected_tokens = strk_amount_fri * tokens_per_strk; // 10_GLD_IN_FRI ;
     println!("---- Expect to receive: {:?} GLD in fri", expected_tokens);
-    let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_WEI
+    let expected_balance = starting_balance + expected_tokens; // 1000 + 0.1 = 1000.1_GLD_IN_FRI
     let new_balance = your_token_dispatcher.balance_of(tester_address);
     println!("---- New token balance: {:?} GLD in fri", new_balance);
     assert(new_balance == expected_balance, 'Balance should be increased');
@@ -238,7 +238,7 @@ fn test_success_withdraw_tokens() {
     println!("-- Tester address: {:?}", owner_address);
 
     println!("-- Buying 0.1 STRK worth of tokens ...");
-    let strk_amount_fri: u256 = 100000000000000000; // 0.1_STRK_IN_WEI
+    let strk_amount_fri: u256 = 100000000000000000; // 0.1_STRK_IN_FRI
     // Change the caller address of the STRK_token_contract to the owner_address
     cheat_caller_address(strk_token_address, owner_address, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(vendor_contract_address, strk_amount_fri);
