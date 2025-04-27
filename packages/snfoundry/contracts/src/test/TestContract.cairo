@@ -1,40 +1,30 @@
 use contracts::Vendor::{IVendorDispatcher, IVendorDispatcherTrait};
 use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
-use contracts::mock_contracts::MockSTRKToken;
+use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{
-    CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare,
-    start_cheat_block_timestamp_global,
-};
-use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
+use snforge_std::{CheatSpan, cheat_caller_address};
+use starknet::{ContractAddress, get_contract_address};
 
-fn RECIPIENT() -> ContractAddress {
-    contract_address_const::<'RECIPIENT'>()
-}
+const RECIPIENT: ContractAddress = 'RECIPIENT'.try_into().unwrap();
 
-fn OTHER() -> ContractAddress {
-    contract_address_const::<'OTHER'>()
-}
+const OTHER: ContractAddress = 'OTHER'.try_into().unwrap();
 
 // Should deploy the MockSTRKToken contract
 fn deploy_mock_strk_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockSTRKToken").unwrap().contract_class();
     let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_STRK_IN_FRI
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
-    calldata.append_serde(RECIPIENT());
-    let (strk_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
-    strk_token_address
+    calldata.append_serde(RECIPIENT);
+    declare_and_deploy("MockSTRKToken", calldata)
 }
 
 // Should deploy the YourToken contract
 fn deploy_your_token_token() -> ContractAddress {
-    let erc20_class_hash = declare("YourToken").unwrap().contract_class();
     let mut calldata = array![];
-    calldata.append_serde(RECIPIENT());
-    let (your_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
-    println!("-- YourToken contract deployed on: {:?}", your_token_address);
+    calldata.append_serde(RECIPIENT);
+    let your_token_address = declare_and_deploy("YourToken", calldata);
+    println!("-- YourToken contract deployed on: 0x{:?}", your_token_address);
     your_token_address
 }
 
@@ -42,14 +32,12 @@ fn deploy_your_token_token() -> ContractAddress {
 fn deploy_vendor_contract() -> ContractAddress {
     let strk_token_address = deploy_mock_strk_token();
     let your_token_address = deploy_your_token_token();
-    let vendor_class_hash = declare("Vendor").unwrap().contract_class();
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
     let mut calldata = array![];
     calldata.append_serde(strk_token_address);
     calldata.append_serde(your_token_address);
-    calldata.append_serde(tester_address);
-    let (vendor_contract_address, _) = vendor_class_hash.deploy(@calldata).unwrap();
-    println!("-- Vendor contract deployed on: {:?}", vendor_contract_address);
+    let vendor_contract_address = declare_and_deploy("Vendor", calldata);
+    println!("-- Vendor contract deployed on: 0x{:?}", vendor_contract_address);
 
     // send strk to vendor contract
     // change the caller address of the strk_token_address to be tester_address
@@ -80,7 +68,7 @@ fn test_deploy_mock_strk_token() {
     let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_STRK_IN_FRI
     let contract_address = deploy_mock_strk_token();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address };
-    assert(strk_token_dispatcher.balance_of(RECIPIENT()) == INITIAL_BALANCE, 'Balance should be > 0');
+    assert(strk_token_dispatcher.balance_of(RECIPIENT) == INITIAL_BALANCE, 'Balance should be > 0');
 }
 
 #[test]
@@ -108,7 +96,7 @@ fn test_buy_tokens() {
     let strk_token_address = vendor_dispatcher.strk_token();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
 
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
 
     println!("-- Tester address: {:?}", tester_address);
     let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_FRI
@@ -144,7 +132,7 @@ fn test_sell_tokens() {
     let your_token_address = vendor_dispatcher.your_token();
     let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
 
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
 
     println!("-- Tester address: {:?}", tester_address);
     let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_FRI
@@ -181,7 +169,7 @@ fn test_failing_withdraw_tokens() {
     let strk_token_address = vendor_dispatcher.strk_token();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
 
-    let tester_address = RECIPIENT();
+    let tester_address = RECIPIENT;
 
     println!("-- Tester address: {:?}", tester_address);
     let starting_balance = your_token_dispatcher.balance_of(tester_address); // 1000 GLD_IN_FRI
@@ -211,7 +199,7 @@ fn test_failing_withdraw_tokens() {
     let vendor_strk_balance = strk_token_dispatcher.balance_of(vendor_contract_address);
     println!("---- Vendor contract strk balance: {:?} STRK in fri", vendor_strk_balance);
 
-    let not_owner_address = OTHER();
+    let not_owner_address = OTHER;
     let not_owner_balance = strk_token_dispatcher.balance_of(not_owner_address);
     println!("---- Other address strk balance: {:?} STRK in fri", not_owner_balance);
     // Change the caller address of the vendor_contract_address to the not_owner_address
@@ -233,7 +221,7 @@ fn test_success_withdraw_tokens() {
     let strk_token_address = vendor_dispatcher.strk_token();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
 
-    let owner_address = RECIPIENT();
+    let owner_address = RECIPIENT;
 
     println!("-- Tester address: {:?}", owner_address);
 
