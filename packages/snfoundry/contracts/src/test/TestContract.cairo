@@ -1,7 +1,7 @@
 use contracts::Vendor::{IVendorDispatcher, IVendorDispatcherTrait};
 use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
 use contracts::mock_contracts::MockSTRKToken;
-use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{
     CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare,
@@ -55,11 +55,11 @@ fn deploy_vendor_contract() -> ContractAddress {
     // change the caller address of the strk_token_address to be tester_address
     cheat_caller_address(strk_token_address, tester_address, CheatSpan::TargetCalls(1));
     let strk_amount_fri: u256 = 1000000000000000000; // 1_STRK_IN_WEI
-    let strk_token_dispatcher = IERC20CamelDispatcher { contract_address: strk_token_address };
+    let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     assert(
         strk_token_dispatcher.transfer(vendor_contract_address, strk_amount_fri), 'Transfer failed',
     );
-    let vendor_strk_balance = strk_token_dispatcher.balanceOf(vendor_contract_address);
+    let vendor_strk_balance = strk_token_dispatcher.balance_of(vendor_contract_address);
     println!("-- Vendor strk balance: {:?} STRK in fri", vendor_strk_balance);
 
     // send GLD token to vendor contract
@@ -79,8 +79,8 @@ fn deploy_vendor_contract() -> ContractAddress {
 fn test_deploy_mock_strk_token() {
     let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_STRK_IN_WEI
     let contract_address = deploy_mock_strk_token();
-    let strk_token_dispatcher = IERC20CamelDispatcher { contract_address };
-    assert(strk_token_dispatcher.balanceOf(RECIPIENT()) == INITIAL_BALANCE, 'Balance should be > 0');
+    let strk_token_dispatcher = IERC20Dispatcher { contract_address };
+    assert(strk_token_dispatcher.balance_of(RECIPIENT()) == INITIAL_BALANCE, 'Balance should be > 0');
 }
 
 #[test]
@@ -106,7 +106,7 @@ fn test_buy_tokens() {
     let your_token_address = vendor_dispatcher.your_token();
     let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
     let strk_token_address = vendor_dispatcher.strk_token();
-    let strk_token_dispatcher = IERC20CamelDispatcher { contract_address: strk_token_address };
+    let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
 
     let tester_address = RECIPIENT();
 
@@ -179,7 +179,7 @@ fn test_failing_withdraw_tokens() {
     let your_token_address = vendor_dispatcher.your_token();
     let your_token_dispatcher = IYourTokenDispatcher { contract_address: your_token_address };
     let strk_token_address = vendor_dispatcher.strk_token();
-    let strk_token_dispatcher = IERC20CamelDispatcher { contract_address: strk_token_address };
+    let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
 
     let tester_address = RECIPIENT();
 
@@ -208,17 +208,17 @@ fn test_failing_withdraw_tokens() {
     println!("---- New token balance: {:?} GLD in fri", new_balance);
     assert(new_balance == expected_balance, 'Balance should be increased');
 
-    let vendor_strk_balance = strk_token_dispatcher.balanceOf(vendor_contract_address);
+    let vendor_strk_balance = strk_token_dispatcher.balance_of(vendor_contract_address);
     println!("---- Vendor contract strk balance: {:?} STRK in fri", vendor_strk_balance);
 
     let not_owner_address = OTHER();
-    let not_owner_balance = strk_token_dispatcher.balanceOf(not_owner_address);
+    let not_owner_balance = strk_token_dispatcher.balance_of(not_owner_address);
     println!("---- Other address strk balance: {:?} STRK in fri", not_owner_balance);
     // Change the caller address of the vendor_contract_address to the not_owner_address
     cheat_caller_address(vendor_contract_address, not_owner_address, CheatSpan::TargetCalls(1));
     vendor_dispatcher.withdraw();
 
-    let balance_after_attemp_withdraw = strk_token_dispatcher.balanceOf(vendor_contract_address);
+    let balance_after_attemp_withdraw = strk_token_dispatcher.balance_of(vendor_contract_address);
     println!(
         "---- Vendor contract strk balance after withdraw: {:?} STRK in fri",
         balance_after_attemp_withdraw,
@@ -231,7 +231,7 @@ fn test_success_withdraw_tokens() {
     let vendor_contract_address = deploy_vendor_contract();
     let vendor_dispatcher = IVendorDispatcher { contract_address: vendor_contract_address };
     let strk_token_address = vendor_dispatcher.strk_token();
-    let strk_token_dispatcher = IERC20CamelDispatcher { contract_address: strk_token_address };
+    let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
 
     let owner_address = RECIPIENT();
 
@@ -248,20 +248,20 @@ fn test_success_withdraw_tokens() {
     vendor_dispatcher.buy_tokens(strk_amount_fri);
     println!("-- Bought 0.1 STRK worth of tokens");
 
-    let owner_strk_balance_before_withdraw = strk_token_dispatcher.balanceOf(owner_address);
+    let owner_strk_balance_before_withdraw = strk_token_dispatcher.balance_of(owner_address);
     println!(
         "---- Owner token balance before withdraw: {:?} STRK in fri",
         owner_strk_balance_before_withdraw,
     );
 
-    let vendor_strk_balance = strk_token_dispatcher.balanceOf(vendor_contract_address);
+    let vendor_strk_balance = strk_token_dispatcher.balance_of(vendor_contract_address);
     println!("---- Vendor contract strk balance: {:?} STRK in fri", vendor_strk_balance);
 
     println!("-- Withdrawing strk from Vendor contract ...");
     // Change the caller address of the vendor_contract_address to the owner_address
     cheat_caller_address(vendor_contract_address, owner_address, CheatSpan::TargetCalls(1));
     vendor_dispatcher.withdraw();
-    let strk_balance_after_withdraw = strk_token_dispatcher.balanceOf(owner_address);
+    let strk_balance_after_withdraw = strk_token_dispatcher.balance_of(owner_address);
     println!(
         "---- Owner token balance after withdraw: {:?} STRK in fri", strk_balance_after_withdraw,
     );

@@ -15,7 +15,7 @@ mod Vendor {
     use core::traits::TryInto;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_access::ownable::interface::IOwnable;
-    use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{get_caller_address, get_contract_address};
     use super::{ContractAddress, IVendor};
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
@@ -30,7 +30,7 @@ mod Vendor {
 
     #[storage]
     struct Storage {
-        strk_token: IERC20CamelDispatcher,
+        strk_token: IERC20Dispatcher,
         your_token: IYourTokenDispatcher,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
@@ -63,7 +63,7 @@ mod Vendor {
         strk_token_address: ContractAddress,
         your_token_address: ContractAddress,
     ) {
-        self.strk_token.write(IERC20CamelDispatcher { contract_address: strk_token_address });
+        self.strk_token.write(IERC20Dispatcher { contract_address: strk_token_address });
         self.your_token.write(IYourTokenDispatcher { contract_address: your_token_address });
         // ToDo Checkpoint 2: Initialize the owner of the contract here.
         self.ownable.initializer(get_caller_address());
@@ -82,7 +82,7 @@ mod Vendor {
         // ToDo Checkpoint 3: Implement your function sell_tokens here.
         fn sell_tokens(ref self: ContractState, amount_tokens: u256) {}
 
-        // ToDo Checkpoint 2: Modify to return the amount of tokens per 1 ETH.
+        // ToDo Checkpoint 2: Modify to return the amount of tokens per 1 STRK.
         fn tokens_per_strk(self: @ContractState) -> u256 {
             0
         }
