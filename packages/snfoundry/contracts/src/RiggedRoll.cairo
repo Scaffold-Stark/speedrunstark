@@ -55,7 +55,7 @@ mod RiggedRoll {
         // the DiceGame contract and only initiate a roll when it guarantees a win.
         fn rigged_roll(ref self: ContractState, amount: u256) {}
 
-        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Ether from the rigged
+        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Stark from the rigged
         // contract to a specified address.
         fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256) {}
 

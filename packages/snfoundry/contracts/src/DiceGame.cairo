@@ -6,7 +6,7 @@ pub trait IDiceGame<T> {
     fn last_dice_value(self: @T) -> u256;
     fn nonce(self: @T) -> u256;
     fn prize(self: @T) -> u256;
-    fn eth_token_dispatcher(self: @T) -> IERC20CamelDispatcher;
+    fn strk_token_dispatcher(self: @T) -> IERC20CamelDispatcher;
 }
 
 #[starknet::contract]
@@ -39,15 +39,15 @@ pub mod DiceGame {
 
     #[storage]
     struct Storage {
-        eth_token: IERC20CamelDispatcher,
+        strk_token: IERC20CamelDispatcher,
         nonce: u256,
         prize: u256,
         last_dice_value: u256,
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, eth_token_address: ContractAddress) {
-        self.eth_token.write(IERC20CamelDispatcher { contract_address: eth_token_address });
+    fn constructor(ref self: ContractState, strk_token_address: ContractAddress) {
+        self.strk_token.write(IERC20CamelDispatcher { contract_address: strk_token_address });
         self._reset_prize();
     }
 
@@ -55,12 +55,12 @@ pub mod DiceGame {
     #[abi(embed_v0)]
     impl DiceGameImpl of super::IDiceGame<ContractState> {
         fn roll_dice(ref self: ContractState, amount: u256) {
-            // >= 0.002 ETH
-            assert(amount >= 2000000000000000, 'Not enough ETH');
+            // >= 0.002 STRK
+            assert(amount >= 2000000000000000, 'Not enough STRK');
             let caller = get_caller_address();
             let this_contract = get_contract_address();
             // call approve on UI
-            self.eth_token.read().transferFrom(caller, this_contract, amount);
+            self.strk_token.read().transferFrom(caller, this_contract, amount);
 
             let prev_block: u256 = get_block_number().into() - 1;
             let array = array![prev_block, self.nonce.read()];
@@ -76,10 +76,10 @@ pub mod DiceGame {
                 return;
             }
 
-            let contract_balance = self.eth_token.read().balanceOf(this_contract);
+            let contract_balance = self.strk_token.read().balanceOf(this_contract);
             let prize = self.prize.read();
             assert(contract_balance >= prize, 'Not enough balance');
-            self.eth_token.read().transfer(caller, prize);
+            self.strk_token.read().transfer(caller, prize);
 
             self._reset_prize();
             self.emit(Winner { winner: caller, amount: prize });
@@ -94,15 +94,15 @@ pub mod DiceGame {
         fn prize(self: @ContractState) -> u256 {
             self.prize.read()
         }
-        fn eth_token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
-            self.eth_token.read()
+        fn strk_token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
+            self.strk_token.read()
         }
     }
 
     #[generate_trait]
     pub impl InternalImpl of InternalTrait {
         fn _reset_prize(ref self: ContractState) {
-            let contract_balance = self.eth_token.read().balanceOf(get_contract_address());
+            let contract_balance = self.strk_token.read().balanceOf(get_contract_address());
             self.prize.write(contract_balance / 10);
         }
     }

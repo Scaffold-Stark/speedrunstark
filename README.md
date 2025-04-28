@@ -6,9 +6,9 @@
 
 > 🎰 Randomness is tricky on a public deterministic blockchain. The block hash is an easy to use, but very weak form of randomness. This challenge will give you an example of a contract using block hash to create random numbers. This randomness is exploitable. Other, stronger forms of randomness include commit/reveal schemes, oracles, or VRF from Chainlink.
 
-> 💬 Dice Game is a contract that allows users to roll the dice to try and win the prize. If players roll either a 0, 1, 2, 3, 4 or 5 they will win the current prize amount. The initial prize is 10% of the contract's balance, which starts out at .05 Eth.
+> 💬 Dice Game is a contract that allows users to roll the dice to try and win the prize. If players roll either a 0, 1, 2, 3, 4 or 5 they will win the current prize amount. The initial prize is 10% of the contract's balance, which starts out at .05 Strk.
 
-> 🧤 Every time a player rolls the dice, they are required to send .002 Eth. 40 percent of this value is added to the current prize amount while the other 60 percent stays in the contract to fund future prizes. Once a prize is won, the new prize amount is set to 10% of the total balance of the DiceGame contract.
+> 🧤 Every time a player rolls the dice, they are required to send .002 Strk. 40 percent of this value is added to the current prize amount while the other 60 percent stays in the contract to fund future prizes. Once a prize is won, the new prize amount is set to 10% of the total balance of the DiceGame contract.
 
 > 🧨 Your job is to attack the Dice Game contract! You will create a new contract that will predict the randomness ahead of time and only roll the dice when you're guaranteed to be a winner!
 
@@ -119,7 +119,7 @@ In the  RiggedRoll contract implement the `rigged_roll()` function. This functio
 
 🃏 Predict the outcome by generating your random numbers in the exact same way as the DiceGame contract.
 
-> 📣 Reminder! Calling `roll_dice()` will fail unless you transfer a value of at least .002 Eth!. That's why in order to call `rigged_roll()` the user will need to transfer a value of at least .002 Eth.
+> 📣 Reminder! Calling `roll_dice()` will fail unless you transfer a value of at least .002 Strk!. That's why in order to call `rigged_roll()` the user will need to transfer a value of at least .002 Strk.
 
 🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `deploy.ts` file in `packages/snfoundry/script-ts/deploy.ts`
 
@@ -143,7 +143,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 ![RiggedRollAddress](./packages/nextjs/public/ch3-events.png)
 
-📥 Implement the `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Eth from RiggedRoll to another address.
+📥 Implement the `fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256)` function to allow you to send Strk from RiggedRoll to another address.
 
 ### 🥅 Goals
 
@@ -168,7 +168,7 @@ You have beaten the game, but where is your money? Since the RiggedRoll contract
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
 

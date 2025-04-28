@@ -14,7 +14,7 @@ const deployScript = async (): Promise<void> => {
   const { address: diceGameAddr } = await deployContract({
     contract: "DiceGame",
     constructorArgs: {
-      eth_token_address:
+      strk_token_address:
         "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
     },
     options: {
@@ -28,10 +28,10 @@ const deployScript = async (): Promise<void> => {
 
   const strkContract = new Contract(strkAbi, strkAddress, deployer);
 
-  // 0.05 Eth
-  const ethAmount = 50000000000000000n;
+  // 0.05 Strk
+  const strkAmount = 50000000000000000n;
 
-  const tx = await strkContract.populate("transfer", [diceGameAddr, ethAmount]);
+  const tx = await strkContract.populate("transfer", [diceGameAddr, strkAmount]);
 
   const { transaction_hash: txH } = await deployer.execute(tx, {
     version: constants.TRANSACTION_VERSION.V3,

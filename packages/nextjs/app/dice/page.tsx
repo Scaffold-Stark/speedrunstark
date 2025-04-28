@@ -50,7 +50,7 @@ const DiceGame: NextPage = () => {
   const { sendAsync: multiContractWriteDice, isError: rollTheDiceError } =
     useScaffoldMultiWriteContract({
       calls: [
-        createContractCall("Eth", "approve", [
+        createContractCall("Strk", "approve", [
           accountDice?.address,
           parseEther(ROLL_ETH_VALUE),
         ]),
@@ -63,7 +63,7 @@ const DiceGame: NextPage = () => {
   const { sendAsync: multiContractWriteRigged, isError: riggedRollError } =
     useScaffoldMultiWriteContract({
       calls: [
-        createContractCall("Eth", "approve", [
+        createContractCall("Strk", "approve", [
           riggedRollContract?.address,
           parseEther(ROLL_ETH_VALUE),
         ]),

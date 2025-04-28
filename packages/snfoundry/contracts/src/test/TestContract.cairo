@@ -16,25 +16,25 @@ fn OWNER() -> ContractAddress {
     'OWNER'.try_into().unwrap()
 }
 
-const ROLL_DICE_AMOUNT: u256 = 2000000000000000; // 0.002_ETH_IN_WEI
-// Should deploy the MockETHToken contract
-fn deploy_mock_eth_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockETHToken").unwrap().contract_class();
-    let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_ETH_IN_WEI
+const ROLL_DICE_AMOUNT: u256 = 2000000000000000; // 0.002_STRK_IN_FRI
+// Should deploy the MockSTRKToken contract
+fn deploy_mock_strk_token() -> ContractAddress {
+    let erc20_class_hash = declare("MockSTRKToken").unwrap().contract_class();
+    let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_STRK_IN_FRI
     let reciever = OWNER();
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
     calldata.append_serde(reciever);
-    let (eth_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
-    eth_token_address
+    let (strk_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
+    strk_token_address
 }
 
 // Should deploy the DiceGame contract
 fn deploy_dice_game_contract() -> ContractAddress {
-    let eth_token_address = deploy_mock_eth_token();
+    let strk_token_address = deploy_mock_strk_token();
     let dice_game_class_hash = declare("DiceGame").unwrap().contract_class();
     let mut calldata = array![];
-    calldata.append_serde(eth_token_address);
+    calldata.append_serde(strk_token_address);
     let (dice_game_contract_address, _) = dice_game_class_hash.deploy(@calldata).unwrap();
     println!("-- Dice Game contract deployed on: {:?}", dice_game_contract_address);
     dice_game_contract_address
@@ -64,11 +64,11 @@ fn get_roll(get_roll_less_than_5: bool, rigged_roll_dispatcher: IRiggedRollDispa
         if (expected_roll <= 5) == get_roll_less_than_5 {
             break;
         }
-        let eth_token_dispatcher = dice_game_dispatcher.eth_token_dispatcher();
+        let strk_token_dispatcher = dice_game_dispatcher.strk_token_dispatcher();
         cheat_caller_address(
-            eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
+            strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
         );
-        eth_token_dispatcher.approve(dice_game_contract_address, ROLL_DICE_AMOUNT);
+        strk_token_dispatcher.approve(dice_game_contract_address, ROLL_DICE_AMOUNT);
         cheat_caller_address(dice_game_contract_address, tester_address, CheatSpan::TargetCalls(1));
         dice_game_dispatcher.roll_dice(ROLL_DICE_AMOUNT);
     };
@@ -85,22 +85,22 @@ fn test_deploy_rigged_roll() {
 }
 
 #[test]
-#[should_panic(expected: ('Not enough ETH',))]
+#[should_panic(expected: ('Not enough STRK',))]
 fn test_rigged_roll_fails() {
     let rigged_roll_contract_address = deploy_rigged_roll_contract();
     let rigged_roll_dispatcher = IRiggedRollDispatcher {
         contract_address: rigged_roll_contract_address,
     };
-    let eth_amount_wei: u256 = 1000000000000000; // 0.001_ETH_IN_WEI
+    let strk_amount_wei: u256 = 1000000000000000; // 0.001_STRK_IN_FRI
 
     let tester_address = OWNER();
-    let eth_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().eth_token_dispatcher();
+    let strk_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().strk_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
+        strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
-    eth_token_dispatcher.approve(rigged_roll_contract_address, eth_amount_wei);
+    strk_token_dispatcher.approve(rigged_roll_contract_address, strk_amount_wei);
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
-    rigged_roll_dispatcher.rigged_roll(eth_amount_wei);
+    rigged_roll_dispatcher.rigged_roll(strk_amount_wei);
 }
 
 #[test]
@@ -115,11 +115,11 @@ fn test_rigged_roll_call_dice_game() {
     let expected_roll = get_roll(get_roll_less_than_5, rigged_roll_dispatcher);
     println!("-- Expect roll to be less than or equal to 5. DiceGame Roll:: {:?}", expected_roll);
     let tester_address = OWNER();
-    let eth_token_dispatcher = dice_game_dispatcher.eth_token_dispatcher();
+    let strk_token_dispatcher = dice_game_dispatcher.strk_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
+        strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
-    eth_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
+    strk_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
 
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
 
@@ -161,11 +161,11 @@ fn test_rigged_roll_should_not_call_dice_game() {
     let expected_roll = get_roll(get_roll_less_than_5, rigged_roll_dispatcher);
     println!("-- Expect roll to be greater than 5. DiceGame Roll:: {:?}", expected_roll);
     let tester_address = OWNER();
-    let eth_token_dispatcher = dice_game_dispatcher.eth_token_dispatcher();
+    let strk_token_dispatcher = dice_game_dispatcher.strk_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
+        strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
-    eth_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
+    strk_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
 
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
 
@@ -190,23 +190,23 @@ fn test_withdraw() {
     let expected_roll = get_roll(get_roll_less_than_5, rigged_roll_dispatcher);
     println!("-- Expect roll to be less than or equal to 5. DiceGame Roll:: {:?}", expected_roll);
     let tester_address = OWNER();
-    let eth_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().eth_token_dispatcher();
+    let strk_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().strk_token_dispatcher();
     cheat_caller_address(
-        eth_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
+        strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
-    eth_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
+    strk_token_dispatcher.approve(rigged_roll_contract_address, ROLL_DICE_AMOUNT);
 
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
 
     rigged_roll_dispatcher.rigged_roll(ROLL_DICE_AMOUNT);
 
-    let tester_address_prev_balance = eth_token_dispatcher.balanceOf(tester_address);
+    let tester_address_prev_balance = strk_token_dispatcher.balanceOf(tester_address);
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
-    let rigged_roll_balance = eth_token_dispatcher.balanceOf(rigged_roll_contract_address);
+    let rigged_roll_balance = strk_token_dispatcher.balanceOf(rigged_roll_contract_address);
 
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
     rigged_roll_dispatcher.withdraw(tester_address, rigged_roll_balance);
-    let tester_address_new_balance = eth_token_dispatcher.balanceOf(tester_address);
+    let tester_address_new_balance = strk_token_dispatcher.balanceOf(tester_address);
     assert_eq!(
         tester_address_new_balance,
         tester_address_prev_balance + rigged_roll_balance,

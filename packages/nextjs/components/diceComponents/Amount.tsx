@@ -22,10 +22,10 @@ export const Amount = ({
 }: TAmountProps) => {
   const { targetNetwork: configuredNetwork } = useTargetNetwork();
   const price = useGlobalState((state) => state.nativeCurrencyPrice);
-  const [isEthBalance, setEthBalance] = useState<boolean>(!showUsdPrice);
+  const [isStrkBalance, setStrkBalance] = useState<boolean>(!showUsdPrice);
 
   useEffect(() => {
-    setEthBalance(!showUsdPrice);
+    setStrkBalance(!showUsdPrice);
   }, [showUsdPrice]);
 
   if (isLoading) {
@@ -41,7 +41,7 @@ export const Amount = ({
 
   const onToggleBalance = () => {
     if (!disableToggle) {
-      setEthBalance(!isEthBalance);
+      setStrkBalance(!isStrkBalance);
     }
   };
 
@@ -51,7 +51,7 @@ export const Amount = ({
       onClick={onToggleBalance}
     >
       <div className="w-full flex items-center justify-center">
-        {isEthBalance ? (
+        {isStrkBalance ? (
           <>
             <span>{amount?.toFixed(5)}</span>
             <span className="font-bold ml-1">
