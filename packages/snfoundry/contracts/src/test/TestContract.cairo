@@ -1,7 +1,6 @@
 use contracts::DiceGame::{DiceGame, IDiceGameDispatcherTrait};
 use contracts::RiggedRoll::{IRiggedRollDispatcher, IRiggedRollDispatcherTrait};
 use core::keccak::keccak_u256s_le_inputs;
-use core::traits::TryInto;
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::IERC20DispatcherTrait;
 use openzeppelin_utils::serde::SerializedAppend;
