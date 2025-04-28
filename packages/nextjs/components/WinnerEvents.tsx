@@ -14,7 +14,7 @@ export type WinnerEventsProps = {
 };
 
 export const WinnerEvents = ({ winners }: WinnerEventsProps) => {
-  const [showUsdPrice, setShowUsdPrice] = useState(true);
+  const [showUsdPrice, setShowUsdPrice] = useState(false);
   return (
     <div className="mx-10">
       <div className="flex w-auto justify-center h-10">

@@ -170,7 +170,6 @@ const DiceGame: NextPage = () => {
             <span className="text-lg mr-2">Prize:</span>
             <Amount
               amount={prize ? Number(formatEther(prize.toString())) * 10 : 0}
-              showUsdPrice
               className="text-lg"
             />
           </div>
@@ -205,7 +204,6 @@ const DiceGame: NextPage = () => {
                     ? Number(formatEther(riggedRollBalance.toString()))
                     : 0
                 }
-                showUsdPrice
                 className="text-lg"
               />
             </div>
