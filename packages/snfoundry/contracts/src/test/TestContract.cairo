@@ -24,7 +24,7 @@ fn deploy_your_token_token() -> ContractAddress {
     let mut calldata = array![];
     calldata.append_serde(RECIPIENT);
     let your_token_address = declare_and_deploy("YourToken", calldata);
-    println!("-- YourToken contract deployed on: 0x{:?}", your_token_address);
+    println!("-- YourToken contract deployed on: 0x{:x}", your_token_address);
     your_token_address
 }
 
@@ -37,7 +37,7 @@ fn deploy_vendor_contract() -> ContractAddress {
     calldata.append_serde(strk_token_address);
     calldata.append_serde(your_token_address);
     let vendor_contract_address = declare_and_deploy("Vendor", calldata);
-    println!("-- Vendor contract deployed on: 0x{:?}", vendor_contract_address);
+    println!("-- Vendor contract deployed on: 0x{:x}", vendor_contract_address);
 
     // send strk to vendor contract
     // change the caller address of the strk_token_address to be tester_address
