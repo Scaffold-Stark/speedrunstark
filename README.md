@@ -1,4 +1,4 @@
-# 🚩 Challenge 6: 👛 Multisig Wallet
+# 🚩 Challenge 5: 👛 Multisig Wallet
 
 ![hero-6](./packages/nextjs/public/hero6.png)
 
@@ -76,11 +76,11 @@ Before you begin, you need to install the following tools:
 
 ### Compatible versions
 
-- Starknet-devnet - v0.2.3
-- Scarb - v2.9.2
-- Snforge - v0.35.1
-- Cairo - v2.9.2
-- RPC - v0.7.1
+- Starknet-devnet - v0.4.0
+- Scarb - v2.11.4
+- Snforge - v0.41.0
+- Cairo - v2.11.4
+- RPC - v0.8.0
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
@@ -90,7 +90,7 @@ Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Re
 
 For an alternative to local installations, you can use Docker to set up the environment.
 - Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.9.2` image.
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
 </details>
 
@@ -98,9 +98,9 @@ Then download the challenge to your computer and install dependencies by running
 
 ```sh
 
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-6-multisig-wallet
-cd challenge-6-multisig-wallet
-git checkout challenge-6-multisig-wallet
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-5-multisig-wallet
+cd challenge-5-multisig-wallet
+git checkout challenge-5-multisig-wallet
 yarn install
 ```
 
@@ -113,14 +113,14 @@ yarn chain
 > in a second terminal window, 🛰 deploy your contract (locally):
 
 ```sh
-cd challenge-6-multisig-wallet
+cd challenge-5-multisig-wallet
 yarn deploy
 ```
 
 > in a third terminal window, start your 📱 frontend:
 
 ```sh
-cd challenge-6-multisig-wallet
+cd challenge-5-multisig-wallet
 yarn start
 ```
 
