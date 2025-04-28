@@ -54,9 +54,7 @@ export const Amount = ({
         {isStrkBalance ? (
           <>
             <span>{amount?.toFixed(5)}</span>
-            <span className="font-bold ml-1">
-              STRK
-            </span>
+            <span className="font-bold ml-1">STRK</span>
           </>
         ) : (
           <>
