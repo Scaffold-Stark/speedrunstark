@@ -7,6 +7,8 @@ edition = "2024_07"
 
 [dependencies]
 starknet = "2.11.4"
+# Change to just "openzeppelin" to use full features
+openzeppelin_governance = "1.0.0"
 openzeppelin_access = "1.0.0"
 openzeppelin_token = "1.0.0"
 
