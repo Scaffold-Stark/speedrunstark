@@ -17,6 +17,7 @@ import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { devnet } from "@starknet-react/chains";
 import { SwitchTheme } from "./SwitchTheme";
 import { useAccount, useNetwork, useProvider } from "@starknet-react/core";
+import { BlockIdentifier } from "starknet";
 
 type HeaderMenuLink = {
   label: string;
@@ -87,7 +88,6 @@ export const Header = () => {
   const burgerMenuRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick(
-    //@ts-expect-error refs are supposed to be null by default
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
   );
@@ -114,7 +114,7 @@ export const Header = () => {
           else setIsDeployed(false);
         })
         .catch((e) => {
-          console.error("contreact cehc", e);
+          console.error("contract check", e);
           if (e.toString().includes("Contract not found")) {
             setIsDeployed(false);
           }

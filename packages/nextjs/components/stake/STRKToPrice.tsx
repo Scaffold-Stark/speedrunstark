@@ -1,22 +1,20 @@
 import { useCallback, useState } from "react";
 import { useGlobalState } from "~~/services/store/store";
-import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 
 type TBalanceProps = {
   value?: string;
   className?: string;
 };
 
-export const ETHToPrice = ({ value, className = "" }: TBalanceProps) => {
-  const [isEthBalance, setIsEthBalance] = useState(true);
-  const { targetNetwork } = useTargetNetwork();
+export const STARKToPrice = ({ value, className = "" }: TBalanceProps) => {
+  const [isStrkBalance, setIsStrkBalance] = useState(true);
   const price = useGlobalState((state) => state.nativeCurrencyPrice);
 
   const onToggleBalance = useCallback(() => {
     if (price > 0) {
-      setIsEthBalance(!isEthBalance);
+      setIsStrkBalance(!isStrkBalance);
     }
-  }, [isEthBalance, price]);
+  }, [isStrkBalance, price]);
 
   if (!value) {
     return (
@@ -33,11 +31,11 @@ export const ETHToPrice = ({ value, className = "" }: TBalanceProps) => {
       onClick={onToggleBalance}
     >
       <div className="w-full flex items-center justify-center">
-        {isEthBalance ? (
+        {isStrkBalance ? (
           <>
             <span>{parseFloat(value).toFixed(4)}</span>
             <span className="text-xs font-bold ml-1">
-              {targetNetwork.nativeCurrency.symbol}
+              STRK
             </span>
           </>
         ) : (

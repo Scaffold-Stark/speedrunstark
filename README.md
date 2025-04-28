@@ -6,11 +6,11 @@
 
 🦸 A superpower of Smart contracts is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code.
 
-🏦 Build a `Staker.cairo` contract that collects **ETH** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allows users to `withdraw()`.
+🏦 Build a `Staker.cairo` contract that collects **STRK** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of STRK, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **STRK** is collected, allows users to `withdraw()`.
 
 🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake {sender: ContractAddress, amount: u256}` Starknet event to list all stakes.
 
-🌟 The final deliverable is deploying a Dapp that lets users send ether to a contract and stake if the conditions are met, then `yarn vercel` your app to a public webserver.
+🌟 The final deliverable is deploying a Dapp that lets users send stark to a contract and stake if the conditions are met, then `yarn vercel` your app to a public webserver.
 
 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
 
@@ -23,17 +23,28 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
-- [Rust](https://www.rust-lang.org/tools/install)
+- [Rust](https://rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
-  
-### Compatible versions
 
-- Starknet-devnet - v0.2.3
-- Scarb - v2.9.2
-- Snforge - v0.35.1
-- Cairo - v2.9.2
-- Rpc - v0.7.1
+### Starknet-devnet version
+
+To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.4.0`. To accomplish this, first check your local starknet-devnet version:
+
+```sh
+starknet-devnet --version
+```
+
+If your local starknet-devnet version is not `0.4.0`, you need to install it.
+
+- Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
+
+### Compatible versions
+- Cairo - v2.11.4
+- Rpc - v0.8.0
+- Scarb - v2.11.4
+- Snforge - v0.41.0
+- Starknet-Devnet - v0.4.0
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
@@ -42,8 +53,10 @@ Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Re
 <details>
 
 For an alternative to local installations, you can use Docker to set up the environment.
+
 - Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.9.2` image.
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
+
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
 </details>
 
@@ -62,6 +75,8 @@ yarn install
 yarn chain
 ```
 
+> To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
+
 > in a second terminal window, 🛰 deploy your contract (locally):
 
 ```sh
@@ -78,7 +93,7 @@ yarn start
 
 📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:reset` for a completely fresh deploy.
+> 👩‍💻 Rerun `yarn deploy` whenever you need to deploy completely new contracts to the frontend. If you want to keep previous deployments and avoid overwriting changes, use `yarn deploy:no-reset` instead.
 
 🔏 Now you are ready to edit your smart contract `Staker.cairo` in `packages/sfoundry/contracts`.
 
@@ -95,23 +110,23 @@ You'll need to track individual `balances` using a Map:
 ```cairo
 #[storage]
 struct Storage {
- eth_token_dispatcher: IERC20CamelDispatcher,
+ token_dispatcher: IERC20Dispatcher,
  balances: Map<ContractAddress, u256>,
  ...
 }
 ```
 
-And also track a constant threshold at 1 ether.
+And also track a constant threshold at 1 stark.
 
 ```cairo
 const THRESHOLD: u256 = 1000000000000000000;
 ```
 
-### Checkpoint 1.1: Handling ETH Transactions in Starknet
+### Checkpoint 1.1: Handling STRK Transactions in Starknet
 
-In Starknet, `ETH` is managed as a token, which means you cannot directly `send value` through a transaction. Meaning you must `approve` ETH spending and then `transfer` it using a contract. This involves utilizing the predeployed `ETH contract address` in Starknet.
+In Starknet, `STRK` is managed as a token, which means you cannot directly `send value` through a transaction. Meaning you must `approve` STRK spending and then `transfer` it using a contract. This involves utilizing the predeployed `STRK contract address` in Starknet.
 
-In this challenge, we’ll demonstrate how to handle ETH transactions by passing the ETH contract address as an argument to the contract constructor.
+In this challenge, we’ll demonstrate how to handle STRK transactions by passing the STRK contract address as an argument to the contract constructor.
 
 First, you have to define your constructor function in the `Staker` contract:
 
@@ -119,37 +134,37 @@ First, you have to define your constructor function in the `Staker` contract:
  #[constructor]
     pub fn constructor(
         ref self: ContractState,
-        eth_contract: ContractAddress,
+        strk_contract: ContractAddress,
   ...
     ) 
 ```
 
-Then, pass the `eth_contract` address as an argument to the `deployContract` function in the `deploy.ts` file:
+Then, pass the `strk_contract` address as an argument to the `deployContract` function in the `deploy.ts` file:
 
 ```ts
   await deployContract({
     contract: "Staker",
     constructorArgs: {
-      eth_contract:
+      strk_contract:
         "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
       ...
     },
   });
 ```
 
-Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
+Next, import the `IERC20Dispatcher` struct from the `OpenZeppelin` library:
 
 ```cairo
-use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 ```
 
-In the constructor function, instantiate the `IERC20CamelDispatcher` struct with the address of the ETH contract address:
+In the constructor function, instantiate the `IERC20Dispatcher` struct with the address of the STRK contract address:
 
 ```cairo
-self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
+self.token_dispatcher.write(IERC20Dispatcher { contract_address: strk_contract });
 ```
 
-With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage ETH transactions effectively.
+With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage STRK transactions effectively.
 
 ---
 
@@ -171,7 +186,7 @@ With the dispatcher set up, you can now utilize functions defined in the interfa
 
 ### State Machine
 
-> ⚙️ Think of your smart contract like a _state machine_. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of ETH, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
+> ⚙️ Think of your smart contract like a _state machine_. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of STRK, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
 
 Set a `deadline` of `get_block_timestamp() + 60` in the constructor to allow 60 seconds for users to stake.
 
@@ -188,7 +203,7 @@ self.deadline.write(get_block_timestamp() + 60);
 If the staked amount of the contract:
 
 ```cairo
-let staked_amount = self.eth_token_dispatcher.read().balanceOf(get_contract_address())
+let staked_amount = self.token_dispatcher.read().balanceOf(get_contract_address())
 ```
 
 Is over the `threshold` by the `deadline`, you will want to call: `self.complete_transfer(staked_amount)`. This will send the funds to the `ExampleExternalContract` and call `complete()`.
@@ -207,7 +222,7 @@ You'll have 60 seconds after deploying until the deadline is reached, you can ad
 
 ![stakerUI](./packages/nextjs/public/ch1-staker.png)
 
-> 👩‍💻 You can call `yarn deploy:reset` any time you want a fresh contract, it will get re-deployed even if there are no changes on it.  
+> 👩‍💻 You can call `yarn deploy` any time you want a fresh contract, it will get re-deployed even if there are no changes on it.  
 > You may need it when you want to reload the _"Time Left"_ of your tests.
 
 Your `Staker UI` tab should be almost done and working at this point.
@@ -217,7 +232,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 ### 🥅 Goals
 
 - [ ] Can you see `time_left()` counting down in the Staker UI tab when you trigger a transaction with the faucet button?
-- [ ] If enough ETH is staked by the deadline, does your `execute()` function correctly call `complete()` and stake the ETH?
+- [ ] If enough STRK is staked by the deadline, does your `execute()` function correctly call `complete()` and stake the STRK?
 - [ ] If the threshold isn't met by the deadline, are you able to `withdraw()` your funds?
 
 ---
@@ -226,7 +241,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ### 🥅 Goals
 
-- [ ] If you send ETH directly to the contract address does it update your `balance` and the `balance` of the contract?
+- [ ] If you send STRK directly to the contract address does it update your `balance` and the `balance` of the contract?
 
 ### ⚔️ Side Quests
 
@@ -257,7 +272,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 > 📝 If you plan on submitting this challenge, be sure to set your deadline to at least block.timestamp + 72 hours
 
@@ -267,7 +282,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ![allStakings-blockFrom](./packages/nextjs/public/ch1-events.png)
 
-> 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/scaffold-eth/speedrunstark/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+> 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/Scaffold-Stark/speedrunstark/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁

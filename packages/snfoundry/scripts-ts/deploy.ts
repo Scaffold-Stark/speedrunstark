@@ -12,18 +12,23 @@ const deployScript = async (): Promise<void> => {
   await deployContract({
     contract: "Staker",
     constructorArgs: {
-      eth_contract:
-        "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      strk_contract: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
       external_contract_address: exampleContractAddr,
     },
   });
 };
 
-deployScript()
-  .then(async () => {
+const main = async (): Promise<void> => {
+  try {
+    await deployScript();
     await executeDeployCalls();
     exportDeployments();
 
-    console.log(green("All Setup Done"));
-  })
-  .catch(console.error);
+    console.log(green("All Setup Done!"));
+  } catch (err) {
+    console.log(err);
+    process.exit(1); //exit with error so that non subsequent scripts are run
+  }
+};
+
+main();

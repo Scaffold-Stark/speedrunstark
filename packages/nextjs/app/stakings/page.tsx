@@ -62,7 +62,7 @@ const Staking: NextPage = () => {
                     <td>
                       {event.args.amount &&
                         formatEther(BigInt(event.args.amount))}{" "}
-                      ETH
+                      STRK
                     </td>
                   </tr>
                 );

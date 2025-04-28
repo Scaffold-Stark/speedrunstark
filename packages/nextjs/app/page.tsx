@@ -34,7 +34,7 @@ const Home: NextPage = () => {
             </p>
             <p className="text-center text-lg text-neutral">
               🌟 The final deliverable is deploying a Dapp that lets users send
-              ether to a contract and stake if the conditions are met, then
+              stark to a contract and stake if the conditions are met, then
               deploy your app to a public webserver. Submit the url on{" "}
               <a
                 href="https://speedrunstark.com/"

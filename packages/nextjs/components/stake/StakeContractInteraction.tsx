@@ -5,16 +5,12 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
-import { ETHToPrice } from "~~/components/stake/ETHToPrice";
+import { STARKToPrice } from "~~/components/stake/STRKToPrice";
 import { Address } from "~~/components/scaffold-stark";
 import humanizeDuration from "humanize-duration";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
-
-function formatEther(weiValue: number) {
-  const etherValue = weiValue / 1e18;
-  return etherValue.toFixed(1);
-}
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
+import { formatEther } from "ethers";
 
 export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { address: connectedAddress } = useAccount();
@@ -23,10 +19,10 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { data: ExampleExternalContact } = useDeployedContractInfo(
     "ExampleExternalContract",
   );
-  const { value: stakerContractBalance } = useScaffoldEthBalance({
+  const { value: stakerContractBalance } = useScaffoldStrkBalance({
     address: StakerContract?.address,
   });
-  const { value: exampleExternalContractBalance } = useScaffoldEthBalance({
+  const { value: exampleExternalContractBalance } = useScaffoldStrkBalance({
     address: ExampleExternalContact?.address,
   });
 
@@ -63,15 +59,15 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
     functionName: "execute",
   });
 
-  const { sendAsync: withdrawETH } = useScaffoldWriteContract({
+  const { sendAsync: withdrawSTRK } = useScaffoldWriteContract({
     contractName: "Staker",
     functionName: "withdraw",
   });
 
-  const { sendAsync: stakeEth } = useScaffoldMultiWriteContract({
+  const { sendAsync: stakeStrk } = useScaffoldMultiWriteContract({
     calls: [
       {
-        contractName: "Eth",
+        contractName: "Strk",
         functionName: "approve",
         args: [StakerContract?.address ?? "", 5 * 10 ** 17],
       },
@@ -100,13 +96,14 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
       {isStakingCompleted && (
         <div className="flex flex-col items-center gap-2 bg-base-100 border-8 border-secondary  rounded-xl p-6 mt-12 w-full max-w-lg">
           <p className="block m-0 font-semibold text-neutral">
-            🎉 &nbsp; Staking App triggered `ExampleExternalContract` &nbsp; 🎉{" "}
+            🎉 &nbsp; Staking App triggered `ExampleExternalContract` &nbsp;
+            🎉{" "}
           </p>
           <div className="flex items-center">
-            <ETHToPrice
+            <STARKToPrice
               value={
                 exampleExternalContractBalance != null
-                  ? `${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}`
+                  ? `${formatEther(exampleExternalContractBalance)}`
                   : undefined
               }
               className="text-[1rem]"
@@ -116,9 +113,8 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
         </div>
       )}
       <div
-        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${
-          !isStakingCompleted ? "mt-24" : ""
-        }`}
+        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${!isStakingCompleted ? "mt-24" : ""
+          }`}
       >
         <div className="flex flex-col w-full items-center">
           <p className="block text-2xl mt-0 mb-2 font-semibold">
@@ -143,7 +139,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             </p>
             <span>
               {myStake
-                ? `${formatEther(Number(myStake))} ${targetNetwork.nativeCurrency.symbol}`
+                ? `${formatEther(myStake as unknown as bigint)} STRK`
                 : "0"}
             </span>
           </div>
@@ -152,20 +148,20 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
           <p className="block text-xl mt-0 mb-1 font-semibold">Total Staked</p>
           <div className="flex space-x-2">
             {
-              <ETHToPrice
+              <STARKToPrice
                 value={
                   stakerContractBalance != null
-                    ? `${formatEther(Number(stakerContractBalance))}${targetNetwork.nativeCurrency.symbol}`
+                    ? `${formatEther(stakerContractBalance)}`
                     : undefined
                 }
               />
             }
             <span>/</span>
             {
-              <ETHToPrice
+              <STARKToPrice
                 value={
                   threshold
-                    ? `${formatEther(Number(threshold))} ${targetNetwork.nativeCurrency.symbol}`
+                    ? `${formatEther(threshold as unknown as bigint)}`
                     : undefined
                 }
               />
@@ -182,16 +178,16 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             </button>
             <button
               className="btn btn-secondary uppercase text-white"
-              onClick={wrapInTryCatch(withdrawETH, "stakeETH")}
+              onClick={wrapInTryCatch(withdrawSTRK, "stakeSTRK")}
             >
               Withdraw
             </button>
           </div>
           <button
             className="btn btn-secondary uppercase text-white"
-            onClick={wrapInTryCatch(stakeEth, "stakeETH")}
+            onClick={wrapInTryCatch(stakeStrk, "stakeSTRK")}
           >
-            🥩 Stake 0.5 ether!
+            🥩 Stake 0.5 stark!
           </button>
         </div>
       </div>
