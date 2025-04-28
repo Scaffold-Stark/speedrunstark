@@ -134,18 +134,18 @@ First, you have to define your constructor function in the `Staker` contract:
  #[constructor]
     pub fn constructor(
         ref self: ContractState,
-        eth_contract: ContractAddress,
+        strk_contract: ContractAddress,
   ...
     ) 
 ```
 
-Then, pass the `eth_contract` address as an argument to the `deployContract` function in the `deploy.ts` file:
+Then, pass the `strk_contract` address as an argument to the `deployContract` function in the `deploy.ts` file:
 
 ```ts
   await deployContract({
     contract: "Staker",
     constructorArgs: {
-      eth_contract:
+      strk_contract:
         "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
       ...
     },
@@ -161,7 +161,7 @@ use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTr
 In the constructor function, instantiate the `IERC20Dispatcher` struct with the address of the STRK contract address:
 
 ```cairo
-self.token_dispatcher.write(IERC20Dispatcher { contract_address: eth_contract });
+self.token_dispatcher.write(IERC20Dispatcher { contract_address: strk_contract });
 ```
 
 With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage STRK transactions effectively.
@@ -282,7 +282,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 ![allStakings-blockFrom](./packages/nextjs/public/ch1-events.png)
 
-> 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/scaffold-eth/speedrunstark/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+> 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/Scaffold-Stark/speedrunstark/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁
