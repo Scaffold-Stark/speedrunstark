@@ -6,6 +6,7 @@ name = "contracts"
 version = "0.2.0"
 dependencies = [
  "openzeppelin_access",
+ "openzeppelin_testing",
  "openzeppelin_token",
  "openzeppelin_utils",
  "snforge_std",
@@ -14,17 +15,22 @@ dependencies = [
 [[package]]
 name = "openzeppelin_access"
 version = "1.0.0"
+version = "1.0.0"
 source = "registry+https://scarbs.xyz/"
+checksum = "sha256:a39a4ea1582916c637bf7e3aee0832c3fe1ea3a3e39191955e8dc39d08327f9b"
 checksum = "sha256:a39a4ea1582916c637bf7e3aee0832c3fe1ea3a3e39191955e8dc39d08327f9b"
 dependencies = [
  "openzeppelin_introspection",
+ "openzeppelin_utils",
  "openzeppelin_utils",
 ]
 
 [[package]]
 name = "openzeppelin_account"
 version = "1.0.0"
+version = "1.0.0"
 source = "registry+https://scarbs.xyz/"
+checksum = "sha256:7e943a2de32ddca4d48e467e52790e380ab1f49c4daddbbbc4634dd930d0243f"
 checksum = "sha256:7e943a2de32ddca4d48e467e52790e380ab1f49c4daddbbbc4634dd930d0243f"
 dependencies = [
  "openzeppelin_introspection",
@@ -40,7 +46,9 @@ checksum = "sha256:34e088ecf19e0b3012481a29f1fbb20e600540cb9a5db1c3002a97ebb7f5a
 [[package]]
 name = "openzeppelin_token"
 version = "1.0.0"
+version = "1.0.0"
 source = "registry+https://scarbs.xyz/"
+checksum = "sha256:33fcb84a1a76d2d3fff9302094ff564f78d45b743548fd7568c130b272473f66"
 checksum = "sha256:33fcb84a1a76d2d3fff9302094ff564f78d45b743548fd7568c130b272473f66"
 dependencies = [
  "openzeppelin_access",
@@ -52,7 +60,9 @@ dependencies = [
 [[package]]
 name = "openzeppelin_utils"
 version = "1.0.0"
+version = "1.0.0"
 source = "registry+https://scarbs.xyz/"
+checksum = "sha256:fd348b31c4a4407add33adc3c2b8f26dca71dbd7431faaf726168f37a91db0c1"
 checksum = "sha256:fd348b31c4a4407add33adc3c2b8f26dca71dbd7431faaf726168f37a91db0c1"
 
 [[package]]
