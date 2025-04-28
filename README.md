@@ -861,7 +861,7 @@ Now, a user can just enter the amount of STRK or tokens they want to swap and th
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
 
