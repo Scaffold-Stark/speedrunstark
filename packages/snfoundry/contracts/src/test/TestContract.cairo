@@ -4,10 +4,9 @@ use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{CheatSpan, cheat_caller_address};
-use starknet::{ContractAddress, get_contract_address};
+use starknet::ContractAddress;
 
 const RECIPIENT: ContractAddress = 'RECIPIENT'.try_into().unwrap();
-
 const OTHER: ContractAddress = 'OTHER'.try_into().unwrap();
 
 // Should deploy the MockSTRKToken contract
@@ -36,6 +35,7 @@ fn deploy_vendor_contract() -> ContractAddress {
     let mut calldata = array![];
     calldata.append_serde(strk_token_address);
     calldata.append_serde(your_token_address);
+    calldata.append_serde(tester_address);
     let vendor_contract_address = declare_and_deploy("Vendor", calldata);
     println!("-- Vendor contract deployed on: 0x{:x}", vendor_contract_address);
 
@@ -68,7 +68,10 @@ fn test_deploy_mock_strk_token() {
     let INITIAL_BALANCE: u256 = 10000000000000000000; // 10_STRK_IN_FRI
     let contract_address = deploy_mock_strk_token();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address };
-    assert(strk_token_dispatcher.balance_of(RECIPIENT) == INITIAL_BALANCE, 'Balance should be > 0');
+    assert(
+        strk_token_dispatcher.balance_of(RECIPIENT) == INITIAL_BALANCE, 'Balance should be >
+    0',
+    );
 }
 
 #[test]
@@ -85,7 +88,6 @@ fn test_deploy_your_token() {
 fn test_deploy_vendor() {
     deploy_vendor_contract();
 }
-
 //Should let us buy tokens and our balance should go up...
 #[test]
 fn test_buy_tokens() {
@@ -246,26 +248,17 @@ fn test_success_withdraw_tokens() {
     println!("---- Vendor contract strk balance: {:?} STRK in fri", vendor_strk_balance);
 
     println!("-- Withdrawing strk from Vendor contract ...");
-
-    // The deployer is the actual owner of the contract
-    let deployer_address = get_contract_address();
-    println!("---- Deployer address (contract owner): {:?}", deployer_address);
-
-    // Get the deployer's balance before withdraw
-    let deployer_balance_before = strk_token_dispatcher.balance_of(deployer_address);
-    println!("---- Deployer balance before withdraw: {:?} STRK in fri", deployer_balance_before);
-
-    // We need to cheat the caller address to be the deployer when calling withdraw
-    cheat_caller_address(vendor_contract_address, deployer_address, CheatSpan::TargetCalls(1));
+    // Change the caller address of the vendor_contract_address to the owner_address
+    cheat_caller_address(vendor_contract_address, owner_address, CheatSpan::TargetCalls(1));
     vendor_dispatcher.withdraw();
 
     // Check the deployer's balance after withdraw
-    let deployer_balance_after = strk_token_dispatcher.balance_of(deployer_address);
+    let deployer_balance_after = strk_token_dispatcher.balance_of(owner_address);
     println!("---- Deployer balance after withdraw: {:?} STRK in fri", deployer_balance_after);
 
     // Assert that the deployer's balance increased by the vendor's balance
     assert(
-        deployer_balance_before + vendor_strk_balance == deployer_balance_after,
+        owner_strk_balance_before_withdraw + vendor_strk_balance == deployer_balance_after,
         'Balance should be the same',
     );
 }
