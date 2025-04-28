@@ -131,13 +131,13 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm mb-1">Amount (ETH):</label>
+              <label className="block text-sm mb-1">Amount (STRK):</label>
               <div className="relative">
                 <input
                   type="text"
                   value={transferAmount || ""}
                   onChange={handleAmountChange}
-                  placeholder="Enter amount in ETH"
+                  placeholder="Enter amount in STRK"
                   className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

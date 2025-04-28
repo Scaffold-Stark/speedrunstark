@@ -41,7 +41,6 @@ export interface EventData {
 
 export interface WalletInfoProps {
   deployedContractData: ContractInfo;
-  contractEthBalance: string;
   contractStrkBalance: string;
   signers: string[];
   loadingSigners: boolean;

@@ -8,7 +8,6 @@ import ResetDataButton from "./ResetDataButton";
 
 const WalletInfo: React.FC<WalletInfoProps> = ({
   deployedContractData,
-  contractEthBalance,
   contractStrkBalance,
   signers,
   loadingSigners,
@@ -50,7 +49,6 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
             </div>
           </div>
           <div className="text-sm font-semibold text-right">
-            <div className="mb-2">{contractEthBalance} ETH</div>
             <div>{contractStrkBalance} STRK</div>
           </div>
         </div>

@@ -35,7 +35,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </div>
             <div>
               Amount: {formatTokenAmount(tx.calldata[1])}{" "}
-              {tx.tokenType || "ETH"}
+              {tx.tokenType || "STRK"}
             </div>
           </>
         );
