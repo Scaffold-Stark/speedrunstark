@@ -11,7 +11,7 @@ type TAmountProps = {
 };
 
 /**
- * Display (ETH & USD) balance of an ETH address.
+ * Display (STRK & USD) balance of an STRK address.
  */
 export const Amount = ({
   isLoading,
@@ -55,7 +55,7 @@ export const Amount = ({
           <>
             <span>{amount?.toFixed(5)}</span>
             <span className="font-bold ml-1">
-              {configuredNetwork.nativeCurrency.symbol}
+              STRK
             </span>
           </>
         ) : (
