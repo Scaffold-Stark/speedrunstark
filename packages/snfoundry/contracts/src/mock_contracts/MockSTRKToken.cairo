@@ -1,5 +1,5 @@
 #[starknet::contract]
-pub mod MockETHToken {
+pub mod MockSTRKToken {
     use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
     use starknet::ContractAddress;
 
@@ -24,8 +24,8 @@ pub mod MockETHToken {
 
     #[constructor]
     fn constructor(ref self: ContractState, initial_supply: u256, recipient: ContractAddress) {
-        let name = "MockETH";
-        let symbol = "ETH";
+        let name = "MockSTRK";
+        let symbol = "STRK";
 
         self.erc20.initializer(name, symbol);
         let amount_to_mint = initial_supply / 10;

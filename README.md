@@ -8,7 +8,7 @@
 
 🏵 Look at `YourToken.cairo` smart contract that reuses the **ERC20** token standard as a component from OpenZeppelin. You have to set `your token` to `mint()` **2000** \* (10^18) tokens to the `recipient` account address. Then create a `Vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
 
-🎛 Edit the frontend that invites the user to input an amount of tokens they want to buy. We'll display a preview of the amount of ETH it will cost with a confirm button.
+🎛 Edit the frontend that invites the user to input an amount of tokens they want to buy. We'll display a preview of the amount of STRK it will cost with a confirm button.
 
 🌟 The final deliverable is an app that lets users purchase your ERC20 token, transfer it, and sell it back to the vendor. Deploy your contracts on your public chain of choice and then `yarn vercel` your app to a public web server.
 
@@ -23,17 +23,28 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
-- [Rust](https://www.rust-lang.org/tools/install)
+- [Rust](https://rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 
-### Compatible versions
+### Starknet-devnet version
 
-- Starknet-devnet - v0.2.3
-- Scarb - v2.9.2
-- Snforge - v0.35.1
-- Cairo - v2.9.2
-- Rpc - v0.7.1
+To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.4.0`. To accomplish this, first check your local starknet-devnet version:
+
+```sh
+starknet-devnet --version
+```
+
+If your local starknet-devnet version is not `0.4.0`, you need to install it.
+
+- Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
+
+### Compatible versions
+- Cairo - v2.11.4
+- Rpc - v0.8.0
+- Scarb - v2.11.4
+- Snforge - v0.41.0
+- Starknet-Devnet - v0.4.0
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
@@ -42,8 +53,10 @@ Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Re
 <details>
 
 For an alternative to local installations, you can use Docker to set up the environment.
+
 - Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.9.2` image.
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
+
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
 </details>
 
@@ -62,6 +75,8 @@ yarn install
 yarn chain
 ```
 
+> To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
+
 > in a second terminal window, 🛰 deploy your contract (locally):
 
 ```sh
@@ -78,7 +93,7 @@ yarn start
 
 📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:reset` for a completely fresh deploy.
+> 👩‍💻 Rerun `yarn deploy` whenever you need to deploy completely new contracts to the frontend. If you want to keep previous deployments and avoid overwriting changes, use `yarn deploy:no-reset` instead.
 
 ---
 
@@ -96,7 +111,7 @@ In order to complete this checkpoint, you need to connect to devnet using the sa
 
 (Your frontend address is the address in the top right of <http://localhost:3000>)
 
-> You can `yarn deploy:reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 ### 🥅 Goals
 
@@ -113,19 +128,19 @@ In order to complete this checkpoint, you need to connect to devnet using the sa
 
 > 👩‍💻 Edit the `Vendor.cairo` contract with a `buy_tokens()` function implementation.
 
-Create a price variable named `tokensPerEth` set to **100**:
+Create a price variable named `tokensPerStrk` set to **100**:
 
 ```cairo
-const TokensPerEth: u256 = 100;
+const TokensPerStrk: u256 = 100;
 ```
 
-> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `eth_amount_wei` value and `tokensPerEth` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
+> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `strk_amount_fri` value and `tokensPerStrk` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
 
-> 📟 Emit **event** `BuyTokens {buyer: ContractAddress, eth_amount: u256, tokens_amount: u256}` when tokens are purchased.
+> 📟 Emit **event** `BuyTokens {buyer: ContractAddress, strk_amount: u256, tokens_amount: u256}` when tokens are purchased.
 
 Edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` (uncomment Vendor deploy lines).
 
-Implement/modify `tokens_per_eth` function in `Vendor.cairo` that returns the `tokensPerEth` value.
+Implement/modify `tokens_per_strk` function in `Vendor.cairo` that returns the `tokensPerStrk` value.
 
 Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.tsx` to show the UI to buy tokens on the Token Vendor tab.
 
@@ -162,16 +177,16 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
   );
 ```
 
-> 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor ETH and Token balances.
+> 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor STRK and Token balances.
 
-> You can `yarn deploy:reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 ![TokenVendorBuy](./packages/nextjs/public/ch2-TokenVendorBalance.png)
 
 ### 🥅 Goals
 
 - [ ] Does the `Vendor` address start with a `balance_of` **1000** in `YourToken` on the `Debug Contracts` tab?
-- [ ] Can you buy **10** tokens for **0.1** ETH?
+- [ ] Can you buy **10** tokens for **0.1** STRK?
 - [ ] Can you transfer tokens to a different account?
 
 > 📝 Look at `Vendor.cairo` how to reuse _Ownable_ component from OpenZeppelin.
@@ -193,8 +208,8 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
  vendor = await deployContract({
     contract: "Vendor",
     constructorArgs: {
-      eth_token_address:
-      "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      strk_token_address:
+      "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
       your_token_address: your_token.address,
       owner: deployer.address,
     },
@@ -205,11 +220,11 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 - [ ] Is your frontend address the `owner` of the `Vendor`?
 
-> 📝 Finally, Implement a `withdraw()` function in `Vendor.cairo` that lets the owner withdraw all the ETH from the vendor contract.
+> 📝 Finally, Implement a `withdraw()` function in `Vendor.cairo` that lets the owner withdraw all the STRK from the vendor contract.
 
 ### 🥅 Goals
 
-- [ ] Can **only** the `owner` withdraw the ETH from the `Vendor`?
+- [ ] Can **only** the `owner` withdraw the STRK from the `Vendor`?
 
 ### ⚔️ Side Quests
 
@@ -227,7 +242,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 🤨 Then, the user makes a _second transaction_ to the `Vendor` contract to `sellTokens(amount_tokens: u256)`.
 
-🤓 The `Vendor` should call `fn transfer_from(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool` and if the user has approved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
+🤓 The `Vendor` should call `fn transfer_from(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool` and if the user has approved the `Vendor` correctly, tokens should transfer to the `Vendor` and STRK should be sent to the user.
 
 🤩 In the UI, you can use `useScaffoldMultiWriteContract.ts` to call `approve` and `buy / sell tokens`
 
@@ -242,13 +257,13 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 ### 🥅 Goal
 
 - [ ] Can you sell tokens back to the vendor?
-- [ ] Do you receive the right amount of ETH for the tokens?
+- [ ] Do you receive the right amount of STRK for the tokens?
 
 ### ⚔️ Side Quests
 
 - [ ] Should we disable the `owner` withdraw to keep liquidity in the `Vendor`?
 - [ ] It would be a good idea to display Sell Token Events. Create an **event**
-      `SellTokens {seller: ContractAddress, tokens_amount: u256, eth_amount: u256}`
+      `SellTokens {seller: ContractAddress, tokens_amount: u256, strk_amount: u256}`
       and `emit` it in your `Vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
 
   ![Events](./packages/nextjs/public/ch2-Events.png)
@@ -269,7 +284,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-⛽️ You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
 
