@@ -12,9 +12,10 @@ pub trait IRiggedRoll<T> {
 
 #[starknet::contract]
 mod RiggedRoll {
-    use keccak::keccak_u256s_le_inputs;
+    use core::keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_token::erc20::interface::IERC20CamelDispatcherTrait;
+    use openzeppelin_token::erc20::interface::IERC20DispatcherTrait;
+    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
     use starknet::{ContractAddress, get_block_number, get_caller_address, get_contract_address};
     use super::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
 
@@ -54,7 +55,7 @@ mod RiggedRoll {
         // the DiceGame contract and only initiate a roll when it guarantees a win.
         fn rigged_roll(ref self: ContractState, amount: u256) {}
 
-        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Ether from the rigged
+        // ToDo Checkpoint 3: Implement the `withdraw` function to transfer Stark from the rigged
         // contract to a specified address.
         fn withdraw(ref self: ContractState, to: ContractAddress, amount: u256) {}
 

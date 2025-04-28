@@ -17,9 +17,9 @@ import { Address } from "~~/components/scaffold-stark";
 import { Address as AddressType } from "@starknet-react/chains";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { BlockNumber } from "starknet";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
+import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
-const ROLL_ETH_VALUE = "0.002";
+const ROLL_STRK_VALUE = "0.002";
 const MAX_TABLE_ROWS = 10;
 
 const DiceGame: NextPage = () => {
@@ -37,7 +37,7 @@ const DiceGame: NextPage = () => {
   const { data: riggedRollContract } = useScaffoldContract({
     contractName: "RiggedRoll",
   });
-  const { value: riggedRollBalance } = useScaffoldEthBalance({
+  const { value: riggedRollBalance } = useScaffoldStrkBalance({
     address: riggedRollContract?.address,
     //   watch: true,
     //   blockIdentifier: "pending" as BlockNumber,
@@ -50,12 +50,12 @@ const DiceGame: NextPage = () => {
   const { sendAsync: multiContractWriteDice, isError: rollTheDiceError } =
     useScaffoldMultiWriteContract({
       calls: [
-        createContractCall("Eth", "approve", [
+        createContractCall("Strk", "approve", [
           accountDice?.address,
-          parseEther(ROLL_ETH_VALUE),
+          parseEther(ROLL_STRK_VALUE),
         ]),
         createContractCall("DiceGame", "roll_dice", [
-          parseEther(ROLL_ETH_VALUE),
+          parseEther(ROLL_STRK_VALUE),
         ]),
       ],
     });
@@ -63,12 +63,12 @@ const DiceGame: NextPage = () => {
   const { sendAsync: multiContractWriteRigged, isError: riggedRollError } =
     useScaffoldMultiWriteContract({
       calls: [
-        createContractCall("Eth", "approve", [
+        createContractCall("Strk", "approve", [
           riggedRollContract?.address,
-          parseEther(ROLL_ETH_VALUE),
+          parseEther(ROLL_STRK_VALUE),
         ]),
         createContractCall("RiggedRoll", "rigged_roll", [
-          parseEther(ROLL_ETH_VALUE),
+          parseEther(ROLL_STRK_VALUE),
         ]),
       ],
     });
@@ -170,7 +170,6 @@ const DiceGame: NextPage = () => {
             <span className="text-lg mr-2">Prize:</span>
             <Amount
               amount={prize ? Number(formatEther(prize.toString())) * 10 : 0}
-              showUsdPrice
               className="text-lg"
             />
           </div>
@@ -205,7 +204,6 @@ const DiceGame: NextPage = () => {
                     ? Number(formatEther(riggedRollBalance.toString()))
                     : 0
                 }
-                showUsdPrice
                 className="text-lg"
               />
             </div>

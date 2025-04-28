@@ -36,7 +36,7 @@ const Home: NextPage = () => {
             </p>
             <p className="text-lg mt-2">
               🧤 Every time a player rolls the dice, they are required to send
-              .002 Eth. 40 percent of this value is added to the current prize
+              .002 Strk. 40 percent of this value is added to the current prize
               amount while the other 60 percent stays in the contract to fund
               future prizes. Once a prize is won, the new prize amount is set to
               10% of the total balance of the DiceGame contract.

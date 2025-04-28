@@ -1,4 +1,4 @@
-import { Abi, Contract } from "starknet";
+import { Abi, Contract, constants } from "starknet";
 import {
   deployContract,
   executeDeployCalls,
@@ -14,20 +14,34 @@ const deployScript = async (): Promise<void> => {
   const { address: diceGameAddr } = await deployContract({
     contract: "DiceGame",
     constructorArgs: {
-      eth_token_address:
-        "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7",
+      strk_token_address:
+        "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+    },
+    options: {
+      maxFee: BigInt(5000000000000),
+      version: constants.TRANSACTION_VERSION.V3,
     },
   });
-  const ethAbi = preDeployedContracts.devnet.Eth.abi as Abi;
-  const ethAddress = preDeployedContracts.devnet.Eth.address as `0x${string}`;
 
-  const ethContract = new Contract(ethAbi, ethAddress, deployer);
+  const strkAbi = preDeployedContracts.devnet.Strk.abi as Abi;
+  const strkAddress = preDeployedContracts.devnet.Strk.address as `0x${string}`;
 
-  // 0.05 Eth
-  const ethAmount = 50000000000000000n;
+  const strkContract = new Contract(strkAbi, strkAddress, deployer);
 
-  const tx = await ethContract.invoke("transfer", [diceGameAddr, ethAmount]);
-  const receipt = await provider.waitForTransaction(tx.transaction_hash);
+  // 0.05 Strk
+  const strkAmount = 50000000000000000n;
+
+  const tx = await strkContract.populate("transfer", [
+    diceGameAddr,
+    strkAmount,
+  ]);
+
+  const { transaction_hash: txH } = await deployer.execute(tx, {
+    version: constants.TRANSACTION_VERSION.V3,
+    maxFee: BigInt(5000000000000),
+  });
+
+  const txReceipt = await provider.waitForTransaction(txH);
 
   // ToDo Checkpoint 2: Deploy RiggedRoll contract
   //   await deployContract({
@@ -39,11 +53,17 @@ const deployScript = async (): Promise<void> => {
   //   });
 };
 
-deployScript()
-  .then(async () => {
+const main = async (): Promise<void> => {
+  try {
+    await deployScript();
     await executeDeployCalls();
     exportDeployments();
 
-    console.log(green("All Setup Done"));
-  })
-  .catch(console.error);
+    console.log(green("All Setup Done!"));
+  } catch (err) {
+    console.log(err);
+    process.exit(1); //exit with error so that non subsequent scripts are run
+  }
+};
+
+main();
