@@ -11,6 +11,6 @@ export function multiplyTo1e18(tokens: string | bigint) {
 
 export function getTokenPrice(tokens: string | bigint, tokensPerStrk?: bigint) {
   const tokensMultiplied = multiplyTo1e18(tokens);
-  
+
   return tokensPerStrk ? tokensMultiplied / tokensPerStrk : tokensMultiplied;
 }
