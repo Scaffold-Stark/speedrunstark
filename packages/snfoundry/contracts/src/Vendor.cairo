@@ -57,7 +57,7 @@ mod Vendor {
     struct SellTokens {}
 
     #[constructor]
-    // Todo Checkpoint 2: Edit the constructor to initialize the owner of the contract.
+    // Todo Checkpoint 2: Edit the constructor, add one more input parameter to setup the owner
     fn constructor(
         ref self: ContractState,
         strk_token_address: ContractAddress,
