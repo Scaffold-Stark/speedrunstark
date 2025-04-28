@@ -1,53 +1,46 @@
 use contracts::DiceGame::{DiceGame, IDiceGameDispatcherTrait};
 use contracts::RiggedRoll::{IRiggedRollDispatcher, IRiggedRollDispatcherTrait};
-
 use core::keccak::keccak_u256s_le_inputs;
-use openzeppelin_token::erc20::interface::{IERC20CamelDispatcherTrait};
+use core::traits::TryInto;
+use openzeppelin_testing::declare_and_deploy;
+use openzeppelin_token::erc20::interface::IERC20DispatcherTrait;
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::cheatcodes::events::EventsFilterTrait;
 use snforge_std::{
-    CheatSpan, ContractClassTrait, DeclareResultTrait, EventSpyAssertionsTrait, EventSpyTrait,
-    cheat_caller_address, declare, spy_events,
+    CheatSpan, EventSpyAssertionsTrait, EventSpyTrait, cheat_caller_address, spy_events,
 };
 use starknet::{ContractAddress, get_block_number};
-use core::traits::TryInto;
 
-fn OWNER() -> ContractAddress {
-    'OWNER'.try_into().unwrap()
-}
+const OWNER: ContractAddress = 'OWNER'.try_into().unwrap();
 
 const ROLL_DICE_AMOUNT: u256 = 2000000000000000; // 0.002_STRK_IN_FRI
 // Should deploy the MockSTRKToken contract
 fn deploy_mock_strk_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockSTRKToken").unwrap().contract_class();
     let INITIAL_SUPPLY: u256 = 100000000000000000000; // 100_STRK_IN_FRI
-    let reciever = OWNER();
+    let reciever = OWNER;
     let mut calldata = array![];
     calldata.append_serde(INITIAL_SUPPLY);
     calldata.append_serde(reciever);
-    let (strk_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
-    strk_token_address
+    declare_and_deploy("MockSTRKToken", calldata)
 }
 
 // Should deploy the DiceGame contract
 fn deploy_dice_game_contract() -> ContractAddress {
     let strk_token_address = deploy_mock_strk_token();
-    let dice_game_class_hash = declare("DiceGame").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(strk_token_address);
-    let (dice_game_contract_address, _) = dice_game_class_hash.deploy(@calldata).unwrap();
-    println!("-- Dice Game contract deployed on: {:?}", dice_game_contract_address);
+    let dice_game_contract_address = declare_and_deploy("DiceGame", calldata);
+    println!("-- Dice Game contract deployed on: 0x{:x}", dice_game_contract_address);
     dice_game_contract_address
 }
 
 fn deploy_rigged_roll_contract() -> ContractAddress {
     let dice_game_contract_address = deploy_dice_game_contract();
-    let rigged_roll_class_hash = declare("RiggedRoll").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(dice_game_contract_address);
-    calldata.append_serde(OWNER());
-    let (rigged_roll_contract_address, _) = rigged_roll_class_hash.deploy(@calldata).unwrap();
-    println!("-- Rigged Roll contract deployed on: {:?}", rigged_roll_contract_address);
+    calldata.append_serde(OWNER);
+    let rigged_roll_contract_address = declare_and_deploy("RiggedRoll", calldata);
+    println!("-- Rigged Roll contract deployed on: 0x{:x}", rigged_roll_contract_address);
     rigged_roll_contract_address
 }
 
@@ -55,7 +48,7 @@ fn get_roll(get_roll_less_than_5: bool, rigged_roll_dispatcher: IRiggedRollDispa
     let mut expected_roll = 0;
     let dice_game_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher();
     let dice_game_contract_address = dice_game_dispatcher.contract_address;
-    let tester_address = OWNER();
+    let tester_address = OWNER;
     while true {
         let prev_block: u256 = get_block_number().into() - 1;
         let array = array![prev_block, dice_game_dispatcher.nonce()];
@@ -71,7 +64,7 @@ fn get_roll(get_roll_less_than_5: bool, rigged_roll_dispatcher: IRiggedRollDispa
         strk_token_dispatcher.approve(dice_game_contract_address, ROLL_DICE_AMOUNT);
         cheat_caller_address(dice_game_contract_address, tester_address, CheatSpan::TargetCalls(1));
         dice_game_dispatcher.roll_dice(ROLL_DICE_AMOUNT);
-    };
+    }
     expected_roll
 }
 #[test]
@@ -93,8 +86,10 @@ fn test_rigged_roll_fails() {
     };
     let strk_amount_wei: u256 = 1000000000000000; // 0.001_STRK_IN_FRI
 
-    let tester_address = OWNER();
-    let strk_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().strk_token_dispatcher();
+    let tester_address = OWNER;
+    let strk_token_dispatcher = rigged_roll_dispatcher
+        .dice_game_dispatcher()
+        .strk_token_dispatcher();
     cheat_caller_address(
         strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
@@ -114,7 +109,7 @@ fn test_rigged_roll_call_dice_game() {
     let get_roll_less_than_5 = true;
     let expected_roll = get_roll(get_roll_less_than_5, rigged_roll_dispatcher);
     println!("-- Expect roll to be less than or equal to 5. DiceGame Roll:: {:?}", expected_roll);
-    let tester_address = OWNER();
+    let tester_address = OWNER;
     let strk_token_dispatcher = dice_game_dispatcher.strk_token_dispatcher();
     cheat_caller_address(
         strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
@@ -160,7 +155,7 @@ fn test_rigged_roll_should_not_call_dice_game() {
     let get_roll_less_than_5 = false;
     let expected_roll = get_roll(get_roll_less_than_5, rigged_roll_dispatcher);
     println!("-- Expect roll to be greater than 5. DiceGame Roll:: {:?}", expected_roll);
-    let tester_address = OWNER();
+    let tester_address = OWNER;
     let strk_token_dispatcher = dice_game_dispatcher.strk_token_dispatcher();
     cheat_caller_address(
         strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
@@ -189,8 +184,10 @@ fn test_withdraw() {
     let get_roll_less_than_5 = true;
     let expected_roll = get_roll(get_roll_less_than_5, rigged_roll_dispatcher);
     println!("-- Expect roll to be less than or equal to 5. DiceGame Roll:: {:?}", expected_roll);
-    let tester_address = OWNER();
-    let strk_token_dispatcher = rigged_roll_dispatcher.dice_game_dispatcher().strk_token_dispatcher();
+    let tester_address = OWNER;
+    let strk_token_dispatcher = rigged_roll_dispatcher
+        .dice_game_dispatcher()
+        .strk_token_dispatcher();
     cheat_caller_address(
         strk_token_dispatcher.contract_address, tester_address, CheatSpan::TargetCalls(1),
     );
@@ -200,13 +197,13 @@ fn test_withdraw() {
 
     rigged_roll_dispatcher.rigged_roll(ROLL_DICE_AMOUNT);
 
-    let tester_address_prev_balance = strk_token_dispatcher.balanceOf(tester_address);
+    let tester_address_prev_balance = strk_token_dispatcher.balance_of(tester_address);
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
-    let rigged_roll_balance = strk_token_dispatcher.balanceOf(rigged_roll_contract_address);
+    let rigged_roll_balance = strk_token_dispatcher.balance_of(rigged_roll_contract_address);
 
     cheat_caller_address(rigged_roll_contract_address, tester_address, CheatSpan::TargetCalls(1));
     rigged_roll_dispatcher.withdraw(tester_address, rigged_roll_balance);
-    let tester_address_new_balance = strk_token_dispatcher.balanceOf(tester_address);
+    let tester_address_new_balance = strk_token_dispatcher.balance_of(tester_address);
     assert_eq!(
         tester_address_new_balance,
         tester_address_prev_balance + rigged_roll_balance,

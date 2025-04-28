@@ -1,4 +1,4 @@
-use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 
 #[starknet::interface]
 pub trait IDiceGame<T> {
@@ -6,15 +6,15 @@ pub trait IDiceGame<T> {
     fn last_dice_value(self: @T) -> u256;
     fn nonce(self: @T) -> u256;
     fn prize(self: @T) -> u256;
-    fn strk_token_dispatcher(self: @T) -> IERC20CamelDispatcher;
+    fn strk_token_dispatcher(self: @T) -> IERC20Dispatcher;
 }
 
 #[starknet::contract]
 pub mod DiceGame {
     use core::keccak::keccak_u256s_le_inputs;
-    use starknet::{ContractAddress, get_block_number, get_caller_address, get_contract_address};
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
-    use super::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    use starknet::{ContractAddress, get_block_number, get_caller_address, get_contract_address};
+    use super::{IERC20Dispatcher, IERC20DispatcherTrait};
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -39,7 +39,7 @@ pub mod DiceGame {
 
     #[storage]
     struct Storage {
-        strk_token: IERC20CamelDispatcher,
+        strk_token: IERC20Dispatcher,
         nonce: u256,
         prize: u256,
         last_dice_value: u256,
@@ -47,7 +47,7 @@ pub mod DiceGame {
 
     #[constructor]
     fn constructor(ref self: ContractState, strk_token_address: ContractAddress) {
-        self.strk_token.write(IERC20CamelDispatcher { contract_address: strk_token_address });
+        self.strk_token.write(IERC20Dispatcher { contract_address: strk_token_address });
         self._reset_prize();
     }
 
@@ -60,7 +60,7 @@ pub mod DiceGame {
             let caller = get_caller_address();
             let this_contract = get_contract_address();
             // call approve on UI
-            self.strk_token.read().transferFrom(caller, this_contract, amount);
+            self.strk_token.read().transfer_from(caller, this_contract, amount);
 
             let prev_block: u256 = get_block_number().into() - 1;
             let array = array![prev_block, self.nonce.read()];
@@ -76,7 +76,7 @@ pub mod DiceGame {
                 return;
             }
 
-            let contract_balance = self.strk_token.read().balanceOf(this_contract);
+            let contract_balance = self.strk_token.read().balance_of(this_contract);
             let prize = self.prize.read();
             assert(contract_balance >= prize, 'Not enough balance');
             self.strk_token.read().transfer(caller, prize);
@@ -94,7 +94,7 @@ pub mod DiceGame {
         fn prize(self: @ContractState) -> u256 {
             self.prize.read()
         }
-        fn strk_token_dispatcher(self: @ContractState) -> IERC20CamelDispatcher {
+        fn strk_token_dispatcher(self: @ContractState) -> IERC20Dispatcher {
             self.strk_token.read()
         }
     }
@@ -102,7 +102,7 @@ pub mod DiceGame {
     #[generate_trait]
     pub impl InternalImpl of InternalTrait {
         fn _reset_prize(ref self: ContractState) {
-            let contract_balance = self.strk_token.read().balanceOf(get_contract_address());
+            let contract_balance = self.strk_token.read().balance_of(get_contract_address());
             self.prize.write(contract_balance / 10);
         }
     }
