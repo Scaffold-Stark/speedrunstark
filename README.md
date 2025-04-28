@@ -130,21 +130,6 @@ We want to create an automatic market where our contract will hold reserves of b
 
 </details>
 
-After thinking through the guiding questions, have a look at the solution code!
-
-<details markdown='1'><summary>👩🏽‍🏫 Solution Code</summary>
-
-```
-#[storage]
-struct Storage {
-    #[substorage(v0)]
-    total_liquidity: u256,
-    liquidity: Map<ContractAddress, u256>,
-}
-```
-
-</details>
-
 </details>
 
 These variables track the total liquidity, but also the liquidity of each address.
@@ -174,34 +159,6 @@ We want this function written in a way that when we send STRK and/or $BAL tokens
 <details markdown='1'><summary>Question Four</summary>
 
 > Now we need to take care of the tokens `init()` is receiving. How do we transfer the tokens from the sender (us) to this contract address? How do we make sure the transaction reverts if the sender did not have as many tokens as they wanted to send?
-
-</details>
-
-<details markdown='1'><summary> 👨🏻‍🏫 Solution Code</summary>
-
-```
-    fn init(ref self: ContractState, tokens: u256, strk: u256) -> (u256, u256) {
-        let total_liquidity = self.total_liquidity.read();
-        assert(total_liquidity == 0, 'DEX-Init:already has liquidity');
-
-        let contract_address = get_contract_address();
-        let caller = get_caller_address();
-        let strk_token_contract = self.strk_token.read();
-        assert(
-            strk_token_contract.transfer_from(caller, contract_address, strk),
-            'Transfer STRK failed',
-        );
-        self.total_liquidity.write(strk);
-        self.liquidity.write(caller, strk);
-
-        let token_contract = self.token.read();
-        assert(
-            token_contract.transfer_from(caller, contract_address, tokens),
-            'Transfer token failed',
-        );
-        (tokens, strk)
-    }
-```
 
 </details>
 
@@ -307,19 +264,6 @@ For the math portions of this challenge, you can black-box the math. However, it
 3. Then our `denominator` will be `xReserves` multiplied by 1000 (to account for the 997 in the numerator) plus `xInputWithFee`.
 4. Last, we will return the `numerator` / `denominator` which is our `yOutput`, or the amount of swapped currency. But wait, can we have decimals in Cairo? No, so the output will be rounded up or down to the nearest whole number.
 
-<details markdown='1'><summary>👩🏽‍🏫 Solution Code</summary>
-
-```
-    fn price(self: @ContractState, x_input: u256, x_reserves: u256, y_reserves: u256) -> u256 {
-        let x_input_with_fee = x_input * 997_u256;
-        let numerator = x_input_with_fee * y_reserves;
-        let denominator = (x_reserves * 1000_u256) + x_input_with_fee;
-        numerator / denominator
-    }
-```
-
-</details>
-
 </details>
 
 We use the ratio of the input vs output reserve to calculate the price to swap either asset for the other. Let’s deploy this and poke around:
@@ -400,53 +344,6 @@ The basic overview for `STRKToToken()` is we're going to define our variables to
 
 </details>
 
-<details markdown='1'><summary>👨🏻‍🏫 Solution Code </summary>
-
-```
-    /// Swaps STRK for tokens.
-    ///
-    /// Args:
-    ///     self: The contract state.
-    ///     strk_input: The amount of STRK to swap.
-    ///
-    /// Returns:
-    ///     u256: The amount of tokens received.
-    fn strkToToken(ref self: ContractState, strk_input: u256) -> u256 {
-        assert(strk_input > 0, 'Cannot swap 0 strk');
-        let caller = get_caller_address();
-        let strk_balance = self.strk_token.read().balance_of(caller);
-        assert(strk_balance > 0, 'Insufficient strk balance');
-        let contract_address = get_contract_address();
-        assert(
-            self.strk_token.read().allowance(caller, contract_address) >= strk_input,
-            'Insufficient allowance',
-        );
-
-        let token_reserve = self.token.read().balance_of(contract_address);
-        let strk_reserve = self.strk_token.read().balance_of(contract_address);
-
-        let tokens_bought = self.price(strk_input, strk_reserve - strk_input, token_reserve);
-
-        assert(
-            self.strk_token.read().transfer_from(caller, contract_address, strk_input),
-            'STRK transfer failed',
-        );
-        assert(self.token.read().transfer(caller, tokens_bought), 'Token transfer failed');
-
-        self
-            .emit(
-                StrkToTokenSwap {
-                    swapper: caller, token_output: tokens_bought, strk_input: strk_input,
-                },
-            );
-
-        tokens_bought
-    }
-
-```
-
-</details>
-
 </details>
 
 😎 Great now onto the next! `tokenToSTRK()` is going to do the opposite so it should be pretty straight forward. But if you get stuck, the guiding questions are always there 🦉
@@ -492,57 +389,6 @@ The basic overview for `STRKToToken()` is we're going to define our variables to
 <details markdown='1'><summary>Question Seven</summary>
 
 > Lastly, what are we returning?
-
-</details>
-
-<details markdown='1'><summary>👨🏻‍🏫 Solution Code </summary>
-
-```
-    /// Swaps tokens for STRK.
-    ///
-    /// Args:
-    ///     self: The contract state.
-    ///     token_input: The amount of tokens to swap.
-    ///
-    /// Returns:
-    ///     u256: The amount of STRK received.
-    fn tokenToStrk(ref self: ContractState, token_input: u256) -> u256 {
-        assert(token_input > 0, 'Cannot swap 0 tokens');
-        let caller = get_caller_address();
-        let contract_address = get_contract_address();
-
-        let token_contract = self.token.read();
-        assert(token_contract.balance_of(caller) >= token_input, 'Insufficient token balance');
-        assert(
-            token_contract.allowance(caller, contract_address) >= token_input,
-            'Insufficient allowance',
-        );
-
-        let token_reserve = token_contract.balance_of(contract_address);
-        let strk_output = self
-            .price(
-                token_input, token_reserve, self.strk_token.read().balance_of(contract_address),
-            );
-
-        assert(
-            token_contract.transfer_from(caller, contract_address, token_input),
-            'Failed to transfer tokens',
-        );
-        assert(
-            self.strk_token.read().transfer(caller, strk_output),
-            'Failed to transfer STRK to user',
-        );
-
-        self
-            .emit(
-                TokenToStrkSwap {
-                    swapper: caller, tokens_input: token_input, strk_output: strk_output,
-                },
-            );
-
-        strk_output
-    }
-```
 
 </details>
 
@@ -646,56 +492,6 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 
 </details>
 
-<details markdown='1'><summary>👩🏽‍🏫 Solution Code </summary>
-
-```
-    /// Deposits STRK and tokens into the liquidity pool.
-    ///
-    /// Args:
-    ///     self: The contract state.
-    ///     strk_amount: The amount of STRK to deposit.
-    ///
-    /// Returns:
-    ///     u256: The amount of liquidity minted.
-    fn deposit(ref self: ContractState, strk_amount: u256) -> u256 {
-        assert(strk_amount > 0, 'Deposit must greater than 0');
-        let caller = get_caller_address();
-        let contract_address = get_contract_address();
-    
-        let strk_reserve = self.strk_token.read().balance_of(contract_address) - strk_amount;
-        let token_reserve = self.token.read().balance_of(contract_address);
-        let token_amount = (strk_amount * token_reserve / strk_reserve) + 1;
-        let liquidity_minted = strk_amount * self.total_liquidity.read() / strk_reserve;
-    
-        self.liquidity.write(caller, self.liquidity.read(caller) + liquidity_minted);
-        self.total_liquidity.write(self.total_liquidity.read() + liquidity_minted);
-    
-        assert(
-            self.strk_token.read().transfer_from(caller, contract_address, strk_amount),
-            'strk transfer failed',
-        );
-        assert(
-            self.token.read().transfer_from(caller, contract_address, token_amount),
-            'token transfer failed',
-        );
-    
-        self
-            .emit(
-                LiquidityProvided {
-                    liquidity_provider: caller,
-                    liquidity_minted,
-                    strk_input: strk_amount,
-                    tokens_input: token_amount,
-                },
-            );
-    
-        liquidity_minted
-    }
-
-```
-
-</details>
-
 </details>
 
 > 💡 **Remember**: Every time you perform actions with your $BAL tokens (deposit, exchange), you'll need to call `approve()` from the `Balloons.cairo` contract **to authorize the DEX address to handle a specific number of your $BAL tokens**. To keep things simple, you can just do that from `Debug Contracts` tab, **ensure you approve a large enough quantity of tokens to not face allowance problems (see getDepositTokenAmount() to approve BALtokens)**.
@@ -777,51 +573,6 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 > Last, what are we returning?
 
 </details>
-
-<details markdown='1'><summary>👩🏽‍🏫 Solution Code </summary>
-
-```
-    /// Withdraws STRK and tokens from the liquidity pool.
-    ///
-    /// Args:
-    ///     self: The contract state.
-    ///     amount: The amount of liquidity to withdraw.
-    ///
-    /// Returns:
-    ///     (u256, u256): The amounts of STRK and tokens withdrawn.
-    fn withdraw(ref self: ContractState, amount: u256) -> (u256, u256) {
-        let caller = get_caller_address();
-        let caller_liquidity = self.liquidity.read(caller);
-        assert(caller_liquidity >= amount, 'Insufficient liquidity');
-
-        let contract_address = get_contract_address();
-        let strk_balance = self.strk_token.read().balance_of(contract_address);
-        let token_balance = self.token.read().balance_of(contract_address);
-
-        let strk_withdrawn = amount * strk_balance / self.total_liquidity.read();
-        let token_amount = amount * token_balance / self.total_liquidity.read();
-
-        self.liquidity.write(caller, caller_liquidity - amount);
-        self.total_liquidity.write(self.total_liquidity.read() - amount);
-
-        assert(self.strk_token.read().transfer(caller, strk_withdrawn), 'strk transfer failed');
-        assert(self.token.read().transfer(caller, token_amount), 'Token transfer failed');
-
-        self
-            .emit(
-                LiquidityRemoved {
-                    liquidity_remover: caller,
-                    liquidity_withdrawn: amount,
-                    tokens_output: token_amount,
-                    strk_output: strk_withdrawn,
-                },
-            );
-
-        (strk_withdrawn, token_amount)
-    }
-```
-
- </details>
 
  </details>
 
