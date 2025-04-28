@@ -110,7 +110,7 @@ You'll need to track individual `balances` using a Map:
 ```cairo
 #[storage]
 struct Storage {
- eth_token_dispatcher: IERC20CamelDispatcher,
+ token_dispatcher: IERC20Dispatcher,
  balances: Map<ContractAddress, u256>,
  ...
 }
@@ -152,16 +152,16 @@ Then, pass the `eth_contract` address as an argument to the `deployContract` fun
   });
 ```
 
-Next, import the `IERC20CamelDispatcher` struct from the `OpenZeppelin` library:
+Next, import the `IERC20Dispatcher` struct from the `OpenZeppelin` library:
 
 ```cairo
-use openzeppelin::token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 ```
 
-In the constructor function, instantiate the `IERC20CamelDispatcher` struct with the address of the STRK contract address:
+In the constructor function, instantiate the `IERC20Dispatcher` struct with the address of the STRK contract address:
 
 ```cairo
-self.eth_token_dispatcher.write(IERC20CamelDispatcher { contract_address: eth_contract });
+self.token_dispatcher.write(IERC20Dispatcher { contract_address: eth_contract });
 ```
 
 With the dispatcher set up, you can now utilize functions defined in the interface, such as `transfer`, `transferFrom`, and `balanceOf`, to manage STRK transactions effectively.
@@ -203,7 +203,7 @@ self.deadline.write(get_block_timestamp() + 60);
 If the staked amount of the contract:
 
 ```cairo
-let staked_amount = self.eth_token_dispatcher.read().balanceOf(get_contract_address())
+let staked_amount = self.token_dispatcher.read().balanceOf(get_contract_address())
 ```
 
 Is over the `threshold` by the `deadline`, you will want to call: `self.complete_transfer(staked_amount)`. This will send the funds to the `ExampleExternalContract` and call `complete()`.
@@ -272,7 +272,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-⛽️ You will need to get some `STRK` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 > 📝 If you plan on submitting this challenge, be sure to set your deadline to at least block.timestamp + 72 hours
 
