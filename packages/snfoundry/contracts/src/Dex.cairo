@@ -242,7 +242,7 @@ mod Dex {
         /// Returns:
         ///     u256: The total liquidity amount.
         fn getTotalLiquidity(self: @ContractState) -> u256 {
-            self.total_liquidity.read()
+            0
         }
 
         // Todo Checkpoint 4:  Implement your function strkToToken here.
