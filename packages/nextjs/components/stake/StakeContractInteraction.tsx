@@ -10,11 +10,7 @@ import { Address } from "~~/components/scaffold-stark";
 import humanizeDuration from "humanize-duration";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
-
-function formatEther(weiValue: number) {
-  const etherValue = weiValue / 1e18;
-  return etherValue.toFixed(1);
-}
+import { formatEther } from "ethers";
 
 export const StakeContractInteraction = ({ address }: { address?: string }) => {
   const { address: connectedAddress } = useAccount();
@@ -63,12 +59,12 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
     functionName: "execute",
   });
 
-  const { sendAsync: withdrawETH } = useScaffoldWriteContract({
+  const { sendAsync: withdrawSTRK } = useScaffoldWriteContract({
     contractName: "Staker",
     functionName: "withdraw",
   });
 
-  const { sendAsync: stakeEth } = useScaffoldMultiWriteContract({
+  const { sendAsync: stakeStrk } = useScaffoldMultiWriteContract({
     calls: [
       {
         contractName: "Strk",
@@ -107,7 +103,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             <STARKToPrice
               value={
                 exampleExternalContractBalance != null
-                  ? `${formatEther(Number(exampleExternalContractBalance))}${targetNetwork.nativeCurrency.symbol}`
+                  ? `${formatEther(exampleExternalContractBalance)}`
                   : undefined
               }
               className="text-[1rem]"
@@ -143,7 +139,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             </p>
             <span>
               {myStake
-                ? `${formatEther(Number(myStake))} ${targetNetwork.nativeCurrency.symbol}`
+                ? `${formatEther(myStake as unknown as bigint)} STRK`
                 : "0"}
             </span>
           </div>
@@ -155,7 +151,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
               <STARKToPrice
                 value={
                   stakerContractBalance != null
-                    ? `${formatEther(Number(stakerContractBalance))}${targetNetwork.nativeCurrency.symbol}`
+                    ? `${formatEther(stakerContractBalance)}`
                     : undefined
                 }
               />
@@ -165,7 +161,7 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
               <STARKToPrice
                 value={
                   threshold
-                    ? `${formatEther(Number(threshold))} ${targetNetwork.nativeCurrency.symbol}`
+                    ? `${formatEther(threshold as unknown as bigint)}`
                     : undefined
                 }
               />
@@ -182,16 +178,16 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
             </button>
             <button
               className="btn btn-secondary uppercase text-white"
-              onClick={wrapInTryCatch(withdrawETH, "stakeETH")}
+              onClick={wrapInTryCatch(withdrawSTRK, "stakeSTRK")}
             >
               Withdraw
             </button>
           </div>
           <button
             className="btn btn-secondary uppercase text-white"
-            onClick={wrapInTryCatch(stakeEth, "stakeETH")}
+            onClick={wrapInTryCatch(stakeStrk, "stakeSTRK")}
           >
-            🥩 Stake 0.5 ether!
+            🥩 Stake 0.5 stark!
           </button>
         </div>
       </div>
