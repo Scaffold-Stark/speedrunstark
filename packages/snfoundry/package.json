@@ -1,5 +1,5 @@
 {
-  "name": "@ss-4/snfoundry",
+  "name": "@ss-2/snfoundry",
   "version": "0.0.1",
   "scripts": {
     "chain": "starknet-devnet --seed 0 --account-class cairo1",

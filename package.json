@@ -1,5 +1,5 @@
 {
-  "name": "ss-4",
+  "name": "ss-2",
   "version": "1.0.2",
   "author": "Q3 Labs",
   "license": "MIT",
@@ -26,7 +26,7 @@
     "format": "yarn workspace @ss-2/nextjs format && yarn workspace @ss-2/snfoundry format",
     "format:check": "yarn workspace @ss-2/nextjs format:check && yarn workspace @ss-2/snfoundry format:check",
     "prepare": "husky",
-    "verify": "yarn workspace @ss-4/snfoundry verify"
+    "verify": "yarn workspace @ss-2/snfoundry verify"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
