@@ -103,16 +103,6 @@ export const DisplayVariable = ({
   });
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { showAnimation } = useAnimationConfig(result);
-  const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
-
-  // error logging
-  useEffect(() => {
-    if (error) {
-      console.error(error?.message);
-      console.error(error.stack);
-    }
-  }, [error]);
 
   // error logging
   // eslint-disable-next-line react-hooks/rules-of-hooks

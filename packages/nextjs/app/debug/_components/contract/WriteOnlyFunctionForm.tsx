@@ -100,12 +100,6 @@ export const WriteOnlyFunctionForm = ({
 
   const [displayedTxResult, setDisplayedTxResult] =
     useState<InvokeTransactionReceiptResponse>();
-<<<<<<< HEAD
-  const { data: txResult } = useTransactionReceipt({
-    hash: result?.transaction_hash,
-  });
-=======
->>>>>>> base-challenge-template
   useEffect(() => {
     setDisplayedTxResult(
       txResult as unknown as InvokeTransactionReceiptResponse,

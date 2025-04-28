@@ -13,7 +13,6 @@ import {
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { getBlockExplorerAddressLink } from "~~/utils/scaffold-stark";
 import { BlockieAvatar } from "~~/components/scaffold-stark/BlockieAvatar";
-import { useScaffoldStarkProfile } from "~~/hooks/scaffold-stark/useScaffoldStarkProfile";
 import { getStarknetPFPIfExists } from "~~/utils/profile";
 import { default as NextImage } from "next/image";
 
@@ -141,12 +140,12 @@ export const Address = ({
       </div>
       {disableAddressLink ? (
         <span className={`ml-1.5 text-${size} font-normal`}>
-          {fetchedProfile?.name || displayAddress}
+          {profile?.name || displayAddress}
         </span>
       ) : targetNetwork.network === devnet.network ? (
         <span className={`ml-1.5 text-${size} font-normal`}>
           <Link href={blockExplorerAddressLink}>
-            {fetchedProfile?.name || displayAddress}
+            {profile?.name || displayAddress}
           </Link>
         </span>
       ) : (
@@ -156,7 +155,7 @@ export const Address = ({
           href={blockExplorerAddressLink}
           rel="noopener noreferrer"
         >
-          {fetchedProfile?.name || displayAddress}
+          {profile?.name || displayAddress}
         </a>
       )}
       {addressCopied ? (

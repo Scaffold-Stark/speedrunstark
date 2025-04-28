@@ -24,14 +24,6 @@ export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
   } = useScaffoldStrkBalance({
     address,
   });
-  const {
-    formatted: strkFormatted,
-    isLoading: strkIsLoading,
-    isError: strkIsError,
-    symbol: strkSymbol,
-  } = useScaffoldStrkBalance({
-    address,
-  });
   const [displayUsdMode, setDisplayUsdMode] = useState(
     strkPrice > 0 ? Boolean(usdMode) : false,
   );

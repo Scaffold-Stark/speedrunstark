@@ -1,9 +1,9 @@
-import { hash, number } from "starknet";
+import { hash, num } from "starknet";
 
 // Get the function selector from the function name
 export function getFunctionSelector(functionName: string) {
   const selectorHex = hash.getSelectorFromName(functionName);
-  const selectorFelt = number.hexToDecimalString(selectorHex);
+  const selectorFelt = num.hexToDecimalString(selectorHex);
   return selectorFelt;
 }
 
