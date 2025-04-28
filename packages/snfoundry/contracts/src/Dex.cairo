@@ -99,7 +99,7 @@ pub trait IDex<TContractState> {
 mod Dex {
     use contracts::Balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_token::erc20::interface::{IERC20CamelDispatcher, IERC20CamelDispatcherTrait};
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{get_caller_address, get_contract_address};
     use starknet::storage::{Map, StorageMapReadAccess,StorageMapWriteAccess};
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
@@ -118,7 +118,7 @@ mod Dex {
     struct Storage {
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
-        strk_token: IERC20CamelDispatcher,
+        strk_token: IERC20Dispatcher,
         token: IBalloonsDispatcher,
         total_liquidity: u256,
         liquidity: Map<ContractAddress, u256>,
@@ -185,7 +185,7 @@ mod Dex {
         token_address: ContractAddress,
     ) {
         self.ownable.initializer(get_caller_address());
-        self.strk_token.write(IERC20CamelDispatcher { contract_address: strk_token_address });
+        self.strk_token.write(IERC20Dispatcher { contract_address: strk_token_address });
         self.token.write(IBalloonsDispatcher { contract_address: token_address });
     }
 
@@ -209,7 +209,7 @@ mod Dex {
             let caller = get_caller_address();
             let strk_token_contract = self.strk_token.read();
             assert(
-                strk_token_contract.transferFrom(caller, contract_address, strk),
+                strk_token_contract.transfer_from(caller, contract_address, strk),
                 'Transfer STRK failed',
             );
             self.total_liquidity.write(strk);
@@ -278,7 +278,7 @@ mod Dex {
         fn strkToToken(ref self: ContractState, strk_input: u256) -> u256 {
             assert(strk_input > 0, 'Cannot swap 0 strk');
             let caller = get_caller_address();
-            let strk_balance = self.strk_token.read().balanceOf(caller);
+            let strk_balance = self.strk_token.read().balance_of(caller);
             assert(strk_balance > 0, 'Insufficient strk balance');
             let contract_address = get_contract_address();
             assert(
@@ -287,12 +287,12 @@ mod Dex {
             );
 
             let token_reserve = self.token.read().balance_of(contract_address);
-            let strk_reserve = self.strk_token.read().balanceOf(contract_address);
+            let strk_reserve = self.strk_token.read().balance_of(contract_address);
 
             let tokens_bought = self.price(strk_input, strk_reserve - strk_input, token_reserve);
 
             assert(
-                self.strk_token.read().transferFrom(caller, contract_address, strk_input),
+                self.strk_token.read().transfer_from(caller, contract_address, strk_input),
                 'STRK transfer failed',
             );
             assert(self.token.read().transfer(caller, tokens_bought), 'Token transfer failed');
@@ -331,7 +331,7 @@ mod Dex {
             let token_reserve = token_contract.balance_of(contract_address);
             let strk_output = self
                 .price(
-                    token_input, token_reserve, self.strk_token.read().balanceOf(contract_address),
+                    token_input, token_reserve, self.strk_token.read().balance_of(contract_address),
                 );
 
             assert(
@@ -367,7 +367,7 @@ mod Dex {
             let caller = get_caller_address();
             let contract_address = get_contract_address();
 
-            let strk_reserve = self.strk_token.read().balanceOf(contract_address) - strk_amount;
+            let strk_reserve = self.strk_token.read().balance_of(contract_address) - strk_amount;
             let token_reserve = self.token.read().balance_of(contract_address);
             let token_amount = (strk_amount * token_reserve / strk_reserve) + 1;
             let liquidity_minted = strk_amount * self.total_liquidity.read() / strk_reserve;
@@ -375,7 +375,7 @@ mod Dex {
             self.liquidity.write(caller, self.liquidity.read(caller) + liquidity_minted);
             self.total_liquidity.write(self.total_liquidity.read() + liquidity_minted);
             assert(
-                self.strk_token.read().transferFrom(caller, contract_address, strk_amount),
+                self.strk_token.read().transfer_from(caller, contract_address, strk_amount),
                 'strk transfer failed',
             );
             assert(
@@ -409,7 +409,7 @@ mod Dex {
             assert(strk_amount > 0, 'Deposit must greater than 0');
             let contract_address = get_contract_address();
 
-            let strk_reserve = self.strk_token.read().balanceOf(contract_address) - strk_amount;
+            let strk_reserve = self.strk_token.read().balance_of(contract_address) - strk_amount;
             let token_reserve = self.token.read().balance_of(contract_address);
             let token_amount = (strk_amount * token_reserve / strk_reserve) + 1;
             token_amount
@@ -430,7 +430,7 @@ mod Dex {
             assert(caller_liquidity >= amount, 'Insufficient liquidity');
 
             let contract_address = get_contract_address();
-            let strk_balance = self.strk_token.read().balanceOf(contract_address);
+            let strk_balance = self.strk_token.read().balance_of(contract_address);
             let token_balance = self.token.read().balance_of(contract_address);
 
             let strk_withdrawn = amount * strk_balance / self.total_liquidity.read();

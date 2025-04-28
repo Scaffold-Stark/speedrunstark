@@ -188,7 +188,7 @@ We want this function written in a way that when we send STRK and/or $BAL tokens
         let caller = get_caller_address();
         let strk_token_contract = self.strk_token.read();
         assert(
-            strk_token_contract.transferFrom(caller, contract_address, strk),
+            strk_token_contract.transfer_from(caller, contract_address, strk),
             'Transfer STRK failed',
         );
         self.total_liquidity.write(strk);
@@ -414,7 +414,7 @@ The basic overview for `STRKToToken()` is we're going to define our variables to
     fn strkToToken(ref self: ContractState, strk_input: u256) -> u256 {
         assert(strk_input > 0, 'Cannot swap 0 strk');
         let caller = get_caller_address();
-        let strk_balance = self.strk_token.read().balanceOf(caller);
+        let strk_balance = self.strk_token.read().balance_of(caller);
         assert(strk_balance > 0, 'Insufficient strk balance');
         let contract_address = get_contract_address();
         assert(
@@ -423,12 +423,12 @@ The basic overview for `STRKToToken()` is we're going to define our variables to
         );
 
         let token_reserve = self.token.read().balance_of(contract_address);
-        let strk_reserve = self.strk_token.read().balanceOf(contract_address);
+        let strk_reserve = self.strk_token.read().balance_of(contract_address);
 
         let tokens_bought = self.price(strk_input, strk_reserve - strk_input, token_reserve);
 
         assert(
-            self.strk_token.read().transferFrom(caller, contract_address, strk_input),
+            self.strk_token.read().transfer_from(caller, contract_address, strk_input),
             'STRK transfer failed',
         );
         assert(self.token.read().transfer(caller, tokens_bought), 'Token transfer failed');
@@ -521,7 +521,7 @@ The basic overview for `STRKToToken()` is we're going to define our variables to
         let token_reserve = token_contract.balance_of(contract_address);
         let strk_output = self
             .price(
-                token_input, token_reserve, self.strk_token.read().balanceOf(contract_address),
+                token_input, token_reserve, self.strk_token.read().balance_of(contract_address),
             );
 
         assert(
@@ -662,7 +662,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
         let caller = get_caller_address();
         let contract_address = get_contract_address();
     
-        let strk_reserve = self.strk_token.read().balanceOf(contract_address) - strk_amount;
+        let strk_reserve = self.strk_token.read().balance_of(contract_address) - strk_amount;
         let token_reserve = self.token.read().balance_of(contract_address);
         let token_amount = (strk_amount * token_reserve / strk_reserve) + 1;
         let liquidity_minted = strk_amount * self.total_liquidity.read() / strk_reserve;
@@ -671,7 +671,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
         self.total_liquidity.write(self.total_liquidity.read() + liquidity_minted);
     
         assert(
-            self.strk_token.read().transferFrom(caller, contract_address, strk_amount),
+            self.strk_token.read().transfer_from(caller, contract_address, strk_amount),
             'strk transfer failed',
         );
         assert(
@@ -795,7 +795,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
         assert(caller_liquidity >= amount, 'Insufficient liquidity');
 
         let contract_address = get_contract_address();
-        let strk_balance = self.strk_token.read().balanceOf(contract_address);
+        let strk_balance = self.strk_token.read().balance_of(contract_address);
         let token_balance = self.token.read().balance_of(contract_address);
 
         let strk_withdrawn = amount * strk_balance / self.total_liquidity.read();
