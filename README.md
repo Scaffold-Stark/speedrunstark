@@ -226,7 +226,7 @@ First, we have to call `approve()` on the Balloons contract, approving the DEX c
 > 🤓 Copy and paste the DEX address to the _Address Spender_ and then set the amount to 5.
 > You can confirm this worked using the `allowance()` function in `Debug Contracts` tab using your local account address as the owner and the DEX contract address as the spender.
 
-Now we are ready to call `init()` on the DEX, using the `Debug Contracts` tab. We will tell it to take 5 of our tokens and send 0.01 STRK with the transaction. Remember in the `Debug Contracts` tab we are calling the functions directly which means we have to convert to wei, so don't forget to multiply those values by 10¹⁸!
+Now we are ready to call `init()` on the DEX, using the `Debug Contracts` tab. We will tell it to take 5 of our tokens and send 0.01 STRK with the transaction. Remember in the `Debug Contracts` tab we are calling the functions directly which means we have to convert to fri, so don't forget to multiply those values by 10¹⁸!
 
 ![img_2.png](packages/nextjs/public/img_2.png)
 

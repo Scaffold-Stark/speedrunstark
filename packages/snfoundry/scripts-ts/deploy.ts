@@ -53,7 +53,7 @@ const transferScript = async (): Promise<void> => {
                 {
                     contractAddress: balloons_token.address,
                     entrypoint: "approve",
-                    // approve 1 wei for bridge
+                    // approve 1 fri for bridge
                     calldata: CallData.compile({
                         spender: dex.address,
                         amount: INITIAL_SUPPLY,
@@ -131,7 +131,7 @@ const transferScript = async (): Promise<void> => {
              entrypoint: 'balance_of',
              calldata: [frontEndAddress]
          });
-         console.log(`Frontend address ${frontEndAddress} $BAL balance: ${BigInt(recipientBalance[0])} in wei`);
+         console.log(`Frontend address ${frontEndAddress} $BAL balance: ${BigInt(recipientBalance[0])} in fri`);
      } catch (error) {
          console.error("Transfer failed:", error);
          throw error;
