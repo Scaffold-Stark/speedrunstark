@@ -46,6 +46,6 @@ git restore --worktree --source=HEAD --quiet -- "${files_to_process[@]}"
 
 # 3. Remove newly added files (which became untracked after step 1)
 #    This command ignores tracked files.
-git clean -fd -- "${files_to_process[@]}"
+git clean -fd"
 
 exit 0
