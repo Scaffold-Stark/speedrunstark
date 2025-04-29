@@ -103,7 +103,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 value={address}
                 onChange={handleSignerChange}
                 placeholder="Enter wallet address"
-                className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -115,7 +115,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 max={getMaxQuorumValue()}
                 value={newQuorum}
                 onChange={handleNewQuorumChange}
-                className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </>
@@ -130,7 +130,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                 value={transferRecipient || ""}
                 onChange={(e) => setTransferRecipient(e.target.value)}
                 placeholder="Enter recipient wallet address"
-                className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -142,7 +142,7 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
                   value={transferAmount || ""}
                   onChange={handleAmountChange}
                   placeholder="Enter amount in STRK"
-                  className="block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-transparent block w-full px-4 py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
