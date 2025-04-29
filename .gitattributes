@@ -1,7 +1,8 @@
+package.json merge=keeptheirs
 .husky/pre-commit merge=keeptheirs
-.devcontainer.json merge=keeptheirs
 .tool-versions merge=keeptheirs
 
+README.md merge=keepmine
 CONTRIBUTING.md merge=keepmine
 .github/** merge=keepmine
 **/__test__/** merge=keepmine
