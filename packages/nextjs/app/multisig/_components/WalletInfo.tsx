@@ -1,6 +1,6 @@
 import React from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { BlockieAvatar } from "~~/components/scaffold-stark";
+import { Address, BlockieAvatar } from "~~/components/scaffold-stark";
 import { notification } from "~~/utils/scaffold-stark";
 import { convertFeltToAddress, formatAddress } from "../utils";
 import { WalletInfoProps } from "../types";
@@ -26,16 +26,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
           <div className="mb-4">
             <div className="text-sm">
               <span className="font-semibold">Contract Address:</span>
-              <CopyToClipboard
-                text={deployedContractData.address}
-                onCopy={() => {
-                  notification.success("Copy successfully!");
-                }}
-              >
-                <span className="font-mono text-xs ml-2 break-all cursor-pointer">
-                  {formatAddress(deployedContractData.address)}
-                </span>
-              </CopyToClipboard>
+              <Address address={deployedContractData.address} />
             </div>
             <div className="text-sm">
               <span className="font-semibold">Signers:</span>

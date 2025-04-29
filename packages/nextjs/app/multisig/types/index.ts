@@ -1,3 +1,5 @@
+import { Address } from "@starknet-react/chains";
+
 export type SignerOption =
   | ""
   | "add"
@@ -24,7 +26,7 @@ export interface Transaction {
 
 export interface ContractInfo {
   abi: any;
-  address: string;
+  address: Address;
 }
 
 export interface EventData {
