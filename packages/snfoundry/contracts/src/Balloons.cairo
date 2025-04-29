@@ -74,8 +74,7 @@ pub trait IBalloons<T> {
 mod Balloons {
     use openzeppelin_token::erc20::interface::IERC20;
     use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
-
-    use super::{ContractAddress};
+    use super::ContractAddress;
 
     component!(path: ERC20Component, storage: erc20, event: ERC20Event);
 
@@ -96,7 +95,8 @@ mod Balloons {
         ERC20Event: ERC20Component::Event,
     }
 
-    // Todo Checkpoint 1: Edit the constructor to mint the initial supply of tokens to the recipient.
+    // Todo Checkpoint 1: Edit the constructor to mint the initial supply of tokens to the
+    // recipient.
     /// Constructor for the Balloons contract.
     ///
     /// Initializes the ERC20 token with a name and symbol, and mints the initial supply to the

@@ -1,5 +1,5 @@
-mod Dex;
 mod Balloons;
+mod Dex;
 mod mock_contracts {
     pub mod MockSTRKToken;
 }

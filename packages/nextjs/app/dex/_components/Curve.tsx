@@ -1,6 +1,12 @@
 import { FC, useEffect, useRef } from "react";
 
-const drawArrow = (ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number) => {
+const drawArrow = (
+  ctx: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+) => {
   const [dx, dy] = [x1 - x2, y1 - y2];
   const norm = Math.sqrt(dx * dx + dy * dy);
   const [udx, udy] = [dx / norm, dy / norm];
@@ -104,11 +110,18 @@ export const Curve: FC<ICurveProps> = (props: ICurveProps) => {
       ctx.lineWidth = 1;
 
       if (props.addingStrk) {
-        const newStrkReserve = props.strkReserve + parseFloat(props.addingStrk.toString());
+        const newStrkReserve =
+          props.strkReserve + parseFloat(props.addingStrk.toString());
 
         ctx.fillStyle = "#bbbbbb";
         ctx.beginPath();
-        ctx.arc(plotX(newStrkReserve), plotY(k / newStrkReserve), 5, 0, 2 * Math.PI);
+        ctx.arc(
+          plotX(newStrkReserve),
+          plotY(k / newStrkReserve),
+          5,
+          0,
+          2 * Math.PI,
+        );
         ctx.fill();
 
         ctx.strokeStyle = "#009900";
@@ -132,9 +145,18 @@ export const Curve: FC<ICurveProps> = (props: ICurveProps) => {
         );
 
         ctx.strokeStyle = "#990000";
-        drawArrow(ctx, plotX(newStrkReserve), plotY(props.tokenReserve), plotX(newStrkReserve), plotY(k / newStrkReserve));
+        drawArrow(
+          ctx,
+          plotX(newStrkReserve),
+          plotY(props.tokenReserve),
+          plotX(newStrkReserve),
+          plotY(k / newStrkReserve),
+        );
 
-        const amountGained = Math.round((10000 * (props.addingStrk * props.tokenReserve)) / newStrkReserve) / 10000;
+        const amountGained =
+          Math.round(
+            (10000 * (props.addingStrk * props.tokenReserve)) / newStrkReserve,
+          ) / 10000;
 
         if (props.isDarkMode) {
           ctx.fillStyle = "#bbbbbb";
@@ -147,11 +169,18 @@ export const Curve: FC<ICurveProps> = (props: ICurveProps) => {
           plotY(k / newStrkReserve),
         );
       } else if (props.addingToken) {
-        const newTokenReserve = props.tokenReserve + parseFloat(props.addingToken.toString());
+        const newTokenReserve =
+          props.tokenReserve + parseFloat(props.addingToken.toString());
 
         ctx.fillStyle = "#bbbbbb";
         ctx.beginPath();
-        ctx.arc(plotX(k / newTokenReserve), plotY(newTokenReserve), 5, 0, 2 * Math.PI);
+        ctx.arc(
+          plotX(k / newTokenReserve),
+          plotY(newTokenReserve),
+          5,
+          0,
+          2 * Math.PI,
+        );
         ctx.fill();
 
         //console.log("newTokenReserve",newTokenReserve)
@@ -184,7 +213,10 @@ export const Curve: FC<ICurveProps> = (props: ICurveProps) => {
           plotY(newTokenReserve),
         );
 
-        const amountGained = Math.round((10000 * (props.addingToken * props.strkReserve)) / newTokenReserve) / 10000;
+        const amountGained =
+          Math.round(
+            (10000 * (props.addingToken * props.strkReserve)) / newTokenReserve,
+          ) / 10000;
         //console.log("amountGained",amountGained)
         if (props.isDarkMode) {
           ctx.fillStyle = "#bbbbbb";
@@ -200,17 +232,38 @@ export const Curve: FC<ICurveProps> = (props: ICurveProps) => {
 
       ctx.fillStyle = "#0000FF";
       ctx.beginPath();
-      ctx.arc(plotX(props.strkReserve), plotY(props.tokenReserve), 5, 0, 2 * Math.PI);
+      ctx.arc(
+        plotX(props.strkReserve),
+        plotY(props.tokenReserve),
+        5,
+        0,
+        2 * Math.PI,
+      );
       ctx.fill();
     }
   }, [props]);
 
   return (
-    <div style={{ position: "relative", width: props.width, height: props.height }}>
-      <canvas style={{ position: "absolute", left: 0, top: 0 }} ref={ref} width={props.width} height={props.height} />
-      <div style={{ position: "absolute", left: "20%", bottom: -20 }}>-- STRK Reserve --{">"}</div>
+    <div
+      style={{ position: "relative", width: props.width, height: props.height }}
+    >
+      <canvas
+        style={{ position: "absolute", left: 0, top: 0 }}
+        ref={ref}
+        width={props.width}
+        height={props.height}
+      />
+      <div style={{ position: "absolute", left: "20%", bottom: -20 }}>
+        -- STRK Reserve --{">"}
+      </div>
       <div
-        style={{ position: "absolute", left: -20, bottom: "20%", transform: "rotate(-90deg)", transformOrigin: "0 0" }}
+        style={{
+          position: "absolute",
+          left: -20,
+          bottom: "20%",
+          transform: "rotate(-90deg)",
+          transformOrigin: "0 0",
+        }}
       >
         -- Token Reserve --{">"}
       </div>
