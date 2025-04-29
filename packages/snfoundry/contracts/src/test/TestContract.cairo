@@ -3,7 +3,7 @@ use contracts::Dex::{IDexDispatcher, IDexDispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare};
+use snforge_std::{CheatSpan, cheat_caller_address};
 use starknet::ContractAddress;
 
 const INITIAL_BAL_SUPPLY: u256 = 1_000_000_000_000_000_000_000; // 1000_BAL_IN_FRI
