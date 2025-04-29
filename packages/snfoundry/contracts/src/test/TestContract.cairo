@@ -1,10 +1,9 @@
-use contracts::Dex::{IDexDispatcher, IDexDispatcherTrait};
 use contracts::Balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
+use contracts::Dex::{IDexDispatcher, IDexDispatcherTrait};
+use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{
-    CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare
-};
+use snforge_std::{CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare};
 use starknet::ContractAddress;
 
 const INITIAL_BAL_SUPPLY: u256 = 1_000_000_000_000_000_000_000; // 1000_BAL_IN_FRI
@@ -41,11 +40,10 @@ const OTHER: ContractAddress = 'OTHER'.try_into().unwrap();
 /// Returns:
 ///     ContractAddress: The address of the deployed MockSTRKToken contract.
 fn deploy_mock_strk_token() -> ContractAddress {
-    let erc20_class_hash = declare("MockSTRKToken").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(INITIAL_RECIPIENT_SUPPLY);
     calldata.append_serde(RECIPIENT);
-    let (strk_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
+    let strk_token_address = declare_and_deploy("MockSTRKToken", calldata);
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     let mut receipent_strk_balance = strk_token_dispatcher.balance_of(RECIPIENT);
     println!("-- RECIPIENT STRK token balance: {:?} STRK in fri", receipent_strk_balance);
@@ -69,11 +67,10 @@ fn deploy_mock_strk_token() -> ContractAddress {
 /// Returns:
 ///     ContractAddress: The address of the deployed Balloons contract.
 fn deploy_balloons_token() -> ContractAddress {
-    let erc20_class_hash = declare("Balloons").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(INITIAL_RECIPIENT_SUPPLY);
     calldata.append_serde(RECIPIENT);
-    let (balloons_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
+    let balloons_token_address = declare_and_deploy("Balloons", calldata);
     let balloons_token_dispatcher = IBalloonsDispatcher {
         contract_address: balloons_token_address,
     };
@@ -102,11 +99,10 @@ fn deploy_balloons_token() -> ContractAddress {
 fn deploy_dex_contract() -> (ContractAddress, ContractAddress, ContractAddress) {
     let strk_token_address = deploy_mock_strk_token();
     let balloons_token_address = deploy_balloons_token();
-    let dex_class_hash = declare("Dex").unwrap().contract_class();
     let mut calldata = array![];
     calldata.append_serde(strk_token_address);
     calldata.append_serde(balloons_token_address);
-    let (dex_contract_address, _) = dex_class_hash.deploy(@calldata).unwrap();
+    let dex_contract_address = declare_and_deploy("Dex", calldata);
     println!("-- Dex contract deployed on: 0x{:x}", dex_contract_address);
 
     // Initial STRK and BAL to dex contract
