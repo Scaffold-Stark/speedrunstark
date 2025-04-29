@@ -9,11 +9,12 @@ pub trait IMultisigWallet<TContractState> {
 mod CustomMultisigWallet {
     use contracts::CustomMultisigComponent::MultisigComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
-    use starknet::contract_address_const;
     use super::{ContractAddress, IMultisigWallet};
 
-    const ETH_CONTRACT_ADDRESS: felt252 =
-        0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7;
+    const STRK_CONTRACT_ADDRESS: ContractAddress =
+        0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d
+        .try_into()
+        .unwrap();
 
     component!(path: MultisigComponent, storage: multisig, event: MultisigEvent);
 
@@ -42,8 +43,8 @@ mod CustomMultisigWallet {
     #[abi(embed_v0)]
     impl MultisigWalletImpl of IMultisigWallet<ContractState> {
         fn transfer_funds(ref self: ContractState, to: ContractAddress, amount: u256) {
-            let eth_contract_address = contract_address_const::<ETH_CONTRACT_ADDRESS>();
-            let token_dispatcher = IERC20Dispatcher { contract_address: eth_contract_address };
+            let strk_contract_address = STRK_CONTRACT_ADDRESS;
+            let token_dispatcher = IERC20Dispatcher { contract_address: strk_contract_address };
             token_dispatcher.transfer(to, amount);
         }
     }

@@ -5,7 +5,6 @@ import { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { useAccount } from "@starknet-react/core";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
-import useScaffoldEthBalance from "~~/hooks/scaffold-stark/useScaffoldEthBalance";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
 
 import { SignerOption, TxType } from "./types";
@@ -15,16 +14,14 @@ import { ManageTransaction } from "./_components/ManageTransaction";
 import { useMultisigStore } from "./lib/multisigStore";
 import { useMultisigOperations } from "./hooks/useMultisigOperations";
 import TransactionList from "./_components/TransactionList";
+import { notification } from "~~/utils/scaffold-stark/notification";
+import { isAddress } from "~~/utils/scaffold-stark/common";
 
 const MultisigPage = () => {
   const { account } = useAccount();
   const { data: deployedContractData } = useDeployedContractInfo(
     "CustomMultisigWallet",
   );
-
-  const { formatted: contractEthBalance } = useScaffoldEthBalance({
-    address: deployedContractData?.address,
-  });
 
   const { formatted: contractStrkBalance } = useScaffoldStrkBalance({
     address: deployedContractData?.address,
@@ -177,6 +174,11 @@ const MultisigPage = () => {
   const handleCreateTransferTransaction = useCallback(async () => {
     if (!transferRecipient || !transferAmount) return;
 
+    if (contractStrkBalance < transferAmount) {
+      notification.error("Insufficient balance");
+      return;
+    }
+
     setLoading(true);
     try {
       await createTransferTransaction(
@@ -256,9 +258,6 @@ const MultisigPage = () => {
         <div className="space-y-6">
           <WalletInfo
             deployedContractData={deployedContractData}
-            contractEthBalance={
-              parseFloat(contractEthBalance || "0").toFixed(4) ?? "0"
-            }
             contractStrkBalance={
               parseFloat(contractStrkBalance || "0").toFixed(4) ?? "0"
             }

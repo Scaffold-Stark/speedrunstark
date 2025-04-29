@@ -270,7 +270,7 @@ export const useMultisigOperations = () => {
           submittedBy: account.address,
           submittedBlock: currentBlockNumber.toString(),
           addressConfirmed: [],
-          tokenType: "ETH",
+          tokenType: "STRK",
           createdAt: currentTime,
           updatedAt: currentTime,
         };

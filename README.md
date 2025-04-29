@@ -1,24 +1,69 @@
-# 🏗 Scaffold-Stark
+# 🚩 Challenge 5: 👛 Multisig Wallet
 
-<h4 align="center">
-  <a href="https://docs.scaffoldstark.com/">Documentation</a> |
-  <a href="https://scaffoldstark.com/">Website</a> |
-  <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
-</h4>
+![hero-6](./packages/nextjs/public/hero6.png)
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+👩‍👩‍👧‍👧 A multisig wallet is a smart contract that acts like a wallet, allowing us to secure assets by requiring multiple accounts to "vote" on transactions. Think of it as a treasure chest that can only be opened when all key parties agree.
 
-⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
+📜 The contract keeps track of all transactions. Each transaction can be confirmed or rejected by the signers (smart contract owners). Only transactions that receive enough confirmations can be "executed" by the signers.
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
+🌟 The final deliverable is a multisig wallet where you can propose adding and removing signers, transferring funds to other accounts, and updating the required number of signers to execute a transaction. After any of the signers propose a transaction, it's up to the signers to confirm and execute it. Deploy your contracts to a testnet, then build and upload your app to a public web server.
 
-![Debug Contracts tab](./packages/nextjs/public/debug-image.png)
+📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
 
-## Requirements
+## 📜 Quest Journal 🧭
+
+In this challenge you'll have access to a fully functional Multisig Wallet for inspiration, unlike previous challenges where certain code sections were intentionally left incomplete.
+
+The objective is to allow builders to create their unique versions while referring to this existing build when encountering difficulties.
+
+### 🥅 Goals:
+
+- [ ] Can you edit and deploy the contract with a 2/3 multisig with two of your addresses?
+- [ ] Can you propose basic transactions with the frontend that sends them to the backend?
+- [ ] Can you “vote” on the transaction as other signers?
+- [ ] Can you execute the transaction and does it do the right thing?
+- [ ] Can you add and remove signers with a custom dialog (that just sends you to the create transaction dialog with the correct calldata)
+
+### ⚔️ Side Quests:
+
+- [ ] **Multisig as a service**<br>
+      Create a deploy button with a copy-paste dialog for sharing so anyone can make a multisig at your URL with your frontend.
+
+- [ ] **Create custom signer roles for your Wallet**<br>
+      You may not want every signer to create new transfers, only allow them to sign existing transactions or a mega-admin role who will be able to veto any transaction.
+
+- [ ] **Integrate this MultiSig wallet into other Scaffold Starknet-2 builds**<br>
+      Find a Scaffold Starknet-2 build that could make use of a Multisig wallet and try to integrate it!
+
+---
+
+## 👇🏼 Quick Break-Down 👛
+
+This is a smart contract that acts as an offchain signature-based shared wallet amongst different signers that showcases use of meta-transaction knowledge and ECDSA `recover()`.
+
+> If you are unfamiliar with these concepts, check out all the [ETH.BUILD videos](https://www.youtube.com/watch?v=CbbcISQvy1E&ab_channel=AustinGriffith) by Austin Griffith, especially the Meta Transactions one!
+
+❗ [OpenZepplin's ECDSA Library](https://docs.openzeppelin.com/contracts/2.x/api/cryptography#ECDSA) provides an easy way to verify signed messages, in this challenge we'll be using it to verify the signatures of the signers of the multisig wallet.
+
+At a high-level, the contract core functions are carried out as follows:
+
+**Offchain: ⛓🙅🏻‍♂️** - Generate a transaction information struct with the function selector and calldata, and hash it. It is signed by the signers associated to the multisig, and added to the `Multisig_tx_info` mapping.
+
+**Onchain: ⛓🙆🏻‍♂️**
+
+- New signers are added to the `Multisig_is_signer` mapping, to check if a signer is in the multisig, we check the `Multisig_is_signer` mapping.
+- If it's a success, the tx is passed to the `execute_transaction(){}` function of the deployed MultiSigWallet contract (this contract), asserting is_signer for any possible calls to internal txs such as (`add_signer()`,`remove_signer()`,`transfer_funds()`,`change_quorum()`).
+
+**Cool Stuff that is Showcased: 😎**
+
+- Normal internal functions, such as changing the signers, and adding or removing signers, are treated as external function calls when `execute_transaction()` is used with the respective calldata.
+- Showcases use of an array (see constructor) populating a mapping to store pertinent information within the deployed smart contract storage location within the EVM in a more efficient manner.
+
+> 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
+
+---
+
+## Checkpoint 0: 📦 Environment 📚
 
 Before you begin, you need to install the following tools:
 
@@ -31,82 +76,48 @@ Before you begin, you need to install the following tools:
 
 ### Starknet-devnet version
 
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.2.4`. To accomplish this, first check your local starknet-devnet version:
+To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.4.0`. To accomplish this, first check your local starknet-devnet version:
 
 ```sh
 starknet-devnet --version
 ```
 
-If your local starknet-devnet version is not `0.2.4`, you need to install it.
+If your local starknet-devnet version is not `0.4.0`, you need to install it.
 
-- Install Starknet-devnet `0.2.4` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
+- Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
-### Scarb version
+### Compatible versions
+- Cairo - v2.11.4
+- Rpc - v0.8.0
+- Scarb - v2.11.4
+- Snforge - v0.41.0
+- Starknet-Devnet - v0.4.0
 
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.9.4`. To accomplish this, first check your local Scarb version:
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
+
+### Docker Option for Environment Setup
+
+<details>
+
+For an alternative to local installations, you can use Docker to set up the environment.
+
+- Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
+
+For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+</details>
+
+Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-scarb --version
-```
 
-If your local Scarb version is not `2.9.4`, you need to install it.
-
-- Install Scarb `2.9.4` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
-
-### Starknet Foundry version
-
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.38.2. To accomplish this, first check your Starknet Foundry version:
-
-```sh
-snforge --version
-```
-
-If your Starknet Foundry version is not `0.38.2`, you need to install it.
-
-- Install Starknet Foundry `0.38.2` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
-
-## Compatible versions
-
-- Starknet-devnet - v0.2.4
-- Scarb - v2.9.4
-- Snforge - v0.38.2
-- Cairo - v2.9.4
-- Rpc - v0.7.1
-
-## Requirements (Alternative Option with Docker)
-
-As an alternative to installing the tools locally, you can use Docker. Here's what you need to do:
-
-1. Install [Docker](https://www.docker.com/get-started/)
-2. Install [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-3. Use the provided `devcontainer.json` file to set up the environment:
-   - The configuration uses the `starknetfoundation/starknet-dev:2.9.2` image.
-   - This includes all required tools pre-installed, such as Scarb, Starknet Foundry, Starknet Devnet and other dependencies.
-
-### Getting Started with Docker Setup
-
-To start using the Docker-based setup:
-
-1. Open the project in **Visual Studio Code**.
-2. Select **"Reopen in Container"**.
-3. If you need to rebuild the container, open the Command Palette (**View -> Command Palette**) and choose:
-   - **Dev Containers: Rebuild and Reopen in Container**
-
-> Once inside the container, you can start working with all the tools and dependencies pre-configured.
-
-## Quickstart with Starknet-Devnet
-
-To get started with Scaffold-Stark, follow the steps below:
-
-1. Clone this repo and install dependencies
-
-```bash
-git clone https://github.com/Scaffold-Stark/scaffold-stark-2.git
-cd scaffold-stark-2
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-5-multisig-wallet
+cd challenge-5-multisig-wallet
+git checkout challenge-5-multisig-wallet
 yarn install
 ```
 
-2. Run a local network in the first terminal.
+> in the same terminal, start your local network (a blockchain emulator in your computer):
 
 ```bash
 yarn chain
@@ -114,189 +125,120 @@ yarn chain
 
 > To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
 
-This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
+> in a second terminal window, 🛰 deploy your contract (locally):
 
-3. On a second terminal, deploy the sample contract:
-
-```bash
+```sh
+cd challenge-5-multisig-wallet
 yarn deploy
 ```
 
-This command deploys a sample smart contract to the local network. The contract is located in `packages/snfoundry/contracts/src` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/snfoundry/scripts-ts/deploy.ts` to deploy the contract to the network. You can also customize the deploy script.
+> in a third terminal window, start your 📱 frontend:
 
-By default `Scaffold-Stark` takes the first prefunded account from `starknet-devnet` as a deployer address,
-
-4. On a third terminal, start your NextJS app:
-
-```bash
+```sh
+cd challenge-5-multisig-wallet
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+📱 Open <http://localhost:3000> to see the app.
 
-5. Check your environment variables. We have a yarn postinstall script that helps to fill in your environment variables. If the environment variable does not exist, you can fill them it manually to get the app running!
+> 👩‍💻 Rerun `yarn deploy` whenever you need to deploy completely new contracts to the frontend. If you want to keep previous deployments and avoid overwriting changes, use `yarn deploy:no-reset` instead.
 
-## Quickstart with Sepolia Testnet
+---
 
-<details>
+## Checkpoint 1: 📝 Configure Signers 🖋
 
-1. Make sure you already cloned this repo and installed dependencies.
+🔏 The owner of the multisig wallet is the first address in the `signers` array if you look at the deploy script `packages/snfoundry/scripts-ts/deploy.ts`.
 
-2. Prepare your environment variables.
+🏗️ This is done in the constructor of the contract, where you can pass in a address that will be the first owner of the wallet, and a number of signatures required to execute a transaction.
 
-Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account contract address and private key.
+You can set the rest of the signers in the frontend, using the "Manage Transaction" section:
 
-3. Change your default network to Sepolia testnet.
+In this tab you can start your transaction proposal to either add or remove owners.
 
-Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
+![add-signer](./packages/nextjs/public/ch6-add-signer.png)
 
-![chall-0-scaffold-config](./packages/nextjs/public/scaffold-config.png)
+> 📝 You can add or remove signers, and update the quorum. Fill the form and click on "Create transaction". 
 
-4. Get some testnet tokens.
+> Quorum is the number of signatures required to execute a transaction.
 
-You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+![add-signer-tx](./packages/nextjs/public/ch6-fill-add-signer-form.png)
 
-> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
+> You will see the new transaction in the UI (this is all offchain)..
 
-4. Open a terminal, deploy the sample contract to Sepolia testnet:
+![add-signer-tx-pool](./packages/nextjs/public/ch6-transaction-confirm.png)
 
-```bash
-yarn deploy --network sepolia
-```
+> Click on "Execute" to execute it, will be marked as "Completed", and will appear in the "Transaction Events" section with the rest of executed transactions.
 
-5. On a second terminal, start your NextJS app:
+![add-signer-tx-confirmed](./packages/nextjs/public/ch6-transaction-execute.png)
 
-```bash
-yarn start
-```
+> You have successfully added a new signer to the multisig wallet.
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+---
 
-### RPC specific version
+## Checkpoint 2: Transfer Funds 💸
 
-To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.7.1`. This repository contains a `.env.example` file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_7`. Let's verify this RPC version is `0.7.1` by calling a `POST` request in an API platform like `Postman` or `Insommia` . Your API endpoint should be `https://starknet-sepolia.public.blastapi.io/rpc/v0_7` and the body should be:
+> 💰 Use the faucet to send your multisig contract some funds.
+> You can find the address in the "Wallet Information" section and "Debug Contracts" tabs.
 
-```json
-{
- "jsonrpc":"2.0",
- "method":"starknet_specVersion",
- "id":1
-}
-```
+> Create a transaction in the "Manage Transaction" section to send some funds to one of your signers, or to any other address of your choice:
 
-You have to paste the endpoint and body in the API platform and click on the `Send` button. If the response is `0.7.1`, then you are good to go. Otherwise, you have to get the correct RPC URL endpoint.
+![create-transfer](./packages/nextjs/public/ch6-create-transfer.png)
 
-![rpc-version](./packages/nextjs/public/rpc-version.png)
-</details>
+> If you set the new quorum to 2, you will need a second signature to execute the transaction.
 
-## Network Configuration Centralization
+![create-transfer-2](./packages/nextjs/public/ch6-transfer-transaction.png)
 
-We've streamlined RPC provider configuration by centralizing network settings in `scaffold.config.ts`. All RPC URLs are now defined in the `rpcProviderUrl` object, and functions reference this centralized configuration instead of using environment variables directly.
+> Open another browser and access with a different owner of the multisig. Sign the transaction with enough owners:
 
-**How to Change Networks:**
+![create-transfer-3](./packages/nextjs/public/ch6-transfer-transaction-2nd-signer.png)
 
-- Update the `targetNetworks` array in `scaffold.config.ts`.
-- The first network in this array is used as the primary target.
-- Ensure each network has a corresponding RPC URL specified in the `rpcProviderUrl` object.
+> Execute the transaction to transfer the funds
 
-### Required Environment Variables
+## Checkpoint 3: 💾 Deploy your contracts! 🛰
 
-For the network configuration to work correctly, you must set the following environment variables in your `.env` file:
+📡 Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
 
-- `NEXT_PUBLIC_DEVNET_PROVIDER_URL`
-- `NEXT_PUBLIC_SEPOLIA_PROVIDER_URL`
-- `NEXT_PUBLIC_MAINNET_PROVIDER_URL`
+![network](./packages/nextjs/public/ch0-scaffold-config.png)
 
-These variables are used in the configuration to assign the correct RPC URLs:
+🔐 Prepare your environment variables.
 
-```typescript
-"devnet": process.env.NEXT_PUBLIC_DEVNET_PROVIDER_URL || process.env.NEXT_PUBLIC_PROVIDER_URL || "",
-"sepolia": process.env.NEXT_PUBLIC_SEPOLIA_PROVIDER_URL || process.env.NEXT_PUBLIC_PROVIDER_URL || "",
-"mainnet": process.env.NEXT_PUBLIC_MAINNET_PROVIDER_URL || process.env.NEXT_PUBLIC_PROVIDER_URL || ""
-```
+> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
-### RPC specific version
+⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
-To ensure the proper functioning of Scaffold-Stark with Testnet or Mainnet, your RPC version must be `0.7.1`. This repository contains a `.env.example` file with the default RPC URL for Starknet Testnet:
+🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
 
-## CLI Usage
+> 💬 Hint: you input `yarn deploy --network sepolia`.
 
-Depending on your package manager, substitute the work COMMAND with the appropiate one from the list.
+---
 
-   $ yarn COMMAND
-   $ npm run COMMAND
+## Checkpoint 4: 🚢 Ship your frontend! 🚁
 
-Commands:
+> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
 
-| Command     | Description |
-| --- | --- |
-| format:check     | (Read only) Batch checks for format inconsistencies for the nextjs and snfoundry codebase |
-| next:check-types | Compile  typscript project                                                                |
-| next:lint        | Runs next lint                                                                            |
-| prepare          | Install husky's git hooks                                                                 |
-| usage            | Show this text                                                                            |
+💻 View your frontend at <http://localhost:3000/multisig> and verify you see the correct network.
 
-### CLI Smart Contracts
+📡 When you are ready to ship the frontend app...
 
-| Command     | Description |
-| --- | --- |
-| compile         | Compiles contracts.                                                                 |
-| test            | Runs snfoundry tests                                                                |
-| chain           | Starts the local blockchain network.                                                |
-| deploy          | Deploys contract to the configured network discarding previous deployments.         |
-| deploy:no-reset | Deploys contract to the configured network without discarding previous deployments. |
-| verify          | Verify Smart Contracts with Walnut                                                  |
+📦 Run `yarn vercel` to package up your frontend and deploy.
 
-### CLI Frontend
+> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
 
-| Command     | Description |
-| --- | --- |
-| start       | Starts the frontend server                   |
-| test:nextjs | Runs the nextjs tests                        |
-| vercel      | Deploys app to vercel                        |
-| vercel:yolo | Force deploy app to vercel (ignoring errors) |
+> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
 
+#### Configuration of Third-Party Services for Production-Grade Apps
 
-## **What's next**
+By default, 🏗 Scaffold-Stark provides predefined Open API endpoint for some services such as Blast. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
+This is great to complete your **SpeedRunStark**.
 
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
-- You can write unit tests for your Next.js app! Run them with one the following scripts below.
-  - `yarn test:nextjs` to run regular tests with watch mode
-  - `yarn test:nextjs run` to run regular tests without watch mode
-  - `yarn test:nextjs run --coverage` to run regular tests without watch mode with coverage
+For production-grade applications, it's recommended to obtain your own API keys (to prevent rate limiting issues). You can configure these at:
 
-## Documentation
+🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env.local`. You can create API keys from the [Alchemy dashboard](https://dashboard.alchemy.com/).
 
-Visit our [docs](https://docs.scaffoldstark.com/) to learn how to start building with Scaffold-Stark.
+> 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
 
-To know more about its features, check out our [website](https://scaffoldstark.com)
+---
 
-#### External Image Source Configuration
+> 🏃 Head to your next challenge [here](https://speedrunstark.com/).
 
-In the `next.config.mjs`, we've set up external image sources using `remotePatterns` to allow fetching assets from specific domains. This is particularly useful for loading images or assets from external servers or services.
-
-```javascript
-remotePatterns: [
-  // External image source for StarkNet ID identicons
-  {
-    protocol: "https",
-    hostname: "identicon.starknet.id",
-    pathname: "/**", // Allows all paths under this domain
-  },
-  // External image source for images hosted on Starkurabu
-  {
-    protocol: "https",
-    hostname: "img.starkurabu.com",
-    pathname: "/**",
-  },
-],
-```
-
-## Contributing to Scaffold-Stark
-
-We welcome contributions to Scaffold-Stark!
-
-Please see [CONTRIBUTING.MD](https://github.com/Scaffold-Stark/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark.
+> 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
