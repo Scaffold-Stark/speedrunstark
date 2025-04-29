@@ -48,49 +48,49 @@ const transferScript = async (): Promise<void> => {
 
         // todo: checkpoint 2 - uncomment to init DEX on deploy:
         // 2. Approve DEX to spend tokens
-        let approveResponse = await deployer.execute(
-            [
-                {
-                    contractAddress: balloons_token.address,
-                    entrypoint: "approve",
-                    // approve 1 fri for bridge
-                    calldata: CallData.compile({
-                        spender: dex.address,
-                        amount: INITIAL_SUPPLY,
-                    }),
-                },
-                {
-                    contractAddress: STRK_ADDRESS,
-                    entrypoint: "approve",
-                    calldata: CallData.compile({
-                        spender: dex.address,
-                        amount: INITIAL_SUPPLY
-                    })
-                }
-            ],
-            {
-                maxFee: 1e15,
-            }
-        );
-        await provider.waitForTransaction(approveResponse.transaction_hash);
-        console.log("Approve token and strk transaction hash:", approveResponse.transaction_hash);
+        // let approveResponse = await deployer.execute(
+        //     [
+        //         {
+        //             contractAddress: balloons_token.address,
+        //             entrypoint: "approve",
+        //             // approve 1 fri for bridge
+        //             calldata: CallData.compile({
+        //                 spender: dex.address,
+        //                 amount: INITIAL_SUPPLY,
+        //             }),
+        //         },
+        //         {
+        //             contractAddress: STRK_ADDRESS,
+        //             entrypoint: "approve",
+        //             calldata: CallData.compile({
+        //                 spender: dex.address,
+        //                 amount: INITIAL_SUPPLY
+        //             })
+        //         }
+        //     ],
+        //     {
+        //         maxFee: 1e15,
+        //     }
+        // );
+        // await provider.waitForTransaction(approveResponse.transaction_hash);
+        // console.log("Approve token and strk transaction hash:", approveResponse.transaction_hash);
 
-        // 3. Initialize DEX to pull tokens from deployer
-        const initResponse = await deployer.execute(
-            [{
-                contractAddress: dex.address,
-                entrypoint: "init",
-                calldata: CallData.compile({
-                    tokens: INITIAL_SUPPLY,  // tokens amount
-                    strk: INITIAL_SUPPLY // strk amount (0 for now)
-                }),
-            }],
-            {
-                maxFee: 1e15,
-            }
-        );
-        await provider.waitForTransaction(initResponse.transaction_hash);
-        console.log("DEX Initialization Completed at ", initResponse.transaction_hash);
+        // // 3. Initialize DEX to pull tokens from deployer
+        // const initResponse = await deployer.execute(
+        //     [{
+        //         contractAddress: dex.address,
+        //         entrypoint: "init",
+        //         calldata: CallData.compile({
+        //             tokens: INITIAL_SUPPLY,  // tokens amount
+        //             strk: INITIAL_SUPPLY // strk amount (0 for now)
+        //         }),
+        //     }],
+        //     {
+        //         maxFee: 1e15,
+        //     }
+        // );
+        // await provider.waitForTransaction(initResponse.transaction_hash);
+        // console.log("DEX Initialization Completed at ", initResponse.transaction_hash);
 
         // 4. Verify final balances
         const finalDexBalance = await deployer.callContract({
@@ -105,37 +105,37 @@ const transferScript = async (): Promise<void> => {
     }
 
     // todo checkpoint 2: - paste in your front-end address here to get 10 balloons from deployer on deploy
-     const frontEndAddress = "0x078662e7352d062084b0010068b99288486c2d8b914f6e2a55ce945f8792c8b1";
-     const transferAmount = 10_000_000_000_000_000_000n; //10 $BAL
-     try {
-         const transferResponse = await deployer.execute(
-             [
-                 {
-                    contractAddress: balloons_token.address,
-                     entrypoint: "transfer",
-                     calldata: CallData.compile({
-                         recipient: frontEndAddress,
-                         amount: cairo.uint256(transferAmount)
-                     }),
-                 }
-             ],
-             {
-                 maxFee: 1e15,
-             }
-         );
-         await provider.waitForTransaction(transferResponse.transaction_hash);
+    // const frontEndAddress = "0x078662e7352d062084b0010068b99288486c2d8b914f6e2a55ce945f8792c8b1";
+    // const transferAmount = 10_000_000_000_000_000_000n; //10 $BAL
+    // try {
+    //     const transferResponse = await deployer.execute(
+    //         [
+    //             {
+    //                 contractAddress: balloons_token.address,
+    //                 entrypoint: "transfer",
+    //                 calldata: CallData.compile({
+    //                     recipient: frontEndAddress,
+    //                     amount: cairo.uint256(transferAmount)
+    //                 }),
+    //             }
+    //         ],
+    //         {
+    //             maxFee: 1e15,
+    //         }
+    //     );
+    //     await provider.waitForTransaction(transferResponse.transaction_hash);
     
-         // Verify the transfer by checking recipient's balance
-         const recipientBalance = await deployer.callContract({
-             contractAddress: balloons_token.address,
-             entrypoint: 'balance_of',
-             calldata: [frontEndAddress]
-         });
-         console.log(`Frontend address ${frontEndAddress} $BAL balance: ${BigInt(recipientBalance[0])} in fri`);
-     } catch (error) {
-         console.error("Transfer failed:", error);
-         throw error;
-    }
+    //     // Verify the transfer by checking recipient's balance
+    //     const recipientBalance = await deployer.callContract({
+    //         contractAddress: balloons_token.address,
+    //         entrypoint: 'balance_of',
+    //         calldata: [frontEndAddress]
+    //     });
+    //     console.log(`Frontend address ${frontEndAddress} $BAL balance: ${BigInt(recipientBalance[0])} in fri`);
+    // } catch (error) {
+    //     console.error("Transfer failed:", error);
+    //     throw error;
+    // }
 };
 
 /**
@@ -146,7 +146,7 @@ async function main() {
     await executeDeployCalls();
     await exportDeployments();
     // todo checkpoint 2: - uncomment to transferScript
-    await transferScript();
+    // await transferScript();
     console.log(green("All Setup Done"));
 }
 
