@@ -1,6 +1,6 @@
 import React from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { Address, BlockieAvatar } from "~~/components/scaffold-stark";
+import { Address, Balance, BlockieAvatar } from "~~/components/scaffold-stark";
 import { notification } from "~~/utils/scaffold-stark";
 import { convertFeltToAddress, formatAddress } from "../utils";
 import { WalletInfoProps } from "../types";
@@ -22,8 +22,8 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
         <ResetDataButton />
       </div>
       {deployedContractData && (
-        <div className="grid grid-cols-2 gap-5">
-          <div className="mb-4">
+        <div className="flex justify-between gap-5">
+          <div className="mb-4 flex flex-col gap-1">
             <div className="text-sm">
               <span className="font-semibold">Contract Address:</span>
               <Address address={deployedContractData.address} />
@@ -40,7 +40,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
             </div>
           </div>
           <div className="text-sm font-semibold text-right">
-            <div>{contractStrkBalance} STRK</div>
+            <Balance address={deployedContractData.address} className="text-network"/>
           </div>
         </div>
       )}
