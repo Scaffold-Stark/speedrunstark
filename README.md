@@ -2,15 +2,13 @@
 
 ![readme-2](./packages/nextjs/public/hero4.png)
 
-This challenge will help you build/understand a simple decentralized exchange, with one token-pair (ERC20 BALLOONS ($BAL) and STRK). This repo is an updated version of the original tutorial and challenge repos before it. Please read the intro for a background on what we are building first!
+📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
+
+This challenge will help you build/understand a simple decentralized exchange, with one token-pair (ERC20 BALLOONS ($BAL) and STRK). This repo is an updated version of the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90) and challenge repos before it. Please read the intro for a background on what we are building first!
 
 🌟 The final deliverable is an app that allows users to seamlessly trade ERC20 BALLOONS ($BAL) with STRK in a decentralized manner. Users will be able to connect their wallets, view their token balances, and buy or sell their tokens according to a price formula! Deploy your contracts to a testnet then build and upload your app to a public web server. Submit the url on SpeedRunStark.com!
 
-There is also a 🎥 Youtube video that may help you understand the concepts covered within this challenge too:
-
-💬 Meet other builders working on this challenge and get help in the Challenge 4 Telegram
-
-> 💬 Meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
+> 💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
 
 ---
 
