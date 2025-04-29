@@ -5,8 +5,6 @@ package.json merge=keeptheirs
 README.md merge=keepmine
 CONTRIBUTING.md merge=keepmine
 .github/** merge=keepmine
-**/__test__/** merge=keepmine
-**/__tests__/** merge=keepmine
 
 # ignore lock files
 *.lock -text
