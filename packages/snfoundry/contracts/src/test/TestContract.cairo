@@ -48,17 +48,17 @@ fn deploy_mock_strk_token() -> ContractAddress {
     let (strk_token_address, _) = erc20_class_hash.deploy(@calldata).unwrap();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     let mut receipent_strk_balance = strk_token_dispatcher.balance_of(RECIPIENT);
-    println!("-- RECIPIENT STRK token balance: {:?} STRK in FRI", receipent_strk_balance);
+    println!("-- RECIPIENT STRK token balance: {:?} STRK in fri", receipent_strk_balance);
     assert(receipent_strk_balance == INITIAL_RECIPIENT_SUPPLY, 'Balance should be 1000 STRK');
     // Transfer 5 STRK to RECIPIENT2 and RECIPIENT3
     cheat_caller_address(strk_token_address, RECIPIENT, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.transfer(RECIPIENT2, INITIAL_STRK_SUPPLY);
     receipent_strk_balance = strk_token_dispatcher.balance_of(RECIPIENT2);
-    println!("-- RECIPIENT2 STRK token balance: {:?} STRK in FRI", receipent_strk_balance);
+    println!("-- RECIPIENT2 BAL token balance: {:?} STRK in fri", receipent_strk_balance);
     cheat_caller_address(strk_token_address, RECIPIENT, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.transfer(RECIPIENT3, INITIAL_STRK_SUPPLY);
     receipent_strk_balance = strk_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- RECIPIENT3 STRK token balance: {:?} STRK in FRI", receipent_strk_balance);
+    println!("-- RECIPIENT3 BAL token balance: {:?} STRK in fri", receipent_strk_balance);
 
     println!("-- Dex contract deployed on: 0x{:x}", strk_token_address);
     strk_token_address
@@ -169,25 +169,25 @@ fn test_price() {
     assert(y_out == 1359916340820223697, 'price() is wrong');
 }
 
-/// Tests the getLiquidity function of the DEX contract.
+/// Tests the get_liquidity function of the DEX contract.
 #[test]
 fn test_getLiquidity() {
     let (dex_contract_address, _, _) = deploy_dex_contract();
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    let liquidity = dex_dispatcher.getLiquidity(RECIPIENT);
-    assert(liquidity == INITIAL_STRK_SUPPLY, 'getLiquidity() is wrong');
+    let liquidity = dex_dispatcher.get_liquidity(RECIPIENT);
+    assert(liquidity == INITIAL_STRK_SUPPLY, 'get_liquidity() is wrong');
 }
 
-/// Tests the strkToToken function to ensure it reverts when sending zero STRK.
+/// Tests the strk_to_token function to ensure it reverts when sending zero STRK.
 #[test]
 #[should_panic(expected: ('Cannot swap 0 strk',))]
 fn test_strkToToken_revert_by_sending_zero_strk() {
     let (dex_contract_address, _, _) = deploy_dex_contract();
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    dex_dispatcher.strkToToken(0);
+    dex_dispatcher.strk_to_token(0);
 }
 
-/// Tests the strkToToken function to ensure the DEX contract's STRK balance increases correctly.
+/// Tests the strk_to_token function to ensure the DEX contract's STRK balance increases correctly.
 #[test]
 fn test_strkToToken_scenario_1() {
     let (dex_contract_address, strk_token_address, _) = deploy_dex_contract();
@@ -195,32 +195,32 @@ fn test_strkToToken_scenario_1() {
 
     // Check initial DEX STRK balance
     let mut dex_strk_balance = strk_token_dispatcher.balance_of(dex_contract_address);
-    println!("-- Dex STRK token balance: {:?} STRK in FRI", dex_strk_balance);
+    println!("-- Dex STRK token balance: {:?} STRK in fri", dex_strk_balance);
 
     // Check initial recipient STRK balance
     let mut dex_strk_balance = strk_token_dispatcher.balance_of(RECIPIENT);
     println!(
-        "-- Before strkToToken RECIPIENT STRK token balance: {:?} STRK in FRI", dex_strk_balance,
+        "-- Before strk_to_token RECIPIENT STRK token balance: {:?} STRK in fri", dex_strk_balance,
     );
-    println!("-- Calling strkToToken with a value of 1 STRK...");
+    println!("-- Calling strk_to_token with a value of 1 STRK...");
 
-    // Approve and call strkToToken
-    let mut strk_input = 1_000_000_000_000_000_000; // 1 token in FRI
+    // Approve and call strk_to_token
+    let mut strk_input = 1_000_000_000_000_000_000; // 1 token in fri
     cheat_caller_address(strk_token_address, RECIPIENT, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(dex_contract_address, strk_input);
     cheat_caller_address(dex_contract_address, RECIPIENT, CheatSpan::TargetCalls(1));
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    let token_output = dex_dispatcher.strkToToken(strk_input);
-    println!("-- token_output: {:?} BAL in FRI", token_output);
+    let token_output = dex_dispatcher.strk_to_token(strk_input);
+    println!("-- token_output: {:?} BAL in fri", token_output);
 
     // Check final DEX STRK balance
     dex_strk_balance = strk_token_dispatcher.balance_of(dex_contract_address);
-    println!("-- Dex contract's new STRK balance: {:?} STRK in FRI", dex_strk_balance);
+    println!("-- Dex contract's new STRK balance: {:?} STRK in fri", dex_strk_balance);
     println!("-- Expecting final Dex balance to have increased by 1...");
     assert(dex_strk_balance == INITIAL_STRK_SUPPLY + strk_input, 'Dex balance is wrong');
 }
 
-/// Tests the strkToToken function to ensure less BAL tokens are sent after the first trade.
+/// Tests the strk_to_token function to ensure less BAL tokens are sent after the first trade.
 #[test]
 fn test_strkToToken_scenario_2() {
     let (dex_contract_address, strk_token_address, balloons_token_address) = deploy_dex_contract();
@@ -230,37 +230,37 @@ fn test_strkToToken_scenario_2() {
 
     // Check initial BAL balance of recipient 2
     let receipt2_before_balance = balloons_token_dispatcher.balance_of(RECIPIENT2);
-    println!("-- Recipient2 initial $BAL balance: {:?} BAL in FRI", receipt2_before_balance);
-    println!("-- Recipient2 calling strkToToken with value of 1 STRK...");
+    println!("-- Recipient2 initial $BAL balance: {:?} BAL in fri", receipt2_before_balance);
+    println!("-- Recipient2 calling strk_to_token with value of 1 STRK...");
 
-    // Approve and call strkToToken for recipient 2
+    // Approve and call strk_to_token for recipient 2
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     cheat_caller_address(strk_token_address, RECIPIENT2, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(dex_contract_address, ONE_TOKEN_UNIT);
     cheat_caller_address(dex_contract_address, RECIPIENT2, CheatSpan::TargetCalls(1));
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    dex_dispatcher.strkToToken(ONE_TOKEN_UNIT);
+    dex_dispatcher.strk_to_token(ONE_TOKEN_UNIT);
     let receipt2_after_balance = balloons_token_dispatcher.balance_of(RECIPIENT2);
-    println!("-- Recipient2 new $BAL balance: {:?} BAL in FRI", receipt2_after_balance);
+    println!("-- Recipient2 new $BAL balance: {:?} BAL in fri", receipt2_after_balance);
 
     // Check initial BAL balance of recipient 3
     let receipt3_before_balance = balloons_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- Recipient3 initial $BAL balance: {:?} BAL in FRI", receipt3_before_balance);
-    println!("-- Recipient3 calling strkToToken with value of 1 STRK...");
+    println!("-- Recipient3 initial $BAL balance: {:?} BAL in fri", receipt3_before_balance);
+    println!("-- Recipient3 calling strk_to_token with value of 1 STRK...");
 
-    // Approve and call strkToToken for recipient 3
+    // Approve and call strk_to_token for recipient 3
     cheat_caller_address(strk_token_address, RECIPIENT3, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(dex_contract_address, ONE_TOKEN_UNIT);
     cheat_caller_address(dex_contract_address, RECIPIENT3, CheatSpan::TargetCalls(1));
-    dex_dispatcher.strkToToken(ONE_TOKEN_UNIT);
+    dex_dispatcher.strk_to_token(ONE_TOKEN_UNIT);
     let receipt3_after_balance = balloons_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- Recipient3 new $BAL balance: {:?} BAL in FRI", receipt3_after_balance);
+    println!("-- Recipient3 new $BAL balance: {:?} BAL in fri", receipt3_after_balance);
 
     println!("-- Expecting Recipient2 to have acquired more $BAL than Recipient3...");
-    assert(receipt2_after_balance > receipt3_after_balance, 'strkToToken() is wrong');
+    assert(receipt2_after_balance > receipt3_after_balance, 'strk_to_token() is wrong');
 }
 
-/// Tests the strkToToken function to ensure tokens are transferred to the purchaser after trade.
+/// Tests the strk_to_token function to ensure tokens are transferred to the purchaser after trade.
 #[test]
 fn test_strkToToken_scenario_3() {
     let (dex_contract_address, strk_token_address, balloons_token_address) = deploy_dex_contract();
@@ -272,27 +272,27 @@ fn test_strkToToken_scenario_3() {
 
     // Check initial BAL balance of recipient 3
     let receipt3_before_balance = balloons_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- Recipient3 initial $BAL balance: {:?} BAL in FRI", receipt3_before_balance);
-    println!("-- Recipient3 calling strkToToken with value of 1 STRK...");
+    println!("-- Recipient3 initial $BAL balance: {:?} BAL in fri", receipt3_before_balance);
+    println!("-- Recipient3 calling strk_to_token with value of 1 STRK...");
 
-    // Approve and call strkToToken for recipient 3
+    // Approve and call strk_to_token for recipient 3
     cheat_caller_address(strk_token_address, RECIPIENT3, CheatSpan::TargetCalls(1));
     strk_token_dispatcher.approve(dex_contract_address, ONE_TOKEN_UNIT);
     cheat_caller_address(dex_contract_address, RECIPIENT3, CheatSpan::TargetCalls(1));
-    dex_dispatcher.strkToToken(ONE_TOKEN_UNIT);
+    dex_dispatcher.strk_to_token(ONE_TOKEN_UNIT);
     let receipt3_after_balance = balloons_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- Recipient3 new $BAL balance: {:?} BAL in FRI", receipt3_after_balance);
+    println!("-- Recipient3 new $BAL balance: {:?} BAL in fri", receipt3_after_balance);
     println!("-- Expecting Recipient3's $BAL balance to increase by the correct amount...");
 
     // Calculate and check token difference
     let tokenDifference = receipt3_after_balance - receipt3_before_balance;
     println!("-- tokenDifference {:?}", tokenDifference);
-    assert(tokenDifference == 997598559135481288, 'strkToToken() is wrong');
+    assert(tokenDifference == 831248957812239453, 'strk_to_token() is wrong');
 }
 
-/// Tests the tokenToStrk function to ensure it reverts when sending zero tokens.
+/// Tests the token_to_strk function to ensure it reverts when sending zero tokens.
 ///
-/// This test verifies that the `tokenToStrk` function correctly reverts when
+/// This test verifies that the `token_to_strk` function correctly reverts when
 /// attempting to swap zero tokens, ensuring that the function enforces the
 /// requirement of a non-zero token amount.
 ///
@@ -303,12 +303,12 @@ fn test_strkToToken_scenario_3() {
 fn test_tokenToStrk_revert_by_sending_zero_token() {
     let (dex_contract_address, _, _) = deploy_dex_contract();
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    dex_dispatcher.tokenToStrk(0);
+    dex_dispatcher.token_to_strk(0);
 }
 
-/// Tests the tokenToStrk function to ensure the DEX contract's BAL balance increases correctly.
+/// Tests the token_to_strk function to ensure the DEX contract's BAL balance increases correctly.
 ///
-/// This test verifies that the `tokenToStrk` function correctly increases the DEX
+/// This test verifies that the `token_to_strk` function correctly increases the DEX
 /// contract's BAL balance by the expected amount when a token swap is performed.
 ///
 /// Expected:
@@ -323,9 +323,9 @@ fn test_tokenToStrk_scenario_1() {
     println!("-- Dex BAL token balance: {:?} BAL in FRI", dex_token_balance);
     let mut dex_token_balance = balloons_token_dispatcher.balance_of(RECIPIENT);
     println!(
-        "-- Before tokenToStrk RECIPIENT BAL token balance: {:?} BAL in FRI", dex_token_balance,
+        "-- Before token_to_strk RECIPIENT BAL token balance: {:?} BAL in fri", dex_token_balance,
     );
-    println!("-- Calling tokenToStrk with a value of 1 BAL...");
+    println!("-- Calling token_to_strk with a value of 1 BAL...");
 
     let mut token_input = 1_000_000_000_000_000_000; // 1 token in FRI
     cheat_caller_address(balloons_token_address, RECIPIENT, CheatSpan::TargetCalls(1));
@@ -333,8 +333,8 @@ fn test_tokenToStrk_scenario_1() {
 
     cheat_caller_address(dex_contract_address, RECIPIENT, CheatSpan::TargetCalls(1));
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    let token_output = dex_dispatcher.tokenToStrk(token_input);
-    println!("-- token_output: {:?} STRK in FRI", token_output);
+    let token_output = dex_dispatcher.token_to_strk(token_input);
+    println!("-- token_output: {:?} STRK in fri", token_output);
 
     dex_token_balance = balloons_token_dispatcher.balance_of(dex_contract_address);
     println!("-- Dex contract's new BAL balance: {:?} STRK in FRI", dex_token_balance);
@@ -342,9 +342,9 @@ fn test_tokenToStrk_scenario_1() {
     assert(dex_token_balance == INITIAL_STRK_SUPPLY + token_input, 'Dex token balance is wrong');
 }
 
-/// Tests the tokenToStrk function to ensure less STRK tokens are sent after the first trade.
+/// Tests the token_to_strk function to ensure less STRK tokens are sent after the first trade.
 ///
-/// This test verifies that the `tokenToStrk` function correctly sends fewer STRK
+/// This test verifies that the `token_to_strk` function correctly sends fewer STRK
 /// tokens after the first trade, ensuring that the function handles subsequent
 /// trades with updated reserves.
 ///
@@ -355,34 +355,34 @@ fn test_tokenToStrk_scenario_2() {
     let (dex_contract_address, strk_token_address, balloons_token_address) = deploy_dex_contract();
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     let receipt2_strk_before_ballance = strk_token_dispatcher.balance_of(RECIPIENT2);
-    println!("-- Recipient2 initial STRK balance: {:?} STRK in FRI", receipt2_strk_before_ballance);
+    println!("-- Recipient2 initial STRK balance: {:?} STRK in fri", receipt2_strk_before_ballance);
     let balloons_token_dispatcher = IBalloonsDispatcher {
         contract_address: balloons_token_address,
     };
-    println!("-- Recipient2 calling tokenToStrk with value of 1 BAL...");
+    println!("-- Recipient2 calling token_to_strk with value of 1 BAL...");
 
     cheat_caller_address(balloons_token_address, RECIPIENT2, CheatSpan::TargetCalls(1));
     balloons_token_dispatcher.approve(dex_contract_address, ONE_TOKEN_UNIT);
 
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
     cheat_caller_address(dex_contract_address, RECIPIENT2, CheatSpan::TargetCalls(1));
-    dex_dispatcher.tokenToStrk(ONE_TOKEN_UNIT);
+    dex_dispatcher.token_to_strk(ONE_TOKEN_UNIT);
     let receipt2_after_ballance = strk_token_dispatcher.balance_of(RECIPIENT2);
-    println!("-- Recipient2 new STRK balance: {:?} STRK in FRI", receipt2_after_ballance);
+    println!("-- Recipient2 new STRK balance: {:?} STRK in fri", receipt2_after_ballance);
 
     let receipt3_before_ballance = strk_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- Recipient3 initial STRK balance: {:?} STRK in FRI", receipt3_before_ballance);
-    println!("-- Recipient3 calling tokenToStrk with value of 1 BAL...");
+    println!("-- Recipient3 initial STRK balance: {:?} STRK in fri", receipt3_before_ballance);
+    println!("-- Recipient3 calling token_to_strk with value of 1 BAL...");
 
     cheat_caller_address(balloons_token_address, RECIPIENT3, CheatSpan::TargetCalls(1));
     balloons_token_dispatcher.approve(dex_contract_address, ONE_TOKEN_UNIT);
     cheat_caller_address(dex_contract_address, RECIPIENT3, CheatSpan::TargetCalls(1));
-    dex_dispatcher.tokenToStrk(ONE_TOKEN_UNIT);
+    dex_dispatcher.token_to_strk(ONE_TOKEN_UNIT);
     let receipt3_after_ballance = strk_token_dispatcher.balance_of(RECIPIENT3);
-    println!("-- Recipient3 new STRK balance: {:?} STRK in FRI", receipt3_after_ballance);
+    println!("-- Recipient3 new STRK balance: {:?} STRK in fri", receipt3_after_ballance);
 
     println!("-- Expecting Recipient2 to have aquired more STRK than Recipient3...");
-    assert(receipt2_after_ballance > receipt3_after_ballance, 'tokenToStrk() is wrong');
+    assert(receipt2_after_ballance > receipt3_after_ballance, 'token_to_strk() is wrong');
 }
 
 /// Tests the deposit function to ensure it reverts when depositing zero STRK.
@@ -424,9 +424,9 @@ fn test_deposit() {
     balloons_token_dispatcher.approve(dex_contract_address, 10_000_000_000_000_000_000);
 
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
-    let liquidity_start = dex_dispatcher.getTotalLiquidity();
-    println!("-- Starting Dex liquidity: {:?} STRK in FRI", liquidity_start);
-    let receipient2Liquidity = dex_dispatcher.getLiquidity(RECIPIENT2);
+    let liquidity_start = dex_dispatcher.get_total_liquidity();
+    println!("-- Starting Dex liquidity: {:?} STRK in fri", liquidity_start);
+    let receipient2Liquidity = dex_dispatcher.get_liquidity(RECIPIENT2);
     println!(
         "-- Expecting receipient2's liquidity to be 0. Liquidity: {:?} STRK in FRI",
         receipient2Liquidity,
@@ -435,19 +435,19 @@ fn test_deposit() {
     println!("-- Calling deposit function and deposit 3 STRK...");
     cheat_caller_address(dex_contract_address, RECIPIENT2, CheatSpan::TargetCalls(1));
     let liquidity_minted = dex_dispatcher.deposit(3_000_000_000_000_000_000);
-    println!("-- Liquidity_minted: {:?} STRK in FRI", liquidity_minted);
-    let liquidity_end = dex_dispatcher.getTotalLiquidity();
+    println!("-- Liquidity_minted: {:?} STRK in fri", liquidity_minted);
+    let liquidity_end = dex_dispatcher.get_total_liquidity();
     println!(
         "-- Final liquidity should increase by 7.5.   Final liquidity:{:?} STRK in FRI",
         liquidity_end,
     );
-    assert(liquidity_end == liquidity_start + 7_500_000_000_000_000_000, 'deposit() is wrong');
-    let receipient2_liquidity = dex_dispatcher.getLiquidity(RECIPIENT2);
+    assert(liquidity_end == liquidity_start + 3_000_000_000_000_000_000, 'deposit() is wrong');
+    let receipient2_liquidity = dex_dispatcher.get_liquidity(RECIPIENT2);
     println!(
         "-- Receipient2's liquidity provided should be 7.5.  LP:{:?} STRK in FRI",
         receipient2_liquidity,
     );
-    assert(receipient2_liquidity == 7_500_000_000_000_000_000, 'RECIPIENT2 lp should be 5');
+    assert(receipient2_liquidity == 3_000_000_000_000_000_000, 'RECIPIENT2 lp should be 3');
 }
 
 /// Tests the withdraw function to ensure it reverts when the sender does not have enough liquidity.
@@ -484,8 +484,8 @@ fn test_withdraw_ratio_1_1() {
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
 
     // Get starting liquidity
-    let starting_liquidity = dex_dispatcher.getTotalLiquidity();
-    println!("-- Starting liquidity: {:?} STRK in FRI", starting_liquidity);
+    let starting_liquidity = dex_dispatcher.get_total_liquidity();
+    println!("-- Starting liquidity: {:?} STRK in fri", starting_liquidity);
 
     // Get recipient's initial BAL balance
     let recipient_balloons_balance_before = balloons_token_dispatcher.balance_of(RECIPIENT);
@@ -495,7 +495,7 @@ fn test_withdraw_ratio_1_1() {
 
     let strk_token_dispatcher = IERC20Dispatcher { contract_address: strk_token_address };
     let strk_balance_before = strk_token_dispatcher.balance_of(RECIPIENT);
-    println!("-- Receipient's starting STRK balance: {:?} STRK in FRI", strk_balance_before);
+    println!("-- Receipient's starting STRK balance: {:?} STRK in fri", strk_balance_before);
 
     println!("-- Calling withdraw with value of 1 STRK...");
     // Withdraw 1 STRK worth of liquidity
@@ -515,7 +515,7 @@ fn test_withdraw_ratio_1_1() {
 
     // Check STRK withdrawn amount
     let strk_balance_after = strk_token_dispatcher.balance_of(RECIPIENT);
-    println!("-- Receipient's new STRK balance: {:?} STRK in FRI", strk_balance_after);
+    println!("-- Receipient's new STRK balance: {:?} STRK in fri", strk_balance_after);
     println!("-- Expecting the balance to have increased by 1 STRK");
     // Verify both STRK and BAL withdrawn amounts are equal to 1
     assert(
@@ -541,16 +541,16 @@ fn test_withdraw_decrease_liquidity() {
     let dex_dispatcher = IDexDispatcher { contract_address: dex_contract_address };
 
     // Get initial total liquidity
-    let total_lp_before = dex_dispatcher.getTotalLiquidity();
-    println!("-- Initial liquidity: {:?} STRK in FRI", total_lp_before);
+    let total_lp_before = dex_dispatcher.get_total_liquidity();
+    println!("-- Initial liquidity: {:?} STRK in fri", total_lp_before);
 
     println!("-- Calling withdraw with 1 STRK...");
     cheat_caller_address(dex_contract_address, RECIPIENT, CheatSpan::TargetCalls(1));
     dex_dispatcher.withdraw(ONE_TOKEN_UNIT);
 
     // Get final total liquidity
-    let total_lp_after = dex_dispatcher.getTotalLiquidity();
-    println!("-- Final liquidity: {:?} STRK in FRI", total_lp_after);
+    let total_lp_after = dex_dispatcher.get_total_liquidity();
+    println!("-- Final liquidity: {:?} STRK in fri", total_lp_after);
 
     // Verify liquidity decreased
     assert(total_lp_after < total_lp_before, 'Total liquidity should decrease');

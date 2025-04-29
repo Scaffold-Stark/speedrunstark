@@ -10,7 +10,7 @@ import {
     multiplyTo1e18,
 } from "~~/utils/scaffold-stark/priceInWei";
 import {useAccount} from "@starknet-react/core";
-import {formatEther, parseUnits} from "ethers";
+import {formatEther} from "ethers";
 import {Address, Balance, IntegerInput} from "~~/components/scaffold-stark";
 import {Curve} from "~~/app/dex/_components";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
@@ -49,18 +49,18 @@ const Dex: NextPage = () => {
         }
     }, [DexBalloonBalance]);
 
-    useEffect(() => {
-        if (depositTokenAmount > 0n) {
-            deposit().catch(console.error);
-        }
-    }, [depositTokenAmount]);
+    // useEffect(() => {
+    //     if (depositTokenAmount > 0n) {
+    //         deposit().catch(console.error);
+    //     }
+    // }, [depositTokenAmount]);
 
-    const {data: DextotalLiquidity} = useScaffoldReadContract({
+    const {data: DexTotalLiquidity} = useScaffoldReadContract({
         contractName: "Dex",
-        functionName: "getTotalLiquidity",
+        functionName: "get_total_liquidity",
     });
 
-    const { sendAsync: strkToToken } = useScaffoldMultiWriteContract({
+    const { sendAsync: strk_to_token } = useScaffoldMultiWriteContract({
         calls: [
             {
                 contractName: "Strk",
@@ -69,13 +69,13 @@ const Dex: NextPage = () => {
             },
             {
                 contractName: "Dex",
-                functionName: "strkToToken",
+                functionName: "strk_to_token",
                 args: [multiplyTo1e18(strkToTokenAmount)],
             },
         ],
     });
 
-    const { sendAsync: tokenToStrk } = useScaffoldMultiWriteContract({
+    const { sendAsync: token_to_strk } = useScaffoldMultiWriteContract({
         calls: [
             {
                 contractName: "Balloons",
@@ -84,7 +84,7 @@ const Dex: NextPage = () => {
             },
             {
                 contractName: "Dex",
-                functionName: "tokenToStrk",
+                functionName: "token_to_strk",
                 args: [multiplyTo1e18(tokenToSTRKAmount)],
             },
         ],
@@ -113,9 +113,17 @@ const Dex: NextPage = () => {
 
     const {data: getDepositTokenAmount} = useScaffoldReadContract({
         contractName: "Dex",
-        functionName: "getDepositTokenAmount",
+        functionName: "get_deposit_token_amount",
         args: [multiplyTo1e18(depositAmount)],
+        watch: true,
     });
+
+    useEffect(() => {
+        if(getDepositTokenAmount) {
+            setDepositTokenAmount(BigInt(getDepositTokenAmount?.toString() ?? 0n));
+        }
+    }, [getDepositTokenAmount]);
+
 
     const {sendAsync: withdraw} = useScaffoldWriteContract({
         contractName: "Dex",
@@ -152,7 +160,7 @@ const Dex: NextPage = () => {
 
     const {data: userLiquidity} = useScaffoldReadContract({
         contractName: "Dex",
-        functionName: "getLiquidity",
+        functionName: "get_liquidity",
         args: [connectedAccount],
     });
 
@@ -215,13 +223,13 @@ const Dex: NextPage = () => {
                             setTokenToSTRKAmount("");
                             setStrkToTokenAmount(value);
                         }}
-                        name="strkToToken"
+                        name="strk_to_token"
                         disableMultiplyBy1e18
                     />
                 </span>
                                 <button
                                     className="btn btn-primary h-[2.2rem] min-h-[2.2rem] mt-6 mx-5"
-                                    onClick={wrapInTryCatch(() => strkToToken(), "strkToToken")}
+                                    onClick={wrapInTryCatch(() => strk_to_token(), "strk_to_token")}
                                 >
                                     Send
                                 </button>
@@ -241,7 +249,7 @@ const Dex: NextPage = () => {
                 </span>
                                 <button
                                     className="btn btn-primary h-[2.2rem] min-h-[2.2rem] mt-6 mx-5"
-                                    onClick={wrapInTryCatch(() => tokenToStrk(), "tokenToStrk")}
+                                    onClick={wrapInTryCatch(() => token_to_strk(), "token_to_strk")}
                                 >
                                     Send
                                 </button>
@@ -249,7 +257,7 @@ const Dex: NextPage = () => {
                         </div>
                         <p className="text-center text-primary-content text-xl mt-8 -ml-8">
                             Liquidity
-                            ({parseFloat(formatEther(DextotalLiquidity?.toString() || '0'))})
+                            ({parseFloat(formatEther(DexTotalLiquidity?.toString() || '0'))})
                         </p>
                         <div className="px-4 py-3">
                             <div className="flex mb-4 justify-center items-center">
@@ -261,7 +269,10 @@ const Dex: NextPage = () => {
                                 <button
                                     className="btn btn-primary h-[2.2rem] min-h-[2.2rem] mt-6 mx-5"
                                     onClick={wrapInTryCatch(async () => {
-                                        setDepositTokenAmount(BigInt(getDepositTokenAmount?.toString() ?? 0n));
+                                        // setDepositTokenAmount(BigInt(getDepositTokenAmount?.toString() ?? 0n));
+                                        if (depositTokenAmount > 0n) {
+                                            deposit().catch(console.error);
+                                        }
                                     }, "deposit")}
                                 >
                                     Send
@@ -318,7 +329,7 @@ const Dex: NextPage = () => {
                                     Send
                                 </button>
                                 <span className="w-1/2">
-  balanceOf{" "}
+                                    balance_of{" "}
                                     <AddressInput
                                         value={accountBalanceOf}
                                         onChange={value => setAccountBalanceOf(value)}

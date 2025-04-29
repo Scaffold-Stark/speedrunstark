@@ -76,10 +76,16 @@ export const Balance = ({ address, className = "", usdMode }: BalanceProps) => {
               </span>
             </div>
           ) : (
-            <div className="flex">
-              <span>{parseFloat(strkFormatted).toFixed(4)}</span>
-              <span className="text-[0.8em] font-bold ml-1">{strkSymbol}</span>
-            </div>
+            <>
+              <div className="flex flex-col sm:flex-row sm:gap-4">
+                <div className="flex">
+                  <span>{parseFloat(strkFormatted).toFixed(4)}</span>
+                  <span className="text-[0.8em] font-bold ml-1">
+                    {strkSymbol}
+                  </span>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </button>

@@ -33,7 +33,7 @@ pub trait IDex<TContractState> {
     ///
     /// Returns:
     ///     u256: The liquidity amount.
-    fn getLiquidity(self: @TContractState, lp_address: ContractAddress) -> u256;
+    fn get_liquidity(self: @TContractState, lp_address: ContractAddress) -> u256;
 
     /// Returns the total liquidity in the DEX.
     ///
@@ -42,7 +42,7 @@ pub trait IDex<TContractState> {
     ///
     /// Returns:
     ///     u256: The total liquidity amount.
-    fn getTotalLiquidity(self: @TContractState) -> u256;
+    fn get_total_liquidity(self: @TContractState) -> u256;
 
     /// Swaps STRK for tokens.
     ///
@@ -52,7 +52,7 @@ pub trait IDex<TContractState> {
     ///
     /// Returns:
     ///     u256: The amount of tokens received.
-    fn strkToToken(ref self: TContractState, strk_input: u256) -> u256;
+    fn strk_to_token(ref self: TContractState, strk_input: u256) -> u256;
 
     /// Swaps tokens for STRK.
     ///
@@ -62,7 +62,7 @@ pub trait IDex<TContractState> {
     ///
     /// Returns:
     ///     u256: The amount of STRK received.
-    fn tokenToStrk(ref self: TContractState, token_input: u256) -> u256;
+    fn token_to_strk(ref self: TContractState, token_input: u256) -> u256;
 
     /// Deposits STRK and tokens into the liquidity pool.
     ///
@@ -82,7 +82,7 @@ pub trait IDex<TContractState> {
     ///
     /// Returns:
     ///     u256: The token amount of the deposit.
-    fn getDepositTokenAmount(self: @TContractState, strk_amount: u256) -> u256;
+    fn get_deposit_token_amount(self: @TContractState, strk_amount: u256) -> u256;
 
     /// Withdraws STRK and tokens from the liquidity pool.
     ///
@@ -218,7 +218,7 @@ mod Dex {
             0
         }
 
-        // Todo Checkpoint 5:  Implement your function getLiquidity here.
+        // Todo Checkpoint 5:  Implement your function get_liquidity here.
         /// Returns the liquidity for the specified address.
         ///
         /// Args:
@@ -227,11 +227,11 @@ mod Dex {
         ///
         /// Returns:
         ///     u256: The liquidity amount.
-        fn getLiquidity(self: @ContractState, lp_address: ContractAddress) -> u256 {
+        fn get_liquidity(self: @ContractState, lp_address: ContractAddress) -> u256 {
             0
         }
 
-        // Todo Checkpoint 5:  Implement your function getTotalLiquidity here.
+        // Todo Checkpoint 5:  Implement your function get_total_liquidity here.
         /// Returns the total liquidity in the DEX.
         ///
         /// Args:
@@ -239,11 +239,11 @@ mod Dex {
         ///
         /// Returns:
         ///     u256: The total liquidity amount.
-        fn getTotalLiquidity(self: @ContractState) -> u256 {
+        fn get_total_liquidity(self: @ContractState) -> u256 {
             0
         }
 
-        // Todo Checkpoint 4:  Implement your function strkToToken here.
+        // Todo Checkpoint 4:  Implement your function strk_to_token here.
         /// Swaps STRK for tokens.
         ///
         /// Args:
@@ -252,11 +252,11 @@ mod Dex {
         ///
         /// Returns:
         ///     u256: The amount of tokens received.
-        fn strkToToken(ref self: ContractState, strk_input: u256) -> u256 {
+        fn strk_to_token(ref self: ContractState, strk_input: u256) -> u256 {
             0
         }
 
-        // Todo Checkpoint 4:  Implement your function tokenToStrk here.
+        // Todo Checkpoint 4:  Implement your function token_to_strk here.
         /// Swaps tokens for STRK.
         ///
         /// Args:
@@ -265,7 +265,7 @@ mod Dex {
         ///
         /// Returns:
         ///     u256: The amount of STRK received.
-        fn tokenToStrk(ref self: ContractState, token_input: u256) -> u256 {
+        fn token_to_strk(ref self: ContractState, token_input: u256) -> u256 {
             0
         }
 
@@ -282,7 +282,7 @@ mod Dex {
             0
         }
 
-        // Todo Checkpoint 5:  Implement your function getDepositTokenAmount here.
+        // Todo Checkpoint 5:  Implement your function get_deposit_token_amount here.
         /// get deposit token amount when deposit strk_amount STRK.
         ///
         /// Args:
@@ -291,7 +291,7 @@ mod Dex {
         ///
         /// Returns:
         ///     u256: The token_amount of deposit.
-        fn getDepositTokenAmount(self: @ContractState, strk_amount: u256) -> u256 {
+        fn get_deposit_token_amount(self: @ContractState, strk_amount: u256) -> u256 {
             0
         }
 

@@ -88,7 +88,7 @@ yarn start
 
 📱 Open <http://localhost:3000> to see the app.
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy --reset` for a completely fresh deploy.
+> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:no-reset` for a completely fresh deploy.
 ><br/>`yarn deploy` always resets contracts. If you don't want it to reset, use yarn `deploy:no-reset`.
 
 ---
@@ -100,7 +100,7 @@ Navigate to the Debug Contracts tab, you should see two smart contracts displaye
 packages/snfoundry/contracts/Balloons.cairo is just an example ERC20 contract that mints 1000 $BAL to whatever address deploys it.
 
 packages/snfoundry/contracts/DEX.cairo is what we will build in this challenge and you can see it starts instantiating a token (ERC20 interface) that we set in the constructor (on deploy).
-> You can `yarn deploy --reset` to deploy your contract until you get it right.
+> You can `yarn deploy` to deploy your contract until you get it right.
 
 > Below is what your front-end will look like with no implementation code within your smart contracts yet. The buttons will likely break because there are no functions tied to them yet!
 
@@ -115,7 +115,7 @@ packages/snfoundry/contracts/DEX.cairo is what we will build in this challenge a
 
 ## Checkpoint 2: Reserves ⚖️
 
-We want to create an automatic market where our contract will hold reserves of both STRK and 🎈 Balloons. These reserves will provide liquidity that allows anyone to swap between the assets. Let's start with declaring our `totalLiquidity` and the `liquidity` of each user of our DEX!
+We want to create an automatic market where our contract will hold reserves of both STRK and 🎈 Balloons. These reserves will provide liquidity that allows anyone to swap between the assets. Let's start with declaring our `total_liquidity` and the `liquidity` of each user of our DEX!
 
 <details markdown='1'><summary>🦉 Guiding Questions</summary>
 
@@ -146,13 +146,13 @@ We want this function written in a way that when we send STRK and/or $BAL tokens
 
 <details markdown='1'><summary>Question Two</summary>
 
-> What should the value of `totalLiquidity` be, how do we access the balance that our contract has and assign the variable a value?
+> What should the value of `total_liquidity` be, how do we access the balance that our contract has and assign the variable a value?
 
 </details>
 
 <details markdown='1'><summary>Question Three</summary>
 
-> How would we assign our address the liquidity we just provided? How much liquidity have we provided? The `totalLiquidity`? Just half? Three quarters?
+> How would we assign our address the liquidity we just provided? How much liquidity have we provided? The `total_liquidity`? Just half? Three quarters?
 
 </details>
 
@@ -189,7 +189,7 @@ Now we are ready to call `init()` on the DEX, using the `Debug Contracts` tab. W
 
 In the `DEX` tab, to simplify user interactions, we run the conversion (_tokenAmount_ * 10¹⁸) in the code, so they just have to input the token amount they want to swap or deposit/withdraw.
 
-You can see the DEX contract's value update, and you can check the DEX token balance using the `balanceOf` function on the Balloons UI from `DEX` tab.
+You can see the DEX contract's value update, and you can check the DEX token balance using the `balance_of` function on the Balloons UI from `DEX` tab.
 
 This works pretty well, but it will be a lot easier if we just call the `init()` function as we deploy the contract. In the `deploy.ts` script try uncommenting the init section, so our DEX will start with 5 STRK and 5 Balloons of liquidity:
 
@@ -213,12 +213,12 @@ await provider.waitForTransaction(initResponse.transaction_hash);
 console.log("DEX Initialization Completed at ", initResponse.transaction_hash);
 ```
 
-Now, when we `yarn deploy --reset` then our contract should be initialized as soon as it deploys, and we should have equal reserves of STRK and tokens.
+Now, when we `yarn deploy` then our contract should be initialized as soon as it deploys, and we should have equal reserves of STRK and tokens.
 
 ### 🥅 Goals / Checks
 
 - [ ] 🎈 In the DEX tab is your contract showing 5 STRK and 5 Balloons of liquidity?
-- [ ] ⚠ If you are planning to submit the challenge, make sure to implement the `getLiquidity` getter function in `DEX.cairo`
+- [ ] ⚠ If you are planning to submit the challenge, make sure to implement the `get_liquidity` getter function in `DEX.cairo`
 
 ---
 ## ⛳️ **Checkpoint 3: Price** 🤑
@@ -413,9 +413,9 @@ Let’s create two new functions that let us deposit and withdraw liquidity. How
 
 > 💬 _Hint:_
 
-> The `deposit()` function receives STRK and also transfers $BAL tokens from the caller to the contract at the right ratio. The contract also tracks the amount of liquidity (how many liquidity provider tokens (LPTs) minted) the depositing address owns vs the totalLiquidity.
+> The `deposit()` function receives STRK and also transfers $BAL tokens from the caller to the contract at the right ratio. The contract also tracks the amount of liquidity (how many liquidity provider tokens (LPTs) minted) the depositing address owns vs the total_liquidity.
 
-What does this hint mean in practice? The goal is to allow a user to `deposit()` STRK into our `totalLiquidity`, and update their `liquidity`. This is very similar to the `init()` function, except we want it to work for anyone providing liquidity. Also, since there already is liquidity we want the liquidity they provide to leave the ratio of the two assets unchanged.
+What does this hint mean in practice? The goal is to allow a user to `deposit()` STRK into our `total_liquidity`, and update their `liquidity`. This is very similar to the `init()` function, except we want it to work for anyone providing liquidity. Also, since there already is liquidity we want the liquidity they provide to leave the ratio of the two assets unchanged.
 
 <details markdown='1'><summary>🦉 Guiding Questions</summary>
 
@@ -453,7 +453,7 @@ Part 2: Performing Calculations 🤖
 
 <details markdown='1'><summary>Question Five</summary>
 
-> Now for `liquidityMinted` use the same equation but replace `tokenReserve` with `totalLiquidity`, so that we are multiplying in the numerator by the units we want.
+> Now for `liquidityMinted` use the same equation but replace `tokenReserve` with `total_liquidity`, so that we are multiplying in the numerator by the units we want.
 
 </details>
 
@@ -470,7 +470,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 
 <details markdown='1'><summary>Question Seven</summary>
 
-> How do we update `totalLiquidity`?
+> How do we update `total_liquidity`?
 
 </details>
 
@@ -494,7 +494,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 
 </details>
 
-> 💡 **Remember**: Every time you perform actions with your $BAL tokens (deposit, exchange), you'll need to call `approve()` from the `Balloons.cairo` contract **to authorize the DEX address to handle a specific number of your $BAL tokens**. To keep things simple, you can just do that from `Debug Contracts` tab, **ensure you approve a large enough quantity of tokens to not face allowance problems (see getDepositTokenAmount() to approve BALtokens)**.
+> 💡 **Remember**: Every time you perform actions with your $BAL tokens (deposit, exchange), you'll need to call `approve()` from the `Balloons.cairo` contract **to authorize the DEX address to handle a specific number of your $BAL tokens**. To keep things simple, you can just do that from `Debug Contracts` tab, **ensure you approve a large enough quantity of tokens to not face allowance problems (see get_deposit_token_amount() to approve BALtokens)**.
 
 > 💬💬 _More Hints:_ The `withdraw()` function lets a user take his Liquidity Provider Tokens out, withdrawing both STRK and $BAL tokens out at the correct ratio. The actual amount of STRK and tokens a liquidity provider withdraws could be higher than what they deposited because of the 0.3% fees collected from each trade. It also could be lower depending on the price fluctuations of $BAL to STRK and vice versa (from token swaps taking place using your AMM!). The 0.3% fee incentivizes third parties to provide liquidity, but they must be cautious of [Impermanent Loss (IL)](https://www.youtube.com/watch?v=8XJ1MSTEuU0&t=2s&ab_channel=Finematics).
 
@@ -522,7 +522,7 @@ Part 1: Getting Reserves 🏦
 
 Part 2: Performing Calculations 🤖
 
-> We need to calculate how much of each asset our user is going withdraw, call them `strkWithdrawn` and `tokenAmount`. The equation is: `amount *` reserveOfDesiredUnits `/ totalLiquidity`
+> We need to calculate how much of each asset our user is going withdraw, call them `strkWithdrawn` and `tokenAmount`. The equation is: `amount *` reserveOfDesiredUnits `/ total_liquidity`
 
 <details markdown='1'><summary>Question Four</summary>
 
@@ -546,7 +546,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 
 <details markdown='1'><summary>Question Seven</summary>
 
-> The DEX also lost liquidity, how should we update `totalLiquidity`?
+> The DEX also lost liquidity, how should we update `total_liquidity`?
 
 </details>
 
@@ -588,7 +588,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 
 Cool beans! Your front-end should be showing something like this now!
 
-![img_6.png](packages/nextjs/public/img_6.png)
+![img.png](packages/nextjs/public/img.png)
 
 Now, a user can just enter the amount of STRK or tokens they want to swap and the chart will display how the price is calculated. The user can also visualize how larger swaps result in more slippage and less output asset.
 
