@@ -40,11 +40,7 @@ fi
 # 1. Unstage the files
 git restore --staged --quiet -- "${files_to_process[@]}"
 
-# 2. Reset modified tracked files in the working directory to HEAD state
-#    This command ignores untracked files.
-git restore --worktree --source=HEAD --quiet -- "${files_to_process[@]}"
-
-# 3. Remove newly added files (which became untracked after step 1)
+# 2. Remove newly added files (which became untracked after step 1)
 #    This command ignores tracked files.
 git clean -fd
 
