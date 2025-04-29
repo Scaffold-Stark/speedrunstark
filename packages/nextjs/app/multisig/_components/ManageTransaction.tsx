@@ -1,5 +1,6 @@
 import React from "react";
 import { ManageTransactionProps } from "../types";
+import { useTheme } from "next-themes";
 
 export const ManageTransaction: React.FC<ManageTransactionProps> = ({
   account,
@@ -19,6 +20,9 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
   loading,
   signers,
 }) => {
+  const {resolvedTheme} = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
@@ -56,9 +60,9 @@ export const ManageTransaction: React.FC<ManageTransactionProps> = ({
               onChange={handleSelectChange}
               className="w-full outline-none bg-transparent border-none"
             >
-              <option value="add">Add Signer</option>
-              <option value="remove">Remove Signer</option>
-              <option value="transfer_fund">Transfer</option>
+              <option value="add" className={isDarkMode ? "bg-gray-800" : ""}>Add Signer</option>
+              <option value="remove" className={isDarkMode ? "bg-gray-800" : ""}>Remove Signer</option>
+              <option value="transfer_fund" className={isDarkMode ? "bg-gray-800" : ""}>Transfer</option>
             </select>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import TransactionItem from "./TransactionItem";
 import { TransactionListProps } from "../types";
+import { useTheme } from "next-themes";
 
 const TransactionList: React.FC<TransactionListProps> = ({
   transactions,
@@ -20,6 +21,9 @@ const TransactionList: React.FC<TransactionListProps> = ({
   account,
   deployedContractData,
 }) => {
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
+
   return (
     <div className="border border-gradient p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
@@ -31,9 +35,9 @@ const TransactionList: React.FC<TransactionListProps> = ({
             onChange={handleTxTypeChange}
             className="outline-none border-none bg-transparent"
           >
-            <option value="pending">Pending</option>
-            <option value="executed">Executed</option>
-            <option value="all">All</option>
+            <option value="pending" className={isDarkMode ? "bg-gray-800" : ""}>Pending</option>
+            <option value="executed" className={isDarkMode ? "bg-gray-800" : ""}>Executed</option>
+            <option value="all" className={isDarkMode ? "bg-gray-800" : ""}>All</option>
           </select>
         </div>
       </div>
