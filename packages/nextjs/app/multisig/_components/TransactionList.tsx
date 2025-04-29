@@ -35,9 +35,18 @@ const TransactionList: React.FC<TransactionListProps> = ({
             onChange={handleTxTypeChange}
             className="outline-none border-none bg-transparent"
           >
-            <option value="pending" className={isDarkMode ? "bg-gray-800" : ""}>Pending</option>
-            <option value="executed" className={isDarkMode ? "bg-gray-800" : ""}>Executed</option>
-            <option value="all" className={isDarkMode ? "bg-gray-800" : ""}>All</option>
+            <option value="pending" className={isDarkMode ? "bg-gray-800" : ""}>
+              Pending
+            </option>
+            <option
+              value="executed"
+              className={isDarkMode ? "bg-gray-800" : ""}
+            >
+              Executed
+            </option>
+            <option value="all" className={isDarkMode ? "bg-gray-800" : ""}>
+              All
+            </option>
           </select>
         </div>
       </div>

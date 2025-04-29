@@ -20,12 +20,15 @@ pub mod MultisigComponent {
     use core::num::traits::Zero;
     use core::panic_with_felt252;
     use core::pedersen::PedersenTrait;
-    use openzeppelin_governance::multisig::storage_utils::{SignersInfo, SignersInfoStorePackingV2};
-    use openzeppelin_governance::multisig::storage_utils::{TxInfo, TxInfoStorePacking};
+    use openzeppelin_governance::multisig::storage_utils::{
+        SignersInfo, SignersInfoStorePackingV2, TxInfo, TxInfoStorePacking,
+    };
     use openzeppelin_governance::utils::call_impls::{CallPartialEq, HashCallImpl, HashCallsImpl};
     use starknet::account::Call;
-    use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
-    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+    use starknet::storage::{
+        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
+        StoragePointerWriteAccess,
+    };
     use starknet::syscalls::call_contract_syscall;
     use starknet::{ContractAddress, SyscallResultTrait};
 
@@ -156,7 +159,7 @@ pub mod MultisigComponent {
             let signers_count = self.Multisig_signers_info.read().signers_count;
             for i in 0..signers_count {
                 result.append(self.Multisig_signers_by_index.read(i));
-            };
+            }
             result
         }
 
@@ -215,7 +218,7 @@ pub mod MultisigComponent {
                 if self.is_confirmed_by(id, signer) {
                     result += 1;
                 }
-            };
+            }
             result
         }
 
@@ -425,7 +428,7 @@ pub mod MultisigComponent {
                     for call in calls {
                         let Call { to, selector, calldata } = call;
                         call_contract_syscall(to, selector, calldata).unwrap_syscall();
-                    };
+                    }
                     self.emit(TransactionExecuted { id });
                 },
             };
