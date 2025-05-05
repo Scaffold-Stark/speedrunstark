@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - base-challenge-template
-      - feat/auto-merge
   workflow_dispatch:
 
 jobs:
@@ -28,14 +27,13 @@ jobs:
           git config --local merge.keeptheirs.name "keep-theirs"
           git config --local merge.keeptheirs.driver 'cp %B %A'
 
-      - name: Fetch feat/auto-merge branch
+      - name: Fetch base-challenge-template branch
         run: |
           git fetch origin
-          git checkout feat/auto-merge
+          git checkout base-challenge-template
 
       - name: Update Challenge Branches
         run: |
-          git checkout base-challenge-template && git merge feat/auto-merge && git push origin base-challenge-template
           git checkout challenge-1-decentralized-staking && git merge base-challenge-template --no-edit && git push origin challenge-1-decentralized-staking
           git checkout challenge-2-token-vendor && git merge base-challenge-template --no-edit && git push origin challenge-2-token-vendor
           git checkout challenge-3-dice-game && git merge base-challenge-template --no-edit && git push origin challenge-3-dice-game
