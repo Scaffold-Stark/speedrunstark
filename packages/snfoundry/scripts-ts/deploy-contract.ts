@@ -10,8 +10,6 @@ import {
   extractContractHashes,
   DeclareContractPayload,
   UniversalDetails,
-  isSierra,
-  TransactionReceipt,
   constants,
 } from "starknet";
 import { DeployContractParams, Network } from "./types";
