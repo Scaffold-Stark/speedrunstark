@@ -1,5 +1,6 @@
 {
-  "name": "Token Vendor",
+  "name": "Speedrun Stark",
+  "short_name": "Speedrun",
   "description": "Fast track your starknet journey",
   "start_url": "/",
   "display": "standalone",
