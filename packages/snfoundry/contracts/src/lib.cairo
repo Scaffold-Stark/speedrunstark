@@ -1,10 +1,5 @@
-mod DiceGame;
-mod RiggedRoll;
-mod mock_contracts {
+pub mod DiceGame;
+pub mod RiggedRoll;
+pub mod mock_contracts {
     pub mod MockSTRKToken;
 }
-#[cfg(test)]
-mod test {
-    mod TestContract;
-}
-
