@@ -1,5 +1,5 @@
-mod Vendor;
-mod YourToken;
-mod mock_contracts {
+pub mod Vendor;
+pub mod YourToken;
+pub mod mock_contracts {
     pub mod MockSTRKToken;
 }
