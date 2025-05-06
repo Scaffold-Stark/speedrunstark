@@ -1,5 +1,5 @@
 mod ExampleExternalContract;
-mod Staker;
+pub mod Staker;
 mod mock_contracts {
     pub mod MockSTRKToken;
 }
