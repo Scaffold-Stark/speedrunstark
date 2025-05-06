@@ -1,4 +1,8 @@
 target
 .snfoundry_cache/
+<<<<<<< HEAD
 .env
 local-devnet
+=======
+.env
+>>>>>>> base-challenge-template
