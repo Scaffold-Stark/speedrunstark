@@ -40,7 +40,10 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
             </div>
           </div>
           <div className="text-sm font-semibold text-right">
-            <Balance address={deployedContractData.address} className="text-network"/>
+            <Balance
+              address={deployedContractData.address}
+              className="text-network"
+            />
           </div>
         </div>
       )}
