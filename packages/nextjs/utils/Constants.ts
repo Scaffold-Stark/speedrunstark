@@ -185,7 +185,7 @@ const universalErc20Abi = [
         state_mutability: "view",
       },
       {
-        name: "balance_of",
+        name: "balanceOf",
         type: "function",
         inputs: [
           {
@@ -201,7 +201,7 @@ const universalErc20Abi = [
         state_mutability: "view",
       },
       {
-        name: "transfer_from",
+        name: "transferFrom",
         type: "function",
         inputs: [
           {
