@@ -8,7 +8,7 @@ const Transfers: NextPage = () => {
   const { data: transferEvents, isLoading } = useScaffoldEventHistory({
     contractName: "YourCollectible",
     eventName: "openzeppelin_token::erc721::erc721::ERC721Component::Transfer",
-    fromBlock: 0n,
+    fromBlock: 807990n,
     watch: true,
   });
 
