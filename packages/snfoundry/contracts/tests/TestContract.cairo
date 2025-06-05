@@ -12,6 +12,11 @@ const INITIAL_RECIPIENT_SUPPLY: u256 = 1_000_000_000_000_000_000_000; // 1000_ST
 const ONE_TOKEN_UNIT: u256 = 1_000_000_000_000_000_000; // 1_TOKE_UNIT_IN_FRI
 const TEN_TOKEN_UNIT: u256 = 10_000_000_000_000_000_000; // 10_TOKE_UNIT_IN_FRI
 
+/// Returns the contract address of the owner.
+///
+/// Returns:
+///     ContractAddress: The address of the owner.
+const OWNER: ContractAddress = 'OWNER'.try_into().unwrap();
 /// Returns the contract address of the recipient.
 ///
 /// Returns:
