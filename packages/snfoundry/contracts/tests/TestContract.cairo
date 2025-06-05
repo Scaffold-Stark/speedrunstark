@@ -107,6 +107,7 @@ fn deploy_dex_contract() -> (ContractAddress, ContractAddress, ContractAddress) 
     let mut calldata = array![];
     calldata.append_serde(strk_token_address);
     calldata.append_serde(balloons_token_address);
+    calldata.append_serde(OWNER);
     let dex_contract_address = declare_and_deploy("Dex", calldata);
     println!("-- Dex contract deployed on: 0x{:x}", dex_contract_address);
 
