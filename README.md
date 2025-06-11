@@ -19,9 +19,12 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
+<<<<<<< HEAD
 - [Rust](https://www.rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+=======
+>>>>>>> base-challenge-template
 
 ### Starknet-devnet version
 
@@ -36,8 +39,14 @@ If your local starknet-devnet version is not `0.4.0`, you need to install it.
 - Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
 ### Compatible versions
+<<<<<<< HEAD
 - Cairo - v2.11.4
 - Rpc - v0.8.0
+=======
+
+- Cairo - v2.11.4
+- Rpc - v0.8.x
+>>>>>>> base-challenge-template
 - Scarb - v2.11.4
 - Snforge - v0.41.0
 - Starknet-Devnet - v0.4.0
