@@ -28,7 +28,7 @@ const TransactionEvents: React.FC<TransactionEventsProps> = ({
                 >
                   <div className="space-y-2">
                     <div className="font-mono text-xs">
-                      ID: {formatAddress(event.args.id.toString())}
+                      ID: {event.args.id.toString()}
                     </div>
                     <div className="text-xs text-gray-400 flex items-center gap-2">
                       <span>By:</span>
@@ -66,7 +66,7 @@ const TransactionEvents: React.FC<TransactionEventsProps> = ({
                 >
                   <div className="space-y-3">
                     <div className="font-mono text-xs">
-                      ID: {formatAddress(event.args.id.toString())}
+                      ID: {event.args.id.toString()}
                     </div>
                     <div className="text-xs text-gray-400 flex items-center gap-2">
                       <span>By:</span>
