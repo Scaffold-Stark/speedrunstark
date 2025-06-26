@@ -5,11 +5,17 @@ use starknet::account::Call;
 pub type TransactionID = felt252;
 pub type TransactionState = contracts::CustomInterfaceMultisigComponent::TransactionState;
 
+
 use contracts::CustomInterfaceMultisigComponent::{IMultisigDispatcher,IMultisigDispatcherTrait};
-//use contracts::CustomMultisigWallet::{IMultisigWalletDispatcher,IMultisigWalletDispatcherTrait};
+use contracts::CustomMultisigWallet::{IMultisigWalletDispatcher,IMultisigWalletDispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{CheatSpan, cheat_caller_address,spy_events,EventSpyAssertionsTrait };
+use snforge_std::{CheatSpan, 
+                  cheat_caller_address,
+                  spy_events,
+                  EventSpyAssertionsTrait,
+                  set_balance,
+                  Token};
 
 use test_event_utils::{build_quorum_updated_event,
                 build_signer_events,
@@ -99,6 +105,12 @@ fn deploy_custom_multisig_wallet() ->IMultisigDispatcher{
     calldata.append_serde(signer);
     
     let custom_multisig_wallet_address = declare_and_deploy("CustomMultisigWallet",calldata);
+    // lets set stark balance for our custom wallet;
+    set_balance(
+        custom_multisig_wallet_address,
+        1000000000000000_u256,
+        Token::STRK
+    );
     IMultisigDispatcher{contract_address:custom_multisig_wallet_address}
 }
 
@@ -127,6 +139,19 @@ fn test_get_quorum(){
 let multisig_dispatcher = deploy_custom_multisig_wallet();
 let quorum = multisig_dispatcher.get_quorum();
 assert_eq!(quorum,1,"wrong quorum!");
+}
+
+#[test]
+fn test_transfer_funds(){
+let multisig_dispatcher = deploy_custom_multisig_wallet();
+// to use transfer_funds we need to wrap the contract with IMultisigWalletDispatcher
+let multisig_wallet_dispatcher = IMultisigWalletDispatcher{contract_address:multisig_dispatcher.contract_address};
+
+// no need to assert cause oz package will revert in case of 0 
+multisig_wallet_dispatcher.transfer_funds(
+    RANDOM_ENTITY,
+    1000000000000000_u256
+);
 }
 
 #[test]
