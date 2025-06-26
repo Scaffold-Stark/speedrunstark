@@ -17,7 +17,7 @@ openzeppelin_utils = "1.0.0"
 openzeppelin_testing = "3.0.0"
 snforge_std = "0.41.0"
 assert_macros = "2.11.4"
-cairo_test = "2.11.4"
+
 
 [[target.starknet-contract]]
 casm = true # taggle this to `false` to speed up compilation/script tests
