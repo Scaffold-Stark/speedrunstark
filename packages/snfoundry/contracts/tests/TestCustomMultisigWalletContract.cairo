@@ -111,6 +111,7 @@ fn deploy_custom_multisig_wallet() ->IMultisigDispatcher{
         1000000000000000_u256,
         Token::STRK
     );
+    
     IMultisigDispatcher{contract_address:custom_multisig_wallet_address}
 }
 
@@ -174,8 +175,10 @@ fn test_is_confirmed(){
     // create batch call
     let signers = create_signer_array();
     let calls = create_batch_call(multisig_dispatcher.contract_address,FunctionName::AddSigner,signers);
-    cheat_caller_address(multisig_dispatcher.contract_address, OWNER, CheatSpan::TargetCalls(2));
+    cheat_caller_address(multisig_dispatcher.contract_address, OWNER, CheatSpan::TargetCalls(4));
     let batch_tx_id = multisig_dispatcher.submit_transaction_batch(calls.clone(),1);
+    let tx_not_confirmed = multisig_dispatcher.is_confirmed(batch_tx_id);
+    assert_eq!(tx_not_confirmed,false,"tx confirmed!");
     multisig_dispatcher.confirm_transaction(batch_tx_id);
     let tx_confirmed = multisig_dispatcher.is_confirmed(batch_tx_id);
     assert_eq!(tx_confirmed,true,"tx not confirmed!");
@@ -367,6 +370,24 @@ let multisig_wallet_dispatcher = deploy_custom_multisig_wallet();
 cheat_caller_address(multisig_wallet_dispatcher.contract_address, OWNER, CheatSpan::TargetCalls(2));
 let _ = multisig_wallet_dispatcher.confirm_transaction(0); // gonna fail
 }
+
+#[test]
+#[should_panic(expected: 'Multisig: tx not confirmed')]
+fn test_cant_execute_nonconfirmed_tx() { 
+    let multisig_wallet_dispatcher = deploy_custom_multisig_wallet();
+    let new_quorum = 2_u32;
+    // lets create the call for submission.
+    let to = multisig_wallet_dispatcher.contract_address;
+    let selector = selector!("change_quorum");
+    let mut calldata = array![];
+    calldata.append_serde(new_quorum);
+    let salt:felt252 = 0 ;
+    // lets submit the transaction
+    cheat_caller_address(multisig_wallet_dispatcher.contract_address, OWNER, CheatSpan::TargetCalls(2));
+    let _ = multisig_wallet_dispatcher.submit_transaction(to,selector,calldata.clone(),salt);
+    multisig_wallet_dispatcher.execute_transaction(to,selector,calldata.clone(),0);
+}
+
 // ENDS HERE --------------------------------------------------------------------<
 
 /// TEST_EVENT_UTILS STARTS -------------------------------------------------------------------->
