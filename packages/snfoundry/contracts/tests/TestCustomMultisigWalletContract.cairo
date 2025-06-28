@@ -1,9 +1,12 @@
 
-use starknet::ContractAddress;
+use starknet::{ContractAddress,SyscallResultTrait};
+use starknet::syscalls::call_contract_syscall;
 use starknet::account::Call;
 
 pub type TransactionID = felt252;
 pub type TransactionState = contracts::CustomInterfaceMultisigComponent::TransactionState;
+
+
 
 
 use contracts::CustomInterfaceMultisigComponent::{IMultisigDispatcher,IMultisigDispatcherTrait};
@@ -15,7 +18,9 @@ use snforge_std::{CheatSpan,
                   spy_events,
                   EventSpyAssertionsTrait,
                   set_balance,
-                  Token};
+                  Token,
+                TokenImpl, 
+                TokenTrait};
 
 use test_event_utils::{build_quorum_updated_event,
                 build_signer_events,
@@ -105,12 +110,12 @@ fn deploy_custom_multisig_wallet() ->IMultisigDispatcher{
     calldata.append_serde(signer);
     
     let custom_multisig_wallet_address = declare_and_deploy("CustomMultisigWallet",calldata);
-    // lets set stark balance for our custom wallet;
-    set_balance(
-        custom_multisig_wallet_address,
-        1000000000000000_u256,
-        Token::STRK
-    );
+
+    set_balance(custom_multisig_wallet_address, 1_000_000, Token::STRK);
+   
+    // for hardecoded stark contract address;
+    let strk_address:felt252 = Token::STRK.contract_address().into();
+    println!("Strk contract Address {}", strk_address);
     
     IMultisigDispatcher{contract_address:custom_multisig_wallet_address}
 }
@@ -148,11 +153,19 @@ let multisig_dispatcher = deploy_custom_multisig_wallet();
 // to use transfer_funds we need to wrap the contract with IMultisigWalletDispatcher
 let multisig_wallet_dispatcher = IMultisigWalletDispatcher{contract_address:multisig_dispatcher.contract_address};
 
-// no need to assert cause oz package will revert in case of 0 
 multisig_wallet_dispatcher.transfer_funds(
     RANDOM_ENTITY,
-    1000000000000000_u256
+    1_000_000_u256
 );
+ // Read the balance
+   let balance = call_contract_syscall(
+        Token::STRK.contract_address().into(),
+        selector!("balance_of"),
+        array![RANDOM_ENTITY.into()].span(),
+    )
+        .unwrap_syscall();
+
+    assert(balance == array![1_000_000, 0].span(), 'Invalid balance');
 }
 
 #[test]
