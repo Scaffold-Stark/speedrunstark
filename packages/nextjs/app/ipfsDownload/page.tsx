@@ -39,7 +39,7 @@ const IpfsDownload: NextPage = () => {
         } else {
           notification.remove(loadingNotificationId);
           retryNotificationId && notification.remove(retryNotificationId);
-          notification.error("Error downloading from IPFS");
+          notification.error(error instanceof Error ? error.message : "Error downloading from IPFS");
           console.error("IPFS Download Error:", error);
         }
       }
