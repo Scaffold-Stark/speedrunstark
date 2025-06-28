@@ -26,7 +26,6 @@ const IpfsDownload: NextPage = () => {
     const maxAttempts = MAX_ATTEMPTS;
     while (attempt < maxAttempts) {
       try {
-        console.log("attempting to get metadata from ipfs", attempt);
         const metaData = await getMetadataFromIPFS(ipfsPath);
         notification.remove(loadingNotificationId);
         retryNotificationId && notification.remove(retryNotificationId);
@@ -36,10 +35,8 @@ const IpfsDownload: NextPage = () => {
       } catch (error) {
         attempt++;
         if (attempt < maxAttempts) {
-          console.log("retrying ", attempt);
           retryNotificationId = notification.info(`Retrying download... (${attempt}/${maxAttempts})`);
         } else {
-          console.log("error downloading from ipfs");
           notification.remove(loadingNotificationId);
           retryNotificationId && notification.remove(retryNotificationId);
           notification.error("Error downloading from IPFS");
