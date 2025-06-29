@@ -1,19 +1,22 @@
 "use client";
 
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react"; // Suspense is not needed for direct import
 import type { NextPage } from "next";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { addToIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
 import nftsMetadata from "~~/utils/simpleNFT/nftsMetadata";
 import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
-const LazyReactJson = lazy(() => import("react-json-view"));
+// Import the new JSON editor component and its CSS
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import 'jsoneditor/dist/jsoneditor.min.css'; // This is the correct path for the core jsoneditor CSS
 
 const IpfsUpload: NextPage = () => {
   const [yourJSON, setYourJSON] = useState<object>(nftsMetadata[0]);
   const [loading, setLoading] = useState(false);
   const [uploadedIpfsPath, setUploadedIpfsPath] = useState("");
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -53,20 +56,28 @@ const IpfsUpload: NextPage = () => {
         </h1>
 
         {mounted && (
-          <LazyReactJson
-            style={{ padding: "1rem", borderRadius: "0.75rem" }}
-            src={yourJSON}
-            theme="solarized"
-            enableClipboard={false}
-            onEdit={(edit) => {
-              setYourJSON(edit.updated_src);
-            }}
-            onAdd={(add) => {
-              setYourJSON(add.updated_src);
-            }}
-            onDelete={(del) => {
-              setYourJSON(del.updated_src);
-            }}
+          // Using jsoneditor-react
+          // 'value' prop holds the JSON data
+          // 'onChange' is the callback for when the JSON changes
+          // 'mode' can be 'tree', 'code', 'form', 'text', 'view'
+          <Editor
+            value={yourJSON}
+            onChange={(updatedJson: object) => setYourJSON(updatedJson)}
+            mode="tree" // Set default mode to 'tree' for an interactive view
+            // You can also add more modes to allow users to switch
+            // modes={['tree', 'code']}
+            // To enable editing in tree mode, you don't need separate onEdit/onAdd/onDelete,
+            // as it's built into the mode="tree" functionality by default.
+            // You can hide the menu or status bar if desired
+            // menu={false}
+            // statusBar={false}
+
+            // Custom styling often needs to be done via CSS overrides for jsoneditor
+            // The 'style' prop usually applies to the outer container.
+            // For internal styling, you might need to target jsoneditor's classes
+            htmlElementProps={{ style: { padding: "1rem", borderRadius: "0.75rem", border: "1px solid #ccc", height: '500px' } }}
+            // Note: jsoneditor-react often requires a fixed height or Flexbox container
+            // for the editor to render correctly. 'height: 500px' is an example.
           />
         )}
         <button
