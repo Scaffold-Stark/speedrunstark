@@ -13,6 +13,14 @@ export const ipfsClient = create({
   },
 });
 
+// Custom error class for invalid JSON content
+export class InvalidJSONError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidJSONError";
+  }
+}
+
 export async function getNFTMetadataFromIPFS(ipfsHash: string) {
   try {
     let fileFound = false;
@@ -28,7 +36,7 @@ export async function getNFTMetadataFromIPFS(ipfsHash: string) {
 
       if (startIndex === -1 || endIndex === 0) {
         console.log("No valid JSON object found in IPFS file");
-        return undefined;
+        throw new InvalidJSONError("No valid JSON object found in IPFS file");
       }
 
       // Extract the JSON object string
@@ -38,7 +46,7 @@ export async function getNFTMetadataFromIPFS(ipfsHash: string) {
         return jsonObject;
       } catch (error) {
         console.log("Error parsing JSON:", error);
-        return undefined;
+        throw new InvalidJSONError("Invalid JSON content in IPFS file");
       }
     }
 
@@ -47,6 +55,11 @@ export async function getNFTMetadataFromIPFS(ipfsHash: string) {
       return null;
     }
   } catch (error: any) {
+    // Re-throw InvalidJSONError as-is
+    if (error instanceof InvalidJSONError) {
+      throw error;
+    }
+
     console.log("IPFS fetch error:", error);
 
     // Re-throw network/connection errors so they can be handled appropriately
