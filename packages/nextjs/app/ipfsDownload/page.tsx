@@ -17,25 +17,29 @@ const IpfsDownload: NextPage = () => {
     setMounted(true);
   }, []);
 
+
   const handleIpfsDownload = async () => {
     setLoading(true);
-    const notificationId = notification.loading("Getting data from IPFS...");
+    const loadingNotificationId = notification.loading("Getting data from IPFS...");
+    let retryNotificationId = null;
     let attempt = INITIAL_ATTEMPT;
     const maxAttempts = MAX_ATTEMPTS;
     while (attempt < maxAttempts) {
       try {
         const metaData = await getMetadataFromIPFS(ipfsPath);
-        notification.remove(notificationId);
+        notification.remove(loadingNotificationId);
+        retryNotificationId && notification.remove(retryNotificationId);
         notification.success("Downloaded from IPFS");
         setYourJSON(metaData);
         break;
       } catch (error) {
         attempt++;
         if (attempt < maxAttempts) {
-          notification.info(`Retrying download... (${attempt}/${maxAttempts})`);
+          retryNotificationId = notification.info(`Retrying download... (${attempt}/${maxAttempts})`);
         } else {
-          notification.remove(notificationId);
-          notification.error("Error downloading from IPFS");
+          notification.remove(loadingNotificationId);
+          retryNotificationId && notification.remove(retryNotificationId);
+          notification.error(error instanceof Error ? error.message : "Error downloading from IPFS");
           console.error("IPFS Download Error:", error);
         }
       }
