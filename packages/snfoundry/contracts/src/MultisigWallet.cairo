@@ -1,5 +1,5 @@
 #[starknet::contract]
-mod MultisigWallet {
+pub mod MultisigWallet {
     use openzeppelin_governance::multisig::MultisigComponent;
     use starknet::ContractAddress;
 
