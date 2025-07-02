@@ -9,7 +9,7 @@ import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
 // Import the JSON editor component and its core CSS
 import { JsonEditor as Editor } from 'jsoneditor-react';
-import 'jsoneditor/dist/jsoneditor.min.css'; // Keep this core CSS for basic structure
+
 
 
 
