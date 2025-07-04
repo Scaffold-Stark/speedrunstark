@@ -174,9 +174,9 @@ body {
 }
 
 .jsoneditor-results {
-  margin: 0 !important;
+  background-color: rgba(56,131,250,255) !important;
   margin-top: 0 !important;
-  padding: 0 !important;
+  padding-right: 12px !important; /* Add internal padding on the right */
   border-top: none !important;
 }
 
