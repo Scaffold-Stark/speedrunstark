@@ -6,10 +6,5 @@ CONTRIBUTING.md merge=keeptheirs
 .env.example merge=keeptheirs
 yarn.lock merge=keeptheirs
 
-<<<<<<< HEAD
-README.md merge-filter=ignore
-.github/** merge-filter=ignore
-=======
 README.md merge=keepmine
 .github/** merge=keepmine
->>>>>>> base-challenge-template

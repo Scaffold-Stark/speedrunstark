@@ -19,12 +19,9 @@ Before you begin, you need to install the following tools:
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
-<<<<<<< HEAD
 - [Rust](https://www.rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
-=======
->>>>>>> base-challenge-template
 
 ### Starknet-devnet version
 
@@ -39,14 +36,9 @@ If your local starknet-devnet version is not `0.4.0`, you need to install it.
 - Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
 ### Compatible versions
-<<<<<<< HEAD
-- Cairo - v2.11.4
-- Rpc - v0.8.0
-=======
 
 - Cairo - v2.11.4
 - Rpc - v0.8.x
->>>>>>> base-challenge-template
 - Scarb - v2.11.4
 - Snforge - v0.41.0
 - Starknet-Devnet - v0.4.0
@@ -58,10 +50,12 @@ Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Re
 <details>
 
 For an alternative to local installations, you can use Docker to set up the environment.
+
 - Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 - A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
 
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+
 </details>
 
 Then download the challenge to your computer and install dependencies by running:
@@ -96,7 +90,7 @@ yarn start
 📱 Open <http://localhost:3000> to see the app.
 
 > 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend. If you haven't made any contract changes, you can run `yarn deploy:no-reset` for a completely fresh deploy.
-><br/>`yarn deploy` always resets contracts. If you don't want it to reset, use yarn `deploy:no-reset`.
+> <br/>`yarn deploy` always resets contracts. If you don't want it to reset, use yarn `deploy:no-reset`.
 
 ---
 
@@ -107,11 +101,13 @@ Navigate to the Debug Contracts tab, you should see two smart contracts displaye
 packages/snfoundry/contracts/Balloons.cairo is just an example ERC20 contract that mints 1000 $BAL to whatever address deploys it.
 
 packages/snfoundry/contracts/DEX.cairo is what we will build in this challenge and you can see it starts instantiating a token (ERC20 interface) that we set in the constructor (on deploy).
+
 > You can `yarn deploy` to deploy your contract until you get it right.
 
 > Below is what your front-end will look like with no implementation code within your smart contracts yet. The buttons will likely break because there are no functions tied to them yet!
 
 ![img.png](packages/nextjs/public/img.png)
+
 > 🎉 You've made it this far in Scaffold-Stark Challenges 👏🏼 . As things get more complex, it might be good to review the design requirements of the challenge first! Check out the empty DEX.cairo file to see aspects of each function. If you can explain how each function will work with one another, that's great! 😎
 
 > 🚨 🚨 🦈 The Guiding Questions will lead you in the right direction, but try thinking about how you would structure each function before looking at these!
@@ -187,6 +183,7 @@ The front end should show you that you have balloon tokens. We can’t just call
 First, we have to call `approve()` on the Balloons contract, approving the DEX contract address to take some amount of tokens.
 
 ![img_1.png](packages/nextjs/public/img_1.png)
+
 > 🤓 Copy and paste the DEX address to the _Address Spender_ and then set the amount to 5.
 > You can confirm this worked using the `allowance()` function in `Debug Contracts` tab using your local account address as the owner and the DEX contract address as the spender.
 
@@ -194,7 +191,7 @@ Now we are ready to call `init()` on the DEX, using the `Debug Contracts` tab. W
 
 ![img_2.png](packages/nextjs/public/img_2.png)
 
-In the `DEX` tab, to simplify user interactions, we run the conversion (_tokenAmount_ * 10¹⁸) in the code, so they just have to input the token amount they want to swap or deposit/withdraw.
+In the `DEX` tab, to simplify user interactions, we run the conversion (_tokenAmount_ \* 10¹⁸) in the code, so they just have to input the token amount they want to swap or deposit/withdraw.
 
 You can see the DEX contract's value update, and you can check the DEX token balance using the `balance_of` function on the Balloons UI from `DEX` tab.
 
@@ -228,6 +225,7 @@ Now, when we `yarn deploy` then our contract should be initialized as soon as it
 - [ ] ⚠ If you are planning to submit the challenge, make sure to implement the `get_liquidity` getter function in `DEX.cairo`
 
 ---
+
 ## ⛳️ **Checkpoint 3: Price** 🤑
 
 This section is directly from the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90) "Price" section. It outlines the general details of the DEX's pricing model.
@@ -296,7 +294,7 @@ Finally, let’s say the ratio is the same, but we want to swap 100,000 tokens i
 
 ### 🥅 Goals / Checks
 
-- [ ] 🤔 Do you understand how the x*y=k price curve actually works? Write down a clear explanation for yourself and derive the formula for price. You might have to shake off some old algebra skills!
+- [ ] 🤔 Do you understand how the x\*y=k price curve actually works? Write down a clear explanation for yourself and derive the formula for price. You might have to shake off some old algebra skills!
 - [ ] 💃 You should be able to go through the price section of this tutorial with the sample numbers and generate the same outputChange variable.
 
 ---
@@ -590,7 +588,9 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 - [ ] 💧 Deposit liquidity, and then check your liquidity amount through the mapping in the debug tab. Has it changed properly? Did the right amount of assets get deposited?
 
 - [ ] 🧐 What happens if you `deposit()` at the beginning of the deployed contract, then another user starts swapping out for most of the balloons, and then you try to withdraw your position as a liquidity provider? Answer: you should get the amount of liquidity proportional to the ratio of assets within the isolated liquidity pool. It will not be 1:1.
+
 ---
+
 ## Checkpoint 6: UI 🖼
 
 Cool beans! Your front-end should be showing something like this now!
@@ -649,7 +649,7 @@ Now, a user can just enter the amount of STRK or tokens they want to swap and th
 
 👩‍❤️‍👨 Send some $BAL and share your public url with a friend and ask them to swap their tokens :)
 
---- 
+---
 
 #### Configuration of Third-Party Services for Production-Grade Apps
 
