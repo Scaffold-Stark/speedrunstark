@@ -7,7 +7,7 @@ import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEven
 const Transfers: NextPage = () => {
   const { data: transferEvents, isLoading } = useScaffoldEventHistory({
     contractName: "YourCollectible",
-    eventName: "openzeppelin_token::erc721::erc721::ERC721Component::Transfer",
+    eventName: "Transfer",
     fromBlock: 0n,
     watch: true,
   });
