@@ -1,8 +1,8 @@
 // src/types/jsoneditor-react.d.ts
 
-declare module 'jsoneditor-react' {
-  import * as React from 'react';
-  import { JSONEditorMode, JSONEditorOptions } from 'jsoneditor'; // Import types from the core jsoneditor library
+declare module "jsoneditor-react" {
+  import * as React from "react";
+  import { JSONEditorMode, JSONEditorOptions } from "jsoneditor"; // Import types from the core jsoneditor library
 
   interface JsonEditorProps {
     value?: object | null;
