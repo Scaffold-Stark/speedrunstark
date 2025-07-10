@@ -21,8 +21,16 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    // --- ADD THIS LINE ---
+    "typeRoots": ["./node_modules/@types", "./types"] // Include your custom types folder
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "types/**/*.d.ts" // --- ADD THIS LINE --- to explicitly include d.ts files in your 'types' folder
+  ],
   "exclude": ["node_modules"]
 }

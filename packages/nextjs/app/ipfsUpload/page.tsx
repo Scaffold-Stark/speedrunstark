@@ -1,22 +1,28 @@
 "use client";
 
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { notification } from "~~/utils/scaffold-stark/notification";
 import { addToIPFS } from "~~/utils/simpleNFT/ipfs-fetch";
 import nftsMetadata from "~~/utils/simpleNFT/nftsMetadata";
 import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
-const LazyReactJson = lazy(() => import("react-json-view"));
+// Import the JSON editor component and its core CSS
+import { JsonEditor as Editor } from 'jsoneditor-react';
+
+
+
 
 const IpfsUpload: NextPage = () => {
   const [yourJSON, setYourJSON] = useState<object>(nftsMetadata[0]);
   const [loading, setLoading] = useState(false);
   const [uploadedIpfsPath, setUploadedIpfsPath] = useState("");
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     setMounted(true);
-  }, []);
+   
+  }, []); 
 
   const handleIpfsUpload = async () => {
     setLoading(true);
@@ -53,22 +59,25 @@ const IpfsUpload: NextPage = () => {
         </h1>
 
         {mounted && (
-          <LazyReactJson
-            style={{ padding: "1rem", borderRadius: "0.75rem" }}
-            src={yourJSON}
-            theme="solarized"
-            enableClipboard={false}
-            onEdit={(edit) => {
-              setYourJSON(edit.updated_src);
-            }}
-            onAdd={(add) => {
-              setYourJSON(add.updated_src);
-            }}
-            onDelete={(del) => {
-              setYourJSON(del.updated_src);
-            }}
-          />
+          <div style={{ width: '100%', maxWidth: '1000px' }}>
+            <Editor
+              value={yourJSON}
+              onChange={(updatedJson: object) => setYourJSON(updatedJson)}
+              mode="tree"
+              modes={['tree', 'code', 'form', 'text', 'view']}
+              htmlElementProps={{
+                style: {
+                  height: '500px',
+                  borderRadius: "0.75rem",
+                  border: "1px solid #ccc", // Keep a subtle border for the container
+                  overflow: 'hidden'
+                },
+                
+              }}
+            />
+          </div>
         )}
+
         <button
           className={`btn btn-secondary text-white my-4 ${loading ? "loading" : ""}`}
           disabled={loading}
@@ -76,6 +85,7 @@ const IpfsUpload: NextPage = () => {
         >
           Upload to IPFS
         </button>
+
         {uploadedIpfsPath && (
           <div className="mt-4">
             <a

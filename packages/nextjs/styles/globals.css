@@ -151,3 +151,56 @@ body {
     clip-path: polygon(100% 100%, 100% 0, 90% 100%);
   }
 }
+
+
+
+.jsoneditor-search input {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color:rgb(2, 1, 1) !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+}
+
+.jsoneditor-results {
+  background-color:rgba(56,131,250,255) !important;
+}
+
+/* Fix the alignment and remove inconsistent margins */
+.jsoneditor-search {
+  margin: 0 !important;
+  padding: 8px !important;
+  border-bottom: none !important;
+}
+
+.jsoneditor-results {
+  background-color: rgba(56,131,250,255) !important;
+  margin-top: 0 !important;
+  padding-right: 12px !important; /* Add internal padding on the right */
+  border-top: none !important;
+}
+
+/* Make sure the toolbar and results are flush */
+.jsoneditor-outer .jsoneditor-search,
+.jsoneditor-outer .jsoneditor-results {
+  vertical-align: top !important;
+}
+
+/* Remove any default margins that might be causing the gap */
+.jsoneditor-results-header,
+.jsoneditor-frame {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Ensure consistent background and no gaps */
+.jsoneditor-search,
+.jsoneditor-results {
+  background-color: #6ba3d6 !important; /* Use the same blue color */
+  border: none !important;
+}
+
+/* Remove any box model issues */
+* {
+  box-sizing: border-box !important;
+}
