@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import {
   ArrowLeftEndOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
-  ArrowsRightLeftIcon,
   CheckCircleIcon,
   ChevronDownIcon,
   DocumentDuplicateIcon,
@@ -16,7 +15,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { BlockieAvatar, isENS } from "~~/components/scaffold-stark";
 import { useOutsideClick } from "~~/hooks/scaffold-stark";
 import { BurnerConnector, burnerAccounts } from "@scaffold-stark/stark-burner";
-import { getTargetNetworks } from "~~/utils/scaffold-stark";
+import { getTargetNetworks, notification } from "~~/utils/scaffold-stark";
 import { Address } from "@starknet-react/chains";
 import { useDisconnect, useNetwork, useConnect } from "@starknet-react/core";
 import { getStarknetPFPIfExists } from "~~/utils/profile";
@@ -77,13 +76,31 @@ export const AddressInfoDropdown = ({
     },
   );
 
+  const [, setWasDisconnectedManually] = useLocalStorage<boolean>(
+    "wasDisconnectedManually",
+    false,
+    {
+      initializeWithValue: false,
+    },
+  );
+
+  const handleDisconnect = () => {
+    try {
+      disconnect();
+      localStorage.removeItem("lastUsedConnector");
+      localStorage.removeItem("lastConnectionTime");
+      setWasDisconnectedManually(true);
+      window.dispatchEvent(new Event("manualDisconnect"));
+      notification.success("Disconnect successfully!");
+    } catch (err) {
+      console.log(err);
+      notification.success("Disconnect failure!");
+    }
+  };
   return (
     <>
       <details ref={dropdownRef} className="dropdown dropdown-end leading-3">
-        <summary
-          tabIndex={0}
-          className="btn bg-transparent btn-sm px-2 py-[0.35rem] dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] "
-        >
+        <summary className="btn bg-transparent btn-sm px-2 py-[0.35rem] dropdown-toggle gap-0 !h-auto border border-[#5c4fe5] ">
           <div className="hidden [@media(min-width:412px)]:block">
             {getStarknetPFPIfExists(profile?.profilePicture) ? (
               <NextImage
@@ -112,7 +129,7 @@ export const AddressInfoDropdown = ({
           <NetworkOptions hidden={!selectingNetwork} />
           <li className={selectingNetwork ? "hidden" : ""}>
             {addressCopied ? (
-              <div className="btn-sm !rounded-xl flex gap-3 py-3">
+              <div className="btn-sm !rounded-xl flex gap-3">
                 <CheckCircleIcon
                   className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
                   aria-hidden="true"
@@ -130,7 +147,7 @@ export const AddressInfoDropdown = ({
                   }, 800);
                 }}
               >
-                <div className="btn-sm !rounded-xl flex gap-3 py-3">
+                <div className="btn-sm !rounded-xl flex gap-3">
                   <DocumentDuplicateIcon
                     className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
                     aria-hidden="true"
@@ -143,7 +160,7 @@ export const AddressInfoDropdown = ({
           <li className={selectingNetwork ? "hidden" : ""}>
             <label
               htmlFor="qrcode-modal"
-              className="btn-sm !rounded-xl flex gap-3 py-3"
+              className="btn-sm !rounded-xl flex gap-3"
             >
               <QrCodeIcon className="h-6 w-4 ml-2 sm:ml-0" />
               <span className="whitespace-nowrap">View QR Code</span>
@@ -152,7 +169,7 @@ export const AddressInfoDropdown = ({
           {chain.network != "devnet" ? (
             <li className={selectingNetwork ? "hidden" : ""}>
               <button
-                className="menu-item btn-sm !rounded-xl flex gap-3 py-3"
+                className="menu-item btn-sm !rounded-xl flex gap-3"
                 type="button"
               >
                 <ArrowTopRightOnSquareIcon className="h-6 w-4 ml-2 sm:ml-0" />
@@ -171,7 +188,7 @@ export const AddressInfoDropdown = ({
           {chain.network == "devnet" ? (
             <li className={selectingNetwork ? "hidden" : ""}>
               <button
-                className="menu-item btn-sm !rounded-xl flex gap-3 py-3"
+                className="menu-item btn-sm !rounded-xl flex gap-3 "
                 type="button"
                 onClick={() => {
                   setShowBurnerAccounts(true);
@@ -264,11 +281,11 @@ export const AddressInfoDropdown = ({
               </button>
             </li>
           ) : null} */}
-          <li className={selectingNetwork ? "hidden" : ""}>
+          <li className={selectingNetwork ? "hidden" : "p-0"}>
             <button
-              className="menu-item text-secondary-content btn-sm !rounded-xl flex gap-3 py-3"
+              className="menu-item text-secondary-content btn-sm text-sm !rounded-xl flex gap-3"
               type="button"
-              onClick={() => disconnect()}
+              onClick={handleDisconnect}
             >
               <ArrowLeftEndOnRectangleIcon className="h-6 w-4 ml-2 sm:ml-0" />{" "}
               <span>Disconnect</span>
