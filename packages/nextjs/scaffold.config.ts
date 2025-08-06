@@ -5,9 +5,12 @@ export type ScaffoldConfig = {
   targetNetworks: readonly Chain[];
   pollingInterval: number;
   onlyLocalBurnerWallet: boolean;
+<<<<<<< HEAD
   rpcProviderUrl: {
     [key: string]: string;
   };
+=======
+>>>>>>> base-challenge-template
   walletAutoConnect: boolean;
   autoConnectTTL: number;
 };
@@ -16,6 +19,7 @@ const scaffoldConfig = {
   targetNetworks: [chains.devnet],
   // Only show the Burner Wallet when running on devnet
   onlyLocalBurnerWallet: false,
+<<<<<<< HEAD
   rpcProviderUrl: {
     devnet:
       process.env.NEXT_PUBLIC_DEVNET_PROVIDER_URL ||
@@ -30,6 +34,8 @@ const scaffoldConfig = {
       process.env.NEXT_PUBLIC_PROVIDER_URL ||
       "",
   },
+=======
+>>>>>>> base-challenge-template
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 30_000)
   pollingInterval: 30_000,

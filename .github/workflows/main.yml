@@ -8,9 +8,10 @@ on:
   pull_request:
     branches:
       - main
+      - develop
     paths:
       - "packages/nextjs/**"
-      - "packages/snfoundry/contracts/**"
+      - "packages/snfoundry/**"
 
 jobs:
   ci:
@@ -30,7 +31,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: "yarn"
-          #cache-dependency-path: packages/nextjs/yarn.lock
 
       - name: Install dependencies (Next.js)
         run: yarn install --immutable
@@ -65,6 +65,13 @@ jobs:
         run: yarn next:check-types
         working-directory: ./packages/nextjs
 
+<<<<<<< HEAD
+=======
+      - name: Run Next.js tests
+        run: yarn test
+        working-directory: ./packages/nextjs
+
+>>>>>>> base-challenge-template
       - name: Build Next.js project
         run: yarn build
         working-directory: ./packages/nextjs

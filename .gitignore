@@ -13,3 +13,9 @@ package-lock.json
 .eslintcache
 .DS_Store
 .vercel
+<<<<<<< HEAD
+=======
+
+**/.env*
+!**/.env.example
+>>>>>>> base-challenge-template
