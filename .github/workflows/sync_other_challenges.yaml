@@ -22,15 +22,23 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-          git config --local merge.keepmine.name "keep-mine"
-          git config --local merge.keepmine.driver "true"
-          git config --local merge.keeptheirs.name "keep-theirs"
-          git config --local merge.keeptheirs.driver 'cp %B %A'
+          pip install tomlkit
+          chmod +x ./scripts/merge-toml.py
+          git config merge.toml.name "Python-based TOML merge driver"
+          git config merge.toml.driver "scripts/merge-toml.py %O %A %B"
+
+          git config --local merge.ours.driver true
+          git config --local merge.theirs.driver true
 
       - name: Update Challenge Branches
         run: |
           git checkout base-challenge-template
           git pull origin base-challenge-template
+
+          # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
+          git rm -f .github/workflows/sync_other_challenges.yaml
+          git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
+          git commit -m "Remove sync_other_challenges.yml and YourContract.cairo to avoid unexpected conflicts"
 
           CHALLENGE_BRANCHES=(
             "challenge-0-simple-nft"
