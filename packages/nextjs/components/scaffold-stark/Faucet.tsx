@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Address as AddressType, devnet } from "@starknet-react/chains";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
 import {
   Address,
   AddressInput,
@@ -12,7 +13,11 @@ import {
 import { useNetwork, useProvider } from "@starknet-react/core";
 import { mintStrk } from "~~/services/web3/faucet";
 import { notification } from "~~/utils/scaffold-stark";
-import GenericModal from "./CustomConnectButton/GenericModal";
+
+const GenericModal = dynamic(
+  () => import("./CustomConnectButton/GenericModal"),
+  { ssr: false },
+);
 
 /**
  * Faucet modal which lets you send STRK to any address.
@@ -110,30 +115,34 @@ export const Faucet = () => {
               ✕
             </label>
           </div>
-          <div className="flex flex-col gap-8">
-            <AddressInput
-              placeholder="Destination Address"
-              value={inputAddress ?? ""}
-              onChange={(value) => setInputAddress(value as AddressType)}
-            />
-            <StarkInput
-              placeholder="Amount to send"
-              value={sendValue}
-              onChange={(value) => setSendValue(value)}
-            />
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <AddressInput
+                placeholder="Destination Address"
+                value={inputAddress ?? ""}
+                onChange={(value) => setInputAddress(value as AddressType)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <StarkInput
+                placeholder="Amount to send"
+                value={sendValue}
+                onChange={(value) => setSendValue(value)}
+              />
+            </div>
+            <button
+              className="h-10 btn cursor-pointer btn-sm px-2 rounded-[4px] bg-btn-wallet border-[#4f4ab7] border hover:bg-[#385183]"
+              onClick={sendSTRK}
+              disabled={loading}
+            >
+              {!loading ? (
+                <BanknotesIcon className="h-6 w-6" />
+              ) : (
+                <span className="loading loading-spinner loading-sm"></span>
+              )}
+              <span>Send</span>
+            </button>
           </div>
-          <button
-            className="h-10 btn cursor-pointer btn-sm px-2 rounded-[4px] bg-btn-wallet border-[#4f4ab7] border hover:bg-[#385183]"
-            onClick={sendSTRK}
-            disabled={loading}
-          >
-            {!loading ? (
-              <BanknotesIcon className="h-6 w-6" />
-            ) : (
-              <span className="loading loading-spinner loading-sm"></span>
-            )}
-            <span>Send</span>
-          </button>
         </>
       </GenericModal>
     </div>
