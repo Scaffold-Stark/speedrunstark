@@ -51,14 +51,14 @@ For an alternative to local installations, you can use Docker to set up the envi
 - A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
 
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+
 </details>
 
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-git clone https://github.com/Scaffold-Stark/speedrunstark.git {challengeName}
+npx create-stark@latest -e {challengeName} {challengeName}
 cd {challengeName}
-git checkout {challengeName}
 yarn install
 ```
 
