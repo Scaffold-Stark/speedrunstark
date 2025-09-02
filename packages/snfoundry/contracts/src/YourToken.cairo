@@ -24,6 +24,10 @@ mod YourToken {
     impl ERC20MetadataImpl = ERC20Component::ERC20MetadataImpl<ContractState>;
     impl InternalImpl = ERC20Component::InternalImpl<ContractState>;
 
+    impl ERC20ImmutableConfig of ERC20Component::ImmutableConfig {
+        const DECIMALS: u8 = 18;
+    }
+
     #[storage]
     struct Storage {
         #[substorage(v0)]
