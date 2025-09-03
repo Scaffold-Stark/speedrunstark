@@ -15,7 +15,7 @@ const Staking: NextPage = () => {
   // @ts-ignore
   const { data: stakeEvents, isLoading } = useScaffoldEventHistory<StakeEvent>({
     contractName: "Staker",
-    eventName: "contracts::Staker::Staker::Stake",
+    eventName: "Stake",
     watch: true,
     fromBlock: 0n,
   });
