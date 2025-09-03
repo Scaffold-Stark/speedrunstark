@@ -8,7 +8,12 @@ on:
 
 jobs:
   sync:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [lts/*]
 
     steps:
       - name: Checkout Repo
@@ -16,12 +21,11 @@ jobs:
         with:
           repository: Scaffold-Stark/speedrunstark
           token: ${{ secrets.ORG_GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: "24"
+          node-version: ${{ matrix.node }}
           cache: "yarn"
 
       - name: Install dependencies
