@@ -50,9 +50,6 @@ jobs:
 
       - name: Update Challenge Branches
         run: |
-          git checkout test/base
-          git pull origin test/base
-
           CHALLENGE_BRANCHES=(
             "test/challenge-0"
           )
@@ -60,15 +57,21 @@ jobs:
           echo "Merging test/base into challenge branches..."
 
           for branch in "${CHALLENGE_BRANCHES[@]}"; do
+            echo "Checking out test/base"
+            git checkout test/base
+            git pull origin test/base
+
             echo "Processing branch: $branch"
             git checkout $branch
             git pull origin $branch
+
+            # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
+            git rm -f .github/workflows/sync_other_challenges.yaml
+            git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
+            git commit -m "Remove sync_other_challenges.yml and YourContract.cairo to avoid unexpected conflicts"
             
             # Try to merge
             if git merge test/base --no-commit; then
-              # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
-              git rm -f .github/workflows/sync_other_challenges.yaml
-              git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
               git rm -rf scripts 
 
               echo "Merge successful for $branch, pushing changes"
