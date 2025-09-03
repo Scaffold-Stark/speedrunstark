@@ -64,9 +64,8 @@ Then download the challenge to your computer and install dependencies by running
 
 ```sh
 
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-3-dice-game
+npx create-stark@latest -e challenge-3-dice-game challenge-3-dice-game
 cd challenge-3-dice-game
-git checkout challenge-3-dice-game
 yarn install
 ```
 
