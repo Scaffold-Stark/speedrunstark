@@ -5,5 +5,3 @@ contracts/Scarb.lock merge=theirs
 
 contracts/** merge=ours
 scripts-ts/deploy.ts merge=ours
-
-contracts/Scarb.toml merge=toml

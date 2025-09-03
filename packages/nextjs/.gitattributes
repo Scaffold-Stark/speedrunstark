@@ -14,4 +14,3 @@ app/page.tsx merge=ours
 components/Header.tsx merge=ours
 
 styles/globals.css merge=union
-package.json merge=union
