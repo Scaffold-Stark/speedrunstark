@@ -68,9 +68,8 @@ For complete instructions on using Docker with the project, check out the [Requi
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-4-dex
+npx create-stark@latest -e challenge-4-dex challenge-4-dex
 cd challenge-4-dex
-git checkout challenge-4-dex
 yarn install
 ```
 
