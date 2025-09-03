@@ -17,15 +17,27 @@ jobs:
           token: ${{ secrets.ORG_GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build merge-toml.js
+        run: |
+          npx tsc ./scripts/merge-toml.ts
+          chmod +x ./scripts/merge-toml.js
+
       - name: Setup Git
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-          pip install tomlkit
-          chmod +x ./scripts/merge-toml.py
-          git config merge.toml.name "Python-based TOML merge driver"
-          git config merge.toml.driver "scripts/merge-toml.py %O %A %B"
+          git config merge.toml.name "TypeScript-based TOML merge driver"
+          git config merge.toml.driver "node ./scripts/merge-toml.js %O %A %B"
 
           git config --local merge.ours.driver true
           git config --local merge.theirs.driver true
