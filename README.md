@@ -88,6 +88,15 @@ cd challenge-0-simple-nft
 yarn install
 ```
 
+or clone from SpeedrunStark repo:
+
+```sh
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-0-simple-nft
+cd challenge-0-simple-nft
+git checkout challenge-0-simple-nft
+yarn install
+```
+
 > in the same terminal, start your local network (a local instance of a blockchain):
 
 ```bash
