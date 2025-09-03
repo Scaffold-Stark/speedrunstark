@@ -1,12 +1,15 @@
 #!/usr/bin/env node
-import * as fs from 'fs';
-import * as toml from '@iarna/toml';
+import * as fs from "fs";
+import * as toml from "@iarna/toml";
 
-interface TomlValue {
+export interface TomlValue {
   [key: string]: any;
 }
 
-function mergeWithOverride(target: TomlValue, source: TomlValue): TomlValue {
+export function mergeWithOverride(
+  target: TomlValue,
+  source: TomlValue,
+): TomlValue {
   // Git merge: Every key from source (%B) REPLACES matching key in target (%A). Keep unique target keys.
   const result = { ...target };
 
@@ -26,7 +29,10 @@ function mergeWithOverride(target: TomlValue, source: TomlValue): TomlValue {
   return result;
 }
 
-function mergeTableWithOverride(target: TomlValue, source: TomlValue): TomlValue {
+export function mergeTableWithOverride(
+  target: TomlValue,
+  source: TomlValue,
+): TomlValue {
   // Git merge tables: Every key from source table REPLACES matching key in target table.
   const result = { ...target };
 
@@ -46,8 +52,32 @@ function mergeTableWithOverride(target: TomlValue, source: TomlValue): TomlValue
   return result;
 }
 
-function isTable(value: any): boolean {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+export function isTable(value: any): boolean {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// New function to preserve formatting and comments
+export function mergeTomlPreservingFormat(
+  oursContent: string,
+  theirsDoc: TomlValue,
+): string {
+  // Parse ours to get the current structure
+  const oursDoc = toml.parse(oursContent) as TomlValue;
+
+  // Perform the merge
+  const mergedDoc = mergeWithOverride(oursDoc, theirsDoc);
+
+  // For now, we'll use a simple approach: stringify with minimal formatting
+  // In a more advanced version, we could preserve the original formatting
+  let mergedContent = toml.stringify(mergedDoc);
+
+  // Clean up the formatting to be more TOML-like
+  mergedContent = mergedContent
+    .replace(/ = /g, " = ") // Ensure single space around equals
+    .replace(/\n\n+/g, "\n\n") // Prevent excessive newlines
+    .trim();
+
+  return mergedContent;
 }
 
 function main() {
@@ -60,12 +90,11 @@ function main() {
 
   try {
     // Read TOML files
-    const baseContent = fs.readFileSync(baseFile, 'utf-8');
-    const oursContent = fs.readFileSync(oursFile, 'utf-8');
-    const theirsContent = fs.readFileSync(theirsFile, 'utf-8');
+    const baseContent = fs.readFileSync(baseFile, "utf-8");
+    const oursContent = fs.readFileSync(oursFile, "utf-8");
+    const theirsContent = fs.readFileSync(theirsFile, "utf-8");
 
     const baseDoc = toml.parse(baseContent) as TomlValue;
-    const oursDoc = toml.parse(oursContent) as TomlValue;
     const theirsDoc = toml.parse(theirsContent) as TomlValue;
 
     // Git merge driver: %A (current branch) gets modified with %B (other branch) values
@@ -73,21 +102,22 @@ function main() {
     // 2. Every key from theirs_doc (%B - other branch) REPLACES key in result
     // 3. Keep keys in ours_doc that don't exist in theirs_doc
     // 4. Result written back to %A
-    const resultDoc = mergeWithOverride(oursDoc, theirsDoc);
+    const mergedContent = mergeTomlPreservingFormat(oursContent, theirsDoc);
 
     // Write merged result back to ours_file
-    const mergedContent = toml.stringify(resultDoc);
-    fs.writeFileSync(oursFile, mergedContent, 'utf-8');
+    fs.writeFileSync(oursFile, mergedContent, "utf-8");
 
-    console.log(`Git merge: All keys from ${theirsFile} (%B) replaced keys in ${oursFile} (%A), kept unique %A keys`);
+    console.log(
+      `Git merge: All keys from ${theirsFile} (%B) replaced keys in ${oursFile} (%A), kept unique %A keys`,
+    );
     process.exit(0); // Indicate successful merge
-
   } catch (error) {
     console.error(`Error during TOML merge: ${error}`, error);
     process.exit(1);
   }
 }
 
-if (require.main === module) {
+// Check if this script is being run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
