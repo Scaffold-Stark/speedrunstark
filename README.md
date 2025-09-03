@@ -70,6 +70,15 @@ cd challenge-1-decentralized-staking
 yarn install
 ```
 
+or clone from SpeedrunStark repo:
+
+```sh
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-1-decentralized-staking
+cd challenge-1-decentralized-staking
+git checkout challenge-1-decentralized-staking
+yarn install
+```
+
 > in the same terminal, start your local network (a blockchain emulator in your computer):
 
 ```bash
