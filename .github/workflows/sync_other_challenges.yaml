@@ -49,14 +49,14 @@ jobs:
 
       - name: Update Challenge Branches
         run: |
-          git checkout base-challenge-template
-          git pull origin base-challenge-template
+          git checkout test/base
+          git pull origin test/base
 
           CHALLENGE_BRANCHES=(
             "test/challenge-0"
           )
 
-          echo "Merging base-challenge-template into challenge branches..."
+          echo "Merging test/base into challenge branches..."
 
           for branch in "${CHALLENGE_BRANCHES[@]}"; do
             echo "Processing branch: $branch"
@@ -64,14 +64,14 @@ jobs:
             git pull origin $branch
             
             # Try to merge
-            if git merge base-challenge-template --no-commit; then
+            if git merge test/base --no-commit; then
               # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
               git rm -f .github/workflows/sync_other_challenges.yaml
               git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
               git rm -rf scripts 
 
               echo "Merge successful for $branch, pushing changes"
-              git commit -m "Merge base-challenge-template into $branch"
+              git commit -m "Merge test/base into $branch"
               git push origin $branch
             else
               echo "Merge conflict detected in $branch, creating PR"
@@ -83,18 +83,18 @@ jobs:
               git checkout -b $CONFLICT_BRANCH
               
               # Try merge again but allow it to record conflicts
-              git merge base-challenge-template || true
+              git merge test/base || true
               
               # Commit the conflicts
               git add .
-              git commit -m "Auto-commit merge conflicts between base-challenge-template and $branch"
+              git commit -m "Auto-commit merge conflicts between test/base and $branch"
               
               # Push the branch with conflicts
               git push origin $CONFLICT_BRANCH
               
               # Create PR using GitHub CLI if available, otherwise use API
               PR_TITLE="Fix merge conflicts in $branch"
-              PR_BODY="This PR was automatically created to resolve merge conflicts between base-challenge-template and $branch."
+              PR_BODY="This PR was automatically created to resolve merge conflicts between test/base and $branch."
               
               # Using GitHub API to create PR
               curl -X POST \
