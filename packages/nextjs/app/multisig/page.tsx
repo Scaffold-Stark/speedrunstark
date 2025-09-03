@@ -67,7 +67,7 @@ const MultisigPage = () => {
   const { data: submittedTxEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
     eventName:
-      "contracts::CustomMultisigComponent::MultisigComponent::TransactionSubmitted",
+      "TransactionSubmitted",
     fromBlock: 0n,
     watch: true,
   });
@@ -75,7 +75,7 @@ const MultisigPage = () => {
   const { data: confirmedTxEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
     eventName:
-      "contracts::CustomMultisigComponent::MultisigComponent::TransactionConfirmed",
+      "TransactionConfirmed",
     fromBlock: 0n,
     watch: true,
   });
@@ -83,7 +83,7 @@ const MultisigPage = () => {
   const { data: executedTxEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
     eventName:
-      "contracts::CustomMultisigComponent::MultisigComponent::TransactionExecuted",
+      "TransactionExecuted",
     fromBlock: 0n,
     watch: true,
   });
@@ -91,7 +91,7 @@ const MultisigPage = () => {
   const { data: signerAddedEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
     eventName:
-      "contracts::CustomMultisigComponent::MultisigComponent::SignerAdded",
+      "SignerAdded",
     fromBlock: 0n,
     watch: true,
   });
@@ -99,7 +99,7 @@ const MultisigPage = () => {
   const { data: signerRemovedEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
     eventName:
-      "contracts::CustomMultisigComponent::MultisigComponent::SignerRemoved",
+      "SignerRemoved",
     fromBlock: 0n,
     watch: true,
   });
@@ -107,7 +107,7 @@ const MultisigPage = () => {
   const { data: quorumUpdatedEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
     eventName:
-      "contracts::CustomMultisigComponent::MultisigComponent::QuorumUpdated",
+      "QuorumUpdated",
     fromBlock: 0n,
     watch: true,
   });
