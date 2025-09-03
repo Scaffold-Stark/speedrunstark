@@ -25,11 +25,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: "23"
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
 
       - name: Build merge-toml.js
         run: |
