@@ -73,6 +73,15 @@ cd challenge-4-dex
 yarn install
 ```
 
+or clone from SpeedrunStark repo:
+
+```sh
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-4-dex
+cd challenge-4-dex
+git checkout challenge-4-dex
+yarn install
+```
+
 > in the same terminal, start your local network (a blockchain emulator in your computer):
 
 ```bash
