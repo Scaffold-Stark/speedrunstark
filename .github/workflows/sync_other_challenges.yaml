@@ -1,0 +1,128 @@
+name: Sync other challenges
+
+on:
+  push:
+    branches:
+      - test/base
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [lts/*]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          repository: Scaffold-Stark/speedrunstark
+          token: ${{ secrets.ORG_GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build merge-toml.js
+        run: |
+          npx tsc ./scripts/merge-toml.ts
+          chmod +x ./scripts/merge-toml.js
+
+      - name: Setup Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git config merge.toml.name "TypeScript-based TOML merge driver"
+          git config merge.toml.driver "node ./scripts/merge-toml.js %O %A %B"
+
+          git config --local merge.ours.driver true
+          git config --local merge.theirs.driver true
+
+      - name: Update Challenge Branches
+        run: |
+          git checkout test/base
+          git pull origin test/base
+
+          CHALLENGE_BRANCHES=(
+            "test/challenge-0"
+          )
+
+          echo "Merging test/base into challenge branches..."
+
+          for branch in "${CHALLENGE_BRANCHES[@]}"; do
+            echo "Processing branch: $branch"
+            git checkout $branch
+            git pull origin $branch
+            
+            # Try to merge
+            if git merge test/base --no-commit; then
+              # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
+              git rm -f .github/workflows/sync_other_challenges.yaml
+              git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
+              git rm -rf scripts 
+
+              echo "Merge successful for $branch, pushing changes"
+              git commit -m "Merge test/base into $branch"
+              git push origin $branch
+            else
+              echo "Merge conflict detected in $branch, creating PR"
+              # Abort the current merge
+              git merge --abort
+              
+              # Create a new branch for the PR
+              CONFLICT_BRANCH="fix-conflicts-$branch-$(date +%s)"
+              git checkout -b $CONFLICT_BRANCH
+              
+              # Try merge again but allow it to record conflicts
+              git merge test/base || true
+              
+              # Commit the conflicts
+              git add .
+              git commit -m "Auto-commit merge conflicts between test/base and $branch"
+              
+              # Push the branch with conflicts
+              git push origin $CONFLICT_BRANCH
+              
+              # Create PR using GitHub CLI if available, otherwise use API
+              PR_TITLE="Fix merge conflicts in $branch"
+              PR_BODY="This PR was automatically created to resolve merge conflicts between test/base and $branch."
+              
+              # Using GitHub API to create PR
+              curl -X POST \
+                -H "Authorization: token ${{ secrets.ORG_GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                https://api.github.com/repos/Scaffold-Stark/speedrunstark/pulls \
+                -d "{\"title\":\"$PR_TITLE\",\"body\":\"$PR_BODY\",\"head\":\"$CONFLICT_BRANCH\",\"base\":\"$branch\"}"
+              
+              # Return to original branch
+              git checkout $branch
+            fi
+          done
+
+      - name: Notify Slack on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          slack-message: "Successfully processed sync operation for speedrunstark repository. Check for any PRs that may have been created for conflict resolution."
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify Slack on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          slack-message: "Failed to sync scaffold-stark-2 changes to speedrunstark repository."
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
