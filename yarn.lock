@@ -3950,6 +3950,7 @@ __metadata:
     abi-wan-kanabi: ^2.2.4
     blo: ^1.1.1
     daisyui: latest
+    dexie: ^4.0.11
     eslint: ^8
     eslint-config-next: 15.2.3
     ethers: ^6.12.0
@@ -7123,6 +7124,13 @@ __metadata:
   version: 1.1.0
   resolution: "detect-node-es@npm:1.1.0"
   checksum: e46307d7264644975b71c104b9f028ed1d3d34b83a15b8a22373640ce5ea630e5640b1078b8ea15f202b54641da71e4aa7597093bd4b91f113db520a26a37449
+  languageName: node
+  linkType: hard
+
+"dexie@npm:^4.0.11":
+  version: 4.2.0
+  resolution: "dexie@npm:4.2.0"
+  checksum: 2ab356fdb16fd0ce95f9249ec3458a9b5b10dd296bc139061ac327682156a1fe94fd46bedd36f47c80902754bc6ead339b7b28019541c740579e3b1c54e6163a
   languageName: node
   linkType: hard
 
