@@ -61,14 +61,14 @@ jobs:
             git checkout test/base
             git pull origin test/base
 
-            echo "Processing branch: $branch"
-            git checkout $branch
-            git pull origin $branch
-
             # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
             git rm -f .github/workflows/sync_other_challenges.yaml
             git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
             git commit -m "Remove sync_other_challenges.yml and YourContract.cairo to avoid unexpected conflicts"
+
+            echo "Processing branch: $branch"
+            git checkout $branch
+            git pull origin $branch
             
             # Try to merge
             if git merge test/base --no-commit; then
