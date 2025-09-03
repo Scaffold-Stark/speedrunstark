@@ -68,6 +68,15 @@ cd challenge-2-token-vendor
 yarn install
 ```
 
+or clone from SpeedrunStark repo:
+
+```sh
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-2-token-vendor
+cd challenge-2-token-vendor
+git checkout challenge-2-token-vendor
+yarn install
+```
+
 > in the same terminal, start your local network (a blockchain emulator in your computer):
 
 ```bash
