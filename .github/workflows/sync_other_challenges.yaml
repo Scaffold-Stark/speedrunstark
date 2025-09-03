@@ -21,11 +21,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
 
       - name: Build merge-toml.js
         run: |
