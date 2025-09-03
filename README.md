@@ -111,9 +111,8 @@ Then download the challenge to your computer and install dependencies by running
 
 ```sh
 
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-5-multisig-wallet
+npx create-stark@latest -e challenge-5-multisig-wallet challenge-5-multisig-wallet
 cd challenge-5-multisig-wallet
-git checkout challenge-5-multisig-wallet
 yarn install
 ```
 
