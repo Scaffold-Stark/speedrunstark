@@ -63,9 +63,8 @@ For complete instructions on using Docker with the project, check out the [Requi
 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-2-token-vendor
+npx create-stark@latest -e challenge-2-token-vendor challenge-2-token-vendor
 cd challenge-2-token-vendor
-git checkout challenge-2-token-vendor
 yarn install
 ```
 
