@@ -3,7 +3,8 @@ name: Sync other challenges
 on:
   push:
     branches:
-      - base-challenge-template
+      - test/base
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -48,12 +49,7 @@ jobs:
           git pull origin base-challenge-template
 
           CHALLENGE_BRANCHES=(
-            "challenge-0-simple-nft"
-            "challenge-1-decentralized-staking"
-            "challenge-2-token-vendor"
-            "challenge-3-dice-game"
-            "challenge-4-build-a-dex"
-            "challenge-5-multisig-wallet"
+            "test/challenge-0"
           )
 
           echo "Merging base-challenge-template into challenge branches..."
