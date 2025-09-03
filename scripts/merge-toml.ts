@@ -2,14 +2,11 @@
 import * as fs from "fs";
 import * as toml from "@iarna/toml";
 
-export interface TomlValue {
+interface TomlValue {
   [key: string]: any;
 }
 
-export function mergeWithOverride(
-  target: TomlValue,
-  source: TomlValue,
-): TomlValue {
+function mergeWithOverride(target: TomlValue, source: TomlValue): TomlValue {
   // Git merge: Every key from source (%B) REPLACES matching key in target (%A). Keep unique target keys.
   const result = { ...target };
 
@@ -29,7 +26,7 @@ export function mergeWithOverride(
   return result;
 }
 
-export function mergeTableWithOverride(
+function mergeTableWithOverride(
   target: TomlValue,
   source: TomlValue,
 ): TomlValue {
@@ -52,12 +49,12 @@ export function mergeTableWithOverride(
   return result;
 }
 
-export function isTable(value: any): boolean {
+function isTable(value: any): boolean {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 // New function to preserve formatting and comments
-export function mergeTomlPreservingFormat(
+function mergeTomlPreservingFormat(
   oursContent: string,
   theirsDoc: TomlValue,
 ): string {
@@ -117,7 +114,6 @@ function main() {
   }
 }
 
-// Check if this script is being run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   main();
 }
