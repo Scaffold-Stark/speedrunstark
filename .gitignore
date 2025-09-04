@@ -15,4 +15,8 @@ package-lock.json
 .vercel
 
 **/.env*
+<<<<<<< HEAD
 !**/.env.example
+=======
+!**/.env.example
+>>>>>>> base-challenge-template

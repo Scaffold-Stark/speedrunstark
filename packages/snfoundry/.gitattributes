@@ -4,4 +4,8 @@ scripts-ts/deploy-contract.ts merge=theirs
 contracts/Scarb.lock merge=theirs
 
 contracts/** merge=ours
+<<<<<<< HEAD
 scripts-ts/deploy.ts merge=ours
+=======
+scripts-ts/deploy.ts merge=ours
+>>>>>>> base-challenge-template
