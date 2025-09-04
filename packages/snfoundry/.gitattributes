@@ -1,8 +1,7 @@
-scripts-ts/helpers/** merge=keeptheirs
-scripts-ts/deploy-contract.ts merge=keeptheirs
-.env.example merge=keeptheirs
+scripts-ts/helpers/** merge=theirs
+scripts-ts/deploy-contract.ts merge=theirs
+.env.example merge=theirs
+contracts/Scarb.lock merge=theirs
 
-contracts/** merge=keepmine
-scripts-ts/deploy.ts merge=keepmine
-
-contracts/Scarb.toml merge=union
+contracts/** merge=ours
+scripts-ts/deploy.ts merge=ours

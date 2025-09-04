@@ -11,6 +11,10 @@ pub mod MockSTRKToken {
     impl ERC20Impl = ERC20Component::ERC20MixinImpl<ContractState>;
     impl ERC20InternalImpl = ERC20Component::InternalImpl<ContractState>;
 
+    impl ERC20ImmutableConfig of ERC20Component::ImmutableConfig {
+        const DECIMALS: u8 = 18;
+    }
+
     // Define the storage structure for the contract
     #[storage]
     struct Storage {

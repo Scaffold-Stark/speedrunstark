@@ -9,14 +9,14 @@ const Events: NextPage = () => {
   const { data: strkToTokenEvent, isLoading: isStrkToTokenEventLoading } =
     useScaffoldEventHistory({
       contractName: "Dex",
-      eventName: "contracts::Dex::Dex::StrkToTokenSwap",
+      eventName: "StrkToTokenSwap",
       fromBlock: 0n,
     });
 
   const { data: tokenToStrkEvent, isLoading: isTokenToStrkEventLoading } =
     useScaffoldEventHistory({
       contractName: "Dex",
-      eventName: "contracts::Dex::Dex::TokenToStrkSwap",
+      eventName: "TokenToStrkSwap",
       fromBlock: 0n,
     });
 
@@ -25,7 +25,7 @@ const Events: NextPage = () => {
     isLoading: isLquidityProvideEventLoading,
   } = useScaffoldEventHistory({
     contractName: "Dex",
-    eventName: "contracts::Dex::Dex::LiquidityProvided",
+    eventName: "LiquidityProvided",
     fromBlock: 0n,
   });
 
@@ -34,7 +34,7 @@ const Events: NextPage = () => {
     isLoading: isLiquidityRemovedEventLoading,
   } = useScaffoldEventHistory({
     contractName: "Dex",
-    eventName: "contracts::Dex::Dex::LiquidityRemoved",
+    eventName: "LiquidityRemoved",
     fromBlock: 0n,
   });
 
