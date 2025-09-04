@@ -11,7 +11,7 @@ on:
       - develop
     paths:
       - "packages/nextjs/**"
-      - "packages/snfoundry/contracts/**"
+      - "packages/snfoundry/**"
 
 jobs:
   ci:
@@ -63,6 +63,10 @@ jobs:
       - name: Check typings on Next.js
         continue-on-error: true
         run: yarn next:check-types
+        working-directory: ./packages/nextjs
+
+      - name: Run Next.js tests
+        run: yarn test
         working-directory: ./packages/nextjs
 
       - name: Build Next.js project

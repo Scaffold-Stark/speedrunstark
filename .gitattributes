@@ -1,10 +1,9 @@
-.devcontainer.json merge=keeptheirs
-package.json merge=keeptheirs
-.husky/pre-commit merge=keeptheirs
-.tool-versions merge=keeptheirs
-CONTRIBUTING.md merge=keeptheirs
-.env.example merge=keeptheirs
-yarn.lock merge=keeptheirs
+.devcontainer.json merge=theirs
+package.json merge=theirs
+.husky/pre-commit merge=theirs
+.tool-versions merge=theirs
+CONTRIBUTING.md merge=theirs
+.env.example merge=theirs
+yarn.lock merge=theirs
 
-README.md merge-filter=ignore
-.github/** merge-filter=ignore
+README.md merge=ours
