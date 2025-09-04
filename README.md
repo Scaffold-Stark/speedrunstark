@@ -40,6 +40,7 @@ If your local starknet-devnet version is not `0.4.0`, you need to install it.
 - Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
 ### Compatible versions
+
 - Cairo - v2.11.4
 - Rpc - v0.8.0
 - Scarb - v2.11.4
@@ -58,9 +59,18 @@ For an alternative to local installations, you can use Docker to set up the envi
 - A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
 
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+
 </details>
 
 Then download the challenge to your computer and install dependencies by running:
+
+```sh
+npx create-stark@latest -e challenge-1-decentralized-staking challenge-1-decentralized-staking
+cd challenge-1-decentralized-staking
+yarn install
+```
+
+or clone from SpeedrunStark repo:
 
 ```sh
 git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-1-decentralized-staking
@@ -99,7 +109,7 @@ yarn start
 
 ---
 
-⚗️ At this point you will need to know basic Cairo syntax. If not, you can pick it up quickly by tinkering with concepts from [📑 The Cairo Book](https://book.cairo-lang.org/ch13-00-introduction-to-starknet-smart-contracts.html) using [🏗️ Scaffold-Stark](https://www.scaffoldstark.com/). (In particular:  Contract's State, storage variables, interface, mappings, events, traits, constructor, and public/private functions.)
+⚗️ At this point you will need to know basic Cairo syntax. If not, you can pick it up quickly by tinkering with concepts from [📑 The Cairo Book](https://book.cairo-lang.org/ch13-00-introduction-to-starknet-smart-contracts.html) using [🏗️ Scaffold-Stark](https://www.scaffoldstark.com/). (In particular: Contract's State, storage variables, interface, mappings, events, traits, constructor, and public/private functions.)
 
 ---
 
@@ -136,7 +146,7 @@ First, you have to define your constructor function in the `Staker` contract:
         ref self: ContractState,
         strk_contract: ContractAddress,
   ...
-    ) 
+    )
 ```
 
 Then, pass the `strk_contract` address as an argument to the `deployContract` function in the `deploy.ts` file:
@@ -266,7 +276,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 
 📡 Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
 
-  ![network](./packages/nextjs/public/ch1-scaffold-config.png)
+![network](./packages/nextjs/public/ch1-scaffold-config.png)
 
 🔐 Prepare your environment variables.
 
@@ -283,6 +293,7 @@ Your `Staker UI` tab should be almost done and working at this point.
 ![allStakings-blockFrom](./packages/nextjs/public/ch1-events.png)
 
 > 💬 Hint: For faster loading of your "Stake Events" page, consider updating the fromBlock passed to useScaffoldEventHistory in [packages/nextjs/app/stakings/page.tsx](https://github.com/Scaffold-Stark/speedrunstark/blob/challenge-1-decentralized-staking/packages/nextjs/app/stakings/page.tsx) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+
 ---
 
 ## Checkpoint 5: 🚢 Ship your frontend! 🚁
@@ -315,4 +326,3 @@ For production-grade applications, it's recommended to obtain your own API keys 
 > 🏃 Head to your next challenge [here](https://github.com/Scaffold-Stark/speedrunstark/tree/challenge-2-token-vendor).
 
 > 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
-> 

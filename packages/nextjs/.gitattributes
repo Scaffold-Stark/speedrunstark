@@ -1,16 +1,16 @@
-supportedChains.ts merge=keeptheirs
-app/configure/** merge=keeptheirs
-app/debug/** merge=keeptheirs
-components/** merge=keeptheirs
-contracts/** merge=keeptheirs
-hooks/** merge=keeptheirs
-services/** merge=keeptheirs
-utils/** merge=keeptheirs
-types/** merge=keeptheirs
-public/manifest.json merge=keeptheirs
-.gitattributes merge=keeptheirs
+supportedChains.ts merge=theirs
+app/configure/** merge=theirs
+app/debug/** merge=theirs
+components/** merge=theirs
+contracts/** merge=theirs
+hooks/** merge=theirs
+services/** merge=theirs
+utils/** merge=theirs
+types/** merge=theirs
+public/manifest.json merge=theirs
+.gitattributes merge=theirs
 
-app/page.tsx merge=keepmine
-components/Header.tsx merge=keepmine
+app/page.tsx merge=ours
+components/Header.tsx merge=ours
 
-package.json merge=union
+styles/globals.css merge=union
