@@ -6,4 +6,8 @@ CONTRIBUTING.md merge=theirs
 .env.example merge=theirs
 yarn.lock merge=theirs
 
+<<<<<<< HEAD
 README.md merge=ours
+=======
+README.md merge=ours
+>>>>>>> base-challenge-template
