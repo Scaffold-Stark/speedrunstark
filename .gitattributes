@@ -7,3 +7,11 @@ CONTRIBUTING.md merge=theirs
 yarn.lock merge=theirs
 
 README.md merge=ours
+<<<<<<< HEAD
+=======
+
+#keep ours if conflict (Some attributes are different in each challenge)
+.gitattributes merge=ours
+packages/snfoundry/.gitattributes merge=ours
+packages/nextjs/.gitattributes merge=ours
+>>>>>>> base-challenge-template
