@@ -97,7 +97,7 @@ pub trait IDex<TContractState> {
 
 #[starknet::contract]
 mod Dex {
-    use contracts::Balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
+    use contracts::balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::storage::{
