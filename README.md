@@ -151,7 +151,7 @@ yarn start
 
 🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the owner of YourCollectible?
 
-🔏 You can also check out your smart contract `YourCollectible.cairo` in `packages/snfoundry/contracts`.
+🔏 You can also check out your smart contract `your_collectible.cairo` in `packages/snfoundry/contracts`.
 
 💼 Take a quick look at your deploy script `deploy.ts` in `packages/snfoundry/script-ts`.
 

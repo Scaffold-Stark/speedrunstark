@@ -1,4 +1,4 @@
-pub mod YourCollectible;
+pub mod your_collectible;
 pub mod components {
-    pub mod Counter;
+    pub mod counter;
 }
