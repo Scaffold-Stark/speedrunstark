@@ -48,9 +48,9 @@ jobs:
             
             # Try to merge
             if git merge base-challenge-template --no-commit; then
-              # Remove the sync_other_challenges.yml file and the YourContract.cairo file to avoid unexpected conflicts
+              # Remove the sync_other_challenges.yml file and the your_contract.cairo file to avoid unexpected conflicts
               git rm -f .github/workflows/sync_other_challenges.yaml
-              git rm -f ./packages/snfoundry/contracts/src/YourContract.cairo
+              git rm -f ./packages/snfoundry/contracts/src/your_contract.cairo
 
               echo "Merge successful for $branch, pushing changes"
               git commit -m "Merge base-challenge-template into $branch"
