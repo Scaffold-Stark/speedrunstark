@@ -32,7 +32,7 @@ jobs:
 
           git rm -f .github/workflows/sync_other_challenges.yaml
           git rm -f ./packages/snfoundry/contracts/src/your_contract.cairo
-          git commit -m "Remove sync_other_challenges.yml and your_contract.cairo to avoid unexpected conflicts"
+          git commit -m "chore: remove sync_other_challenges.yml and your_contract.cairo to avoid unexpected conflicts"
 
       - name: Update Challenge Branches
         run: |
