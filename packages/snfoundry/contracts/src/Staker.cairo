@@ -21,7 +21,7 @@ pub trait IStaker<T> {
 
 #[starknet::contract]
 pub mod Staker {
-    use contracts::ExampleExternalContract::{
+    use contracts::example_external_contract::{
         IExampleExternalContractDispatcher, IExampleExternalContractDispatcherTrait,
     };
     use starknet::storage::{
