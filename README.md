@@ -40,6 +40,7 @@ If your local starknet-devnet version is not `0.4.0`, you need to install it.
 - Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
 ### Compatible versions
+
 - Cairo - v2.11.4
 - Rpc - v0.8.0
 - Scarb - v2.11.4
@@ -58,6 +59,7 @@ For an alternative to local installations, you can use Docker to set up the envi
 - A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
 
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+
 </details>
 
 Then download the challenge to your computer and install dependencies by running:
@@ -106,9 +108,9 @@ yarn start
 
 ## Checkpoint 1: 🎲 Dice Game
 
-🔍 Inspect the code in the `DiceGame.cairo` contract in `packages/snfoundry/contracts`
+🔍 Inspect the code in the `dice_game.cairo` contract in `packages/snfoundry/contracts`
 
-🔒 You will not be changing any code in the `DiceGame.cairo` contract in this challenge. You will write your own contract to predict the outcome, then only roll the dice when it is favourable.
+🔒 You will not be changing any code in the `dice_game.cairo` contract in this challenge. You will write your own contract to predict the outcome, then only roll the dice when it is favourable.
 
 💸 Connect to the first prefunded account of `starknet devnet` clicking on the top right `Connect` button, and roll the dice a few times. Watch the balance of the DiceGame contract in the Debug tab. It increases on a failed roll and decreases by the prize amount on a successful roll.
 
@@ -121,7 +123,7 @@ yarn start
 
 ## Checkpoint 2: 🔑 Rigged Contract
 
-In the  RiggedRoll contract implement the `rigged_roll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `roll_dice()` on the DiceGame contract.
+In the RiggedRoll contract implement the `rigged_roll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `roll_dice()` on the DiceGame contract.
 
 🃏 Predict the outcome by generating your random numbers in the exact same way as the DiceGame contract.
 

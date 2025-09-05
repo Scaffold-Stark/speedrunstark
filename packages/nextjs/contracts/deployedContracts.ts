@@ -3,6 +3,174 @@
  * You should not edit it manually or your changes might be overwritten.
  */
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  devnet: {
+    DiceGame: {
+      address:
+        "0x3d8e43928792a958474d1e76b26759681e4fbc47b025d6719b6266366b5afff",
+      abi: [
+        {
+          type: "impl",
+          name: "DiceGameImpl",
+          interface_name: "contracts::dice_game::IDiceGame",
+        },
+        {
+          type: "struct",
+          name: "core::integer::u256",
+          members: [
+            {
+              name: "low",
+              type: "core::integer::u128",
+            },
+            {
+              name: "high",
+              type: "core::integer::u128",
+            },
+          ],
+        },
+        {
+          type: "struct",
+          name: "openzeppelin_token::erc20::interface::IERC20Dispatcher",
+          members: [
+            {
+              name: "contract_address",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+        },
+        {
+          type: "interface",
+          name: "contracts::dice_game::IDiceGame",
+          items: [
+            {
+              type: "function",
+              name: "roll_dice",
+              inputs: [
+                {
+                  name: "amount",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "last_dice_value",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "nonce",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "prize",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "strk_token_dispatcher",
+              inputs: [],
+              outputs: [
+                {
+                  type: "openzeppelin_token::erc20::interface::IERC20Dispatcher",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "constructor",
+          name: "constructor",
+          inputs: [
+            {
+              name: "strk_token_address",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::dice_game::DiceGame::Roll",
+          kind: "struct",
+          members: [
+            {
+              name: "player",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "key",
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+            {
+              name: "roll",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::dice_game::DiceGame::Winner",
+          kind: "struct",
+          members: [
+            {
+              name: "winner",
+              type: "core::starknet::contract_address::ContractAddress",
+              kind: "data",
+            },
+            {
+              name: "amount",
+              type: "core::integer::u256",
+              kind: "data",
+            },
+          ],
+        },
+        {
+          type: "event",
+          name: "contracts::dice_game::DiceGame::Event",
+          kind: "enum",
+          variants: [
+            {
+              name: "Roll",
+              type: "contracts::dice_game::DiceGame::Roll",
+              kind: "nested",
+            },
+            {
+              name: "Winner",
+              type: "contracts::dice_game::DiceGame::Winner",
+              kind: "nested",
+            },
+          ],
+        },
+      ],
+      classHash:
+        "0x34e79672824039148491e615de96dcf8e0c176d4b2f2603d52a4d1a42436499",
+    },
+  },
+} as const;
 
 export default deployedContracts;
