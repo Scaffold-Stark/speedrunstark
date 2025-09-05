@@ -15,7 +15,7 @@
 /// governance.
 #[starknet::component]
 pub mod MultisigComponent {
-    use contracts::CustomInterfaceMultisigComponent::{IMultisig, TransactionID, TransactionState};
+    use contracts::custom_interface_multisig_component::{IMultisig, TransactionID, TransactionState};
     use core::hash::{HashStateExTrait, HashStateTrait};
     use core::num::traits::Zero;
     use core::panic_with_felt252;

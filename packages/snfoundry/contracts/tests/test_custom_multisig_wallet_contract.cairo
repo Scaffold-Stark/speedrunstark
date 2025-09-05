@@ -4,13 +4,13 @@ use starknet::syscalls::call_contract_syscall;
 use starknet::account::Call;
 
 pub type TransactionID = felt252;
-pub type TransactionState = contracts::CustomInterfaceMultisigComponent::TransactionState;
+pub type TransactionState = contracts::custom_interface_multisig_component::TransactionState;
 
 
 
 
-use contracts::CustomInterfaceMultisigComponent::{IMultisigDispatcher,IMultisigDispatcherTrait};
-use contracts::CustomMultisigWallet::{IMultisigWalletDispatcher,IMultisigWalletDispatcherTrait};
+use contracts::custom_interface_multisig_component::{IMultisigDispatcher,IMultisigDispatcherTrait};
+use contracts::custom_multisig_wallet::{IMultisigWalletDispatcher,IMultisigWalletDispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{CheatSpan, 
