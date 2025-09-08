@@ -113,8 +113,9 @@ export const StakeContractInteraction = ({ address }: { address?: string }) => {
         </div>
       )}
       <div
-        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${!isStakingCompleted ? "mt-24" : ""
-          }`}
+        className={`flex flex-col items-center space-y-8 bg-base-100  border-8 border-secondary rounded-xl p-6 w-full max-w-lg text-neutral${
+          !isStakingCompleted ? "mt-24" : ""
+        }`}
       >
         <div className="flex flex-col w-full items-center">
           <p className="block text-2xl mt-0 mb-2 font-semibold">

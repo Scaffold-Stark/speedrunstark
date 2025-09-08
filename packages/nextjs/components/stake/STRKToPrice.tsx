@@ -34,9 +34,7 @@ export const STARKToPrice = ({ value, className = "" }: TBalanceProps) => {
         {isStrkBalance ? (
           <>
             <span>{parseFloat(value).toFixed(4)}</span>
-            <span className="text-xs font-bold ml-1">
-              STRK
-            </span>
+            <span className="text-xs font-bold ml-1">STRK</span>
           </>
         ) : (
           <>
