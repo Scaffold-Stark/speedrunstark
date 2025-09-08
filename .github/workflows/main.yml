@@ -47,6 +47,17 @@ jobs:
         with:
           tool-versions: ./.tool-versions
 
+      - name: Log versions
+        run: |
+          echo "Node version: ${{ matrix.node }}"
+          echo "Scarb version: $(scarb --version)"
+          echo "Snfoundry version: $(snforge --version)"
+          echo "Starknet-devnet version: $(starknet-devnet --version)"
+          echo "Starknet-foundry version: $(starknet-foundry --version)"
+          echo "Starknet version: $(starknet --version)"
+          echo "cairo-coverage version: $(cairo-coverage --version)"
+          echo "cairo-profile version: $(cairo-profile --version)"
+
       - name: Build Contracts
         run: yarn compile
 
