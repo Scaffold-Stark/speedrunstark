@@ -11,7 +11,7 @@ pub trait IVendor<T> {
 
 #[starknet::contract]
 mod Vendor {
-    use contracts::YourToken::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
+    use contracts::your_token::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
     use core::traits::TryInto;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_access::ownable::interface::IOwnable;

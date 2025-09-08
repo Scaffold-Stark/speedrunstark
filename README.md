@@ -6,7 +6,7 @@
 
 🤖 Smart contracts are kind of like "always on" _vending machines_ that **anyone** can access. Let's make a decentralized, digital currency. Then, let's build an unstoppable vending machine that will buy and sell the currency. We'll learn about the "approve" pattern for ERC20s and how contract to contract interactions work.
 
-🏵 Look at `YourToken.cairo` smart contract that reuses the **ERC20** token standard as a component from OpenZeppelin. You have to set `your token` to `mint()` **2000** \* (10^18) tokens to the `recipient` account address. Then create a `Vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
+🏵 Look at `your_token.cairo` smart contract that reuses the **ERC20** token standard as a component from OpenZeppelin. You have to set `your token` to `mint()` **2000** \* (10^18) tokens to the `recipient` account address. Then create a `vendor.cairo` contract that sells `your token` using a `buy_tokens()` function.
 
 🎛 Edit the frontend that invites the user to input an amount of tokens they want to buy. We'll display a preview of the amount of STRK it will cost with a confirm button.
 
@@ -40,6 +40,7 @@ If your local starknet-devnet version is not `0.4.0`, you need to install it.
 - Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
 
 ### Compatible versions
+
 - Cairo - v2.11.4
 - Rpc - v0.8.0
 - Scarb - v2.11.4
@@ -58,6 +59,7 @@ For an alternative to local installations, you can use Docker to set up the envi
 - A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
 
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
+
 </details>
 
 Then download the challenge to your computer and install dependencies by running:
@@ -107,12 +109,12 @@ yarn start
 
 ## Checkpoint 1: 🏵Your Token 💵
 
-> 👩‍💻 Look at `YourToken.cairo` how it reuses the **ERC20** token standard from OpenZeppelin. To accomplish this, we used [`Cairo Components`](https://book.cairo-lang.org/ch16-02-00-composability-and-components.html) to embed the `ERC20` logic inside your contract.
+> 👩‍💻 Look at `your_token.cairo` how it reuses the **ERC20** token standard from OpenZeppelin. To accomplish this, we used [`Cairo Components`](https://book.cairo-lang.org/ch16-02-00-composability-and-components.html) to embed the `ERC20` logic inside your contract.
 
 > You have to mint **2000** (\* 10 \*\* 18) `YourToken` token (it is also named `GLD` token) to your frontend address using the `constructor()`. In devnet, by default we choose the first pre-deployed account that `yarn chain` generate for us to deploy the contracts:
 
 ```bash
-| Account address |  0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691 
+| Account address |  0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691
 ```
 
 In order to complete this checkpoint, you need to connect to devnet using the same address. In testnet, you can use your own address to deploy the contracts. Edit the .env file in the `snfoundry` package to set the `ACCOUNT_ADDRESS_SEPOLIA` to your own address.
@@ -134,7 +136,7 @@ In order to complete this checkpoint, you need to connect to devnet using the sa
 
 ## Checkpoint 2: ⚖️ Vendor 🤖
 
-> 👩‍💻 Edit the `Vendor.cairo` contract with a `buy_tokens()` function implementation.
+> 👩‍💻 Edit the `vendor.cairo` contract with a `buy_tokens()` function implementation.
 
 Create a price variable named `tokensPerStrk` set to **100**:
 
@@ -142,13 +144,13 @@ Create a price variable named `tokensPerStrk` set to **100**:
 const TokensPerStrk: u256 = 100;
 ```
 
-> 📝 The `buy_tokens()` function in `Vendor.cairo` should use `strk_amount_fri` value and `tokensPerStrk` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
+> 📝 The `buy_tokens()` function in `vendor.cairo` should use `strk_amount_fri` value and `tokensPerStrk` to calculate an amount of tokens to `transfer`(self.your_token.read().transfer()) to `recipient`.
 
 > 📟 Emit **event** `BuyTokens {buyer: ContractAddress, strk_amount: u256, tokens_amount: u256}` when tokens are purchased.
 
 Edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` (uncomment Vendor deploy lines).
 
-Implement/modify `tokens_per_strk` function in `Vendor.cairo` that returns the `tokensPerStrk` value.
+Implement/modify `tokens_per_strk` function in `vendor.cairo` that returns the `tokensPerStrk` value.
 
 Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.tsx` to show the UI to buy tokens on the Token Vendor tab.
 
@@ -165,24 +167,24 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 > ✏️ Then, uncomment `packages/snfoundry/scripts-ts/deploy.ts` to transfer 1000 tokens to vendor address.
 
 ```ts
-  await deployer.execute(
-    [
-      {
-        contractAddress: your_token.address,
-        calldata: [
-          vendor.address,
-          {
-            low:  1_000_000_000_000_000_000_000n, //1000 * 10^18
-            high: 0,
-          }
-        ],
-        entrypoint: "transfer",
-      }
-    ],
+await deployer.execute(
+  [
     {
-      maxFee: 1e18
-    }
-  );
+      contractAddress: your_token.address,
+      calldata: [
+        vendor.address,
+        {
+          low: 1_000_000_000_000_000_000_000n, //1000 * 10^18
+          high: 0,
+        },
+      ],
+      entrypoint: "transfer",
+    },
+  ],
+  {
+    maxFee: 1e18,
+  },
+);
 ```
 
 > 🔎 Look in `packages/nextjs/app/token-vendor/page.tsx` for code to uncomment to display the Vendor STRK and Token balances.
@@ -197,7 +199,7 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
 - [ ] Can you buy **10** tokens for **0.1** STRK?
 - [ ] Can you transfer tokens to a different account?
 
-> 📝 Look at `Vendor.cairo` how to reuse _Ownable_ component from OpenZeppelin.
+> 📝 Look at `vendor.cairo` how to reuse _Ownable_ component from OpenZeppelin.
 
 ```cairo
  #[storage]
@@ -208,27 +210,27 @@ Uncomment the `Buy Tokens` sections in `packages/nextjs/app/token-vendor/page.ts
     }
 ```
 
-In `Vendor.cairo` you will need to add one more input parameter to setup the `owner` in the `constructor()`.
+In `vendor.cairo` you will need to add one more input parameter to setup the `owner` in the `constructor()`.
 
 > ✏️ Then, edit `packages/snfoundry/scripts-ts/deploy.ts` to deploy the `Vendor` contract with the `owner` address.
 
 ```ts
- vendor = await deployContract({
-    contract: "Vendor",
-    constructorArgs: {
-      strk_token_address:
+vendor = await deployContract({
+  contract: "Vendor",
+  constructorArgs: {
+    strk_token_address:
       "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-      your_token_address: your_token.address,
-      owner: deployer.address,
-    },
-  });
+    your_token_address: your_token.address,
+    owner: deployer.address,
+  },
+});
 ```
 
 ### 🥅 Goals
 
 - [ ] Is your frontend address the `owner` of the `Vendor`?
 
-> 📝 Finally, Implement a `withdraw()` function in `Vendor.cairo` that lets the owner withdraw all the STRK from the vendor contract.
+> 📝 Finally, Implement a `withdraw()` function in `vendor.cairo` that lets the owner withdraw all the STRK from the vendor contract.
 
 ### 🥅 Goals
 
@@ -254,7 +256,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 
 🤩 In the UI, you can use `useScaffoldMultiWriteContract.ts` to call `approve` and `buy / sell tokens`
 
-> 📝 Edit `Vendor.cairo` and implement the `sellTokens(amount_tokens: u256)` function!
+> 📝 Edit `vendor.cairo` and implement the `sellTokens(amount_tokens: u256)` function!
 
 🔨 Use the `Debug Contracts` tab to call the approve and sellTokens() at first but then...
 
@@ -272,7 +274,7 @@ In `Vendor.cairo` you will need to add one more input parameter to setup the `ow
 - [ ] Should we disable the `owner` withdraw to keep liquidity in the `Vendor`?
 - [ ] It would be a good idea to display Sell Token Events. Create an **event**
       `SellTokens {seller: ContractAddress, tokens_amount: u256, strk_amount: u256}`
-      and `emit` it in your `Vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
+      and `emit` it in your `vendor.cairo` and uncomment `SellTokens Events` section in your `packages/nextjs/app/events/page.tsx` to update your frontend.
 
   ![Events](./packages/nextjs/public/ch2-Events.png)
 
