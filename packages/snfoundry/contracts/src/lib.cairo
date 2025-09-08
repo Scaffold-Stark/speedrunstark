@@ -1,5 +1,5 @@
-pub mod DiceGame;
-pub mod RiggedRoll;
+pub mod dice_game;
+pub mod rigged_roll;
 pub mod mock_contracts {
-    pub mod MockSTRKToken;
+    pub mod mock_strk_token;
 }

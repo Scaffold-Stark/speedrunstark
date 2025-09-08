@@ -1,4 +1,4 @@
-use contracts::DiceGame::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
+use contracts::dice_game::{IDiceGameDispatcher, IDiceGameDispatcherTrait};
 use starknet::ContractAddress;
 
 #[starknet::interface]
