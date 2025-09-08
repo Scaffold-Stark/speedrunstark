@@ -1,4 +1,4 @@
-use contracts::Staker::{IStakerDispatcher, IStakerDispatcherTrait};
+use contracts::staker::{IStakerDispatcher, IStakerDispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;

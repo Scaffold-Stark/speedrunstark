@@ -6,7 +6,7 @@
 
 🦸 A superpower of Smart contracts is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code.
 
-🏦 Build a `Staker.cairo` contract that collects **STRK** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of STRK, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **STRK** is collected, allows users to `withdraw()`.
+🏦 Build a `staker.cairo` contract that collects **STRK** from numerous addresses using a function `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of STRK, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **STRK** is collected, allows users to `withdraw()`.
 
 🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake {sender: ContractAddress, amount: u256}` Starknet event to list all stakes.
 
@@ -105,7 +105,7 @@ yarn start
 
 > 👩‍💻 Rerun `yarn deploy` whenever you need to deploy completely new contracts to the frontend. If you want to keep previous deployments and avoid overwriting changes, use `yarn deploy:no-reset` instead.
 
-🔏 Now you are ready to edit your smart contract `Staker.cairo` in `packages/sfoundry/contracts`.
+🔏 Now you are ready to edit your smart contract `staker.cairo` in `packages/sfoundry/contracts`.
 
 ---
 
@@ -208,7 +208,7 @@ self.deadline.write(get_block_timestamp() + 60);
 
 > 👩‍💻 Write your `execute()` function and test it with the Debug Contracts tab
 
-> Check the `ExampleExternalContract.cairo` for the bool you can use to test if it has been completed or not. But do not edit the `ExampleExternalContract.cairo` as it can slow the auto grading.
+> Check the `example_external_contract.cairo` for the bool you can use to test if it has been completed or not. But do not edit the `example_external_contract.cairo` as it can slow the auto grading.
 
 If the staked amount of the contract:
 
