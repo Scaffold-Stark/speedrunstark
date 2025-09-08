@@ -13,16 +13,12 @@ openzeppelin_introspection = "2.0.0"
 
 [dev-dependencies]
 openzeppelin_utils = "2.0.0"
-openzeppelin_testing = "4.3.0"
+openzeppelin_testing = "=4.3.0"
 snforge_std = "0.46.0"
 assert_macros = "2.9.4"
 
 [[target.starknet-contract]]
 casm = true # taggle this to `false` to speed up compilation/script tests
-
-
-[tool]
-panic-backtrace = true
 
 [tool.scarb]
 allow-prebuilt-plugins = [
@@ -36,3 +32,6 @@ sort-module-level-items = true
 name = "SEPOLIA_LATEST"
 url = "https://starknet-sepolia.public.blastapi.io/rpc/v0_8"
 block_id.tag = "latest"
+
+[tool]
+panic-backtrace = true
