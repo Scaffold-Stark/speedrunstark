@@ -182,7 +182,7 @@ mod Dex {
         ref self: ContractState,
         strk_token_address: ContractAddress,
         token_address: ContractAddress,
-        owner:ContractAddress
+        owner: ContractAddress,
     ) {
         self.ownable.initializer(owner);
         self.strk_token.write(IERC20Dispatcher { contract_address: strk_token_address });
