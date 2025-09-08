@@ -7,7 +7,7 @@ pub trait IMultisigWallet<TContractState> {
 
 #[starknet::contract]
 mod CustomMultisigWallet {
-    use contracts::CustomMultisigComponent::MultisigComponent;
+    use contracts::custom_multisig_component::MultisigComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use super::{ContractAddress, IMultisigWallet};
 
