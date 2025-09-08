@@ -262,18 +262,16 @@
   }
 }
 
-
-
 .jsoneditor-search input {
   background-color: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color:rgb(2, 1, 1) !important;
+  color: rgb(2, 1, 1) !important;
   border-radius: 4px !important;
   padding: 4px 8px !important;
 }
 
 .jsoneditor-results {
-  background-color:rgba(56,131,250,255) !important;
+  background-color: rgba(56, 131, 250, 255) !important;
 }
 
 /* Fix the alignment and remove inconsistent margins */
@@ -284,7 +282,7 @@
 }
 
 .jsoneditor-results {
-  background-color: rgba(56,131,250,255) !important;
+  background-color: rgba(56, 131, 250, 255) !important;
   margin-top: 0 !important;
   padding-right: 12px !important; /* Add internal padding on the right */
   border-top: none !important;

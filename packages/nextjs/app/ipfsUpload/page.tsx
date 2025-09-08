@@ -8,10 +8,7 @@ import nftsMetadata from "~~/utils/simpleNFT/nftsMetadata";
 import { INITIAL_ATTEMPT, MAX_ATTEMPTS } from "~~/utils/simpleNFT/constants";
 
 // Import the JSON editor component and its core CSS
-import { JsonEditor as Editor } from 'jsoneditor-react';
-
-
-
+import { JsonEditor as Editor } from "jsoneditor-react";
 
 const IpfsUpload: NextPage = () => {
   const [yourJSON, setYourJSON] = useState<object>(nftsMetadata[0]);
@@ -21,8 +18,7 @@ const IpfsUpload: NextPage = () => {
 
   useEffect(() => {
     setMounted(true);
-   
-  }, []); 
+  }, []);
 
   const handleIpfsUpload = async () => {
     setLoading(true);
@@ -59,20 +55,19 @@ const IpfsUpload: NextPage = () => {
         </h1>
 
         {mounted && (
-          <div style={{ width: '100%', maxWidth: '1000px' }}>
+          <div style={{ width: "100%", maxWidth: "1000px" }}>
             <Editor
               value={yourJSON}
               onChange={(updatedJson: object) => setYourJSON(updatedJson)}
               mode="tree"
-              modes={['tree', 'code', 'form', 'text', 'view']}
+              modes={["tree", "code", "form", "text", "view"]}
               htmlElementProps={{
                 style: {
-                  height: '500px',
+                  height: "500px",
                   borderRadius: "0.75rem",
                   border: "1px solid #ccc", // Keep a subtle border for the container
-                  overflow: 'hidden'
+                  overflow: "hidden",
                 },
-                
               }}
             />
           </div>

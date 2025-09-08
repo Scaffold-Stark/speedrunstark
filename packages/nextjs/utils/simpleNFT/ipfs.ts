@@ -63,17 +63,21 @@ export async function getNFTMetadataFromIPFS(ipfsHash: string) {
     console.log("IPFS fetch error:", error);
 
     // Re-throw network/connection errors so they can be handled appropriately
-    if (error?.message?.includes('timeout') ||
-      error?.message?.includes('network') ||
-      error?.code === 'ENOTFOUND' ||
-      error?.code === 'ECONNREFUSED') {
+    if (
+      error?.message?.includes("timeout") ||
+      error?.message?.includes("network") ||
+      error?.code === "ENOTFOUND" ||
+      error?.code === "ECONNREFUSED"
+    ) {
       throw new Error(`Network error: ${error.message}`);
     }
 
     // Handle 404-like errors from IPFS
-    if (error?.message?.includes('not found') ||
-      error?.message?.includes('404') ||
-      error?.message?.includes('no such file')) {
+    if (
+      error?.message?.includes("not found") ||
+      error?.message?.includes("404") ||
+      error?.message?.includes("no such file")
+    ) {
       return null;
     }
 
