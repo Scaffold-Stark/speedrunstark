@@ -1,5 +1,5 @@
-pub mod Balloons;
-pub mod Dex;
+pub mod balloons;
+pub mod dex;
 pub mod mock_contracts {
-    pub mod MockSTRKToken;
+    pub mod mock_strk_token;
 }

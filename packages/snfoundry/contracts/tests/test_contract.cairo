@@ -1,5 +1,5 @@
-use contracts::Balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
-use contracts::Dex::{IDexDispatcher, IDexDispatcherTrait};
+use contracts::balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
+use contracts::dex::{IDexDispatcher, IDexDispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;

@@ -31,7 +31,7 @@ const deployScript = async (): Promise<void> => {
     constructorArgs: {
       strk_token_address: STRK_ADDRESS,
       token_address: balloons_token.address,
-      owner:deployer.address,
+      owner: deployer.address,
     },
   });
 };

@@ -113,7 +113,7 @@ yarn start
 
 Navigate to the Debug Contracts tab, you should see two smart contracts displayed called DEX and Balloons.
 
-packages/snfoundry/contracts/Balloons.cairo is just an example ERC20 contract that mints 1000 $BAL to whatever address deploys it.
+packages/snfoundry/contracts/balloons.cairo is just an example ERC20 contract that mints 1000 $BAL to whatever address deploys it.
 
 packages/snfoundry/contracts/DEX.cairo is what we will build in this challenge and you can see it starts instantiating a token (ERC20 interface) that we set in the constructor (on deploy).
 > You can `yarn deploy` to deploy your contract until you get it right.
@@ -510,7 +510,7 @@ Part 3: Updating, Transferring, Emitting, and Returning 🎀
 
 </details>
 
-> 💡 **Remember**: Every time you perform actions with your $BAL tokens (deposit, exchange), you'll need to call `approve()` from the `Balloons.cairo` contract **to authorize the DEX address to handle a specific number of your $BAL tokens**. To keep things simple, you can just do that from `Debug Contracts` tab, **ensure you approve a large enough quantity of tokens to not face allowance problems (see get_deposit_token_amount() to approve BALtokens)**.
+> 💡 **Remember**: Every time you perform actions with your $BAL tokens (deposit, exchange), you'll need to call `approve()` from the `balloons.cairo` contract **to authorize the DEX address to handle a specific number of your $BAL tokens**. To keep things simple, you can just do that from `Debug Contracts` tab, **ensure you approve a large enough quantity of tokens to not face allowance problems (see get_deposit_token_amount() to approve BALtokens)**.
 
 > 💬💬 _More Hints:_ The `withdraw()` function lets a user take his Liquidity Provider Tokens out, withdrawing both STRK and $BAL tokens out at the correct ratio. The actual amount of STRK and tokens a liquidity provider withdraws could be higher than what they deposited because of the 0.3% fees collected from each trade. It also could be lower depending on the price fluctuations of $BAL to STRK and vice versa (from token swaps taking place using your AMM!). The 0.3% fee incentivizes third parties to provide liquidity, but they must be cautious of [Impermanent Loss (IL)](https://www.youtube.com/watch?v=8XJ1MSTEuU0&t=2s&ab_channel=Finematics).
 
