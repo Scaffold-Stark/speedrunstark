@@ -66,48 +66,42 @@ const MultisigPage = () => {
     useState(pendingTransactions);
   const { data: submittedTxEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
-    eventName:
-      "TransactionSubmitted",
+    eventName: "TransactionSubmitted",
     fromBlock: 0n,
     watch: true,
   });
 
   const { data: confirmedTxEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
-    eventName:
-      "TransactionConfirmed",
+    eventName: "TransactionConfirmed",
     fromBlock: 0n,
     watch: true,
   });
 
   const { data: executedTxEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
-    eventName:
-      "TransactionExecuted",
+    eventName: "TransactionExecuted",
     fromBlock: 0n,
     watch: true,
   });
 
   const { data: signerAddedEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
-    eventName:
-      "SignerAdded",
+    eventName: "SignerAdded",
     fromBlock: 0n,
     watch: true,
   });
 
   const { data: signerRemovedEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
-    eventName:
-      "SignerRemoved",
+    eventName: "SignerRemoved",
     fromBlock: 0n,
     watch: true,
   });
 
   const { data: quorumUpdatedEvents } = useScaffoldEventHistory({
     contractName: "CustomMultisigWallet",
-    eventName:
-      "QuorumUpdated",
+    eventName: "QuorumUpdated",
     fromBlock: 0n,
     watch: true,
   });
