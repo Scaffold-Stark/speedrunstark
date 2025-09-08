@@ -7,6 +7,7 @@ pub trait IYourCollectible<T> {
 
 #[starknet::contract]
 pub mod YourCollectible {
+    // trigger ci
     use contracts::components::counter::CounterComponent;
     use openzeppelin_access::ownable::OwnableComponent;
     use openzeppelin_introspection::src5::SRC5Component;
