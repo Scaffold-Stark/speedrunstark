@@ -1,3 +1,7 @@
 target
 .snfoundry_cache/
+<<<<<<< HEAD
 .env
+=======
+.env
+>>>>>>> base-challenge-template
