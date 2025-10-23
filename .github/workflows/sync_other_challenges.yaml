@@ -10,15 +10,25 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Checkout Source Repository
+        uses: actions/checkout@v4
+        with:
+          repository: Scaffold-Stark/speedrunstark
+          token: ${{ secrets.ORG_GITHUB_TOKEN }}
+          ref: base-challenge-template
+          path: source_repo
+
       - name: Checkout Repo
         uses: actions/checkout@v4
         with:
           repository: Scaffold-Stark/speedrunstark
           token: ${{ secrets.ORG_GITHUB_TOKEN }}
           fetch-depth: 0
+          path: speedrun_repo
 
       - name: Setup Git
         run: |
+          cd speedrun_repo
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
@@ -27,6 +37,7 @@ jobs:
 
       - name: Checkout Base Challenge Template
         run: |
+          cd speedrun_repo
           git checkout base-challenge-template
           git pull origin base-challenge-template
 
@@ -36,6 +47,7 @@ jobs:
 
       - name: Update Challenge Branches
         run: |
+          cd speedrun_repo
           CHALLENGE_BRANCHES=(
             "challenge-0-simple-nft"
             "challenge-1-decentralized-staking"
@@ -52,9 +64,63 @@ jobs:
             git checkout $branch
             git pull origin $branch
             
-            # Try to merge
+            # Try to merge first
             if git merge base-challenge-template --no-edit; then
-              echo "Merge successful for $branch, pushing changes"
+              echo "Merge successful for $branch"
+              
+              echo "Syncing Compatible versions section for $branch..."
+              python3 -c "
+          import re
+
+          # Read source and destination READMEs
+          with open('../source_repo/README.md', 'r') as f:
+              source = f.read()
+          with open('README.md', 'r') as f:
+              dest = f.read()
+
+          # Extract versions list from source (## Compatible versions)
+          source_match = re.search(r'## Compatible versions\s*\n(.*?)(?=\n##|\Z)', source, re.DOTALL)
+          if not source_match:
+              print('Could not find Compatible versions in source README')
+              exit(1)
+
+          versions_list = source_match.group(1).strip()
+          print('Found versions:', versions_list[:50] + '...')
+
+          # Replace versions in destination (### Compatible versions)
+          dest_pattern = r'(### Compatible versions\s*\n)(.*?)(?=\n###|\Z)'
+          dest_match = re.search(dest_pattern, dest, re.DOTALL)
+          if not dest_match:
+              print('Could not find Compatible versions in destination README')
+              exit(1)
+
+          # Keep the requirements link if it exists
+          old_content = dest_match.group(2)
+          requirements_link = ''
+          if 'Make sure you have the compatible versions' in old_content:
+              req_match = re.search(r'(Make sure you have.*?)(?=\n###|\Z)', old_content, re.DOTALL)
+              if req_match:
+                  requirements_link = '\n\n' + req_match.group(1).strip()
+
+          # Replace the section
+          new_section = dest_match.group(1) + versions_list + requirements_link
+          new_dest = re.sub(dest_pattern, new_section, dest, flags=re.DOTALL)
+
+          # Write updated README
+          with open('README.md', 'w') as f:
+              f.write(new_dest)
+          print('Successfully updated Compatible versions section for $branch')
+              "
+
+              if git diff --quiet README.md; then
+                echo "No changes to README.md, skipping commit"
+              else
+                echo "README.md was modified, committing changes"
+                git add README.md
+                git commit -m "chore: sync compatible versions from base README"
+              fi
+              
+              echo "Pushing changes for $branch"
               git push origin $branch
             else
               echo "Merge conflict detected in $branch, creating PR"
