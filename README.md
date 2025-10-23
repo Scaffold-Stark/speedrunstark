@@ -15,29 +15,29 @@ Deploy your contracts to a testnet then build and upload your app to a public we
 
 Before you begin, you need to install the following tools:
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
+- [Node (>= v22)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
 
 ### Starknet-devnet version
 
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.4.0`. To accomplish this, first check your local starknet-devnet version:
+To ensure the proper functioning of scaffold-stark, your `starknet-devnet` version must match the version specified in [Compatible versions](#compatible-versions). To accomplish this, first check your `starknet-devnet` version:
 
 ```sh
 starknet-devnet --version
 ```
 
-If your local starknet-devnet version is not `0.4.0`, you need to install it.
+If your `starknet-devnet` version is not the version specified in [Compatible versions](#compatible-versions), you need to install it.
 
-- Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
+- Install starknet-devnet via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)). Use the exact version from [Compatible versions](#compatible-versions).
 
 ### Compatible versions
 
-- Cairo - v2.11.4
-- Rpc - v0.8.x
-- Scarb - v2.11.4
-- Snforge - v0.41.0
-- Starknet-Devnet - v0.4.0
+- Starknet-devnet - 0.6.1
+- Scarb - v2.12.2
+- Snforge - v0.50.0
+- Cairo - v2.12.2
+- Rpc - v0.9.x
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
@@ -48,7 +48,7 @@ Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Re
 For an alternative to local installations, you can use Docker to set up the environment.
 
 - Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
+- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev` image with the Scarb version specified in [Compatible versions](#compatible-versions).
 
 For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
 
