@@ -2,9 +2,48 @@ import {
   deployContract,
   executeDeployCalls,
   exportDeployments,
+  deployer,
+  assertDeployerDefined,
+  assertRpcNetworkActive,
+  assertDeployerSignable,
 } from "./deploy-contract";
 import { green } from "./helpers/colorize-log";
 
+/**
+ * Deploy a contract using the specified parameters.
+ *
+ * @example (deploy contract with constructorArgs)
+ * const deployScript = async (): Promise<void> => {
+ *   await deployContract(
+ *     {
+ *       contract: "YourContract",
+ *       contractName: "YourContractExportName",
+ *       constructorArgs: {
+ *         owner: deployer.address,
+ *       },
+ *       options: {
+ *         maxFee: BigInt(1000000000000)
+ *       }
+ *     }
+ *   );
+ * };
+ *
+ * @example (deploy contract without constructorArgs)
+ * const deployScript = async (): Promise<void> => {
+ *   await deployContract(
+ *     {
+ *       contract: "YourContract",
+ *       contractName: "YourContractExportName",
+ *       options: {
+ *         maxFee: BigInt(1000000000000)
+ *       }
+ *     }
+ *   );
+ * };
+ *
+ *
+ * @returns {Promise<void>}
+ */
 const deployScript = async (): Promise<void> => {
   const { address: exampleContractAddr } = await deployContract({
     contract: "ExampleExternalContract",
@@ -21,6 +60,10 @@ const deployScript = async (): Promise<void> => {
 
 const main = async (): Promise<void> => {
   try {
+    assertDeployerDefined();
+
+    await Promise.all([assertRpcNetworkActive(), assertDeployerSignable()]);
+
     await deployScript();
     await executeDeployCalls();
     exportDeployments();
