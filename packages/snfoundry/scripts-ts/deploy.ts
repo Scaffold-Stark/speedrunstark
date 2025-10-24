@@ -1,9 +1,11 @@
 import {
   deployContract,
   executeDeployCalls,
-  deployer,
-  provider,
   exportDeployments,
+  deployer,
+  assertDeployerDefined,
+  assertRpcNetworkActive,
+  assertDeployerSignable,
 } from "./deploy-contract";
 import { green } from "./helpers/colorize-log";
 import { cairo, CallData } from "starknet";
@@ -144,13 +146,22 @@ const transferScript = async (): Promise<void> => {
 /**
  * Main function to deploy contracts and execute deployment calls.
  */
-async function main() {
-  await deployScript();
-  await executeDeployCalls();
-  await exportDeployments();
-  // todo checkpoint 2: - uncomment to transferScript
-  // await transferScript();
-  console.log(green("All Setup Done"));
-}
+const main = async (): Promise<void> => {
+  try {
+    assertDeployerDefined();
 
-main().catch(console.error);
+    await Promise.all([assertRpcNetworkActive(), assertDeployerSignable()]);
+
+    await deployScript();
+    await executeDeployCalls();
+    exportDeployments();
+    // todo checkpoint 2: - uncomment to transferScript
+    // await transferScript();
+    console.log(green("All Setup Done!"));
+  } catch (err) {
+    console.log(err);
+    process.exit(1); //exit with error so that non subsequent scripts are run
+  }
+};
+
+main();
