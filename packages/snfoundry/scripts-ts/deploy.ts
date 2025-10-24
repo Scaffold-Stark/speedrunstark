@@ -1,8 +1,11 @@
 import {
   deployContract,
   executeDeployCalls,
-  deployer,
   exportDeployments,
+  deployer,
+  assertDeployerDefined,
+  assertRpcNetworkActive,
+  assertDeployerSignable,
 } from "./deploy-contract";
 import { green } from "./helpers/colorize-log";
 
@@ -52,13 +55,21 @@ const deployScript = async (): Promise<void> => {
 //   );
 // };
 
-deployScript()
-  .then(() => {
-    executeDeployCalls().then(() => {
-      exportDeployments();
-      // ToDo Checkpoint 2: Uncomment call to `transferScript`
-      // transferScript();
-    });
-    console.log(green("All Setup Done"));
-  })
-  .catch(console.error);
+const main = async (): Promise<void> => {
+  try {
+    assertDeployerDefined();
+
+    await Promise.all([assertRpcNetworkActive(), assertDeployerSignable()]);
+
+    await deployScript();
+    await executeDeployCalls();
+    exportDeployments();
+
+    console.log(green("All Setup Done!"));
+  } catch (err) {
+    console.log(err);
+    process.exit(1); //exit with error so that non subsequent scripts are run
+  }
+};
+
+main();
