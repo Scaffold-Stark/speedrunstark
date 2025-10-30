@@ -71,9 +71,11 @@ Replace `<version>` with the exact version from [Compatible versions](#compatibl
 
 - Starknet-devnet - 0.6.1
 - Scarb - v2.12.2
-- Snforge - v0.50.0
+- Snforge - v0.51.1
 - Cairo - v2.12.2
 - Rpc - v0.9.x
+
+Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
