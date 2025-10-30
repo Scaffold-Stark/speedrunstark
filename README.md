@@ -35,7 +35,7 @@ If your `starknet-devnet` version is not the version specified in [Compatible ve
 
 - Starknet-devnet - 0.6.1
 - Scarb - v2.12.2
-- Snforge - v0.50.0
+- Snforge - v0.51.1
 - Cairo - v2.12.2
 - Rpc - v0.9.x
 
