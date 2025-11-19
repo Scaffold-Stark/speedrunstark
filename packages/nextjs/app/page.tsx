@@ -1,62 +1,62 @@
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
-import { ConnectedAddress } from "~~/components/ConnectedAddress";
+import { useAccount } from "@starknet-react/core";
 
 const Home = () => {
+  const connectedAddress = useAccount();
   return (
-    <div className="flex items-center flex-col grow pt-10">
-      <div className="px-5">
-        <h1 className="text-center">
-          <span className="block text-2xl mb-2">Welcome to</span>
-          <span className="block text-4xl font-bold">Scaffold-Stark 2</span>
-        </h1>
-        <ConnectedAddress />
-        <p className="text-center text-lg">
-          Edit your smart contract{" "}
-          <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-            your_contract.cairo
-          </code>{" "}
-          in{" "}
-          <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-            packages/snfoundry/contracts/src
-          </code>
-        </p>
-      </div>
-
-      <div className="bg-container grow w-full mt-16 px-8 py-12">
-        <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
+    <>
+      <div className="flex items-center flex-col flex-grow pt-10">
+        <div className="px-5 w-[90%] md:w-[75%]">
+          <h1 className="text-center mb-6">
+            <span className="block text-2xl mb-2">SpeedRunStark</span>
+            <span className="block text-4xl font-bold">
+              Challenge #6: Stablecoins
+            </span>
+          </h1>
+          <div className="flex flex-col items-center justify-center">
             <Image
-              src="/debug-icon.svg"
-              alt="icon"
-              width={26}
-              height={30}
-            ></Image>
-            <p>
-              Tinker with your smart contract using the{" "}
-              <Link href="/debug" passHref className="link">
-                Debug Contracts
-              </Link>{" "}
-              tab.
-            </p>
-          </div>
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/explorer-icon.svg"
-              alt="icon"
-              width={20}
-              height={32}
-            ></Image>
-            <p>
-              Play around with Multiwrite transactions using
-              useScaffoldMultiWrite() hook
-            </p>
+              src="/hero5.png"
+              width="727"
+              height="231"
+              alt="challenge banner"
+              className="rounded-xl border-4 border-primary"
+            />
+            <div className="max-w-3xl">
+              <p className="text-center text-lg mt-8">
+                💰 Build your own decentralized stablecoin! In this challenge,
+                you&apos;ll build the core engine for <b>MyUSD</b>, a
+                crypto-backed stablecoin designed to maintain a peg to $1 USD.
+                You&apos;ll get to wear the hat of a DeFi protocol that wants to
+                maintain price stability while also increasing adoption of your
+                stablecoin product, diving deep into concepts like
+                collateralization, minting, burning, interest rates, and
+                liquidations – all crucial components of a robust stablecoin
+                system.
+              </p>
+              <p className="text-center text-lg">
+                🌟 The final deliverable is an app that allows users to mint and
+                manage a decentralized stablecoin (MyUSD) backed by STRK
+                collateral, with features for depositing collateral,
+                minting/burning tokens, managing positions, and participating in
+                liquidations. Deploy your contracts to a testnet then build and
+                upload your app to a public web server. Submit the url on{" "}
+                <a
+                  href="https://speedrunstark.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  SpeedRunStark.com
+                </a>{" "}
+                !
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

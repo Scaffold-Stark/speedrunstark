@@ -1,6 +1,6 @@
 # 💰 MyUSD Stablecoin
 
-![readme-stablecoin](https://raw.githubusercontent.com/scaffold-eth/se-2-challenges/challenge-stablecoins/extension/packages/nextjs/public/hero.png)
+![readme-stablecoin](/packages/nextjs/public/hero5.png)
 
 🪙 Build your own decentralized stablecoin! In this challenge, you'll build the core engine for **MyUSD**, a crypto-backed stablecoin designed to maintain a peg to $1 USD.
 
