@@ -1,11 +1,10 @@
-use snforge_std::{declare, ContractClassTrait, start_cheat_caller_address, stop_cheat_caller_address};
-use starknet::{ContractAddress, contract_address_const};
+use contracts::DEX::{DEXDispatcher, DEXDispatcherTrait};
+use contracts::MyUSD::{MyUSDDispatcher, MyUSDDispatcherTrait};
 use core::traits::TryInto;
-
-use contracts::{
-    MyUSD::MyUSDDispatcher, MyUSD::MyUSDDispatcherTrait,
-    DEX::DEXDispatcher, DEX::DEXDispatcherTrait,
+use snforge_std::{
+    ContractClassTrait, declare, start_cheat_caller_address, stop_cheat_caller_address,
 };
+use starknet::{ContractAddress, contract_address_const};
 
 // Constants
 const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18
@@ -327,7 +326,9 @@ fn test_dex_liquidity_provision() {
 }
 
 // Helper function to deploy DEX
-fn deploy_dex() -> (DEXDispatcher, MyUSDDispatcher, (ContractAddress, ContractAddress, ContractAddress)) {
+fn deploy_dex() -> (
+    DEXDispatcher, MyUSDDispatcher, (ContractAddress, ContractAddress, ContractAddress),
+) {
     let owner = contract_address_const::<'owner'>();
     let user1 = contract_address_const::<'user1'>();
     let user2 = contract_address_const::<'user2'>();

@@ -1,13 +1,12 @@
-use snforge_std::{declare, ContractClassTrait, start_cheat_caller_address, stop_cheat_caller_address};
-use starknet::{ContractAddress, contract_address_const};
+use contracts::MyUSD::{MyUSDDispatcher, MyUSDDispatcherTrait};
+use contracts::MyUSDEngine::{MyUSDEngineDispatcher, MyUSDEngineDispatcherTrait};
+use contracts::MyUSDStaking::{MyUSDStakingDispatcher, MyUSDStakingDispatcherTrait};
+use contracts::RateController::{RateControllerDispatcher, RateControllerDispatcherTrait};
 use core::traits::TryInto;
-
-use contracts::{
-    MyUSD::MyUSDDispatcher, MyUSD::MyUSDDispatcherTrait,
-    MyUSDEngine::MyUSDEngineDispatcher, MyUSDEngine::MyUSDEngineDispatcherTrait,
-    MyUSDStaking::MyUSDStakingDispatcher, MyUSDStaking::MyUSDStakingDispatcherTrait,
-    RateController::RateControllerDispatcher, RateController::RateControllerDispatcherTrait,
+use snforge_std::{
+    ContractClassTrait, declare, start_cheat_caller_address, stop_cheat_caller_address,
 };
+use starknet::{ContractAddress, contract_address_const};
 
 // Constants
 const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18
@@ -18,7 +17,10 @@ fn test_rate_controller_deployment() {
     let (owner, user1, user2) = accounts;
 
     // Rate controller should be deployed successfully
-    assert(rate_controller.contract_address() != 0.try_into().unwrap(), 'Rate controller should be deployed');
+    assert(
+        rate_controller.contract_address() != 0.try_into().unwrap(),
+        'Rate controller should be deployed',
+    );
 }
 
 #[test]
@@ -171,20 +173,28 @@ fn test_rate_controller_edge_cases() {
 }
 
 // Helper function to deploy RateController
-fn deploy_rate_controller() -> (RateControllerDispatcher, (ContractAddress, ContractAddress, ContractAddress)) {
+fn deploy_rate_controller() -> (
+    RateControllerDispatcher, (ContractAddress, ContractAddress, ContractAddress),
+) {
     let owner = contract_address_const::<'owner'>();
     let user1 = contract_address_const::<'user1'>();
     let user2 = contract_address_const::<'user2'>();
 
     // Deploy RateController with placeholder addresses
     let rate_controller_class = declare("RateController");
-    let rate_controller = rate_controller_class.deploy(@array![owner.into(), owner.into()]).unwrap();
+    let rate_controller = rate_controller_class
+        .deploy(@array![owner.into(), owner.into()])
+        .unwrap();
 
     (rate_controller, (owner, user1, user2))
 }
 
 // Helper function to deploy RateController with MyUSDEngine
-fn deploy_rate_controller_with_engine() -> (RateControllerDispatcher, MyUSDEngineDispatcher, (ContractAddress, ContractAddress, ContractAddress)) {
+fn deploy_rate_controller_with_engine() -> (
+    RateControllerDispatcher,
+    MyUSDEngineDispatcher,
+    (ContractAddress, ContractAddress, ContractAddress),
+) {
     let owner = contract_address_const::<'owner'>();
     let user1 = contract_address_const::<'user1'>();
     let user2 = contract_address_const::<'user2'>();
@@ -198,38 +208,47 @@ fn deploy_rate_controller_with_engine() -> (RateControllerDispatcher, MyUSDEngin
 
     let oracle_class = declare("Oracle");
     let default_price = 2000 * PRECISION; // $2000 default
-    let oracle = oracle_class.deploy(@array![dex.contract_address().into(), default_price.into()]).unwrap();
+    let oracle = oracle_class
+        .deploy(@array![dex.contract_address().into(), default_price.into()])
+        .unwrap();
 
     let staking_class = declare("MyUSDStaking");
-    let staking = staking_class.deploy(@array![
-        owner.into(),
-        myusd.contract_address().into(),
-        owner.into(), // placeholder for engine
-        owner.into()  // placeholder for rate controller
-    ]).unwrap();
+    let staking = staking_class
+        .deploy(
+            @array![
+                owner.into(), myusd.contract_address().into(),
+                owner.into(), // placeholder for engine
+                owner.into() // placeholder for rate controller
+            ],
+        )
+        .unwrap();
 
     // Deploy MyUSDEngine
     let engine_class = declare("MyUSDEngine");
-    let engine = engine_class.deploy(@array![
-        owner.into(),
-        oracle.contract_address().into(),
-        myusd.contract_address().into(),
-        staking.contract_address().into(),
-        owner.into() // placeholder for rate controller
-    ]).unwrap();
+    let engine = engine_class
+        .deploy(
+            @array![
+                owner.into(), oracle.contract_address().into(), myusd.contract_address().into(),
+                staking.contract_address().into(), owner.into() // placeholder for rate controller
+            ],
+        )
+        .unwrap();
 
     // Deploy RateController
     let rate_controller_class = declare("RateController");
-    let rate_controller = rate_controller_class.deploy(@array![
-        engine.contract_address().into(),
-        staking.contract_address().into()
-    ]).unwrap();
+    let rate_controller = rate_controller_class
+        .deploy(@array![engine.contract_address().into(), staking.contract_address().into()])
+        .unwrap();
 
     (rate_controller, engine, (owner, user1, user2))
 }
 
 // Helper function to deploy RateController with MyUSDStaking
-fn deploy_rate_controller_with_staking() -> (RateControllerDispatcher, MyUSDStakingDispatcher, (ContractAddress, ContractAddress, ContractAddress)) {
+fn deploy_rate_controller_with_staking() -> (
+    RateControllerDispatcher,
+    MyUSDStakingDispatcher,
+    (ContractAddress, ContractAddress, ContractAddress),
+) {
     let owner = contract_address_const::<'owner'>();
     let user1 = contract_address_const::<'user1'>();
     let user2 = contract_address_const::<'user2'>();
@@ -240,25 +259,33 @@ fn deploy_rate_controller_with_staking() -> (RateControllerDispatcher, MyUSDStak
 
     // Deploy MyUSDStaking
     let staking_class = declare("MyUSDStaking");
-    let staking = staking_class.deploy(@array![
-        owner.into(),
-        myusd.contract_address().into(),
-        owner.into(), // placeholder for engine
-        owner.into()  // placeholder for rate controller
-    ]).unwrap();
+    let staking = staking_class
+        .deploy(
+            @array![
+                owner.into(), myusd.contract_address().into(),
+                owner.into(), // placeholder for engine
+                owner.into() // placeholder for rate controller
+            ],
+        )
+        .unwrap();
 
     // Deploy RateController
     let rate_controller_class = declare("RateController");
-    let rate_controller = rate_controller_class.deploy(@array![
-        owner.into(), // placeholder for engine
-        staking.contract_address().into()
-    ]).unwrap();
+    let rate_controller = rate_controller_class
+        .deploy(@array![owner.into(), // placeholder for engine
+        staking.contract_address().into()])
+        .unwrap();
 
     (rate_controller, staking, (owner, user1, user2))
 }
 
 // Helper function to deploy RateController with both MyUSDEngine and MyUSDStaking
-fn deploy_rate_controller_with_both() -> (RateControllerDispatcher, MyUSDEngineDispatcher, MyUSDStakingDispatcher, (ContractAddress, ContractAddress, ContractAddress)) {
+fn deploy_rate_controller_with_both() -> (
+    RateControllerDispatcher,
+    MyUSDEngineDispatcher,
+    MyUSDStakingDispatcher,
+    (ContractAddress, ContractAddress, ContractAddress),
+) {
     let owner = contract_address_const::<'owner'>();
     let user1 = contract_address_const::<'user1'>();
     let user2 = contract_address_const::<'user2'>();
@@ -272,33 +299,38 @@ fn deploy_rate_controller_with_both() -> (RateControllerDispatcher, MyUSDEngineD
 
     let oracle_class = declare("Oracle");
     let default_price = 2000 * PRECISION; // $2000 default
-    let oracle = oracle_class.deploy(@array![dex.contract_address().into(), default_price.into()]).unwrap();
+    let oracle = oracle_class
+        .deploy(@array![dex.contract_address().into(), default_price.into()])
+        .unwrap();
 
     // Deploy MyUSDStaking
     let staking_class = declare("MyUSDStaking");
-    let staking = staking_class.deploy(@array![
-        owner.into(),
-        myusd.contract_address().into(),
-        owner.into(), // placeholder for engine
-        owner.into()  // placeholder for rate controller
-    ]).unwrap();
+    let staking = staking_class
+        .deploy(
+            @array![
+                owner.into(), myusd.contract_address().into(),
+                owner.into(), // placeholder for engine
+                owner.into() // placeholder for rate controller
+            ],
+        )
+        .unwrap();
 
     // Deploy MyUSDEngine
     let engine_class = declare("MyUSDEngine");
-    let engine = engine_class.deploy(@array![
-        owner.into(),
-        oracle.contract_address().into(),
-        myusd.contract_address().into(),
-        staking.contract_address().into(),
-        owner.into() // placeholder for rate controller
-    ]).unwrap();
+    let engine = engine_class
+        .deploy(
+            @array![
+                owner.into(), oracle.contract_address().into(), myusd.contract_address().into(),
+                staking.contract_address().into(), owner.into() // placeholder for rate controller
+            ],
+        )
+        .unwrap();
 
     // Deploy RateController
     let rate_controller_class = declare("RateController");
-    let rate_controller = rate_controller_class.deploy(@array![
-        engine.contract_address().into(),
-        staking.contract_address().into()
-    ]).unwrap();
+    let rate_controller = rate_controller_class
+        .deploy(@array![engine.contract_address().into(), staking.contract_address().into()])
+        .unwrap();
 
     (rate_controller, engine, staking, (owner, user1, user2))
 }

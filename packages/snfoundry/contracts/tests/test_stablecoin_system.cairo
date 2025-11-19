@@ -1,15 +1,16 @@
-use snforge_std::{declare, ContractClassTrait, start_cheat_caller_address, stop_cheat_caller_address, start_cheat_block_timestamp, stop_cheat_block_timestamp, start_cheat_balance, stop_cheat_balance};
-use starknet::{ContractAddress, contract_address_const, get_caller_address, get_block_timestamp};
+use contracts::DEX::{DEXDispatcher, DEXDispatcherTrait};
+use contracts::MyUSD::{MyUSDDispatcher, MyUSDDispatcherTrait};
+use contracts::MyUSDEngine::{MyUSDEngineDispatcher, MyUSDEngineDispatcherTrait};
+use contracts::MyUSDStaking::{MyUSDStakingDispatcher, MyUSDStakingDispatcherTrait};
+use contracts::Oracle::{OracleDispatcher, OracleDispatcherTrait};
+use contracts::RateController::{RateControllerDispatcher, RateControllerDispatcherTrait};
 use core::traits::TryInto;
-
-use contracts::{
-    MyUSD::MyUSDDispatcher, MyUSD::MyUSDDispatcherTrait,
-    DEX::DEXDispatcher, DEX::DEXDispatcherTrait,
-    MyUSDEngine::MyUSDEngineDispatcher, MyUSDEngine::MyUSDEngineDispatcherTrait,
-    Oracle::OracleDispatcher, Oracle::OracleDispatcherTrait,
-    MyUSDStaking::MyUSDStakingDispatcher, MyUSDStaking::MyUSDStakingDispatcherTrait,
-    RateController::RateControllerDispatcher, RateController::RateControllerDispatcherTrait,
+use snforge_std::{
+    ContractClassTrait, declare, start_cheat_balance, start_cheat_block_timestamp,
+    start_cheat_caller_address, stop_cheat_balance, stop_cheat_block_timestamp,
+    stop_cheat_caller_address,
 };
+use starknet::{ContractAddress, contract_address_const, get_block_timestamp, get_caller_address};
 
 // Constants
 const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18
@@ -41,14 +42,14 @@ fn test_collateral_operations() {
     start_cheat_caller_address(user1);
     engine.add_collateral(COLLATERAL_AMOUNT);
     stop_cheat_caller_address(user1);
-    
+
     assert(engine.get_user_collateral(user1) == COLLATERAL_AMOUNT, 'User collateral should be set');
 
     // Test withdrawing collateral when no debt
     start_cheat_caller_address(user1);
     engine.withdraw_collateral(COLLATERAL_AMOUNT);
     stop_cheat_caller_address(user1);
-    
+
     assert(engine.get_user_collateral(user1) == 0, 'User collateral should be withdrawn');
 }
 
@@ -218,7 +219,8 @@ fn test_liquidation() {
 
     // Setup: create a position that can be liquidated
     let collateral_amount = 1 * PRECISION; // 1 STRK
-    let borrow_amount = (oracle.get_strk_usd_price() * 1000) / 1505; // Just under liquidation threshold
+    let borrow_amount = (oracle.get_strk_usd_price() * 1000)
+        / 1505; // Just under liquidation threshold
 
     start_cheat_caller_address(user1);
     engine.add_collateral(collateral_amount);
@@ -239,7 +241,9 @@ fn test_liquidation() {
     engine.liquidate(user1);
     stop_cheat_caller_address(user2);
 
-    assert(engine.get_user_debt_shares(user1) == 0, 'User debt should be cleared after liquidation');
+    assert(
+        engine.get_user_debt_shares(user1) == 0, 'User debt should be cleared after liquidation',
+    );
 }
 
 // Helper function to deploy all contracts
@@ -273,44 +277,47 @@ fn deploy_contracts() -> (
     // Deploy Oracle
     let oracle_class = declare("Oracle");
     let default_price = 2000 * PRECISION; // $2000 default
-    let oracle = oracle_class.deploy(@array![dex.contract_address().into(), default_price.into()]).unwrap();
+    let oracle = oracle_class
+        .deploy(@array![dex.contract_address().into(), default_price.into()])
+        .unwrap();
 
     // Deploy MyUSDStaking
     let staking_class = declare("MyUSDStaking");
-    let staking = staking_class.deploy(@array![
-        owner.into(),
-        myusd.contract_address().into(),
-        owner.into(), // placeholder for engine
-        rate_controller.contract_address().into()
-    ]).unwrap();
+    let staking = staking_class
+        .deploy(
+            @array![
+                owner.into(), myusd.contract_address().into(),
+                owner.into(), // placeholder for engine
+                rate_controller.contract_address().into(),
+            ],
+        )
+        .unwrap();
 
     // Deploy MyUSDEngine
     let engine_class = declare("MyUSDEngine");
-    let engine = engine_class.deploy(@array![
-        owner.into(),
-        oracle.contract_address().into(),
-        myusd.contract_address().into(),
-        staking.contract_address().into(),
-        rate_controller.contract_address().into()
-    ]).unwrap();
+    let engine = engine_class
+        .deploy(
+            @array![
+                owner.into(), oracle.contract_address().into(), myusd.contract_address().into(),
+                staking.contract_address().into(), rate_controller.contract_address().into(),
+            ],
+        )
+        .unwrap();
 
     // Initialize DEX with liquidity
     start_cheat_caller_address(owner);
     let strk_amount = 1000 * PRECISION;
     let myusd_amount = oracle.get_strk_usd_price() * 1000;
-    
+
     // Add collateral and mint MyUSD for DEX initialization
     engine.add_collateral(strk_amount);
     engine.mint_myusd(myusd_amount);
-    
+
     // Initialize DEX
     myusd.approve(dex.contract_address(), myusd_amount);
     dex.init(myusd_amount, strk_amount);
     stop_cheat_caller_address(owner);
 
-    (
-        (myusd, dex, engine, oracle, staking, rate_controller),
-        (owner, user1, user2),
-    )
+    ((myusd, dex, engine, oracle, staking, rate_controller), (owner, user1, user2))
 }
 

@@ -1,12 +1,9 @@
-use snforge_std::{declare, ContractClassTrait};
-use starknet::{ContractAddress, contract_address_const};
+use contracts::DEX::{DEXDispatcher, DEXDispatcherTrait};
+use contracts::MyUSD::{MyUSDDispatcher, MyUSDDispatcherTrait};
+use contracts::Oracle::{OracleDispatcher, OracleDispatcherTrait};
 use core::traits::TryInto;
-
-use contracts::{
-    MyUSD::MyUSDDispatcher, MyUSD::MyUSDDispatcherTrait,
-    DEX::DEXDispatcher, DEX::DEXDispatcherTrait,
-    Oracle::OracleDispatcher, Oracle::OracleDispatcherTrait,
-};
+use snforge_std::{ContractClassTrait, declare};
+use starknet::{ContractAddress, contract_address_const};
 
 // Constants
 const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18
@@ -29,10 +26,10 @@ fn test_oracle_get_strk_myusd_price() {
     start_cheat_caller_address(owner);
     let myusd_class = declare("MyUSD");
     let myusd = myusd_class.deploy(@array![owner.into()]).unwrap();
-    
+
     let initial_myusd = 2000000 * PRECISION; // 2M MyUSD
     let initial_strk = 1000 * PRECISION; // 1000 STRK
-    
+
     myusd.mint(owner, initial_myusd);
     myusd.approve(dex.contract_address(), initial_myusd);
     dex.init(initial_myusd, initial_strk);
@@ -70,10 +67,10 @@ fn test_oracle_price_consistency() {
     start_cheat_caller_address(owner);
     let myusd_class = declare("MyUSD");
     let myusd = myusd_class.deploy(@array![owner.into()]).unwrap();
-    
+
     let initial_myusd = 2000000 * PRECISION; // 2M MyUSD
     let initial_strk = 1000 * PRECISION; // 1000 STRK
-    
+
     myusd.mint(owner, initial_myusd);
     myusd.approve(dex.contract_address(), initial_myusd);
     dex.init(initial_myusd, initial_strk);
@@ -97,10 +94,10 @@ fn test_oracle_with_different_dex_prices() {
     start_cheat_caller_address(owner);
     let myusd_class = declare("MyUSD");
     let myusd = myusd_class.deploy(@array![owner.into()]).unwrap();
-    
+
     let initial_myusd = 1000000 * PRECISION; // 1M MyUSD (lower)
     let initial_strk = 1000 * PRECISION; // 1000 STRK
-    
+
     myusd.mint(owner, initial_myusd);
     myusd.approve(dex.contract_address(), initial_myusd);
     dex.init(initial_myusd, initial_strk);
@@ -127,10 +124,10 @@ fn test_oracle_usd_price_unchanged() {
     start_cheat_caller_address(owner);
     let myusd_class = declare("MyUSD");
     let myusd = myusd_class.deploy(@array![owner.into()]).unwrap();
-    
+
     let initial_myusd = 2000000 * PRECISION; // 2M MyUSD
     let initial_strk = 1000 * PRECISION; // 1000 STRK
-    
+
     myusd.mint(owner, initial_myusd);
     myusd.approve(dex.contract_address(), initial_myusd);
     dex.init(initial_myusd, initial_strk);
@@ -138,11 +135,11 @@ fn test_oracle_usd_price_unchanged() {
 
     // USD price should remain constant regardless of DEX changes
     let usd_price1 = oracle.get_strk_usd_price();
-    
+
     start_cheat_caller_address(user1);
     dex.deposit(1000 * PRECISION);
     stop_cheat_caller_address(user1);
-    
+
     let usd_price2 = oracle.get_strk_usd_price();
 
     assert(usd_price1 == usd_price2, 'USD price should remain constant');
@@ -172,10 +169,10 @@ fn test_oracle_multiple_calls() {
     start_cheat_caller_address(owner);
     let myusd_class = declare("MyUSD");
     let myusd = myusd_class.deploy(@array![owner.into()]).unwrap();
-    
+
     let initial_myusd = 2000000 * PRECISION; // 2M MyUSD
     let initial_strk = 1000 * PRECISION; // 1000 STRK
-    
+
     myusd.mint(owner, initial_myusd);
     myusd.approve(dex.contract_address(), initial_myusd);
     dex.init(initial_myusd, initial_strk);
@@ -183,11 +180,8 @@ fn test_oracle_multiple_calls() {
 
     // Make multiple calls
     let prices = array![
-        oracle.get_strk_myusd_price(),
-        oracle.get_strk_myusd_price(),
-        oracle.get_strk_myusd_price(),
-        oracle.get_strk_myusd_price(),
-        oracle.get_strk_myusd_price()
+        oracle.get_strk_myusd_price(), oracle.get_strk_myusd_price(), oracle.get_strk_myusd_price(),
+        oracle.get_strk_myusd_price(), oracle.get_strk_myusd_price(),
     ];
 
     // All prices should be the same
@@ -214,7 +208,9 @@ fn deploy_oracle() -> (OracleDispatcher, (ContractAddress, ContractAddress, Cont
 }
 
 // Helper function to deploy Oracle with DEX
-fn deploy_oracle_with_dex() -> (OracleDispatcher, DEXDispatcher, (ContractAddress, ContractAddress, ContractAddress)) {
+fn deploy_oracle_with_dex() -> (
+    OracleDispatcher, DEXDispatcher, (ContractAddress, ContractAddress, ContractAddress),
+) {
     let owner = contract_address_const::<'owner'>();
     let user1 = contract_address_const::<'user1'>();
     let user2 = contract_address_const::<'user2'>();
@@ -229,7 +225,9 @@ fn deploy_oracle_with_dex() -> (OracleDispatcher, DEXDispatcher, (ContractAddres
 
     // Deploy Oracle
     let oracle_class = declare("Oracle");
-    let oracle = oracle_class.deploy(@array![dex.contract_address().into(), DEFAULT_PRICE.into()]).unwrap();
+    let oracle = oracle_class
+        .deploy(@array![dex.contract_address().into(), DEFAULT_PRICE.into()])
+        .unwrap();
 
     (oracle, dex, (owner, user1, user2))
 }
