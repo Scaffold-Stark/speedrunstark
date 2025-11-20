@@ -13,7 +13,7 @@ import { green, red, yellow } from "./helpers/colorize-log";
 
 const fetchStrkPrice = async (): Promise<number> => {
   const response = await fetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=starknet&vs_currencies=usd",
+    "https://api.coingecko.com/api/v3/simple/price?ids=starknet&vs_currencies=usd"
   );
   const data = await response.json();
   return data.starknet.usd;
@@ -169,7 +169,7 @@ const initializeContracts = async (): Promise<void> => {
   ]);
   console.log(
     green("Initialize Calls Executed at "),
-    initializeCalls.transaction_hash,
+    initializeCalls.transaction_hash
   );
 };
 
@@ -222,12 +222,12 @@ const setup = async (): Promise<void> => {
     await provider?.waitForTransaction(tx.transaction_hash);
     console.log(
       green("Seeded engine with collateral / minted MyUSD"),
-      tx.transaction_hash,
+      tx.transaction_hash
     );
   } catch (error) {
     console.warn(
       red("Unable to seed engine with collateral / minted MyUSD"),
-      error,
+      error
     );
     return;
   }
@@ -282,7 +282,7 @@ const setup = async (): Promise<void> => {
       await provider?.waitForTransaction(tx.transaction_hash);
       console.log(
         green("Initialized local DEX liquidity"),
-        tx.transaction_hash,
+        tx.transaction_hash
       );
     } catch (error) {
       console.warn(red("DEX initialization failed"), error);
@@ -290,8 +290,8 @@ const setup = async (): Promise<void> => {
   } else {
     console.warn(
       yellow(
-        `Deployer balance (${confirmedBalance}) does not match minted amount (${myusdLiquidityAmount}). Skipping DEX init.`,
-      ),
+        `Deployer balance (${confirmedBalance}) does not match minted amount (${myusdLiquidityAmount}). Skipping DEX init.`
+      )
     );
   }
 
