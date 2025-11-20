@@ -41,13 +41,17 @@ pub trait IMyUSDEngine<TContractState> {
 #[starknet::contract]
 pub mod MyUSDEngine {
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_token::erc20::interface::IERC20Dispatcher;
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::storage::{
-        Map, StorageMapReadAccess, StoragePointerReadAccess, StoragePointerWriteAccess,
+        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
+        StoragePointerWriteAccess,
     };
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
-    use crate::MyUSD::IMyUSDDispatcher;
-    use super::{IMyUSDEngine, IMyUSDStakingDispatcher, IOracleDispatcher};
+    use crate::MyUSD::{IMyUSDDispatcher, IMyUSDDispatcherTrait};
+    use super::{
+        IMyUSDEngine, IMyUSDStakingDispatcher, IMyUSDStakingDispatcherTrait, IOracleDispatcher,
+        IOracleDispatcherTrait,
+    };
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
 
