@@ -508,7 +508,9 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
     fn calculate_position_ratio(self: @ContractState, user: ContractAddress) -> u256 {
         let debt_value = self.get_current_debt_value(user);
         if debt_value == 0 {
-            return BoundedInt::max();
+            // Return max u128 value to represent infinite ratio
+            // This is 2^128 - 1, effectively infinite for ratio calculations
+            return 340282366920938463463374607431768211455;
         }
 
         let collateral_value = self.calculate_collateral_value(user);
