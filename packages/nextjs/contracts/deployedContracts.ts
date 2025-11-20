@@ -1448,6 +1448,17 @@ const deployedContracts = {
             },
             {
               type: "function",
+              name: "borrow_rate",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
               name: "get_current_debt_value",
               inputs: [
                 {

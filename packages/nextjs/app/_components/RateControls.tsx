@@ -109,13 +109,13 @@ const RateControls: React.FC = () => {
   );
 
   const { sendAsync: setSavingsRate } = useScaffoldWriteContract({
-    contractName: "MyUSDStaking",
+    contractName: "RateController",
     functionName: "set_savings_rate",
     args: [0n],
   });
 
   const { sendAsync: setBorrowRate } = useScaffoldWriteContract({
-    contractName: "MyUSDEngine",
+    contractName: "RateController",
     functionName: "set_borrow_rate",
     args: [0n],
   });
