@@ -12,7 +12,7 @@ Stablecoins are cryptocurrencies designed to maintain a stable value relative to
 
 🤔 How do they maintain their peg? There are several mechanisms:
 
-- 💎 **Collateralization**: Users lock up valuable assets (like ETH) as collateral to mint stablecoins. This ensures each stablecoin is backed by real value.
+- 💎 **Collateralization**: Users lock up valuable assets (like STRK) as collateral to mint stablecoins. This ensures each stablecoin is backed by real value.
 - 📊 **Interest Rates**: By adjusting borrowing and savings rates, we can influence supply and demand to maintain the peg.
 - 🚨 **Liquidations**: If collateral value drops too low, positions can be liquidated to protect the system.
 - 💸 **Market Operations**: The system can incentivize buying or selling to maintain the peg.
@@ -23,18 +23,20 @@ Stablecoins are cryptocurrencies designed to maintain a stable value relative to
 
 ---
 
-🌟 The final deliverable is an app that allows users to mint and manage a decentralized stablecoin (MyUSD) backed by ETH collateral, with features for depositing collateral, minting/burning tokens, managing positions, and participating in liquidations.
+🌟 The final deliverable is an app that allows users to mint and manage a decentralized stablecoin (MyUSD) backed by STRK collateral, with features for depositing collateral, minting/burning tokens, managing positions, and participating in liquidations.
 Deploy your contracts to a testnet then build and upload your app to a public web server. Submit the url on [SpeedRunStark.com](https://speedrunstark.com/)!
 
 🔍 First we should mention there are lots of different types of stablecoins on the market. Some are backed 1:1 with actual USD-denominated assets in a bank (USDC, USDT). Others are backed by crypto and use special mechanisms to maintain their peg (Dai, RAI, LUSD/BOLD).
 
-📚 This challenge is modeled after one of the first crypto-backed stablecoins called Dai - back when the only thing backing it was ETH. Later Dai would allow multiple types of collateral and change its design somewhat. The version we are building is commonly referred to as "single collateral Dai".
+📚 This challenge is modeled after one of the first crypto-backed stablecoins called Dai - back when the only thing backing it was a single collateral type. Later Dai would allow multiple types of collateral and change its design somewhat. The version we are building is commonly referred to as "single collateral Dai".
 
 ⚠️ You are highly encouraged to have completed the [Over-collateralized Lending challenge](https://speedrunstark.com/challenge/over-collateralized-lending) prior to attempting this one since we will be building on that same basic system but won't be discussing it in detail.
 
 💬 Meet other builders working on this challenge and get help in the [Stablecoin Challenge Telegram](https://t.me/+y93US5WbP5dkNDFh)
 
 ---
+
+> **Implementation note:** The codebase uses the `Errors::...` constants with `assert` statements instead of emitting `Engine__*` custom errors.
 
 ## Checkpoint 0: 📦 Environment 📚
 
@@ -135,8 +137,8 @@ These are located in `packages/snfoundry/contracts/src`. Go check them out and r
 ### Core Components
 
 1. 💱 **DEX (`DEX.cairo`)**
-   - Simple decentralized exchange for the ETH/MyUSD pair
-   - Provides liquidity for users to swap between ETH and MyUSD
+   - Simple decentralized exchange for the STRK/MyUSD pair
+   - Provides liquidity for users to swap between STRK and MyUSD
    - We naively use this to determine the market price of MyUSD
 
 2. 💰 **MyUSD Token (`MyUSD.cairo`)**
@@ -146,7 +148,7 @@ These are located in `packages/snfoundry/contracts/src`. Go check them out and r
 3. ⚙️ **Engine (`MyUSDEngine.cairo`)**
    - This is what _you_ will be editing
    - Core contract managing the stablecoin system
-   - Handles collateral deposits (ETH)
+   - Handles collateral deposits (STRK)
    - Controls minting/burning of MyUSD
    - Manages interest rates and liquidations
    - Enforces collateralization requirements
@@ -157,10 +159,10 @@ These are located in `packages/snfoundry/contracts/src`. Go check them out and r
    - Creates buy pressure for MyUSD
 
 5. 📊 **Oracle (`Oracle.cairo`)**
-   - Provides ETH/MyUSD and ETH/USD price feeds
-   - ETH/USD price is **fixed** at the time you deploy the contracts
+   - Provides STRK/MyUSD and STRK/USD price feeds
+   - STRK/USD price is **fixed** at the time you deploy the contracts
 
-> ⚠️ The real world ETH price being fixed is just a shortcut on our parts to simplify the overall process of understanding the mechanics at play. It would be substantially harder to track the impact of the peg manipulation devices if we also had to account for a changing ETH price.
+> ⚠️ The real world STRK price being fixed is just a shortcut on our parts to simplify the overall process of understanding the mechanics at play. It would be substantially harder to track the impact of the peg manipulation devices if we also had to account for a changing STRK price.
 
 6. 📈 **Rate Controller (`RateController.cairo`)**
    - Manages borrow and savings rates
@@ -172,51 +174,52 @@ This system creates a stablecoin where we have two levers to pull in order to ma
 
 ## Checkpoint 2: 🧱 Depositing Collateral & Understanding Value
 
-First, users need a way to deposit collateral (ETH) into the system. We also need to know the USD value of this collateral.
+First, users need a way to deposit collateral (STRK) into the system. We also need to know the USD value of this collateral.
 
 🔍 Open the `packages/snfoundry/contracts/src/MyUSDEngine.cairo` file to begin adding the logic to the existing (empty) methods.
 
 ### ✏️ Tasks:
 
 1.  **Implement `add_collateral()`**
-    - This function is `payable`, so it will receive ETH (`msg.value`).
-    - It should update the `s_user_collateral` mapping for `msg.sender` to reflect how much ETH they sent the contract.
+    - This function takes a `strk_amount` argument and uses ERC20 `transfer_from`, so the caller must approve STRK to the engine first.
+    - It should update the `s_user_collateral` mapping for the caller to reflect how much STRK they deposited.
     - It should emit a `CollateralAdded` event.
-    - Don't forget to revert if `msg.value` is zero using `Engine__InvalidAmount()`.
+    - Don't forget to `assert(strk_amount > 0, Errors::INVALID_AMOUNT);`.
 
     <details markdown='1'>
     <summary>💡 Hint: Adding Collateral</summary>
 
     This is a simple function that:
-    - Receives ETH via `msg.value`
-    - Updates a mapping to track how much ETH each user has deposited
+    - Pulls STRK from the caller via `transfer_from`
+    - Updates a mapping to track how much STRK each user has deposited
     - Emits an event for tracking
 
     Remember to:
     - Check for zero value
     - Use the existing mapping
-    - Include the current ETH price (in MyUSD) in the event
+    - Include the current STRK price (in MyUSD) in the event
 
     <details markdown='1'>
     <summary>🎯 Solution</summary>
 
     ```cairo
-    fn add_collateral(ref self: ContractState) {
-        let eth_amount = starknet::get_caller_address();
-        if eth_amount == 0 {
-            self.emit(Event::Engine__InvalidAmount(Engine__InvalidAmount {}));
-            return;
-        }
+    fn add_collateral(ref self: ContractState, strk_amount: u256) {
+        let caller = starknet::get_caller_address();
+        assert(strk_amount > 0, Errors::INVALID_AMOUNT);
 
-        let current_collateral = self.s_user_collateral.read(starknet::get_caller_address());
-        self.s_user_collateral.write(starknet::get_caller_address(), current_collateral + eth_amount);
+        let strk_dispatcher = self._get_strk();
+        let success = strk_dispatcher.transfer_from(
+            caller,
+            starknet::get_contract_address(),
+            strk_amount,
+        );
+        assert(success, Errors::TRANSFER_FAILED);
 
-        let eth_price = self.i_oracle.read().get_eth_myusd_price();
-        self.emit(Event::CollateralAdded(CollateralAdded {
-            user: starknet::get_caller_address(),
-            amount: eth_amount,
-            eth_price
-        }));
+        let current = self.s_user_collateral.read(caller);
+        self.s_user_collateral.write(caller, current + strk_amount);
+
+        let strk_price = self._get_oracle().get_strk_myusd_price();
+        self.emit(CollateralAdded { user: caller, amount: strk_amount, price: strk_price });
     }
     ```
 
@@ -226,17 +229,17 @@ First, users need a way to deposit collateral (ETH) into the system. We also nee
 ---
 
 2.  **Implement `calculate_collateral_value(user: ContractAddress)`**
-    - This function should return the total USD value of the ETH collateral held by a `user`.
-    - Use `i_oracle.get_eth_myusd_price()` to get the current price of ETH in MyUSD (it returns price with 1e18 precision).
-    - The collateral amount `s_user_collateral[user]` is in wei (1e18 wei = 1 ETH).
-    - Calculation: `(collateral_amount * eth_price) / PRECISION`.
+    - This function should return the total USD value of the STRK collateral held by a `user`.
+    - Use `i_oracle.get_strk_myusd_price()` to get the current price of STRK in MyUSD (it returns price with 1e18 precision).
+    - The collateral amount `s_user_collateral[user]` is in wei-style precision (1e18 = 1 STRK).
+    - Calculation: `(collateral_amount * strk_price) / PRECISION`.
 
     <details markdown='1'>
     <summary>💡 Hint: Calculating Collateral Value</summary>
 
-    This function converts ETH to USD value:
-    - Get the user's ETH amount from the mapping
-    - Get the current ETH price from the oracle
+    This function converts STRK to USD value:
+    - Get the user's STRK amount from the mapping
+    - Get the current STRK price from the oracle
     - Multiply them together and divide by PRECISION
 
     Think about:
@@ -250,8 +253,8 @@ First, users need a way to deposit collateral (ETH) into the system. We also nee
     ```cairo
     fn calculate_collateral_value(self: @ContractState, user: ContractAddress) -> u256 {
         let collateral_amount = self.s_user_collateral.read(user);
-        let eth_price = self.i_oracle.read().get_eth_myusd_price();
-        (collateral_amount * eth_price) / PRECISION
+        let strk_price = self._get_oracle().get_strk_myusd_price();
+        (collateral_amount * strk_price) / PRECISION
     }
     ```
 
@@ -266,8 +269,8 @@ On the right side of the screen you will see a three icon menu. Hover the top ic
 
 ### 🥅 Goals:
 
-- [ ] Users can send ETH to contract using the `add_collateral` function.
-- [ ] `s_user_collateral` correctly tracks the amount of ETH deposited by each user.
+- [ ] Users can send STRK to contract using the `add_collateral` function.
+- [ ] `s_user_collateral` correctly tracks the amount of STRK deposited by each user.
 - [ ] `calculate_collateral_value` returns the correct USD value of a user's collateral.
 - [ ] In the frontend, you should be able to see your address in the left table.
 
@@ -581,10 +584,7 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
 
     ```cairo
     fn mint_myusd(ref self: ContractState, amount: u256) {
-        if amount == 0 {
-            self.emit(Event::Engine__InvalidAmount(Engine__InvalidAmount {}));
-            return;
-        }
+        assert(amount > 0, Errors::INVALID_AMOUNT);
 
         let shares = self._get_myusd_to_shares(amount);
         let caller = starknet::get_caller_address();
@@ -597,7 +597,9 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
 
         self._validate_position(caller);
 
-        self.i_myusd.read().mint(caller, amount);
+        let myusd = self._get_myusd();
+        let success = myusd.mint_to(caller, amount);
+        assert(success, 'mint failed');
 
         self.emit(Event::DebtSharesMinted(DebtSharesMinted {
             user: caller,
@@ -686,7 +688,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
 ## Checkpoint 6: 💸 Repaying Debt & Withdrawing Collateral
 
-🔄 Users need to be able to repay their MyUSD debt and withdraw their ETH collateral.
+🔄 Users need to be able to repay their MyUSD debt and withdraw their STRK collateral.
 
 🧮 Since debt is always accruing we have decided to use a method (`repay_up_to`) that allows specifying an arbitrary amount _over_ the debt that is owed so that a user can cancel their debt completely. If we simply made them specify the exact amount they owed, by the time their transaction was included their debt would have accrued more interest and a very small amount would remain unpaid.
 
@@ -698,10 +700,10 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
     - If `amount_in_shares` is more than the user's `s_user_debt_shares[msg.sender]`, they are trying to repay more than they owe. In this case, we cap the repayment at their actual debt by:
       - Setting `amount_in_shares` to `s_user_debt_shares[msg.sender]`
       - Recalculating the actual MyUSD `amount` to be repaid using `get_current_debt_value(msg.sender)`
-    - Check if the user has enough MyUSD balance: `i_myusd.balance_of(msg.sender) < amount`. Revert with `MyUSD__InsufficientBalance()` if not.
-    - Check if the MyUSD Engine contract has allowance to spend the user's MyUSD: `i_myusd.allowance(msg.sender, address(this)) < amount`. Revert with `MyUSD__InsufficientAllowance()` if not.
+    - Check if the user has enough MyUSD balance: `self._get_myusd().balance_of(msg.sender) < amount`. Revert if not.
+    - Check if the MyUSD Engine contract has allowance to spend the user's MyUSD: `self._get_myusd().allowance(msg.sender, address(this)) < amount`. Revert if not.
     - Update `s_user_debt_shares[msg.sender]` and `total_debt_shares` by subtracting `amount_in_shares`.
-    - Burn the MyUSD from the user: `i_myusd.burn_from(msg.sender, amount)`.
+    - Burn the MyUSD from the user: `self._get_myusd().burn_from(msg.sender, amount)`.
     - Emit `DebtSharesBurned`.
 
     <details markdown='1'>
@@ -739,16 +741,15 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
         }
 
         // Check balance
-        if actual_amount == 0 || self.i_myusd.read().balance_of(caller) < actual_amount {
-            self.emit(Event::MyUSD__InsufficientBalance(MyUSD__InsufficientBalance {}));
-            return;
-        }
+        let myusd = self._get_myusd();
+        assert(actual_amount > 0, Errors::INVALID_AMOUNT);
+        assert(myusd.balance_of(caller) >= actual_amount, 'insufficient MyUSD');
 
         // Check allowance
-        if self.i_myusd.read().allowance(caller, starknet::get_contract_address()) < actual_amount {
-            self.emit(Event::MyUSD__InsufficientAllowance(MyUSD__InsufficientAllowance {}));
-            return;
-        }
+        assert(
+            myusd.allowance(caller, starknet::get_contract_address()) >= actual_amount,
+            'insufficient allowance'
+        );
 
         // Update shares
         self.s_user_debt_shares.write(caller, user_shares - actual_shares);
@@ -756,7 +757,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
         self.total_debt_shares.write(current_total - actual_shares);
 
         // Burn MyUSD
-        self.i_myusd.read().burn_from(caller, actual_amount);
+        myusd.burn_from(caller, actual_amount);
 
         self.emit(Event::DebtSharesBurned(DebtSharesBurned {
             user: caller,
@@ -772,12 +773,12 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 ---
 
 2.  **Implement `withdraw_collateral(amount: u256)`**
-    - Revert with `Engine__InvalidAmount()` if `amount` is 0.
-    - Revert with `Engine__InsufficientCollateral()` if `s_user_collateral[msg.sender] < amount`.
-    - Decrease `s_user_collateral[msg.sender]` by `amount`.
-    - If the user still has debt (`s_user_debt_shares[msg.sender] > 0`), call `_validate_position(msg.sender)` to ensure they are still safely collateralized _after_ the withdrawal. If not, the `_validate_position` will revert (and because you haven't actually transferred ETH yet, the state change to `s_user_collateral` will also be reverted).
-    - If the position is still valid (or they have no debt), transfer the ETH: `payable(msg.sender).transfer(amount);`. Handle potential transfer failure with `Engine__TransferFailed()`.
-    - Emit `CollateralWithdrawn` with the current ETH price.
+    - Revert with `Errors::INVALID_AMOUNT` if `amount` is 0.
+    - Revert with `Errors::INSUFFICIENT_COLLATERAL` if `s_user_collateral[caller] < amount`.
+    - Decrease `s_user_collateral[caller]` by `amount`.
+    - If the user still has debt (`s_user_debt_shares[caller] > 0`), call `_validate_position(caller)` to ensure they are still safely collateralized _after_ the withdrawal. If not, the `_validate_position` will revert (and because you haven't actually transferred STRK yet, the state change to `s_user_collateral` will also be reverted).
+    - If the position is still valid (or they have no debt), transfer the STRK using `strk_dispatcher.transfer(caller, amount)`. Handle potential transfer failure with `Errors::TRANSFER_FAILED`.
+    - Emit `CollateralWithdrawn` with the current STRK price.
 
     <details markdown='1'>
     <summary>💡 Hint: Withdrawing Collateral</summary>
@@ -785,7 +786,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
     This function needs to be careful about maintaining the user's position safety:
     - Check if they have enough collateral
     - Reduce their collateral but immediately `_validate_position` to check if they'd still be safe
-    - Only transfer ETH if the position remains safe
+    - Only transfer STRK if the position remains safe
 
     Remember to:
     - Handle the case where user has no debt
@@ -799,16 +800,10 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
     fn withdraw_collateral(ref self: ContractState, amount: u256) {
         let caller = starknet::get_caller_address();
 
-        if amount == 0 {
-            self.emit(Event::Engine__InvalidAmount(Engine__InvalidAmount {}));
-            return;
-        }
+        assert(amount > 0, Errors::INVALID_AMOUNT);
 
         let current_collateral = self.s_user_collateral.read(caller);
-        if current_collateral < amount {
-            self.emit(Event::Engine__InsufficientCollateral(Engine__InsufficientCollateral {}));
-            return;
-        }
+        assert(current_collateral >= amount, Errors::INSUFFICIENT_COLLATERAL);
 
         // Temporarily reduce collateral to check position
         let new_collateral = current_collateral - amount;
@@ -820,18 +815,16 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
             self._validate_position(caller);
         }
 
-        // Transfer ETH if position is still valid
-        let success = starknet::send_message_to_l1(caller, amount);
-        if !success {
-            self.emit(Event::Engine__TransferFailed(Engine__TransferFailed {}));
-            return;
-        }
+        // Transfer STRK if position is still valid
+        let strk_dispatcher = self._get_strk();
+        let success = strk_dispatcher.transfer(caller, amount);
+        assert(success, Errors::TRANSFER_FAILED);
 
-        let eth_price = self.i_oracle.read().get_eth_myusd_price();
+        let strk_price = self._get_oracle().get_strk_myusd_price();
         self.emit(Event::CollateralWithdrawn(CollateralWithdrawn {
-            user: caller,
+            withdrawer: caller,
             amount,
-            eth_price
+            price: strk_price
         }));
     }
     ```
@@ -846,7 +839,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 ### 🥅 Goals:
 
 - [ ] Users can repay their MyUSD debt. Their `s_user_debt_shares` should decrease.
-- [ ] Users can withdraw their ETH collateral, provided their position remains safe (above 150% collateralization if they have debt).
+- [ ] Users can withdraw their STRK collateral, provided their position remains safe (above 150% collateralization if they have debt).
 - [ ] Attempting to withdraw too much collateral leading to an unsafe position should fail.
 - [ ] The frontend should reflect these changes.
 
@@ -854,7 +847,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
 ## Checkpoint 7: 🚨 Liquidation - Enforcing System Stability
 
-🛡️ What happens if the price of ETH drops or a user's debt accrues too much interest, causing their position to become less than 150% collateralized? This is where liquidations come in. Anyone can trigger a liquidation for an unsafe position.
+🛡️ What happens if the price of STRK drops or a user's debt accrues too much interest, causing their position to become less than 150% collateralized? This is where liquidations come in. Anyone can trigger a liquidation for an unsafe position.
 
 ⚖️ Liquidations are crucial for maintaining the system's solvency. They ensure that:
 
@@ -902,17 +895,17 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
     - Get `user_debt_value = get_current_debt_value(user)`.
     - Get `user_collateral = s_user_collateral[user]`.
     - Get `collateral_value = calculate_collateral_value(user)`.
-    - The liquidator (`msg.sender`) must pay off the user's debt. Check if liquidator has enough MyUSD: `i_myusd.balance_of(msg.sender) < user_debt_value`. Revert if not.
-    - Check allowance for the engine to burn liquidator's MyUSD: `i_myusd.allowance(msg.sender, address(this)) < user_debt_value`. Revert if not.
-    - Burn `user_debt_value` of MyUSD from `msg.sender`: `i_myusd.burn_from(msg.sender, user_debt_value)`.
+    - The liquidator (`msg.sender`) must pay off the user's debt. Check if liquidator has enough MyUSD: `self._get_myusd().balance_of(msg.sender) < user_debt_value`. Revert if not.
+    - Check allowance for the engine to burn liquidator's MyUSD: `self._get_myusd().allowance(msg.sender, address(this)) < user_debt_value`. Revert if not.
+    - Burn `user_debt_value` of MyUSD from `msg.sender`: `self._get_myusd().burn_from(msg.sender, user_debt_value)`.
     - Clear the liquidated user's debt: `total_debt_shares -= s_user_debt_shares[user]; s_user_debt_shares[user] = 0;`.
     - Calculate how much of the user's collateral the liquidator receives:
-      - `collateral_to_cover_debt = (user_debt_value * user_collateral) / collateral_value;` (This is the amount of ETH collateral that has the same USD value as the debt).
+      - `collateral_to_cover_debt = (user_debt_value * user_collateral) / collateral_value;` (This is the amount of STRK collateral that has the same USD value as the debt).
       - `reward_amount = (collateral_to_cover_debt * LIQUIDATOR_REWARD) / 100;`
       - `amount_for_liquidator = collateral_to_cover_debt + reward_amount;`
     - Ensure `amount_for_liquidator` does not exceed `user_collateral`. If it does, cap it at `user_collateral`.
     - Reduce the liquidated user's collateral: `s_user_collateral[user] -= amount_for_liquidator;`.
-    - Transfer `amount_for_liquidator` ETH to `msg.sender`. Handle potential transfer failure.
+    - Transfer `amount_for_liquidator` STRK to the liquidator using `strk_dispatcher.transfer(liquidator, amount_for_liquidator)`. Handle potential transfer failure.
     - Emit `Liquidation` event.
 
     <details markdown='1'>
@@ -945,19 +938,14 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
         let collateral_value = self.calculate_collateral_value(user);
 
         // Check liquidator has enough MyUSD
-        if self.i_myusd.read().balance_of(liquidator) < user_debt_value {
-            self.emit(Event::MyUSD__InsufficientBalance(MyUSD__InsufficientBalance {}));
-            return;
-        }
+        let myusd = self._get_myusd();
+        assert(myusd.balance_of(liquidator) >= user_debt_value, 'insufficient MyUSD');
+        assert(
+            myusd.allowance(liquidator, starknet::get_contract_address()) >= user_debt_value,
+            'insufficient allowance'
+        );
 
-        // Check allowance
-        if self.i_myusd.read().allowance(liquidator, starknet::get_contract_address()) < user_debt_value {
-            self.emit(Event::MyUSD__InsufficientAllowance(MyUSD__InsufficientAllowance {}));
-            return;
-        }
-
-        // Burn MyUSD from liquidator
-        self.i_myusd.read().burn_from(liquidator, user_debt_value);
+        myusd.burn_from(liquidator, user_debt_value);
 
         // Clear user's debt
         let user_shares = self.s_user_debt_shares.read(user);
@@ -977,20 +965,18 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
         // Update user's collateral
         self.s_user_collateral.write(user, user_collateral - amount_for_liquidator);
 
-        // Transfer ETH to liquidator
-        let success = starknet::send_message_to_l1(liquidator, amount_for_liquidator);
-        if !success {
-            self.emit(Event::Engine__TransferFailed(Engine__TransferFailed {}));
-            return;
-        }
+        // Transfer STRK to liquidator
+        let strk_dispatcher = self._get_strk();
+        let success = strk_dispatcher.transfer(liquidator, amount_for_liquidator);
+        assert(success, Errors::TRANSFER_FAILED);
 
-        let eth_price = self.i_oracle.read().get_eth_myusd_price();
+        let strk_price = self._get_oracle().get_strk_myusd_price();
         self.emit(Event::Liquidation(Liquidation {
             user,
             liquidator,
-            collateral_amount: amount_for_liquidator,
-            debt_amount: user_debt_value,
-            eth_price
+            amount_for_liquidator,
+            liquidated_user_debt: user_debt_value,
+            price: strk_price
         }));
     }
     ```
@@ -1018,8 +1004,8 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 - Crank up the Borrow Rate to 1000% or something crazy (this will help us get in a liquidatable position quickly)
 - Deposit collateral
 - Mint the maximum amount MyUSD (150% of collateral value), including added cents in order to get as close as possible.
-- Open a private browser tab to the same page. You should have access to a new burner wallet. Go ahead and give it some ETH by clicking the faucet button (top right).
-- Use the **swap** button (in the MyUSD Wallet section) to exchange the ETH for enough MyUSD to pay the debt of your first account. Make sure you get more than the amount of MyUSD they minted because they have already accrued more debt in interest.
+- Open a private browser tab to the same page. You should have access to a new burner wallet. Go ahead and give it some STRK by clicking the faucet button (top right).
+- Use the **swap** button (in the MyUSD Wallet section) to exchange the STRK for enough MyUSD to pay the debt of your first account. Make sure you get more than the amount of MyUSD they minted because they have already accrued more debt in interest.
 - Check if the first account's position is in a liquidatable state. The **Liquidate** button should be enabled.
 - Click the button with your second account to liquidate the position.
 
@@ -1037,7 +1023,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
 🧪 Now that we have implemented all the core functionality of our stablecoin system, let's see how it behaves in a simulated market environment. The `yarn simulate` script will run several automated bots that simulate different market participants.
 
-🚀 At first, we will focus on the borrowing aspect. These bot accounts each have a slow trickle of unlimited funds and they want to use it to get leveraged exposure to ETH. They will deposit collateral, then mint some MyUSD. After that they will take their newly minted MyUSD and swap it for more ETH. This will drive the price of MyUSD down since the _only_ market participants are dumping it in favor of ETH.
+🚀 At first, we will focus on the borrowing aspect. These bot accounts each have a slow trickle of unlimited funds and they want to use it to get leveraged exposure to STRK. They will deposit collateral, then mint some MyUSD. After that they will take their newly minted MyUSD and swap it for more STRK. This will drive the price of MyUSD down since the _only_ market participants are dumping it in favor of STRK.
 
 ### 🚀 Running the Simulation:
 
@@ -1080,16 +1066,16 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
 ## Checkpoint 9: ⚖️ The Other Side: Savings Rate & Market Dynamics
 
-🪙 So far, we've focused on users borrowing MyUSD (which can create sell pressure if they swap MyUSD for ETH). But we saw how that made the stablecoin lose its peg pretty quickly.
+🪙 So far, we've focused on users borrowing MyUSD (which can create sell pressure if they swap MyUSD for STRK). But we saw how that made the stablecoin lose its peg pretty quickly.
 
 🧲 To maintain the $1 peg, we also need mechanisms to create _buy pressure_ for MyUSD. What if we could create an incentive for the market to buy MyUSD instead of just selling it? This is where a **Savings Rate** comes in, managed by the `MyUSDStaking.cairo` contract.
 
-💡 Users can stake their MyUSD into `MyUSDStaking.cairo` to earn yield. This yield (the savings rate) makes holding MyUSD attractive and provides a new incentive _besides leveraged exposure to ETH_ for using MyUSD.
+💡 Users can stake their MyUSD into `MyUSDStaking.cairo` to earn yield. This yield (the savings rate) makes holding MyUSD attractive and provides a new incentive _besides leveraged exposure to STRK_ for using MyUSD.
 
 <details markdown='1'>
 <summary>Where does the yield come from?</summary>
 
-No MyUSD can exist that is not paying for the borrow rate so <b>as long as the savings rate is less than or equal to the borrow rate this is sustainable</b>. Maybe you are thinking, "What about all the DEX liquidity?". Even this DEX liquidity is just a large borrower who deposited ETH collateral and has a lot of MyUSD borrowed and then supplied it all to the DEX. Technically all of the MyUSD that is accrued from the borrow rate that is not being allocated to stakers should exist <i>somewhere</i> in the system but we decided against adding that to an already complex system. As a result, if everyone (including the DEX liquidity provider) decided to attempt repaying all their debt, they would not be able to do so.
+No MyUSD can exist that is not paying for the borrow rate so <b>as long as the savings rate is less than or equal to the borrow rate this is sustainable</b>. Maybe you are thinking, "What about all the DEX liquidity?". Even this DEX liquidity is just a large borrower who deposited STRK collateral and has a lot of MyUSD borrowed and then supplied it all to the DEX. Technically all of the MyUSD that is accrued from the borrow rate that is not being allocated to stakers should exist <i>somewhere</i> in the system but we decided against adding that to an already complex system. As a result, if everyone (including the DEX liquidity provider) decided to attempt repaying all their debt, they would not be able to do so.
 
 </details>
 
@@ -1150,7 +1136,7 @@ fn set_borrow_rate(ref self: ContractState, new_rate: u256) {
 ### 📖 Understanding:
 
 - In the frontend you can see options to set both the **Borrow Rate** (for `MyUSDEngine`) and the **Savings Rate** (for `MyUSDStaking`).
-- The `DEX.cairo` contract provides a simple market where ETH can be swapped for MyUSD. The price on this DEX will reflect the supply and demand for MyUSD.
+- The `DEX.cairo` contract provides a simple market where STRK can be swapped for MyUSD. The price on this DEX will reflect the supply and demand for MyUSD.
 - Think about how changing the borrow and savings rates would influence users:
   - If savings rate is high, people might buy MyUSD on the DEX to stake it, pushing the price up.
   - If borrow rate is high, people might be less inclined to mint new MyUSD, or might buy MyUSD on the DEX to repay existing loans, reducing sell pressure or creating buy pressure.
@@ -1171,7 +1157,7 @@ fn set_borrow_rate(ref self: ContractState, new_rate: u256) {
 
 1.  **`yarn simulate` Script:**
     - This script spins up several simulated users (actors).
-    - Some actors will look at the `borrow_rate`. If it's attractive, they will deposit ETH and mint MyUSD (potentially selling it on the DEX for more ETH, representing leveraged traders).
+    - Some actors will look at the `borrow_rate`. If it's attractive, they will deposit STRK and mint MyUSD (potentially selling it on the DEX for more STRK, representing leveraged traders).
     - Other actors will look at the `savings_rate`. If it's attractive, they will buy MyUSD from the DEX and stake it in `MyUSDStaking.cairo`.
     - Run this script from your `challenge-stablecoin` directory: `yarn simulate`.
     - Observe your console and the frontend. You should see activity: collateral deposits, MyUSD mints, stakes, and DEX swaps. The MyUSD price on the DEX will fluctuate.
@@ -1215,7 +1201,7 @@ Well done on building a stablecoin engine! Now, let's get it on a public testnet
 
 👩‍🚀 Use `yarn account` to view your deployer account balances.
 
-⛽️ You will need to send ETH to your **deployer address** with your wallet, or get it from a public faucet of your chosen network.
+⛽️ You will need to send STRK to your **deployer address** with your wallet, or get it from a public faucet of your chosen network.
 
 🚀 Run `yarn deploy` to deploy your smart contract to a public network (selected in `networks.ts`)
 
