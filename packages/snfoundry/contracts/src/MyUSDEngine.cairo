@@ -22,6 +22,7 @@ pub trait IMyUSDEngine<TContractState> {
 
     // Interest and rates
     fn set_borrow_rate(ref self: TContractState, new_rate: u256);
+    fn borrow_rate(self: @TContractState) -> u256;
 
     // Position health
     fn get_current_debt_value(self: @TContractState, user: starknet::ContractAddress) -> u256;
@@ -45,6 +46,7 @@ pub mod MyUSDEngine {
         Map, StorageMapReadAccess, StoragePointerReadAccess, StoragePointerWriteAccess,
     };
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
+    use crate::MyUSD::IMyUSDDispatcher;
     use super::{IMyUSDEngine, IMyUSDStakingDispatcher, IOracleDispatcher};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -308,6 +310,10 @@ pub mod MyUSDEngine {
         fn get_borrow_rate(self: @ContractState) -> u256 {
             self.borrow_rate.read()
         }
+
+        fn borrow_rate(self: @ContractState) -> u256 {
+            self.borrow_rate.read()
+        }
     }
 
     #[generate_trait]
@@ -350,8 +356,8 @@ pub mod MyUSDEngine {
             IMyUSDStakingDispatcher { contract_address: self.i_staking.read() }
         }
 
-        fn _get_myusd(self: @ContractState) -> IERC20Dispatcher {
-            IERC20Dispatcher { contract_address: self.i_myusd.read() }
+        fn _get_myusd(self: @ContractState) -> IMyUSDDispatcher {
+            IMyUSDDispatcher { contract_address: self.i_myusd.read() }
         }
 
         fn _get_strk(self: @ContractState) -> IERC20Dispatcher {
