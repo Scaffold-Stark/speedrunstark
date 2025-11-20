@@ -1,3 +1,5 @@
+use starknet::ContractAddress;
+
 #[starknet::interface]
 pub trait IMyUSDEngine<TContractState> {
     fn set_borrow_rate(ref self: TContractState, new_rate: u256);
@@ -12,6 +14,8 @@ pub trait IMyUSDStaking<TContractState> {
 pub trait IRateController<TContractState> {
     fn set_borrow_rate(ref self: TContractState, new_rate: u256);
     fn set_savings_rate(ref self: TContractState, new_rate: u256);
+    fn set_engine_address(ref self: TContractState, engine: ContractAddress);
+    fn set_staking_address(ref self: TContractState, staking: ContractAddress);
 }
 
 #[starknet::contract]
@@ -23,53 +27,46 @@ pub mod RateController {
         IMyUSDStakingDispatcherTrait, IRateController,
     };
 
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-        Engine__InvalidBorrowRate: Engine__InvalidBorrowRate,
-        Staking__InvalidSavingsRate: Staking__InvalidSavingsRate,
-    }
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__InvalidBorrowRate {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Staking__InvalidSavingsRate {}
-
     #[storage]
     struct Storage {
-        i_myusd: ContractAddress,
+        i_engine: ContractAddress,
         i_staking: ContractAddress,
-    }
-
-    #[constructor]
-    fn constructor(ref self: ContractState, myusd: ContractAddress, staking: ContractAddress) {
-        self.i_myusd.write(myusd);
-        self.i_staking.write(staking);
     }
 
     #[abi(embed_v0)]
     impl RateControllerImpl of IRateController<ContractState> {
-        // Set the borrow rate for the MyUSD engine
+        /// Set the borrow rate for the MyUSD engine
+        /// Note: In Cairo, if the underlying call fails, the transaction will revert
+        /// with the error from the engine contract (e.g., "Engine: Invalid borrow rate")
         fn set_borrow_rate(ref self: ContractState, new_rate: u256) {
-            let myusd_dispatcher = IMyUSDEngineDispatcher { contract_address: self.i_myusd.read() };
+            let engine_dispatcher = IMyUSDEngineDispatcher {
+                contract_address: self.i_engine.read(),
+            };
 
-            // Try to call setBorrowRate on the engine
-            // In Cairo, we don't have try-catch, so we use a different approach
-            // We'll call the function and handle any potential errors
-            myusd_dispatcher.set_borrow_rate(new_rate);
+            // Call set_borrow_rate on the engine
+            // If this fails, the transaction reverts with the engine's error message
+            engine_dispatcher.set_borrow_rate(new_rate);
         }
 
-        // Set the savings rate for the MyUSD staking contract
+        /// Set the savings rate for the MyUSD staking contract
+        /// Note: In Cairo, if the underlying call fails, the transaction will revert
+        /// with the error from the staking contract (e.g., "Staking: Invalid savings rate")
         fn set_savings_rate(ref self: ContractState, new_rate: u256) {
             let staking_dispatcher = IMyUSDStakingDispatcher {
                 contract_address: self.i_staking.read(),
             };
 
-            // Try to call setSavingsRate on the staking contract
-            // In Cairo, we don't have try-catch, so we use a different approach
-            // We'll call the function and handle any potential errors
+            // Call set_savings_rate on the staking contract
+            // If this fails, the transaction reverts with the staking contract's error message
             staking_dispatcher.set_savings_rate(new_rate);
+        }
+
+        fn set_engine_address(ref self: ContractState, engine: ContractAddress) {
+            self.i_engine.write(engine);
+        }
+
+        fn set_staking_address(ref self: ContractState, staking: ContractAddress) {
+            self.i_staking.write(staking);
         }
     }
 }

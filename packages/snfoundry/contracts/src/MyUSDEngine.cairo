@@ -68,13 +68,6 @@ pub mod MyUSDEngine {
         DebtSharesMinted: DebtSharesMinted,
         DebtSharesBurned: DebtSharesBurned,
         Liquidation: Liquidation,
-        Engine__InvalidAmount: Engine__InvalidAmount,
-        Engine__UnsafePositionRatio: Engine__UnsafePositionRatio,
-        Engine__NotLiquidatable: Engine__NotLiquidatable,
-        Engine__InvalidBorrowRate: Engine__InvalidBorrowRate,
-        Engine__NotRateController: Engine__NotRateController,
-        Engine__InsufficientCollateral: Engine__InsufficientCollateral,
-        Engine__TransferFailed: Engine__TransferFailed,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -137,28 +130,6 @@ pub mod MyUSDEngine {
         price: u256,
     }
 
-    // Error events
-    #[derive(Drop, starknet::Event)]
-    struct Engine__InvalidAmount {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__UnsafePositionRatio {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__NotLiquidatable {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__InvalidBorrowRate {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__NotRateController {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__InsufficientCollateral {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Engine__TransferFailed {}
-
     #[storage]
     struct Storage {
         #[substorage(v0)]
@@ -176,6 +147,17 @@ pub mod MyUSDEngine {
         // User mappings
         s_user_collateral: Map<ContractAddress, u256>,
         s_user_debt_shares: Map<ContractAddress, u256>,
+    }
+
+    // Custom errors
+    mod Errors {
+        pub const INVALID_AMOUNT: felt252 = 'Engine: Invalid amount';
+        pub const UNSAFE_POSITION_RATIO: felt252 = 'Engine: Unsafe position ratio';
+        pub const NOT_LIQUIDATABLE: felt252 = 'Engine: Not liquidatable';
+        pub const INVALID_BORROW_RATE: felt252 = 'Engine: Invalid borrow rate';
+        pub const NOT_RATE_CONTROLLER: felt252 = 'Engine: Not rate controller';
+        pub const INSUFFICIENT_COLLATERAL: felt252 = 'Engine: Insufficient collateral';
+        pub const TRANSFER_FAILED: felt252 = 'Engine: Transfer failed';
     }
 
     // Constants
@@ -380,7 +362,7 @@ pub mod MyUSDEngine {
         fn _only_rate_controller(self: @ContractState) {
             let caller = get_caller_address();
             let rate_controller = self.i_rate_controller.read();
-            assert!(caller == rate_controller, "Engine__NotRateController");
+            assert(caller == rate_controller, Errors::NOT_RATE_CONTROLLER);
         }
     }
 }

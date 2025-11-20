@@ -9,13 +9,18 @@ pub trait IMyUSDStaking<TContractState> {
     fn stake(ref self: TContractState, amount: u256);
     fn withdraw(ref self: TContractState);
     fn set_savings_rate(ref self: TContractState, new_rate: u256);
+    fn savings_rate(self: @TContractState) -> u256;
+    fn set_engine(ref self: TContractState, new_engine: starknet::ContractAddress);
+    fn total_shares(self: @TContractState) -> u256;
     fn get_balance(self: @TContractState, user: starknet::ContractAddress) -> u256;
     fn get_shares_value(self: @TContractState, shares: u256) -> u256;
 }
 
 #[starknet::contract]
 pub mod MyUSDStaking {
+    use core::num::traits::Zero;
     use openzeppelin_access::ownable::OwnableComponent;
+    use openzeppelin_security::reentrancyguard::ReentrancyGuardComponent;
     use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::storage::{
         Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
@@ -25,27 +30,23 @@ pub mod MyUSDStaking {
     use super::{IMyUSDEngineDispatcher, IMyUSDEngineDispatcherTrait, IMyUSDStaking};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
+    component!(path: ReentrancyGuardComponent, storage: reentrancy, event: ReentrancyEvent);
 
     #[abi(embed_v0)]
     impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
     impl OwnableInternalImpl = OwnableComponent::InternalImpl<ContractState>;
+    impl ReentrancyInternalImpl = ReentrancyGuardComponent::InternalImpl<ContractState>;
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
         #[flat]
         OwnableEvent: OwnableComponent::Event,
+        #[flat]
+        ReentrancyEvent: ReentrancyGuardComponent::Event,
         Staked: Staked,
         Withdrawn: Withdrawn,
         SavingsRateUpdated: SavingsRateUpdated,
-        Staking__InvalidAmount: Staking__InvalidAmount,
-        Staking__InsufficientBalance: Staking__InsufficientBalance,
-        Staking__TransferFailed: Staking__TransferFailed,
-        Staking__InvalidSavingsRate: Staking__InvalidSavingsRate,
-        Staking__EngineNotSet: Staking__EngineNotSet,
-        Staking__NotRateController: Staking__NotRateController,
-        MyUSD__InsufficientBalance: MyUSD__InsufficientBalance,
-        MyUSD__InsufficientAllowance: MyUSD__InsufficientAllowance,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -74,35 +75,12 @@ pub mod MyUSDStaking {
         new_rate: u256,
     }
 
-    // Error events
-    #[derive(Drop, starknet::Event)]
-    struct Staking__InvalidAmount {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Staking__InsufficientBalance {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Staking__TransferFailed {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Staking__InvalidSavingsRate {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Staking__EngineNotSet {}
-
-    #[derive(Drop, starknet::Event)]
-    struct Staking__NotRateController {}
-
-    #[derive(Drop, starknet::Event)]
-    struct MyUSD__InsufficientBalance {}
-
-    #[derive(Drop, starknet::Event)]
-    struct MyUSD__InsufficientAllowance {}
-
     #[storage]
     struct Storage {
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
+        #[substorage(v0)]
+        reentrancy: ReentrancyGuardComponent::Storage,
         myusd: ContractAddress,
         engine: ContractAddress,
         i_rate_controller: ContractAddress,
@@ -118,21 +96,29 @@ pub mod MyUSDStaking {
         user_shares: Map<ContractAddress, u256>,
     }
 
+    // Custom errors
+    mod Errors {
+        pub const INVALID_AMOUNT: felt252 = 'Staking: Invalid amount';
+        pub const INSUFFICIENT_BALANCE: felt252 = 'Staking: Insufficient balance';
+        pub const TRANSFER_FAILED: felt252 = 'Staking: Transfer failed';
+        pub const INVALID_SAVINGS_RATE: felt252 = 'Staking: Invalid savings rate';
+        pub const ENGINE_NOT_SET: felt252 = 'Staking: Engine not set';
+        pub const NOT_RATE_CONTROLLER: felt252 = 'Staking: Not rate controller';
+    }
+
     // Constants
     const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18
-    const SECONDS_PER_YEAR: u256 = 365 * 24 * 60 * 60; // 365 days
+    const SECONDS_PER_YEAR: u256 = 31536000; // 365 * 24 * 60 * 60
 
     #[constructor]
     fn constructor(
         ref self: ContractState,
         owner: ContractAddress,
         myusd: ContractAddress,
-        engine: ContractAddress,
         rate_controller: ContractAddress,
     ) {
         self.ownable.initializer(owner);
         self.myusd.write(myusd);
-        self.engine.write(engine);
         self.i_rate_controller.write(rate_controller);
         self.exchange_rate.write(PRECISION); // 1:1 initially
         self.last_update_time.write(get_block_timestamp());
@@ -140,32 +126,27 @@ pub mod MyUSDStaking {
 
     #[abi(embed_v0)]
     impl MyUSDStakingImpl of IMyUSDStaking<ContractState> {
-        // Set the savings rate for the staking contract
+        /// Set the savings rate for the staking contract
+        /// Only callable by rate controller
         fn set_savings_rate(ref self: ContractState, new_rate: u256) {
             let caller = get_caller_address();
             let rate_controller = self.i_rate_controller.read();
-            if caller != rate_controller {
-                self.emit(Staking__NotRateController {});
-                return;
-            }
+            assert(caller == rate_controller, Errors::NOT_RATE_CONTROLLER);
 
             let engine_dispatcher = IMyUSDEngineDispatcher { contract_address: self.engine.read() };
             let borrow_rate = engine_dispatcher.borrow_rate();
-            if new_rate > borrow_rate {
-                self.emit(Staking__InvalidSavingsRate {});
-                return;
-            }
+            assert(new_rate <= borrow_rate, Errors::INVALID_SAVINGS_RATE);
 
             self._accrue_interest();
             self.savings_rate.write(new_rate);
             self.emit(SavingsRateUpdated { new_rate });
         }
 
+        /// Stake MyUSD tokens to earn interest
         fn stake(ref self: ContractState, amount: u256) {
-            if amount == 0 {
-                self.emit(Staking__InvalidAmount {});
-                return;
-            }
+            self.reentrancy.start();
+
+            assert(amount > 0, Errors::INVALID_AMOUNT);
 
             // Calculate shares based on current exchange rate
             let shares = (amount * PRECISION) / self._get_current_exchange_rate();
@@ -178,35 +159,33 @@ pub mod MyUSDStaking {
 
             let myusd_dispatcher = IERC20Dispatcher { contract_address: self.myusd.read() };
 
-            if myusd_dispatcher.balance_of(caller) < amount {
-                self.emit(MyUSD__InsufficientBalance {});
-                return;
-            }
+            // Check balance
+            let caller_balance = myusd_dispatcher.balance_of(caller);
+            assert(caller_balance >= amount, Errors::INSUFFICIENT_BALANCE);
 
-            if myusd_dispatcher.allowance(caller, get_contract_address()) < amount {
-                self.emit(MyUSD__InsufficientAllowance {});
-                return;
-            }
+            // Check allowance
+            let allowance = myusd_dispatcher.allowance(caller, get_contract_address());
+            assert(allowance >= amount, Errors::INSUFFICIENT_BALANCE);
 
             // Transfer tokens to contract
-            myusd_dispatcher.transfer_from(caller, get_contract_address(), amount);
+            let success = myusd_dispatcher.transfer_from(caller, get_contract_address(), amount);
+            assert(success, Errors::TRANSFER_FAILED);
 
             self.emit(Staked { user: caller, amount, shares });
+
+            self.reentrancy.end();
         }
 
+        /// Withdraw all staked tokens plus accrued interest
         fn withdraw(ref self: ContractState) {
+            self.reentrancy.start();
+
             let engine = self.engine.read();
-            if engine == 0.try_into().unwrap() {
-                self.emit(Staking__EngineNotSet {});
-                return;
-            }
+            assert(!engine.is_zero(), Errors::ENGINE_NOT_SET);
 
             let caller = get_caller_address();
             let share_amount = self.user_shares.read(caller);
-            if share_amount == 0 {
-                self.emit(Staking__InsufficientBalance {});
-                return;
-            }
+            assert(share_amount > 0, Errors::INSUFFICIENT_BALANCE);
 
             // Calculate MyUSD amount based on current exchange rate
             let amount = self.get_shares_value(share_amount);
@@ -216,15 +195,19 @@ pub mod MyUSDStaking {
 
             // Transfer tokens to user
             let myusd_dispatcher = IERC20Dispatcher { contract_address: self.myusd.read() };
-            myusd_dispatcher.transfer(caller, amount);
+            let success = myusd_dispatcher.transfer(caller, amount);
+            assert(success, Errors::TRANSFER_FAILED);
 
             // Now update total shares since MyUSD uses this to determine this contract's token
             // balance
             self.total_shares.write(self.total_shares.read() - share_amount);
 
             self.emit(Withdrawn { user: caller, amount, shares: share_amount });
+
+            self.reentrancy.end();
         }
 
+        /// Get the MyUSD balance for a user (includes accrued interest)
         fn get_balance(self: @ContractState, user: ContractAddress) -> u256 {
             let user_shares = self.user_shares.read(user);
             if user_shares == 0 {
@@ -234,6 +217,21 @@ pub mod MyUSDStaking {
             self.get_shares_value(user_shares)
         }
 
+        fn savings_rate(self: @ContractState) -> u256 {
+            self.savings_rate.read()
+        }
+
+        fn set_engine(ref self: ContractState, new_engine: ContractAddress) {
+            self.ownable.assert_only_owner();
+            self.engine.write(new_engine);
+        }
+
+        /// Get total shares in the pool
+        fn total_shares(self: @ContractState) -> u256 {
+            self.total_shares.read()
+        }
+
+        /// Convert shares to MyUSD value
         fn get_shares_value(self: @ContractState, shares: u256) -> u256 {
             (shares * self._get_current_exchange_rate()) / PRECISION
         }
@@ -241,6 +239,7 @@ pub mod MyUSDStaking {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
+        /// Accrue interest and update exchange rate
         fn _accrue_interest(ref self: ContractState) {
             let total_shares = self.total_shares.read();
             if total_shares == 0 {
@@ -255,21 +254,22 @@ pub mod MyUSDStaking {
 
             // Calculate interest based on total shares and exchange rate
             let total_value = self.get_shares_value(total_shares);
+            // FIXED: Divide by 10000, not multiply!
             let interest = (total_value * self.savings_rate.read() * time_elapsed.into())
-                / SECONDS_PER_YEAR
-                * 10000;
+                / (SECONDS_PER_YEAR * 10000);
 
             if interest > 0 {
                 // Update exchange rate to reflect new value
                 let current_exchange_rate = self.exchange_rate.read();
                 self
                     .exchange_rate
-                    .write(current_exchange_rate + interest * PRECISION / total_shares);
+                    .write(current_exchange_rate + (interest * PRECISION) / total_shares);
             }
 
             self.last_update_time.write(get_block_timestamp());
         }
 
+        /// Get current exchange rate (includes pending interest)
         fn _get_current_exchange_rate(self: @ContractState) -> u256 {
             let total_shares = self.total_shares.read();
             if total_shares == 0 {
