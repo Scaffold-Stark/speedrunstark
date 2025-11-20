@@ -1,12 +1,50 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import TooltipInfo from "./TooltipInfo";
 import { parseEther } from "viem";
 import { IntegerInput } from "~~/components/scaffold-stark";
+import {
+  useScaffoldMultiWriteContract,
+  createContractCall,
+} from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import { useScaffoldContract } from "~~/hooks/scaffold-stark/useScaffoldContract";
 
 const CollateralOperations = () => {
   const [collateralAmount, setCollateralAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
+
+  const { data: engineContractData } = useScaffoldContract({
+    contractName: "MyUSDEngine",
+  });
+
+  const collateralAmountBigInt = useMemo(
+    () => (collateralAmount ? parseEther(collateralAmount) : 0n),
+    [collateralAmount],
+  );
+
+  const { sendAsync: addCollateralMulticall } = useScaffoldMultiWriteContract({
+    calls: useMemo(
+      () =>
+        engineContractData?.address && collateralAmountBigInt > 0n
+          ? [
+              createContractCall("Strk", "approve", [
+                engineContractData.address,
+                collateralAmountBigInt,
+              ]),
+              createContractCall("MyUSDEngine", "add_collateral", [
+                collateralAmountBigInt,
+              ]),
+            ]
+          : [],
+      [engineContractData?.address, collateralAmountBigInt],
+    ),
+  });
+
+  const { sendAsync: withdrawCollateral } = useScaffoldWriteContract({
+    contractName: "MyUSDEngine",
+    functionName: "withdraw_collateral",
+    args: [withdrawAmount ? parseEther(withdrawAmount) : 0n],
+  });
 
   const handleAmountChange =
     (setter: (value: string) => void) => (value: string | bigint) => {
@@ -17,21 +55,9 @@ const CollateralOperations = () => {
       setter(value);
     };
 
-  const { sendAsync: addCollateral } = useScaffoldWriteContract({
-    contractName: "MyUSDEngine",
-    functionName: "add_collateral",
-    args: [collateralAmount ? parseEther(collateralAmount) : 0n],
-  });
-
-  const { sendAsync: withdrawCollateral } = useScaffoldWriteContract({
-    contractName: "MyUSDEngine",
-    functionName: "withdraw_collateral",
-    args: [withdrawAmount ? parseEther(withdrawAmount) : 0n],
-  });
-
   const handleAddCollateral = async () => {
     try {
-      await addCollateral();
+      await addCollateralMulticall();
       setCollateralAmount("");
     } catch (error) {
       console.error("Error adding collateral:", error);

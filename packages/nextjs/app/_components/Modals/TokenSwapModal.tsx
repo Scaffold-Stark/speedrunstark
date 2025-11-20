@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import TooltipInfo from "../TooltipInfo";
 import { Address, parseEther } from "viem";
 import {
@@ -7,7 +7,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { Balance, IntegerInput } from "~~/components/scaffold-stark";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import {
+  useScaffoldMultiWriteContract,
+  createContractCall,
+} from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { tokenName } from "~~/utils/constant";
 
 type TokenSwapModalProps = {
@@ -30,19 +33,48 @@ export const TokenSwapModal = ({
 
   const { data: stablecoinDEXContract } = useDeployedContractInfo("DEX");
 
-  const { sendAsync: swap } = useScaffoldWriteContract({
-    contractName: "DEX",
-    functionName: "swap",
-    args: [sellValue ? parseEther(sellValue) : 0n, 0n],
+  const sellValueBigInt = useMemo(
+    () => (sellValue ? parseEther(sellValue) : 0n),
+    [sellValue],
+  );
+
+  const { sendAsync: swapMyUSDMulticall } = useScaffoldMultiWriteContract({
+    calls: useMemo(
+      () =>
+        stablecoinDEXContract?.address &&
+        sellToken === "MyUSD" &&
+        sellValueBigInt > 0n
+          ? [
+              createContractCall("MyUSD", "approve", [
+                stablecoinDEXContract.address,
+                sellValueBigInt,
+              ]),
+              createContractCall("DEX", "swap", [sellValueBigInt, 0n]),
+            ]
+          : [],
+      [stablecoinDEXContract?.address, sellToken, sellValueBigInt],
+    ),
   });
 
-  const { sendAsync: approve } = useScaffoldWriteContract({
-    contractName: "MyUSD",
-    functionName: "approve",
-    args: [
-      stablecoinDEXContract?.address,
-      sellValue ? parseEther(sellValue) : 0n,
-    ],
+  const { sendAsync: swapStrkMulticall } = useScaffoldMultiWriteContract({
+    calls: useMemo(
+      () =>
+        stablecoinDEXContract?.address &&
+        sellToken === "STRK" &&
+        sellValueBigInt > 0n
+          ? [
+              createContractCall("Strk", "approve", [
+                stablecoinDEXContract.address,
+                sellValueBigInt,
+              ]),
+              createContractCall("DEX", "swap", [
+                sellValueBigInt,
+                sellValueBigInt,
+              ]),
+            ]
+          : [],
+      [stablecoinDEXContract?.address, sellToken, sellValueBigInt],
+    ),
   });
 
   const handleChangeSellToken = () => {
@@ -88,28 +120,18 @@ export const TokenSwapModal = ({
 
   const handleSwap = async () => {
     setLoading(true);
-    if (sellToken === "MyUSD") {
-      try {
-        await approve();
-        await swap();
-
-        setSellValue("");
-        setBuyValue("");
-      } catch (error) {
-        console.error("Error sending MyUSD:", error);
-      } finally {
-        setLoading(false);
+    try {
+      if (sellToken === "MyUSD") {
+        await swapMyUSDMulticall();
+      } else {
+        await swapStrkMulticall();
       }
-    } else {
-      try {
-        await swap();
-        setBuyValue("");
-        setSellValue("");
-      } catch (error) {
-        console.error("Error minting MyUSD:", error);
-      } finally {
-        setLoading(false);
-      }
+      setSellValue("");
+      setBuyValue("");
+    } catch (error) {
+      console.error(`Error swapping ${sellToken}:`, error);
+    } finally {
+      setLoading(false);
     }
   };
   return (

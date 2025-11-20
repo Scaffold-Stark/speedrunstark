@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TooltipInfo from "./TooltipInfo";
 import { parseEther } from "viem";
 import { useAccount } from "~~/hooks/useAccount";
@@ -6,6 +6,10 @@ import { IntegerInput } from "~~/components/scaffold-stark";
 import { useScaffoldContract } from "~~/hooks/scaffold-stark/useScaffoldContract";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import {
+  useScaffoldMultiWriteContract,
+  createContractCall,
+} from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { notification } from "~~/utils/scaffold-stark";
 import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
@@ -18,19 +22,25 @@ const StakeOperations = () => {
     contractName: "MyUSDStaking",
   });
 
-  const { sendAsync: approve } = useScaffoldWriteContract({
-    contractName: "MyUSD",
-    functionName: "approve",
-    args: [
-      myUSDCStakingContract?.address,
-      stakeAmount ? parseEther(stakeAmount) : 0n,
-    ],
-  });
+  const stakeAmountBigInt = useMemo(
+    () => (stakeAmount ? parseEther(stakeAmount) : 0n),
+    [stakeAmount],
+  );
 
-  const { sendAsync: stake } = useScaffoldWriteContract({
-    contractName: "MyUSDStaking",
-    functionName: "stake",
-    args: [stakeAmount ? parseEther(stakeAmount) : 0n],
+  const { sendAsync: stakeMulticall } = useScaffoldMultiWriteContract({
+    calls: useMemo(
+      () =>
+        myUSDCStakingContract?.address && stakeAmountBigInt > 0n
+          ? [
+              createContractCall("MyUSD", "approve", [
+                myUSDCStakingContract.address,
+                stakeAmountBigInt,
+              ]),
+              createContractCall("MyUSDStaking", "stake", [stakeAmountBigInt]),
+            ]
+          : [],
+      [myUSDCStakingContract?.address, stakeAmountBigInt],
+    ),
   });
 
   const { sendAsync: withdraw } = useScaffoldWriteContract({
@@ -53,9 +63,7 @@ const StakeOperations = () => {
 
   const handleStake = async () => {
     try {
-      await approve();
-
-      await stake();
+      await stakeMulticall();
       setStakeAmount("");
     } catch (error) {
       console.error("Error staking:", error);

@@ -7,6 +7,10 @@ import { IntegerInput } from "~~/components/scaffold-stark";
 import { useScaffoldContract } from "~~/hooks/scaffold-stark/useScaffoldContract";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import {
+  useScaffoldMultiWriteContract,
+  createContractCall,
+} from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { tokenName } from "~~/utils/constant";
 import { notification } from "~~/utils/scaffold-stark";
 import { decodeUint256Value } from "~~/utils/scaffold-stark";
@@ -32,19 +36,27 @@ const MintOperations = () => {
     args: [mintAmount ? parseEther(mintAmount) : 0n],
   });
 
-  const { sendAsync: repayUpTo } = useScaffoldWriteContract({
-    contractName: "MyUSDEngine",
-    functionName: "repay_up_to",
-    args: [burnAmount ? parseEther(burnAmount) : 0n],
-  });
+  const burnAmountBigInt = useMemo(
+    () => (burnAmount ? parseEther(burnAmount) : 0n),
+    [burnAmount],
+  );
 
-  const { sendAsync: approve } = useScaffoldWriteContract({
-    contractName: "MyUSD",
-    functionName: "approve",
-    args: [
-      engineContractData?.address,
-      burnAmount ? parseEther(burnAmount) : 0n,
-    ],
+  const { sendAsync: repayMulticall } = useScaffoldMultiWriteContract({
+    calls: useMemo(
+      () =>
+        engineContractData?.address && burnAmountBigInt > 0n
+          ? [
+              createContractCall("MyUSD", "approve", [
+                engineContractData.address,
+                burnAmountBigInt,
+              ]),
+              createContractCall("MyUSDEngine", "repay_up_to", [
+                burnAmountBigInt,
+              ]),
+            ]
+          : [],
+      [engineContractData?.address, burnAmountBigInt],
+    ),
   });
 
   const { data: currentDebtValue } = useScaffoldReadContract({
@@ -79,25 +91,44 @@ const MintOperations = () => {
 
   const handleBurn = async () => {
     try {
-      await approve();
-      await repayUpTo();
+      await repayMulticall();
       setBurnAmount("");
     } catch (error) {
       console.error("Error burning MyUSD:", error);
     }
   };
 
+  const extraRepayment = useMemo(
+    () =>
+      currentDebtValueBigInt ? currentDebtValueBigInt + parseEther("0.1") : 0n,
+    [currentDebtValueBigInt],
+  );
+
+  const { sendAsync: repayAllMulticall } = useScaffoldMultiWriteContract({
+    calls: useMemo(
+      () =>
+        engineContractData?.address && extraRepayment > 0n
+          ? [
+              createContractCall("MyUSD", "approve", [
+                engineContractData.address,
+                extraRepayment,
+              ]),
+              createContractCall("MyUSDEngine", "repay_up_to", [
+                extraRepayment,
+              ]),
+            ]
+          : [],
+      [engineContractData?.address, extraRepayment],
+    ),
+  });
+
   const handleRepayAll = async () => {
-    if (!currentDebtValueBigInt) {
+    if (!currentDebtValueBigInt || !engineContractData?.address) {
       notification.error("No debt value found");
       return;
     }
-    const extraRepayment = currentDebtValueBigInt + parseEther("0.1");
     try {
-      await approve();
-      await repayUpTo({
-        args: [extraRepayment],
-      });
+      await repayAllMulticall();
       setBurnAmount("");
     } catch (error) {
       console.error("Error repaying all:", error);
