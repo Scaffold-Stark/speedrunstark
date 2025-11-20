@@ -26,18 +26,16 @@ export const TokenTransferModal = ({
 
   const [inputAddress, setInputAddress] = useState<AddressType>();
 
-  const { writeContractAsync: writeStablecoinContract } =
-    useScaffoldWriteContract({
-      contractName: "MyUSD",
-    });
+  const { sendAsync: transfer } = useScaffoldWriteContract({
+    contractName: "MyUSD",
+    functionName: "transfer",
+    args: [inputAddress, parseEther(sendValue)],
+  });
 
   const handleSend = async () => {
     try {
-      await writeStablecoinContract({
-        functionName: "transfer",
-        args: [inputAddress, parseEther(sendValue)],
-      });
-      setInputAddress("");
+      await transfer();
+      setInputAddress(undefined);
       setSendValue("");
     } catch (error) {
       console.error("Error sending MyUSD:", error);
@@ -70,7 +68,7 @@ export const TokenTransferModal = ({
             <div className="flex space-x-4">
               <div>
                 <span className="text-sm font-bold">From:</span>
-                <Address address={connectedAddress} onlyEnsOrAddress />
+                <Address address={connectedAddress as `0x${string}`} />
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-bold pl-3">Available:</span>
@@ -88,7 +86,11 @@ export const TokenTransferModal = ({
               <IntegerInput
                 value={sendValue}
                 onChange={(newValue) => {
-                  setSendValue(newValue);
+                  setSendValue(
+                    typeof newValue === "bigint"
+                      ? newValue.toString()
+                      : newValue,
+                  );
                 }}
                 placeholder="Amount"
                 disableMultiplyBy1e18

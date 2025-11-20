@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     MyUSD: {
       address:
-        "0x6a80c3f13a3d9499e61733b45773bf88dbbb4117f129c73453566d0d4f5ced1",
+        "0x4ebba417381dbe5f2f862793c8da592522276a0825f0297bbf55db1fd5e8b75",
       abi: [
         {
           type: "impl",
@@ -81,6 +81,46 @@ const deployedContracts = {
               ],
               outputs: [],
               state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "approve",
+              inputs: [
+                {
+                  name: "spender",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "amount",
+                  type: "core::integer::u256",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::bool",
+                },
+              ],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "allowance",
+              inputs: [
+                {
+                  name: "owner",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+                {
+                  name: "spender",
+                  type: "core::starknet::contract_address::ContractAddress",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u256",
+                },
+              ],
+              state_mutability: "view",
             },
             {
               type: "function",
@@ -465,11 +505,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0xc70278793855314253f12d39445f401d833d8bdc79138bfb22ca3ce6e525d0",
+        "0x5edcc901eb7ff010aa0a62801e06242f3e9a6c82ce9c1455fc249c402e81cdd",
     },
     DEX: {
       address:
-        "0x43bf6bfd057d66f55a21b5aefc035e2c6f518a83dbcb376709af7100dded64c",
+        "0x1276b5aeaeb3aaa8cad9cffba805a2603de2ee1da0371e163860546ad7abfd6",
       abi: [
         {
           type: "impl",
@@ -795,7 +835,7 @@ const deployedContracts = {
     },
     Oracle: {
       address:
-        "0x556472c39a6755cf3a56877e379742185cfe6c4ccd238efb12b435448986d75",
+        "0x7bf466646a72936262852b047121c205e3f6b02f6806d136801071c432b0e07",
       abi: [
         {
           type: "impl",
@@ -870,7 +910,7 @@ const deployedContracts = {
     },
     RateController: {
       address:
-        "0x752b7597fdcb5294e92adae0fc7cccfb9eb17fc0db09f10dd962833893dfa1e",
+        "0x1570ec360c797d6a76e4e9da5ab59dc18b1ba4937c2b3643d215367b21f60f7",
       abi: [
         {
           type: "impl",
@@ -957,7 +997,7 @@ const deployedContracts = {
     },
     MyUSDStaking: {
       address:
-        "0x6fe37b98577dc6dd08a2652a716eb9fc1193d890d1d9da60e9b325c1bc9cbd9",
+        "0x44bdfc55f064906872675c6e2645f78acd2e536fa66b8142bc30dc8bb0518ef",
       abi: [
         {
           type: "impl",
@@ -1291,7 +1331,7 @@ const deployedContracts = {
     },
     MyUSDEngine: {
       address:
-        "0x14831f87029a343750fb41ada447fb10bb229a84b699fc9eed333f0d87f7ffc",
+        "0x653ece9e9e30b26460779de908a9c0f96d13be59daa38d5de191c930c400949",
       abi: [
         {
           type: "impl",

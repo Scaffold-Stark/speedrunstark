@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import RatioChange from "./RatioChange";
 import TooltipInfo from "./TooltipInfo";
 import { formatEther, parseEther } from "viem";
@@ -9,6 +9,7 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldRead
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { tokenName } from "~~/utils/constant";
 import { notification } from "~~/utils/scaffold-stark";
+import { decodeUint256Value } from "~~/utils/scaffold-stark";
 
 const MintOperations = () => {
   const [mintAmount, setMintAmount] = useState("");
@@ -16,36 +17,60 @@ const MintOperations = () => {
 
   const { address } = useAccount();
 
-  const { data: ethPrice } = useScaffoldReadContract({
+  const { data: strkMyUSDPrice } = useScaffoldReadContract({
     contractName: "Oracle",
-    functionName: "getETHMyUSDPrice",
+    functionName: "get_strk_myusd_price",
   });
 
   const { data: engineContractData } = useScaffoldContract({
     contractName: "MyUSDEngine",
   });
 
-  const { writeContractAsync: writeStablecoinEngineContract } =
-    useScaffoldWriteContract({
-      contractName: "MyUSDEngine",
-    });
+  const { sendAsync: mintMyUSD } = useScaffoldWriteContract({
+    contractName: "MyUSDEngine",
+    functionName: "mint_myusd",
+    args: [mintAmount ? parseEther(mintAmount) : 0n],
+  });
 
-  const { writeContractAsync: writeMyUSDContract } = useScaffoldWriteContract({
+  const { sendAsync: repayUpTo } = useScaffoldWriteContract({
+    contractName: "MyUSDEngine",
+    functionName: "repay_up_to",
+    args: [burnAmount ? parseEther(burnAmount) : 0n],
+  });
+
+  const { sendAsync: approve } = useScaffoldWriteContract({
     contractName: "MyUSD",
+    functionName: "approve",
+    args: [
+      engineContractData?.address,
+      burnAmount ? parseEther(burnAmount) : 0n,
+    ],
   });
 
   const { data: currentDebtValue } = useScaffoldReadContract({
     contractName: "MyUSDEngine",
-    functionName: "getCurrentDebtValue",
+    functionName: "get_current_debt_value",
     args: [address],
   });
 
+  const strkMyUSDPriceBigInt = useMemo(
+    () => decodeUint256Value(strkMyUSDPrice) ?? 0n,
+    [strkMyUSDPrice],
+  );
+
+  const currentDebtValueBigInt = useMemo(
+    () => decodeUint256Value(currentDebtValue),
+    [currentDebtValue],
+  );
+
+  const handleAmountChange =
+    (setter: (value: string) => void) => (value: string | bigint) => {
+      setter(typeof value === "bigint" ? value.toString() : value);
+    };
+
   const handleMint = async () => {
     try {
-      await writeStablecoinEngineContract({
-        functionName: "mintMyUSD",
-        args: [mintAmount ? parseEther(mintAmount) : 0n],
-      });
+      await mintMyUSD();
       setMintAmount("");
     } catch (error) {
       console.error("Error minting MyUSD:", error);
@@ -54,17 +79,8 @@ const MintOperations = () => {
 
   const handleBurn = async () => {
     try {
-      await writeMyUSDContract({
-        functionName: "approve",
-        args: [
-          engineContractData?.address,
-          burnAmount ? parseEther(burnAmount) : 0n,
-        ],
-      });
-      await writeStablecoinEngineContract({
-        functionName: "repayUpTo",
-        args: [burnAmount ? parseEther(burnAmount) : 0n],
-      });
+      await approve();
+      await repayUpTo();
       setBurnAmount("");
     } catch (error) {
       console.error("Error burning MyUSD:", error);
@@ -72,18 +88,14 @@ const MintOperations = () => {
   };
 
   const handleRepayAll = async () => {
-    if (!currentDebtValue) {
+    if (!currentDebtValueBigInt) {
       notification.error("No debt value found");
       return;
     }
-    const extraRepayment = currentDebtValue + parseEther("0.1");
+    const extraRepayment = currentDebtValueBigInt + parseEther("0.1");
     try {
-      await writeMyUSDContract({
-        functionName: "approve",
-        args: [engineContractData?.address, extraRepayment],
-      });
-      await writeStablecoinEngineContract({
-        functionName: "repayUpTo",
+      await approve();
+      await repayUpTo({
         args: [extraRepayment],
       });
       setBurnAmount("");
@@ -110,7 +122,7 @@ const MintOperations = () => {
             {address && (
               <RatioChange
                 user={address}
-                ethPrice={Number(formatEther(ethPrice || 0n))}
+                strkPrice={Number(formatEther(strkMyUSDPriceBigInt))}
                 inputAmount={Number(mintAmount)}
               />
             )}
@@ -118,7 +130,7 @@ const MintOperations = () => {
           <div className="flex gap-2 items-center">
             <IntegerInput
               value={mintAmount}
-              onChange={setMintAmount}
+              onChange={handleAmountChange(setMintAmount)}
               placeholder="Amount"
               disableMultiplyBy1e18
             />
@@ -138,7 +150,7 @@ const MintOperations = () => {
               <span className="label-text">Repay</span>
               <button
                 className="btn btn-xs btn-primary text-xs font-medium mb-1"
-                disabled={!currentDebtValue}
+                disabled={!currentDebtValueBigInt}
                 onClick={handleRepayAll}
               >
                 Repay All
@@ -147,7 +159,7 @@ const MintOperations = () => {
             {address && (
               <RatioChange
                 user={address}
-                ethPrice={Number(formatEther(ethPrice || 0n))}
+                strkPrice={Number(formatEther(strkMyUSDPriceBigInt))}
                 inputAmount={-Number(burnAmount)}
               />
             )}
@@ -155,7 +167,7 @@ const MintOperations = () => {
           <div className="flex gap-2 items-center">
             <IntegerInput
               value={burnAmount}
-              onChange={setBurnAmount}
+              onChange={handleAmountChange(setBurnAmount)}
               placeholder="Amount"
               disableMultiplyBy1e18
             />

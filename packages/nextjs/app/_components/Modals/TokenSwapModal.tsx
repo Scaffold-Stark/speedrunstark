@@ -13,65 +13,76 @@ import { tokenName } from "~~/utils/constant";
 type TokenSwapModalProps = {
   tokenBalance: string;
   connectedAddress: string;
-  ETHprice: string;
+  STRKprice: string;
   modalId: string;
 };
 
 export const TokenSwapModal = ({
   tokenBalance,
   connectedAddress,
-  ETHprice,
+  STRKprice,
   modalId,
 }: TokenSwapModalProps) => {
   const [loading, setLoading] = useState(false);
-  const [sellToken, setSellToken] = useState<"MyUSD" | "ETH">("MyUSD");
+  const [sellToken, setSellToken] = useState<"MyUSD" | "STRK">("MyUSD");
   const [sellValue, setSellValue] = useState("");
   const [buyValue, setBuyValue] = useState("");
 
-  const { data: stablecoinDEXContract } = useDeployedContractInfo({
+  const { data: stablecoinDEXContract } = useDeployedContractInfo("DEX");
+
+  const { sendAsync: swap } = useScaffoldWriteContract({
     contractName: "DEX",
+    functionName: "swap",
+    args: [sellValue ? parseEther(sellValue) : 0n, 0n],
   });
 
-  const { writeContractAsync: writeDEXContract } = useScaffoldWriteContract({
-    contractName: "DEX",
-  });
-
-  const { writeContractAsync: writeMyUSDContract } = useScaffoldWriteContract({
+  const { sendAsync: approve } = useScaffoldWriteContract({
     contractName: "MyUSD",
+    functionName: "approve",
+    args: [
+      stablecoinDEXContract?.address,
+      sellValue ? parseEther(sellValue) : 0n,
+    ],
   });
 
   const handleChangeSellToken = () => {
-    setSellToken(sellToken === "MyUSD" ? "ETH" : "MyUSD");
+    setSellToken(sellToken === "MyUSD" ? "STRK" : "MyUSD");
     setSellValue("");
     setBuyValue("");
   };
 
-  const ethToToken = (ethAmount: string): string => {
-    const tokenAmount = Number(ethAmount) * Number(ETHprice);
+  const strkToToken = (strkAmount: string): string => {
+    const tokenAmount = Number(strkAmount) * Number(STRKprice);
     return tokenAmount.toFixed(8);
   };
 
-  const tokenToETH = (tokenAmount: string): string => {
-    const ethAmount = Number(tokenAmount) / Number(ETHprice);
-    return ethAmount.toFixed(8);
+  const tokenToStrk = (tokenAmount: string): string => {
+    const strkAmount = Number(tokenAmount) / Number(STRKprice);
+    return strkAmount.toFixed(8);
   };
 
-  const handleChangeInput = (isSell: boolean, newValue: string) => {
-    if (newValue === "") {
+  const handleChangeInput = (isSell: boolean, newValue: string | bigint) => {
+    const parsedValue =
+      typeof newValue === "bigint" ? newValue.toString() : newValue;
+    if (parsedValue === "") {
       setSellValue("");
       setBuyValue("");
       return;
     }
     if (isSell) {
-      setSellValue(newValue);
+      setSellValue(parsedValue);
       const tokenAmount =
-        sellToken === "ETH" ? ethToToken(newValue) : tokenToETH(newValue);
+        sellToken === "STRK"
+          ? strkToToken(parsedValue)
+          : tokenToStrk(parsedValue);
       setBuyValue(tokenAmount);
     } else {
-      setBuyValue(newValue);
-      const ethAmount =
-        sellToken === "MyUSD" ? ethToToken(newValue) : tokenToETH(newValue);
-      setSellValue(ethAmount);
+      setBuyValue(parsedValue);
+      const strkAmount =
+        sellToken === "MyUSD"
+          ? strkToToken(parsedValue)
+          : tokenToStrk(parsedValue);
+      setSellValue(strkAmount);
     }
   };
 
@@ -79,14 +90,8 @@ export const TokenSwapModal = ({
     setLoading(true);
     if (sellToken === "MyUSD") {
       try {
-        await writeMyUSDContract({
-          functionName: "approve",
-          args: [stablecoinDEXContract?.address, parseEther(sellValue)],
-        });
-        await writeDEXContract({
-          functionName: "swap",
-          args: [parseEther(sellValue)],
-        });
+        await approve();
+        await swap();
 
         setSellValue("");
         setBuyValue("");
@@ -97,12 +102,7 @@ export const TokenSwapModal = ({
       }
     } else {
       try {
-        await writeDEXContract({
-          functionName: "swap",
-          args: [parseEther(sellValue)],
-          value: parseEther(sellValue as `${number}`),
-        });
-
+        await swap();
         setBuyValue("");
         setSellValue("");
       } catch (error) {
@@ -124,7 +124,7 @@ export const TokenSwapModal = ({
             <TooltipInfo
               top={0}
               right={0}
-              infoText={`Here you can swap ${tokenName} for ETH and vice versa`}
+              infoText={`Here you can swap ${tokenName} for STRK and vice versa`}
             />
             <label
               htmlFor={`${modalId}`}
@@ -161,7 +161,7 @@ export const TokenSwapModal = ({
                   />
                 </div>
                 <span className="basis-2/12 flex justify-center items-center text-md">
-                  {sellToken === "MyUSD" ? "MyUSD" : "ETH"}
+                  {sellToken === "MyUSD" ? "MyUSD" : "STRK"}
                 </span>
               </div>
               <div className="flex justify-center">
@@ -179,12 +179,12 @@ export const TokenSwapModal = ({
                     onChange={(newValue) => {
                       handleChangeInput(false, newValue);
                     }}
-                    placeholder={`Buy ${sellToken === "MyUSD" ? "ETH" : "MyUSD"}`}
+                    placeholder={`Buy ${sellToken === "MyUSD" ? "STRK" : "MyUSD"}`}
                     disableMultiplyBy1e18
                   />
                 </div>
                 <span className="basis-2/12 flex justify-center items-center text-md">
-                  {sellToken === "MyUSD" ? "ETH" : "MyUSD"}
+                  {sellToken === "MyUSD" ? "STRK" : "MyUSD"}
                 </span>
               </div>
               <button

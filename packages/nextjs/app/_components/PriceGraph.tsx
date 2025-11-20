@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import TooltipInfo from "./TooltipInfo";
 import { useTheme } from "next-themes";
 import {
@@ -10,9 +10,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import type {
+  ContentType as LegendContentRenderer,
+  LegendPayload,
+} from "recharts/types/component/DefaultLegendContent";
 import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 const PriceGraph = () => {
   const [showRates, setShowRates] = useState(false);
@@ -23,11 +28,15 @@ const PriceGraph = () => {
   const redColor = "#bf212f";
   const greenColor = "#82ca9d";
 
-  const { data: ethPrice } = useScaffoldReadContract({
+  const { data: strkMyUSDPrice } = useScaffoldReadContract({
     contractName: "Oracle",
-    functionName: "getETHUSDPrice",
+    functionName: "get_strk_myusd_price",
   });
-  const ethPriceInUSD = Number(formatEther(ethPrice || 0n));
+  const strkMyUSDPriceBigInt = useMemo(
+    () => decodeUint256Value(strkMyUSDPrice),
+    [strkMyUSDPrice],
+  );
+  const strkPriceInUSD = Number(formatEther(strkMyUSDPriceBigInt || 0n));
 
   const { data: priceEvents, isLoading: isPriceLoading } =
     useScaffoldEventHistory({
@@ -37,6 +46,7 @@ const PriceGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const { data: borrowRateUpdatedEvents, isLoading: isBorrowRateLoading } =
@@ -47,6 +57,7 @@ const PriceGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const { data: savingsRateUpdatedEvents, isLoading: isSavingsRateLoading } =
@@ -57,6 +68,7 @@ const PriceGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const isLoading =
@@ -86,7 +98,7 @@ const PriceGraph = () => {
   const priceData = sortedEvents.reduce<DataPoint[]>((acc, event, idx) => {
     const price =
       event?.eventName === "PriceUpdated"
-        ? 1 / (Number(formatEther(event?.args?.price || 0n)) / ethPriceInUSD)
+        ? 1 / (Number(formatEther(event?.args?.price || 0n)) / strkPriceInUSD)
         : 0;
     const borrowRate =
       event?.eventName === "BorrowRateUpdated"
@@ -117,6 +129,30 @@ const PriceGraph = () => {
       },
     ];
   }, []);
+
+  const renderLegend: LegendContentRenderer = (legendProps) => {
+    const legendPayload = (
+      (legendProps?.payload as LegendPayload[] | undefined) ?? []
+    ).filter((item) => (showRates ? true : item.value === "Price"));
+
+    if (legendPayload.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="flex gap-4 pl-4 pt-2">
+        {legendPayload.map((entry) => (
+          <span
+            key={entry.value}
+            className="text-sm font-medium"
+            style={{ color: entry.color ?? strokeColor }}
+          >
+            {entry.value}
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="card bg-base-100 w-full shadow-xl indicator">
@@ -241,11 +277,7 @@ const PriceGraph = () => {
                 formatter={(value) => (
                   <span style={{ color: strokeColor }}>{value}</span>
                 )}
-                payload={
-                  showRates
-                    ? undefined
-                    : [{ value: "Price", type: "line", color: yellowColor }]
-                }
+                content={showRates ? undefined : renderLegend}
               />
             </LineChart>
           </ResponsiveContainer>

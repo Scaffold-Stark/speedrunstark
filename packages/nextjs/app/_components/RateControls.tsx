@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import TooltipInfo from "./TooltipInfo";
 import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { IntegerInput } from "~~/components/scaffold-stark";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 interface RateInputProps {
   value: bigint | undefined;
@@ -12,7 +13,7 @@ interface RateInputProps {
   onCancel: () => void;
   onSave: (value: string) => Promise<void>;
   newValue: string;
-  onNewValueChange: (value: string) => void;
+  onNewValueChange: (value: string | bigint) => void;
   label: string;
   alignRight?: boolean;
 }
@@ -89,47 +90,73 @@ const RateControls: React.FC = () => {
 
   const { data: savingsRate } = useScaffoldReadContract({
     contractName: "MyUSDStaking",
-    functionName: "savingsRate",
+    functionName: "savings_rate",
   });
 
   const { data: borrowRate } = useScaffoldReadContract({
     contractName: "MyUSDEngine",
-    functionName: "borrowRate",
+    functionName: "get_borrow_rate",
   });
 
-  const { writeContractAsync: writeRateControllerContractAsync } =
-    useScaffoldWriteContract({
-      contractName: "RateController",
-    });
+  const savingsRateBigInt = useMemo(
+    () => decodeUint256Value(savingsRate),
+    [savingsRate],
+  );
+
+  const borrowRateBigInt = useMemo(
+    () => decodeUint256Value(borrowRate),
+    [borrowRate],
+  );
+
+  const { sendAsync: setSavingsRate } = useScaffoldWriteContract({
+    contractName: "MyUSDStaking",
+    functionName: "set_savings_rate",
+    args: [0n],
+  });
+
+  const { sendAsync: setBorrowRate } = useScaffoldWriteContract({
+    contractName: "MyUSDEngine",
+    functionName: "set_borrow_rate",
+    args: [0n],
+  });
 
   const handleSaveSavingsRate = useCallback(
     async (value: string) => {
       try {
-        await writeRateControllerContractAsync({
-          functionName: "setSavingsRate",
-          args: [BigInt(Math.round(Number(value) * 100))],
+        await setSavingsRate({
+          args: [
+            savingsRateBigInt ? BigInt(Math.round(Number(value) * 100)) : 0n,
+          ],
         });
         setIsEditingSR(false);
       } catch (error) {
         console.error("Failed to update savings rate:", error);
       }
     },
-    [writeRateControllerContractAsync],
+    [setSavingsRate],
   );
 
   const handleSaveBorrowRate = useCallback(
     async (value: string) => {
       try {
-        await writeRateControllerContractAsync({
-          functionName: "setBorrowRate",
-          args: [BigInt(Math.round(Number(value) * 100))],
+        await setBorrowRate({
+          args: [
+            borrowRateBigInt ? BigInt(Math.round(Number(value) * 100)) : 0n,
+          ],
         });
         setIsEditingBR(false);
       } catch (error) {
         console.error("Failed to update borrow rate:", error);
       }
     },
-    [writeRateControllerContractAsync],
+    [setBorrowRate],
+  );
+
+  const handleNewValueChange = useCallback(
+    (setter: (value: string) => void) => (value: string | bigint) => {
+      setter(typeof value === "bigint" ? value.toString() : value);
+    },
+    [],
   );
 
   return (
@@ -147,7 +174,7 @@ const RateControls: React.FC = () => {
           <div className="flex w-full lg:w-1/2 items-center gap-2">
             <RateInput
               label="Borrow Rate"
-              value={borrowRate}
+              value={borrowRateBigInt}
               isEditing={isEditingBR}
               onEdit={() => setIsEditingBR(true)}
               onCancel={() => {
@@ -156,14 +183,14 @@ const RateControls: React.FC = () => {
               }}
               onSave={handleSaveBorrowRate}
               newValue={newBorrowRate}
-              onNewValueChange={setNewBorrowRate}
+              onNewValueChange={handleNewValueChange(setNewBorrowRate)}
             />
           </div>
 
           <div className="flex w-full lg:w-1/2 items-center gap-2">
             <RateInput
               label="Savings Rate"
-              value={savingsRate}
+              value={savingsRateBigInt}
               isEditing={isEditingSR}
               onEdit={() => setIsEditingSR(true)}
               onCancel={() => {
@@ -172,7 +199,7 @@ const RateControls: React.FC = () => {
               }}
               onSave={handleSaveSavingsRate}
               newValue={newSavingsRate}
-              onNewValueChange={setNewSavingsRate}
+              onNewValueChange={handleNewValueChange(setNewSavingsRate)}
               alignRight={true}
             />
           </div>

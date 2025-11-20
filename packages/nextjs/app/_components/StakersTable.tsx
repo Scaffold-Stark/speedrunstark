@@ -5,6 +5,7 @@ import { useAccount } from "~~/hooks/useAccount";
 import { Address as AddressBlock } from "~~/components/scaffold-stark";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 const StakerRow = ({
   staker,
@@ -15,7 +16,7 @@ const StakerRow = ({
 }) => {
   const { data: stakedAmount } = useScaffoldReadContract({
     contractName: "MyUSDStaking",
-    functionName: "getBalance",
+    functionName: "get_balance",
     args: [staker],
   });
 
@@ -26,13 +27,15 @@ const StakerRow = ({
     >
       <td>
         <AddressBlock
-          address={staker}
+          address={staker as `0x${string}`}
           disableAddressLink
           format="short"
           size="sm"
         />
       </td>
-      <td>{Number(formatEther(stakedAmount || 0n)).toFixed(2)}</td>
+      <td>
+        {Number(formatEther(decodeUint256Value(stakedAmount) || 0n)).toFixed(2)}
+      </td>
     </tr>
   );
 };
@@ -47,6 +50,7 @@ const StakersStable = () => {
     blockData: false,
     transactionData: false,
     receiptData: false,
+    fromBlock: 0n,
   });
 
   useEffect(() => {

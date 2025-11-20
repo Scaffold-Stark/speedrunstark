@@ -7,54 +7,55 @@ import { useScaffoldContract } from "~~/hooks/scaffold-stark/useScaffoldContract
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { notification } from "~~/utils/scaffold-stark";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 const StakeOperations = () => {
   const { address } = useAccount();
   const [stakeAmount, setStakeAmount] = useState("");
   const [withdrawDisabled, setWithdrawDisabled] = useState(true);
 
-  const { writeContractAsync: writeMyUSDContract } = useScaffoldWriteContract({
-    contractName: "MyUSD",
-  });
-
   const { data: myUSDCStakingContract } = useScaffoldContract({
     contractName: "MyUSDStaking",
   });
 
-  const { writeContractAsync: writeStakingContract } = useScaffoldWriteContract(
-    {
-      contractName: "MyUSDStaking",
-    },
-  );
+  const { sendAsync: approve } = useScaffoldWriteContract({
+    contractName: "MyUSD",
+    functionName: "approve",
+    args: [
+      myUSDCStakingContract?.address,
+      stakeAmount ? parseEther(stakeAmount) : 0n,
+    ],
+  });
 
-  const { data: shareBalance } = useScaffoldReadContract({
+  const { sendAsync: stake } = useScaffoldWriteContract({
     contractName: "MyUSDStaking",
-    functionName: "userShares",
+    functionName: "stake",
+    args: [stakeAmount ? parseEther(stakeAmount) : 0n],
+  });
+
+  const { sendAsync: withdraw } = useScaffoldWriteContract({
+    contractName: "MyUSDStaking",
+    functionName: "withdraw",
+    args: [],
+  });
+
+  const { data: totalShares } = useScaffoldReadContract({
+    contractName: "MyUSDStaking",
+    functionName: "total_shares",
     args: [address],
   });
 
   useEffect(() => {
-    setWithdrawDisabled(shareBalance === 0n);
-  }, [shareBalance]);
+    setWithdrawDisabled(
+      totalShares ? decodeUint256Value(totalShares) === 0n : true,
+    );
+  }, [totalShares]);
 
   const handleStake = async () => {
-    if (!myUSDCStakingContract) {
-      notification.error("MyUSDStaking contract not found");
-      return;
-    }
     try {
-      await writeMyUSDContract({
-        functionName: "approve",
-        args: [
-          myUSDCStakingContract.address,
-          stakeAmount ? parseEther(stakeAmount) : 0n,
-        ],
-      });
+      await approve();
 
-      await writeStakingContract({
-        functionName: "stake",
-        args: [stakeAmount ? parseEther(stakeAmount) : 0n],
-      });
+      await stake();
       setStakeAmount("");
     } catch (error) {
       console.error("Error staking:", error);
@@ -63,13 +64,16 @@ const StakeOperations = () => {
 
   const handleWithdraw = async () => {
     try {
-      await writeStakingContract({
-        functionName: "withdraw",
-      });
+      await withdraw();
     } catch (error) {
       console.error("Error withdrawing:", error);
     }
   };
+
+  const handleAmountChange =
+    (setter: (value: string) => void) => (value: string | bigint) => {
+      setter(typeof value === "bigint" ? value.toString() : value);
+    };
 
   return (
     <div className="card bg-base-100 w-96 shadow-xl indicator">
@@ -88,7 +92,7 @@ const StakeOperations = () => {
           <div className="flex gap-2 items-center">
             <IntegerInput
               value={stakeAmount}
-              onChange={setStakeAmount}
+              onChange={handleAmountChange(setStakeAmount)}
               placeholder="Amount"
               disableMultiplyBy1e18
             />

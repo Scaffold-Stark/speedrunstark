@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import TooltipInfo from "./TooltipInfo";
 import { useTheme } from "next-themes";
 import {
@@ -12,10 +12,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import type {
+  ContentType as LegendContentRenderer,
+  LegendPayload,
+} from "recharts/types/component/DefaultLegendContent";
 import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { formatDisplayValue } from "~~/utils/helpers";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const PURPLE_COLOR = "#8884d8";
@@ -41,15 +46,21 @@ const calculateDexSwapAmounts = (event: any) => {
   };
 };
 
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: TooltipProps<number, string>) => {
+const CustomTooltip = (
+  tooltipProps: TooltipProps<number, string> & {
+    payload?: Array<{
+      dataKey?: string;
+      value?: number;
+    }>;
+    label?: string | number;
+  },
+) => {
+  const { active, payload, label } = tooltipProps;
+
   if (active && payload && payload.length) {
     const staked =
-      payload.find((p) => p.dataKey === "stakedSupply")?.value || 0;
-    const total = payload.find((p) => p.dataKey === "totalSupply")?.value || 0;
+      payload.find((p) => p?.dataKey === "stakedSupply")?.value || 0;
+    const total = payload.find((p) => p?.dataKey === "totalSupply")?.value || 0;
 
     return (
       <div className="bg-base-200 border border-base-300 rounded-lg px-3 my-0 shadow-lg">
@@ -73,14 +84,17 @@ const SupplyGraph = () => {
   const isDarkMode = resolvedTheme === "dark";
   const strokeColor = isDarkMode ? "#ffffff" : "#000000";
 
-  const { data: ethPrice } = useScaffoldReadContract({
+  const { data: strkMyUSDPrice } = useScaffoldReadContract({
     contractName: "Oracle",
-    functionName: "getETHUSDPrice",
+    functionName: "get_strk_myusd_price",
   });
 
-  const initialDexSupply = Number(
-    formatEther(ethPrice ? ethPrice * 10000000n : 0n),
+  const strkMyUSDPriceBigInt = useMemo(
+    () => decodeUint256Value(strkMyUSDPrice),
+    [strkMyUSDPrice],
   );
+
+  const initialDexSupply = Number(formatEther(strkMyUSDPriceBigInt || 0n));
 
   const { data: debtSharesMintedEvents, isLoading: isDebtSharesMintedLoading } =
     useScaffoldEventHistory({
@@ -90,6 +104,7 @@ const SupplyGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const { data: debtSharesBurnedEvents, isLoading: isDebtSharesBurnedLoading } =
@@ -100,6 +115,7 @@ const SupplyGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const { data: stakedEvents, isLoading: isStakedLoading } =
@@ -110,6 +126,7 @@ const SupplyGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const { data: withdrawnEvents, isLoading: isWithdrawnLoading } =
@@ -120,6 +137,7 @@ const SupplyGraph = () => {
       blockData: true,
       transactionData: false,
       receiptData: false,
+      fromBlock: 0n,
     });
 
   const { data: swapEvents, isLoading: isSwapLoading } =
@@ -128,6 +146,7 @@ const SupplyGraph = () => {
       eventName: "Swap",
       watch: true,
       blockData: true,
+      fromBlock: 0n,
     });
 
   const isLoading =
@@ -153,19 +172,19 @@ const SupplyGraph = () => {
     const prevStakedSupply = acc[idx - 1]?.stakedSupply || 0;
     let minted =
       event?.eventName === "DebtSharesMinted"
-        ? Number(formatEther(event?.args?.amount || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
         : 0;
     const burned =
       event?.eventName === "DebtSharesBurned"
-        ? Number(formatEther(event?.args?.amount || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
         : 0;
     const staked =
       event?.eventName === "Staked"
-        ? Number(formatEther(event?.args?.amount || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
         : 0;
     const withdrawn =
       event?.eventName === "Withdrawn"
-        ? Number(formatEther(event?.args?.amount || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
         : 0;
 
     const { sent: dexSentMyUSDAmount, received: dexReceivedMyUSDAmount } =
@@ -286,10 +305,36 @@ const SupplyGraph = () => {
                 formatter={(value) => (
                   <span style={{ color: strokeColor }}>{value}</span>
                 )}
-                payload={
-                  stakedEvents && stakedEvents?.length > 0
+                content={
+                  stakedEvents && stakedEvents.length > 0
                     ? undefined
-                    : [{ value: "Total", type: "line", color: ORANGE_COLOR }]
+                    : (((legendProps) => {
+                        const legendPayload = (
+                          (legendProps?.payload as
+                            | LegendPayload[]
+                            | undefined) ?? []
+                        ).filter((item) => item.value === "Total");
+
+                        if (legendPayload.length === 0) {
+                          return null;
+                        }
+
+                        return (
+                          <div className="flex gap-4 pl-4 pt-2">
+                            {legendPayload.map((entry) => (
+                              <span
+                                key={entry.value}
+                                className="text-sm font-medium"
+                                style={{
+                                  color: entry.color ?? strokeColor,
+                                }}
+                              >
+                                {entry.value}
+                              </span>
+                            ))}
+                          </div>
+                        );
+                      }) satisfies LegendContentRenderer)
                 }
               />
             </LineChart>

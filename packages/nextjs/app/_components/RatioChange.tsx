@@ -1,35 +1,46 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { formatEther } from "viem";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { calculatePositionRatio, getRatioColorClass } from "~~/utils/helpers";
+import { decodeUint256Value } from "~~/utils/scaffold-stark";
 
 type UserPositionProps = {
   user: string;
-  ethPrice: number;
+  strkPrice: number;
   inputAmount: number;
 };
 
-const RatioChange = ({ user, ethPrice, inputAmount }: UserPositionProps) => {
+const RatioChange = ({ user, strkPrice, inputAmount }: UserPositionProps) => {
   const { data: userCollateral } = useScaffoldReadContract({
     contractName: "MyUSDEngine",
-    functionName: "s_userCollateral",
+    functionName: "get_user_collateral",
     args: [user],
   });
 
   const { data: userMinted } = useScaffoldReadContract({
     contractName: "MyUSDEngine",
-    functionName: "getCurrentDebtValue",
+    functionName: "get_current_debt_value",
     args: [user],
   });
 
-  const mintedAmount = Number(formatEther(userMinted || 0n));
+  const userCollateralBigInt = useMemo(
+    () => decodeUint256Value(userCollateral),
+    [userCollateral],
+  );
+
+  const userMintedBigInt = useMemo(
+    () => decodeUint256Value(userMinted),
+    [userMinted],
+  );
+
+  const mintedAmount = Number(formatEther(userMintedBigInt || 0n));
   const ratio =
     mintedAmount === 0
       ? "N/A"
       : calculatePositionRatio(
-          Number(formatEther(userCollateral || 0n)),
+          Number(formatEther(userCollateralBigInt || 0n)),
           mintedAmount,
-          ethPrice,
+          strkPrice,
         );
 
   const getNewRatio = (mintedAmount: number, inputAmount: number) => {
@@ -40,9 +51,9 @@ const RatioChange = ({ user, ethPrice, inputAmount }: UserPositionProps) => {
       return <span className={getRatioColorClass(1000)}>∞</span>;
     }
     const newRatio = calculatePositionRatio(
-      Number(formatEther(userCollateral || 0n)),
+      Number(formatEther(userCollateralBigInt || 0n)),
       newMintedAmount,
-      ethPrice,
+      strkPrice,
     );
     return (
       <span className={getRatioColorClass(newRatio)}>

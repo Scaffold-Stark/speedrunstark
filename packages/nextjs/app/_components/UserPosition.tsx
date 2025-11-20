@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { formatEther, parseEther } from "viem";
 import { Address as AddressBlock } from "~~/components/scaffold-stark";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark/useDeployedContractInfo";
@@ -10,34 +10,41 @@ import {
   formatDisplayValue,
   getRatioColorClass,
 } from "~~/utils/helpers";
-import { notification } from "~~/utils/scaffold-stark";
+import { decodeUint256Value, notification } from "~~/utils/scaffold-stark";
 
 type UserPositionProps = {
   user: string;
-  ethPrice: number;
+  strkPrice: number;
   connectedAddress: string;
 };
 
 const UserPosition = ({
   user,
-  ethPrice,
+  strkPrice,
   connectedAddress,
 }: UserPositionProps) => {
   const { data: userCollateral } = useScaffoldReadContract({
     contractName: "MyUSDEngine",
-    functionName: "s_userCollateral",
+    functionName: "get_user_collateral",
     args: [user],
   });
+  const userCollateralBigInt = useMemo(
+    () => decodeUint256Value(userCollateral),
+    [userCollateral],
+  );
 
   const { data: userMinted } = useScaffoldReadContract({
     contractName: "MyUSDEngine",
-    functionName: "getCurrentDebtValue",
+    functionName: "get_current_debt_value",
     args: [user],
   });
+  const userMintedBigInt = useMemo(
+    () => decodeUint256Value(userMinted),
+    [userMinted],
+  );
 
-  const { data: stablecoinEngineContract } = useDeployedContractInfo({
-    contractName: "MyUSDEngine",
-  });
+  const { data: stablecoinEngineContract } =
+    useDeployedContractInfo("MyUSDEngine");
 
   const { data: allowance } = useScaffoldReadContract({
     contractName: "MyUSD",
@@ -45,25 +52,32 @@ const UserPosition = ({
     args: [user, stablecoinEngineContract?.address],
   });
 
-  const {
-    writeContractAsync: writeStablecoinEngineContract,
-    isPending: isLiquidating,
-  } = useScaffoldWriteContract({
-    contractName: "MyUSDEngine",
-  });
-  const { writeContractAsync: writeStablecoinContract } =
+  const { sendAsync: liquidate, isPending: isLiquidating } =
     useScaffoldWriteContract({
-      contractName: "MyUSD",
+      contractName: "MyUSDEngine",
+      functionName: "liquidate",
+      args: [user],
     });
 
-  const mintedAmount = Number(formatEther(userMinted || 0n));
+  const { sendAsync: approve } = useScaffoldWriteContract({
+    contractName: "MyUSD",
+    functionName: "approve",
+    args: [
+      stablecoinEngineContract?.address,
+      BigInt(
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      ),
+    ],
+  });
+
+  const mintedAmount = Number(formatEther(userMintedBigInt || 0n));
   const ratio =
     mintedAmount === 0
       ? "N/A"
       : calculatePositionRatio(
-          Number(formatEther(userCollateral || 0n)),
+          Number(formatEther(userCollateralBigInt || 0n)),
           mintedAmount,
-          ethPrice,
+          strkPrice,
         );
 
   const formattedRatio =
@@ -83,22 +97,12 @@ const UserPosition = ({
       return;
     try {
       if (allowance < userMinted) {
-        await writeStablecoinContract({
-          functionName: "approve",
-          args: [
-            stablecoinEngineContract?.address,
-            BigInt(
-              "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            ),
-          ],
-        });
+        await approve();
       }
-      await writeStablecoinEngineContract({
-        functionName: "liquidate",
-        args: [user],
-      });
-      const mintedValue = Number(formatEther(userMinted || 0n)) / ethPrice;
-      const totalCollateral = Number(formatEther(userCollateral || 0n));
+      await liquidate();
+      const mintedValue =
+        Number(formatEther(userMintedBigInt || 0n)) / strkPrice;
+      const totalCollateral = Number(formatEther(userCollateralBigInt || 0n));
       const rewardValue =
         mintedValue * 1.1 > totalCollateral
           ? totalCollateral.toFixed(2)
@@ -109,8 +113,8 @@ const UserPosition = ({
           <p className="font-bold mt-0 mb-1">Liquidation successful</p>
           <p className="m-0">You liquidated {shortAddress}&apos;s position.</p>
           <p className="m-0">
-            You repaid {Number(formatEther(userMinted)).toFixed(2)} {tokenName}{" "}
-            and received {rewardValue} in ETH collateral.
+            You repaid {Number(formatEther(userMintedBigInt || 0n)).toFixed(2)}{" "}
+            {tokenName} and received {rewardValue} in STRK collateral.
           </p>
         </>,
       );
@@ -119,7 +123,7 @@ const UserPosition = ({
     }
   };
 
-  if (userCollateral === parseEther("10000000000000000000")) return null;
+  if (userCollateralBigInt === parseEther("10000000000000000000")) return null;
 
   return (
     <tr
@@ -128,7 +132,7 @@ const UserPosition = ({
     >
       <td>
         <AddressBlock
-          address={user}
+          address={user as `0x${string}`}
           disableAddressLink
           format="short"
           size="sm"
@@ -137,17 +141,17 @@ const UserPosition = ({
       <td>
         <div
           className="tooltip tooltip-primary"
-          data-tip={`${Number(formatEther(userCollateral || 0n)).toFixed(2)} ETH`}
+          data-tip={`${Number(formatEther(userCollateralBigInt || 0n)).toFixed(2)} STRK`}
         >
-          {formatDisplayValue(Number(formatEther(userCollateral || 0n)))}
+          {formatDisplayValue(Number(formatEther(userCollateralBigInt || 0n)))}
         </div>
       </td>
       <td>
         <div
           className="tooltip tooltip-primary"
-          data-tip={`${Number(formatEther(userMinted || 0n)).toFixed(2)} ${tokenName}`}
+          data-tip={`${Number(formatEther(userMintedBigInt || 0n)).toFixed(2)} ${tokenName}`}
         >
-          {formatDisplayValue(Number(formatEther(userMinted || 0n)))}
+          {formatDisplayValue(Number(formatEther(userMintedBigInt || 0n)))}
         </div>
       </td>
       <td className={getRatioColorClass(ratio)}>

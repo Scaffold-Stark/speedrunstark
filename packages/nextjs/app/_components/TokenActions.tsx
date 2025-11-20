@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { TokenSwapModal } from "./Modals/TokenSwapModal";
 import { TokenTransferModal } from "./Modals/TokenTransferModal";
 import TooltipInfo from "./TooltipInfo";
@@ -12,33 +12,47 @@ import {
 import { useAnimationConfig } from "~~/hooks/scaffold-stark/useAnimationConfig";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { tokenName } from "~~/utils/constant";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
+import { devnet } from "@starknet-react/chains";
 
 const TokenActions = () => {
-  const { address, chain: ConnectedChain } = useAccount();
+  const { address, chainId: ConnectedChainId } = useAccount();
   const transferModalId = `${tokenName}-transfer-modal`;
   const swapModalId = `${tokenName}-swap-modal`;
 
   const { data: stablecoinBalance } = useScaffoldReadContract({
     contractName: "MyUSD",
-    functionName: "balanceOf",
+    functionName: "balance_of",
     args: [address],
   });
+  const stablecoinBalanceBigInt = useMemo(
+    () => decodeUint256Value(stablecoinBalance),
+    [stablecoinBalance],
+  );
 
-  const { data: ethMyUSDPrice } = useScaffoldReadContract({
+  const { data: strkMyUSDPrice } = useScaffoldReadContract({
     contractName: "Oracle",
-    functionName: "getETHMyUSDPrice",
+    functionName: "get_strk_myusd_price",
   });
+  const strkMyUSDPriceBigInt = useMemo(
+    () => decodeUint256Value(strkMyUSDPrice),
+    [strkMyUSDPrice],
+  );
 
-  const { data: ethUSDPrice } = useScaffoldReadContract({
+  const { data: strkUSDPrice } = useScaffoldReadContract({
     contractName: "Oracle",
-    functionName: "getETHUSDPrice",
+    functionName: "get_strk_usd_price",
   });
-  const ethPriceInUSD = Number(formatEther(ethUSDPrice || 0n));
+  const strkUSDPriceBigInt = useMemo(
+    () => decodeUint256Value(strkUSDPrice),
+    [strkUSDPrice],
+  );
+  const strkPriceInUSD = Number(formatEther(strkUSDPriceBigInt || 0n));
 
   const myUSDPrice =
-    1 / (Number(formatEther(ethMyUSDPrice || 0n)) / ethPriceInUSD);
+    1 / (Number(formatEther(strkMyUSDPriceBigInt || 0n)) / strkPriceInUSD);
 
-  const tokenBalance = `${Math.floor(Number(formatEther(stablecoinBalance || 0n)) * 100) / 100}`;
+  const tokenBalance = `${Math.floor(Number(formatEther(stablecoinBalanceBigInt || 0n)) * 100) / 100}`;
   const { showAnimation } = useAnimationConfig(stablecoinBalance);
 
   return (
@@ -75,7 +89,7 @@ const TokenActions = () => {
             >
               <PaperAirplaneIcon className="h-3 w-3" />
             </label>
-            {ConnectedChain?.id === hardhat.id && (
+            {ConnectedChainId === devnet.id && (
               <label
                 htmlFor={`${swapModalId}`}
                 className="btn btn-primary btn-circle btn-xs"
@@ -94,7 +108,7 @@ const TokenActions = () => {
       <TokenSwapModal
         tokenBalance={tokenBalance}
         connectedAddress={address || ""}
-        ETHprice={Number(formatEther(ethMyUSDPrice || 0n)).toFixed(2)}
+        STRKprice={Number(formatEther(strkMyUSDPriceBigInt || 0n)).toFixed(2)}
         modalId={`${swapModalId}`}
       />
     </div>

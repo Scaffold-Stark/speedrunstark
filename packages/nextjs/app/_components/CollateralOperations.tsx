@@ -8,17 +8,30 @@ const CollateralOperations = () => {
   const [collateralAmount, setCollateralAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
 
-  const { writeContractAsync: writeStablecoinEngineContract } =
-    useScaffoldWriteContract({
-      contractName: "MyUSDEngine",
-    });
+  const handleAmountChange =
+    (setter: (value: string) => void) => (value: string | bigint) => {
+      if (typeof value === "bigint") {
+        setter(value.toString());
+        return;
+      }
+      setter(value);
+    };
+
+  const { sendAsync: addCollateral } = useScaffoldWriteContract({
+    contractName: "MyUSDEngine",
+    functionName: "add_collateral",
+    args: [collateralAmount ? parseEther(collateralAmount) : 0n],
+  });
+
+  const { sendAsync: withdrawCollateral } = useScaffoldWriteContract({
+    contractName: "MyUSDEngine",
+    functionName: "withdraw_collateral",
+    args: [withdrawAmount ? parseEther(withdrawAmount) : 0n],
+  });
 
   const handleAddCollateral = async () => {
     try {
-      await writeStablecoinEngineContract({
-        functionName: "addCollateral",
-        value: collateralAmount ? parseEther(collateralAmount) : 0n,
-      });
+      await addCollateral();
       setCollateralAmount("");
     } catch (error) {
       console.error("Error adding collateral:", error);
@@ -27,10 +40,7 @@ const CollateralOperations = () => {
 
   const handleWithdrawCollateral = async () => {
     try {
-      await writeStablecoinEngineContract({
-        functionName: "withdrawCollateral",
-        args: [withdrawAmount ? parseEther(withdrawAmount) : 0n],
-      });
+      await withdrawCollateral();
       setWithdrawAmount("");
     } catch (error) {
       console.error("Error withdrawing collateral:", error);
@@ -45,7 +55,7 @@ const CollateralOperations = () => {
         infoText="Use these controls to add or withdraw collateral from the MyUSDEngine pool"
       />
       <div className="card-body">
-        <h2 className="card-title">Collateral Operations (ETH)</h2>
+        <h2 className="card-title">Collateral Operations (STRK)</h2>
 
         <div className="form-control">
           <label className="label">
@@ -54,7 +64,7 @@ const CollateralOperations = () => {
           <div className="flex gap-2 items-center">
             <IntegerInput
               value={collateralAmount}
-              onChange={setCollateralAmount}
+              onChange={handleAmountChange(setCollateralAmount)}
               placeholder="Amount"
               disableMultiplyBy1e18
             />
@@ -75,7 +85,7 @@ const CollateralOperations = () => {
           <div className="flex gap-2 items-center">
             <IntegerInput
               value={withdrawAmount}
-              onChange={setWithdrawAmount}
+              onChange={handleAmountChange(setWithdrawAmount)}
               placeholder="Amount"
               disableMultiplyBy1e18
             />

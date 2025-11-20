@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TooltipInfo from "./TooltipInfo";
 import UserPosition from "./UserPosition";
 import { formatEther } from "viem";
 import { useAccount } from "~~/hooks/useAccount";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
-import { tokenName } from "~~/utils/constant";
+import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 const UserPositionsTable = () => {
   const { address: connectedAddress } = useAccount();
@@ -17,11 +17,16 @@ const UserPositionsTable = () => {
     blockData: false,
     transactionData: false,
     receiptData: false,
+    fromBlock: 0n,
   });
-  const { data: ethPrice } = useScaffoldReadContract({
+  const { data: strkPrice } = useScaffoldReadContract({
     contractName: "Oracle",
-    functionName: "getETHMyUSDPrice",
+    functionName: "get_strk_myusd_price",
   });
+  const strkPriceBigInt = useMemo(
+    () => decodeUint256Value(strkPrice),
+    [strkPrice],
+  );
 
   useEffect(() => {
     if (!events) return;
@@ -88,7 +93,7 @@ const UserPositionsTable = () => {
                   key={user}
                   user={user}
                   connectedAddress={connectedAddress || ""}
-                  ethPrice={Number(formatEther(ethPrice || 0n))}
+                  strkPrice={Number(formatEther(strkPriceBigInt || 0n))}
                 />
               ))
             )}

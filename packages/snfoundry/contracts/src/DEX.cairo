@@ -91,13 +91,13 @@ pub mod DEX {
     }
 
     // Constants
-    const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18 (equivalent to 1 ether in Solidity)
+    const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18
 
     // Custom errors
     mod Errors {
         pub const ALREADY_HAS_LIQUIDITY: felt252 = 'DEX: init - already has liq';
         pub const TRANSFER_FAILED: felt252 = 'DEX: transfer failed';
-        pub const CANNOT_SWAP_ZERO_ETH: felt252 = 'cannot swap 0 ETH';
+        pub const CANNOT_SWAP_ZERO_STRK: felt252 = 'cannot swap 0 STRK';
         pub const CANNOT_SWAP_ZERO_TOKENS: felt252 = 'cannot swap 0 tokens';
         pub const INSUFFICIENT_TOKEN_BALANCE: felt252 = 'insufficient token balance';
         pub const INSUFFICIENT_ALLOWANCE: felt252 = 'insufficient allowance';
@@ -115,7 +115,7 @@ pub mod DEX {
     impl DEXImpl of IDEX<ContractState> {
         /// Initialize the DEX with initial liquidity
         /// @param tokens: Amount of MyUSD tokens to deposit
-        /// @param strk_amount: Amount of STRK to deposit (equivalent to msg.value in Solidity)
+        /// @param strk_amount: Amount of STRK to deposit
         fn init(ref self: ContractState, tokens: u256, strk_amount: u256) -> u256 {
             assert(self.total_liquidity.read() == 0, Errors::ALREADY_HAS_LIQUIDITY);
 
@@ -127,7 +127,7 @@ pub mod DEX {
             let success = strk_dispatcher.transfer_from(caller, contract_addr, strk_amount);
             assert(success, Errors::TRANSFER_FAILED);
 
-            // Set total liquidity to STRK amount (equivalent to address(this).balance in Solidity)
+            // Set total liquidity to STRK amount
             self.total_liquidity.write(strk_amount);
             self.liquidity.write(caller, strk_amount);
 
@@ -147,13 +147,13 @@ pub mod DEX {
             numerator / denominator
         }
 
-        /// Get current price of STRK in MyUSD (equivalent to ETH price in Solidity)
+        /// Get current price of STRK in MyUSD
         fn current_price(self: @ContractState) -> u256 {
             let strk_balance = self._get_strk_balance_internal();
             let token_dispatcher = IERC20Dispatcher { contract_address: self.token.read() };
             let token_balance = token_dispatcher.balance_of(get_contract_address());
 
-            // Use PRECISION (1e18) as input, equivalent to "1 ether" in Solidity
+            // Use PRECISION (1e18) as input
             self.price(PRECISION, strk_balance, token_balance)
         }
 
@@ -169,13 +169,12 @@ pub mod DEX {
         /// Swap STRK for MyUSD or MyUSD for STRK
         /// @param input_amount: Amount to swap
         /// @param strk_amount: If > 0, swaps STRK to token; if 0, swaps token to STRK
-        /// NOTE: In Solidity, this is detected via msg.value. In Cairo, we use explicit parameter.
         fn swap(ref self: ContractState, input_amount: u256, strk_amount: u256) -> u256 {
             let output_amount = if strk_amount > 0 && input_amount == strk_amount {
-                // STRK to Token swap (equivalent to ethToToken in Solidity)
+                // STRK to Token swap
                 self._strk_to_token(strk_amount)
             } else {
-                // Token to STRK swap (equivalent to tokenToEth in Solidity)
+                // Token to STRK swap
                 self._token_to_strk(input_amount)
             };
 
@@ -184,14 +183,14 @@ pub mod DEX {
         }
 
         /// Add liquidity to the pool
-        /// @param strk_amount: Amount of STRK to deposit (equivalent to msg.value in Solidity)
+        /// @param strk_amount: Amount of STRK to deposit
         fn deposit(ref self: ContractState, strk_amount: u256) -> u256 {
             assert(strk_amount > 0, Errors::MUST_SEND_VALUE);
 
             let caller = get_caller_address();
             let contract_addr = get_contract_address();
 
-            // Get reserves (subtract strk_amount equivalent to "address(this).balance - msg.value")
+            // Get reserves (subtract strk_amount)
             let strk_reserve = self._get_strk_balance_internal();
             let token_dispatcher = IERC20Dispatcher { contract_address: self.token.read() };
             let token_reserve = token_dispatcher.balance_of(contract_addr);
@@ -288,15 +287,14 @@ pub mod DEX {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        /// Swap STRK for MyUSD tokens (equivalent to ethToToken in Solidity)
+        /// Swap STRK for MyUSD tokens
         fn _strk_to_token(ref self: ContractState, strk_amount: u256) -> u256 {
-            assert(strk_amount > 0, Errors::CANNOT_SWAP_ZERO_ETH);
+            assert(strk_amount > 0, Errors::CANNOT_SWAP_ZERO_STRK);
 
             let caller = get_caller_address();
             let contract_addr = get_contract_address();
 
-            // Get reserves (subtract strk_amount, equivalent to "address(this).balance -
-            // msg.value")
+            // Get reserves (subtract strk_amount)
             let strk_reserve = self._get_strk_balance_internal();
             let token_dispatcher = IERC20Dispatcher { contract_address: self.token.read() };
             let token_reserve = token_dispatcher.balance_of(contract_addr);
@@ -313,15 +311,14 @@ pub mod DEX {
             let success = token_dispatcher.transfer(caller, token_output);
             assert(success, Errors::TRANSFER_FAILED);
 
-            // Use address(0) equivalent for STRK to match Solidity event pattern
-            // In Solidity, ETH is represented as address(0) in events
+            // Use address(0) equivalent for STRK
             let zero_address: ContractAddress = 0.try_into().unwrap();
 
             self
                 .emit(
                     Swap {
                         swapper: caller,
-                        input_token: zero_address, // address(0) for native currency
+                        input_token: zero_address,
                         input_amount: strk_amount,
                         output_token: self.token.read(),
                         output_amount: token_output,
@@ -331,7 +328,7 @@ pub mod DEX {
             token_output
         }
 
-        /// Swap MyUSD tokens for STRK (equivalent to tokenToEth in Solidity)
+        /// Swap MyUSD tokens for STRK
         fn _token_to_strk(ref self: ContractState, token_input: u256) -> u256 {
             assert(token_input > 0, Errors::CANNOT_SWAP_ZERO_TOKENS);
 
@@ -366,7 +363,7 @@ pub mod DEX {
             let success = strk_dispatcher.transfer(caller, strk_output);
             assert(success, Errors::TRANSFER_FAILED);
 
-            // Use address(0) for STRK output to match Solidity pattern
+            // Use address(0) for STRK output
             let zero_address: ContractAddress = 0.try_into().unwrap();
 
             self
@@ -375,7 +372,7 @@ pub mod DEX {
                         swapper: caller,
                         input_token: self.token.read(),
                         input_amount: token_input,
-                        output_token: zero_address, // address(0) for native currency
+                        output_token: zero_address,
                         output_amount: strk_output,
                     },
                 );

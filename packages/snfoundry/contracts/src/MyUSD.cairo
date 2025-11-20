@@ -7,6 +7,8 @@ pub trait IMyUSD<TContractState> {
     fn burn_from(ref self: TContractState, account: ContractAddress, amount: u256);
 
     // Overridden ERC20 functions with custom logic
+    fn approve(ref self: TContractState, spender: ContractAddress, amount: u256) -> bool;
+    fn allowance(self: @TContractState, owner: ContractAddress, spender: ContractAddress) -> u256;
     fn balance_of(self: @TContractState, account: ContractAddress) -> u256;
     fn total_supply(self: @TContractState) -> u256;
     fn transfer(ref self: TContractState, recipient: ContractAddress, amount: u256) -> bool;
@@ -93,7 +95,6 @@ pub mod MyUSD {
     #[abi(embed_v0)]
     impl MyUSDImpl of IMyUSD<ContractState> {
         /// Burns tokens from an account (only callable by engine contract)
-        /// Equivalent to Solidity's burnFrom with authorization check
         fn burn_from(ref self: ContractState, account: ContractAddress, amount: u256) {
             let caller = get_caller_address();
             assert(caller == self.engine_contract.read(), Errors::NOT_AUTHORIZED);
@@ -123,6 +124,17 @@ pub mod MyUSD {
             // Mint tokens
             self.erc20.mint(to, amount);
             true
+        }
+
+        fn approve(ref self: ContractState, spender: ContractAddress, amount: u256) -> bool {
+            self.erc20._approve(get_caller_address(), spender, amount);
+            true
+        }
+
+        fn allowance(
+            self: @ContractState, owner: ContractAddress, spender: ContractAddress,
+        ) -> u256 {
+            self.erc20.allowance(owner, spender)
         }
 
         /// Overrides balanceOf to handle virtual balances for staking
