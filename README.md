@@ -525,7 +525,7 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
     - This internal view function uses the last function and it reverts if the position is unsafe
     - Get the position ratio using `calculate_position_ratio(user)`.
     - A position is safe if `(position_ratio * 100) >= (COLLATERAL_RATIO * PRECISION)`.
-    - If unsafe, revert with `Engine__UnsafePositionRatio()`.
+    - If unsafe, use `assert((position_ratio * 100) >= (COLLATERAL_RATIO * PRECISION), Errors::UNSAFE_POSITION_RATIO);`.
 
     <details markdown='1'>
     <summary>💡 Hint: Validating Position Safety</summary>
@@ -543,9 +543,10 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
     ```cairo
     fn _validate_position(self: @ContractState, user: ContractAddress) {
         let position_ratio = self.calculate_position_ratio(user);
-        if (position_ratio * 100) < (COLLATERAL_RATIO * PRECISION) {
-            self.emit(Event::Engine__UnsafePositionRatio(Engine__UnsafePositionRatio {}));
-        }
+        assert(
+            (position_ratio * 100) >= (COLLATERAL_RATIO * PRECISION),
+            Errors::UNSAFE_POSITION_RATIO
+        );
     }
     ```
 
@@ -556,7 +557,7 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
 
 4.  **Implement `mint_myusd(amount: u256)`**
     - Finally get to mint some stablecoin tokens against your collateral!
-    - Revert with `Engine__InvalidAmount()` if `amount` is 0.
+    - Use `assert(amount > 0, Errors::INVALID_AMOUNT);` if `amount` is 0.
     - Calculate how many shares this mint amount represents using `_get_myusd_to_shares(amount)`.
     - Update the user's debt shares: `s_user_debt_shares[msg.sender] += shares`.
     - Update total debt shares: `total_debt_shares += shares`.
@@ -659,10 +660,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
     fn set_borrow_rate(ref self: ContractState, new_rate: u256) {
         // Only rate controller can set borrow rate
         let caller = starknet::get_caller_address();
-        if caller != self.i_rate_controller.read() {
-            self.emit(Event::Engine__Unauthorized(Engine__Unauthorized {}));
-            return;
-        }
+        assert(caller == self.i_rate_controller.read(), Errors::NOT_RATE_CONTROLLER);
 
         self._accrue_interest();
         self.borrow_rate.write(new_rate);
@@ -891,7 +889,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
       - Paying off the user's debt
       - Receiving their collateral (plus a bonus)
       - Clearing their debt
-    - Check if the position is actually liquidatable using `if (!is_liquidatable(user)) revert Engine__NotLiquidatable();`.
+    - Check if the position is actually liquidatable using `assert(self.is_liquidatable(user), Errors::NOT_LIQUIDATABLE);`.
     - Get `user_debt_value = get_current_debt_value(user)`.
     - Get `user_collateral = s_user_collateral[user]`.
     - Get `collateral_value = calculate_collateral_value(user)`.
@@ -927,10 +925,7 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
     ```cairo
     fn liquidate(ref self: ContractState, user: ContractAddress) {
-        if !self.is_liquidatable(user) {
-            self.emit(Event::Engine__NotLiquidatable(Engine__NotLiquidatable {}));
-            return;
-        }
+        assert(self.is_liquidatable(user), Errors::NOT_LIQUIDATABLE);
 
         let liquidator = starknet::get_caller_address();
         let user_debt_value = self.get_current_debt_value(user);
@@ -1081,7 +1076,7 @@ No MyUSD can exist that is not paying for the borrow rate so <b>as long as the s
 
 ---
 
-🛡️ Now that we understand where the yield comes from, we need to ensure our system can always pay it. Return to your `set_borrow_rate` function in `MyUSDEngine.cairo` and add a check to ensure the new rate is greater than or equal to the savings rate. This ensures the system can always pay stakers their yield. If the new rate is too low, revert with `Engine__InvalidBorrowRate()`.
+🛡️ Now that we understand where the yield comes from, we need to ensure our system can always pay it. Return to your `set_borrow_rate` function in `MyUSDEngine.cairo` and add a check to ensure the new rate is greater than or equal to the savings rate. This ensures the system can always pay stakers their yield. If the new rate is too low, use `assert(new_rate >= current_savings_rate, Errors::INVALID_BORROW_RATE);`.
 
 <details markdown='1'>
 <summary>💡 Hint: Setting Borrow Rate</summary>
@@ -1098,12 +1093,11 @@ The borrow rate must always be high enough to cover the savings rate:
 
 ```cairo
 fn set_borrow_rate(ref self: ContractState, new_rate: u256) {
-    let current_savings_rate = self.i_staking.read().savings_rate();
+    let caller = starknet::get_caller_address();
+    assert(caller == self.i_rate_controller.read(), Errors::NOT_RATE_CONTROLLER);
 
-    if new_rate < current_savings_rate {
-        self.emit(Event::Engine__InvalidBorrowRate(Engine__InvalidBorrowRate {}));
-        return;
-    }
+    let current_savings_rate = self._get_staking().savings_rate();
+    assert(new_rate >= current_savings_rate, Errors::INVALID_BORROW_RATE);
 
     self._accrue_interest();
     self.borrow_rate.write(new_rate);
@@ -1126,7 +1120,7 @@ fn set_borrow_rate(ref self: ContractState, new_rate: u256) {
     - `MyUSDEngine.set_borrow_rate()`
     - `MyUSDStaking.set_savings_rate()`
 3.  **Constraint in `MyUSDEngine.set_borrow_rate()`:**
-    - Remember the line: `if (new_rate < i_staking.savings_rate()) revert Engine__InvalidBorrowRate();`
+    - Remember the line: `assert(new_rate >= current_savings_rate, Errors::INVALID_BORROW_RATE);`
     - This implies the `borrow_rate` in your engine should generally be higher than or equal to the `savings_rate` offered by `MyUSDStaking.cairo`. This makes sense: the system needs to earn more from borrowers than it pays out to savers to be sustainable.
 4.  **The Levers for Peg Stability:**
     - **High Borrow Rate:** Discourages minting MyUSD (reduces potential sell pressure).
