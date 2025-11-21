@@ -5,12 +5,17 @@ import { formatEther } from "viem";
 import { useAccount } from "~~/hooks/useAccount";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
+import { normalizeToHexAddress } from "~~/utils/scaffold-stark/common";
 import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
 
 const UserPositionsTable = () => {
   const { address: connectedAddress } = useAccount();
   const [users, setUsers] = useState<string[]>([]);
-  const { data: events, isLoading } = useScaffoldEventHistory({
+  const {
+    data: events,
+    isLoading,
+    error: positionsEventsError,
+  } = useScaffoldEventHistory({
     contractName: "MyUSDEngine",
     eventName: "CollateralAdded",
     watch: true,
@@ -28,21 +33,40 @@ const UserPositionsTable = () => {
     [strkPrice],
   );
 
+  const resolveAddress = (value: unknown): string | undefined => {
+    if (typeof value === "string" && value.length > 0) {
+      return value;
+    }
+    if (typeof value === "bigint") {
+      try {
+        return normalizeToHexAddress(value);
+      } catch {
+        return undefined;
+      }
+    }
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return normalizeToHexAddress(BigInt(Math.floor(value)));
+    }
+    return undefined;
+  };
+
   useEffect(() => {
     if (!events) return;
 
     setUsers((prevUsers) => {
-      const uniqueUsers = new Set([...prevUsers]);
-      events
-        .filter((event) => event && event.args)
-        .map((event) => event.args.user)
-        .filter((user): user is string => !!user)
-        .forEach((user) => uniqueUsers.add(user));
-      return uniqueUsers.size > prevUsers.length
-        ? Array.from(uniqueUsers)
-        : prevUsers;
+      const uniqueUsers = new Set(prevUsers);
+      events.forEach((event) => {
+        const rawUser = event?.args?.user;
+        const parsed = resolveAddress(rawUser);
+        if (parsed) {
+          uniqueUsers.add(parsed.toLowerCase());
+        }
+      });
+      const asArray = Array.from(uniqueUsers);
+      console.debug("[UserPositionsTable] tracked users", asArray);
+      return asArray;
     });
-  }, [events, users]);
+  }, [events]);
 
   return (
     <div className="card bg-base-100 w-full shadow-xl indicator">
@@ -81,7 +105,7 @@ const UserPositionsTable = () => {
                   <div className="skeleton w-20 h-6"></div>
                 </td>
               </tr>
-            ) : users.length < 2 ? ( // Only deployer account is has a position, but we hide it
+            ) : users.length === 0 ? (
               <tr>
                 <td colSpan={5} className="text-center">
                   No user positions available
