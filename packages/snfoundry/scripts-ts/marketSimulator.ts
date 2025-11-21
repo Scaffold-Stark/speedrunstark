@@ -50,20 +50,6 @@ type DeploymentAddresses = {
 const burnerAccounts: BurnerAccount[] = [
   {
     accountAddress:
-      "0x64b48806902a367c8598f4f95c305e8c1a1acba5f082d294a43793113115691",
-    privateKey: "0x71d7bb07b9a64f6f78ac4c816aff4da9",
-    publicKey:
-      "0x39d9e6ce352ad4530a0ef5d5a18fd3303c3606a7fa6ac5b620020ad681cc33b",
-  },
-  {
-    accountAddress:
-      "0x78662e7352d062084b0010068b99288486c2d8b914f6e2a55ce945f8792c8b1",
-    privateKey: "0xe1406455b7d66b1690803be066cbe5e",
-    publicKey:
-      "0x7a1bb2744a7dd29bffd44341dbd78008adb4bc11733601e7eddff322ada9cb",
-  },
-  {
-    accountAddress:
       "0x49dfb8ce986e21d354ac93ea65e6a11f639c1934ea253e5ff14ca62eca0f38e",
     privateKey: "0xa20a02f0ac53692d144b20cb371a60d7",
     publicKey:
@@ -125,8 +111,8 @@ const STRK_TOKEN_ADDRESS =
 const DEVNET_RPC_URL = process.env.RPC_URL_DEVNET || "http://127.0.0.1:5050";
 const PRECISION = 1_000_000_000_000_000_000n;
 const UINT128_MAX = (1n << 128n) - 1n;
-const BORROWER_COUNT = 5;
-const STAKER_COUNT = 5;
+const BORROWER_COUNT = 4;
+const STAKER_COUNT = 4;
 const SIMULATION_INTERVAL_MS = 4_000;
 const UI_REFRESH_MS = 1_500;
 const MIN_STRK_BALANCE = 2_000n * PRECISION;
