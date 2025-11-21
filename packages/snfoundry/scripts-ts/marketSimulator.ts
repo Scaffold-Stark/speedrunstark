@@ -288,14 +288,24 @@ const waitForTx = async (
   logActivity(`${label} tx: ${hash}`);
 };
 
-const devnetMint = async (address: string, amount: bigint): Promise<void> => {
-  const friAmount = amount;
+const devnetMint = async (
+  address: string,
+  amountWei: bigint
+): Promise<void> => {
+  if (amountWei <= 0n) {
+    return;
+  }
+
+  const friAmount = Number(amountWei);
+  if (!Number.isFinite(friAmount)) {
+    throw new Error("Amount too large to mint via devnet");
+  }
   const body = {
     jsonrpc: "2.0",
     method: "devnet_mint",
     params: {
       address,
-      amount: Number(friAmount),
+      amount: friAmount,
       unit: "FRI",
     },
     id: 1,
@@ -345,6 +355,12 @@ const callUint256View = async (
   return fromUint256(felts);
 };
 
+const getStrkPrice = async (
+  provider: RpcProvider,
+  oracleAddress: string
+): Promise<bigint> =>
+  callUint256View(provider, oracleAddress, "get_strk_myusd_price", []);
+
 const ensureStrkBalance = async (
   provider: RpcProvider,
   account: Account
@@ -358,7 +374,10 @@ const ensureStrkBalance = async (
     return;
   }
   const topUp = MIN_STRK_BALANCE - balance;
-  await devnetMint(account.address, topUp / PRECISION);
+  await devnetMint(account.address, topUp);
+  logActivity(
+    `Minted ${formatAmount(topUp)} STRK to ${account.address.slice(0, 8)}...`
+  );
 };
 
 const makeBorrowerActors = (accounts: Account[]): BorrowerActor[] =>
@@ -396,8 +415,19 @@ const approveAndCall = async (
 const seedBorrower = async (
   borrower: BorrowerActor,
   provider: RpcProvider,
-  engineAddress: string
+  engineAddress: string,
+  oracleAddress: string
 ): Promise<void> => {
+  const strkPrice = await getStrkPrice(provider, oracleAddress);
+  const collateralValue = (BORROWER_COLLATERAL_CHUNK * strkPrice) / PRECISION;
+  const safeMintCap = (collateralValue * 2n) / 3n;
+  const mintAmount =
+    safeMintCap === 0n
+      ? 0n
+      : safeMintCap < BORROWER_MINT_CHUNK
+      ? safeMintCap
+      : BORROWER_MINT_CHUNK;
+
   const calls: Call[] = [
     {
       contractAddress: STRK_TOKEN_ADDRESS,
@@ -409,12 +439,15 @@ const seedBorrower = async (
       entrypoint: "add_collateral",
       calldata: [...toUint256(BORROWER_COLLATERAL_CHUNK)],
     },
-    {
+  ];
+
+  if (mintAmount > 0n) {
+    calls.push({
       contractAddress: engineAddress,
       entrypoint: "mint_myusd",
-      calldata: [...toUint256(BORROWER_MINT_CHUNK)],
-    },
-  ];
+      calldata: [...toUint256(mintAmount)],
+    });
+  }
 
   try {
     await approveAndCall(
@@ -478,17 +511,17 @@ const seedStakerBalances = async (
 };
 
 const describeBorrower = (
-  debtRatio: number,
+  debtRatioBps: number,
   borrowRate: number,
   profile: BorrowerProfile
 ): string => {
   if (borrowRate > profile.maxBorrowRateBps) {
     return "{yellow-fg}Rates high, pausing";
   }
-  if (debtRatio > profile.targetDebtRatioBps + 800) {
+  if (debtRatioBps > profile.targetDebtRatioBps + 800) {
     return "{red-fg}Reducing debt";
   }
-  if (debtRatio < profile.targetDebtRatioBps - 600) {
+  if (debtRatioBps < profile.targetDebtRatioBps - 600) {
     return "{green-fg}Room to borrow";
   }
   return "{cyan-fg}Balanced";
@@ -512,7 +545,9 @@ const simulateBorrowerStep = async (
   provider: RpcProvider,
   engine: Contract,
   myusdAddress: string,
-  borrowRateBps: number
+  borrowRateBps: number,
+  strkPrice: bigint,
+  oracleAddress: string
 ): Promise<void> => {
   try {
     const normalizedAddress = normalizeHex(borrower.account.address);
@@ -530,12 +565,14 @@ const simulateBorrowerStep = async (
     );
 
     if (collateral === 0n) {
-      await seedBorrower(borrower, provider, engine.address);
+      await seedBorrower(borrower, provider, engine.address, oracleAddress);
       return;
     }
 
-    const maxDebt = (collateral * 2n) / 3n;
-    const debtRatio = collateral === 0n ? 0n : (debt * 10_000n) / collateral;
+    const collateralValue = (collateral * strkPrice) / PRECISION;
+    const maxDebt = (collateralValue * 2n) / 3n;
+    const debtRatioBps =
+      collateralValue === 0n ? 0n : (debt * 10_000n) / collateralValue;
 
     if (borrowRateBps > borrower.profile.maxBorrowRateBps && debt > 0n) {
       await repayBorrowerChunk(borrower, provider, engine, myusdAddress, debt);
@@ -543,10 +580,10 @@ const simulateBorrowerStep = async (
     }
 
     if (
-      debtRatio < BigInt(borrower.profile.targetDebtRatioBps - 400) &&
+      debtRatioBps < BigInt(borrower.profile.targetDebtRatioBps - 400) &&
       debt < maxDebt
     ) {
-      const available = maxDebt - debt;
+      const available = maxDebt > debt ? maxDebt - debt : 0n;
       const mintAmount =
         available < BORROWER_MINT_CHUNK ? available : BORROWER_MINT_CHUNK;
       if (mintAmount > 0n) {
@@ -567,7 +604,7 @@ const simulateBorrowerStep = async (
     }
 
     if (
-      debtRatio > BigInt(borrower.profile.targetDebtRatioBps + 600) &&
+      debtRatioBps > BigInt(borrower.profile.targetDebtRatioBps + 600) &&
       debt > 0n
     ) {
       await repayBorrowerChunk(borrower, provider, engine, myusdAddress, debt);
@@ -745,8 +782,9 @@ const updateUI = async (
           normalized,
         ]),
       ]);
+      const collateralValue = (collateral * price) / PRECISION;
       const ratio =
-        collateral === 0n ? 0 : Number((debt * 10_000n) / collateral);
+        collateralValue === 0n ? 0 : Number((debt * 10_000n) / collateralValue);
       borrowerRows.push([
         borrower.account.address.slice(0, 10),
         formatAmount(collateral),
@@ -808,8 +846,9 @@ const main = async (): Promise<void> => {
   const dexInfo = deployments.DEX;
   const stakingInfo = deployments.MyUSDStaking;
   const myusdInfo = deployments.MyUSD;
+  const oracleInfo = deployments.Oracle;
 
-  if (!engineInfo || !dexInfo || !stakingInfo || !myusdInfo) {
+  if (!engineInfo || !dexInfo || !stakingInfo || !myusdInfo || !oracleInfo) {
     throw new Error(
       `Missing contract addresses in deployedContracts for ${networkName}`
     );
@@ -856,7 +895,7 @@ const main = async (): Promise<void> => {
   const stakers = makeStakerActors(selectedAccounts);
 
   for (const borrower of borrowers) {
-    await seedBorrower(borrower, provider, engine.address);
+    await seedBorrower(borrower, provider, engine.address, oracleInfo.address);
   }
   await seedStakerBalances(deployer, provider, stakers, myusd.address);
 
@@ -864,16 +903,20 @@ const main = async (): Promise<void> => {
 
   setInterval(async () => {
     try {
-      const borrowRate = Number(
-        await callUint256View(provider, engine.address, "borrow_rate")
-      );
+      const [borrowRateBig, strkPrice] = await Promise.all([
+        callUint256View(provider, engine.address, "borrow_rate"),
+        getStrkPrice(provider, oracleInfo.address),
+      ]);
+      const borrowRate = Number(borrowRateBig);
       for (const borrower of borrowers) {
         await simulateBorrowerStep(
           borrower,
           provider,
           engine,
           myusd.address,
-          borrowRate
+          borrowRate,
+          strkPrice,
+          oracleInfo.address
         );
       }
       const savingsRate = Number(
