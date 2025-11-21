@@ -36,7 +36,8 @@
     "format:check": "yarn workspace @ss-2/nextjs format:check && yarn workspace @ss-2/snfoundry format:check",
     "prepare": "husky",
     "verify": "yarn workspace @ss-2/snfoundry verify",
-    "clean": "yarn workspace @ss-2/snfoundry clean"
+    "clean": "yarn workspace @ss-2/snfoundry clean",
+    "simulate": "yarn workspace @ss-2/snfoundry simulate"
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {

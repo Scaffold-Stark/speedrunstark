@@ -14,6 +14,7 @@ pub trait IMyUSDStaking<TContractState> {
     fn total_shares(self: @TContractState) -> u256;
     fn get_balance(self: @TContractState, user: starknet::ContractAddress) -> u256;
     fn get_shares_value(self: @TContractState, shares: u256) -> u256;
+    fn get_user_shares(self: @TContractState, user: starknet::ContractAddress) -> u256;
 }
 
 #[starknet::contract]
@@ -234,6 +235,10 @@ pub mod MyUSDStaking {
         /// Convert shares to MyUSD value
         fn get_shares_value(self: @ContractState, shares: u256) -> u256 {
             (shares * self._get_current_exchange_rate()) / PRECISION
+        }
+
+        fn get_user_shares(self: @ContractState, user: ContractAddress) -> u256 {
+            self.user_shares.read(user)
         }
     }
 
