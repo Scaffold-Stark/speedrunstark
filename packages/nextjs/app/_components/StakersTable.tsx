@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import TooltipInfo from "./TooltipInfo";
 import { formatEther } from "viem";
+import { getChecksumAddress } from "starknet";
 import { useAccount } from "~~/hooks/useAccount";
 import { Address as AddressBlock } from "~~/components/scaffold-stark";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
+import { normalizeToHexAddress } from "~~/utils/scaffold-stark/common";
 
 const StakerRow = ({
   staker,
@@ -59,8 +61,18 @@ const StakersStable = () => {
     setStakers((prevStakers) => {
       const uniqueStakers = new Set([...prevStakers]);
       events
-        .filter((event) => event && event.args)
-        .map((event) => event.args.user)
+        .filter((event) => event && event.args && event.args.user)
+        .map((event) => {
+          const user = event.args.user;
+          // Normalize address to hex string (handles bigint, string, number, etc.)
+          try {
+            const normalized = normalizeToHexAddress(user);
+            return getChecksumAddress(normalized);
+          } catch (error) {
+            console.warn("Failed to normalize address:", user, error);
+            return null;
+          }
+        })
         .filter((user): user is string => !!user)
         .forEach((staker) => uniqueStakers.add(staker));
       return uniqueStakers.size > prevStakers.length
