@@ -35,6 +35,8 @@ const deployedContracts = {
   myusdEngine: null,
 };
 
+const DEVNET_RPC_URL = process.env.RPC_URL_DEVNET || "http://127.0.0.1:5050";
+
 const UINT128_MAX = (1n << 128n) - 1n;
 
 const toUint256 = (value: bigint): string[] => {
@@ -51,6 +53,57 @@ const fromUint256 = (felts: string[]): bigint => {
   const low = BigInt(felts[0]);
   const high = felts.length > 1 ? BigInt(felts[1]) : 0n;
   return (high << 128n) + low;
+};
+
+const mintInitialStrk = async (
+  address: string,
+  amountInStrk: bigint
+): Promise<void> => {
+  if (networkName !== "devnet") {
+    return;
+  }
+
+  const friAmount = amountInStrk * STRK_PRECISION;
+
+  try {
+    const response = await fetch(`${DEVNET_RPC_URL}/rpc`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "devnet_mint",
+        params: {
+          address,
+          amount: Number(friAmount),
+          unit: "FRI",
+        },
+        id: 1,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error.message || "devnet_mint failed");
+    }
+
+    console.log(
+      green(
+        `Minted ${amountInStrk.toString()} STRK to deployer (${address}) via devnet_mint`
+      )
+    );
+  } catch (error) {
+    console.warn(
+      yellow("Unable to mint initial STRK balance via devnet_mint"),
+      error
+    );
+  }
 };
 
 /**
@@ -175,7 +228,9 @@ const initializeContracts = async (): Promise<void> => {
 
 const DEVNET_STRK_TOKEN =
   "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
-const LIQUIDITY_UNITS = 1_000_000n;
+const LIQUIDITY_UNITS = 10_000_000n;
+const STRK_COLLATERAL_UNITS = 20_000_000n;
+const INITIAL_STRK_MINT = 50_000_000n;
 
 const setup = async (): Promise<void> => {
   if (networkName !== "devnet") {
@@ -195,48 +250,23 @@ const setup = async (): Promise<void> => {
     return;
   }
 
-  // - Deposit collateral amount (10 STRK = 10 * 1e18)
-  // - Calculate max mintable MyUSD based on collateral and 150% ratio
-  // - Mint 90% of max to be safe
-  // - Use minted amount for DEX initialization
-  const strkCollateralAmount = 10n * STRK_PRECISION; // 10 STRK collateral
+  await mintInitialStrk(deployer.address, INITIAL_STRK_MINT);
 
-  // Get STRK price from oracle to calculate max mintable
-  let strkPrice = FLOAT_SCALE_BI; // Default to 1.0 if price not available
-  try {
-    if (provider) {
-      const priceRes = (await provider.callContract({
-        contractAddress: deployedContracts.oracle.address,
-        entrypoint: "get_strk_myusd_price",
-        calldata: [],
-      })) as string[] | { result: string[] };
-      const priceArray = Array.isArray(priceRes) ? priceRes : priceRes.result;
-      strkPrice = fromUint256(priceArray);
-      console.log(green("STRK price from oracle:"), strkPrice.toString());
-    }
-  } catch (error) {
-    console.warn(
-      yellow("Failed to get STRK price from oracle, using default 1.0"),
-      error
-    );
-  }
+  // Provide large collateral so the deployer is rarely at risk of liquidation
+  // and seed the DEX with meaningful liquidity (similar to Hardhat example)
+  const strkCollateralAmount = STRK_COLLATERAL_UNITS * STRK_PRECISION;
+  const dexStrkAmount = LIQUIDITY_UNITS * STRK_PRECISION;
 
-  // Calculate max mintable MyUSD based on collateral and 150% ratio
-  // Formula: max_debt = (collateral_amount * strk_price * 100) / (COLLATERAL_RATIO * PRECISION)
-  // COLLATERAL_RATIO = 150 (150%)
-  const COLLATERAL_RATIO = 150n;
-  const PRECISION = STRK_PRECISION; // 1e18
-  const maxMintableMyUSD =
-    (strkCollateralAmount * strkPrice * 100n) / (COLLATERAL_RATIO * PRECISION);
+  // Determine MyUSD liquidity target based on off-chain STRK price (similar to Hardhat ethPrice)
+  const priceFactor =
+    cachedStrkPrice !== null
+      ? BigInt(Math.max(Math.round(cachedStrkPrice * FLOAT_SCALE), 1))
+      : FLOAT_SCALE_BI;
 
-  // Mint 90% of max to be safe (leave some buffer)
-  const myUSDAmount = (maxMintableMyUSD * 90n) / 100n;
+  const myUSDAmount =
+    (priceFactor * (LIQUIDITY_UNITS * STRK_PRECISION)) / FLOAT_SCALE_BI;
 
-  console.log(
-    green("Calculated max mintable MyUSD:"),
-    maxMintableMyUSD.toString()
-  );
-  console.log(green("Minting MyUSD amount:"), myUSDAmount.toString());
+  console.log(green("Target MyUSD liquidity amount:"), myUSDAmount.toString());
 
   try {
     const tx = await deployer.execute([
@@ -291,87 +321,27 @@ const setup = async (): Promise<void> => {
     return;
   }
 
-  // Initialize DEX with the actual minted MyUSD amount
-  if (confirmedBalance > 0n) {
+  // Initialize DEX only if the deployer received the expected MyUSD amount
+  if (confirmedBalance === myUSDAmount) {
     try {
-      // Check deployer's STRK balance
-      let deployerStrkBalance = 0n;
-      try {
-        if (provider) {
-          const strkBalanceRes = (await provider.callContract({
-            contractAddress: DEVNET_STRK_TOKEN,
-            entrypoint: "balance_of",
-            calldata: [deployer.address],
-          })) as string[] | { result: string[] };
-          const strkBalanceArray = Array.isArray(strkBalanceRes)
-            ? strkBalanceRes
-            : strkBalanceRes.result;
-          deployerStrkBalance = fromUint256(strkBalanceArray);
-        }
-      } catch (error) {
-        console.warn(red("Failed to read deployer STRK balance"), error);
-      }
-      console.log(green("Deployer STRK balance"), deployerStrkBalance);
-
-      // Calculate STRK amount for DEX based on price ratio
-      // If 1 STRK = X MyUSD (where X = strkPrice / PRECISION), then for confirmedBalance MyUSD, we need confirmedBalance / X STRK
-      // For DEX, we want to maintain the price ratio, so use confirmedBalance worth of STRK
-      const actualMyUSDAmount = confirmedBalance;
-
-      // Calculate STRK amount: if price is 1 STRK = 1 MyUSD (strkPrice = PRECISION), use same amount
-      // Otherwise adjust based on price: STRK_amount = (MyUSD_amount * PRECISION) / strk_price
-      const PRECISION = STRK_PRECISION; // 1e18
-      const actualDexStrkAmount =
-        strkPrice > 0n
-          ? (actualMyUSDAmount * PRECISION) / strkPrice
-          : actualMyUSDAmount; // If price is 1:1, use same amount
-
-      // Cap STRK amount to available balance
-      const cappedStrkAmount =
-        deployerStrkBalance > 0n && deployerStrkBalance < actualDexStrkAmount
-          ? deployerStrkBalance
-          : actualDexStrkAmount;
-
-      // Adjust MyUSD proportionally if STRK was capped
-      const finalMyUSDAmount =
-        cappedStrkAmount < actualDexStrkAmount
-          ? (actualMyUSDAmount * cappedStrkAmount) / actualDexStrkAmount
-          : actualMyUSDAmount;
-
-      console.log(green("Actual DEX STRK amount"), cappedStrkAmount.toString());
-      console.log(green("Actual MyUSD amount"), finalMyUSDAmount.toString());
-
-      if (cappedStrkAmount === 0n || finalMyUSDAmount === 0n) {
-        console.warn(
-          yellow("Insufficient balance for DEX initialization. Skipping.")
-        );
-        return;
-      }
-
       const tx = await deployer.execute([
         {
           contractAddress: deployedContracts.myusd.address,
           entrypoint: "approve",
-          calldata: [
-            deployedContracts.dex.address,
-            ...toUint256(finalMyUSDAmount),
-          ],
+          calldata: [deployedContracts.dex.address, ...toUint256(myUSDAmount)],
         },
         {
           contractAddress: DEVNET_STRK_TOKEN,
           entrypoint: "approve",
           calldata: [
             deployedContracts.dex.address,
-            ...toUint256(cappedStrkAmount),
+            ...toUint256(dexStrkAmount),
           ],
         },
         {
           contractAddress: deployedContracts.dex.address,
           entrypoint: "init",
-          calldata: [
-            ...toUint256(finalMyUSDAmount),
-            ...toUint256(cappedStrkAmount),
-          ],
+          calldata: [...toUint256(myUSDAmount), ...toUint256(dexStrkAmount)],
         },
       ]);
       await provider?.waitForTransaction(tx.transaction_hash);
