@@ -10,10 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type {
-  ContentType as LegendContentRenderer,
-  LegendPayload,
-} from "recharts/types/component/DefaultLegendContent";
 import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
@@ -47,6 +43,7 @@ const PriceGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const { data: borrowRateUpdatedEvents, isLoading: isBorrowRateLoading } =
@@ -58,6 +55,7 @@ const PriceGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const { data: savingsRateUpdatedEvents, isLoading: isSavingsRateLoading } =
@@ -69,6 +67,7 @@ const PriceGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const isLoading =
@@ -130,30 +129,6 @@ const PriceGraph = () => {
       },
     ];
   }, []);
-
-  const renderLegend: LegendContentRenderer = (legendProps) => {
-    const legendPayload = (
-      (legendProps?.payload as LegendPayload[] | undefined) ?? []
-    ).filter((item) => (showRates ? true : item.value === "Price"));
-
-    if (legendPayload.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="flex gap-4 pl-4 pt-2">
-        {legendPayload.map((entry) => (
-          <span
-            key={entry.value}
-            className="text-sm font-medium"
-            style={{ color: entry.color ?? strokeColor }}
-          >
-            {entry.value}
-          </span>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div className="card bg-base-100 w-full shadow-xl indicator">
@@ -278,7 +253,6 @@ const PriceGraph = () => {
                 formatter={(value) => (
                   <span style={{ color: strokeColor }}>{value}</span>
                 )}
-                content={showRates ? undefined : renderLegend}
               />
             </LineChart>
           </ResponsiveContainer>

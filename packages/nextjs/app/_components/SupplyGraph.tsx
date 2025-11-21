@@ -12,11 +12,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatEther } from "viem";
 import type {
   ContentType as LegendContentRenderer,
   LegendPayload,
 } from "recharts/types/component/DefaultLegendContent";
-import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { formatDisplayValue } from "~~/utils/helpers";
@@ -46,17 +46,17 @@ const calculateDexSwapAmounts = (event: any) => {
   };
 };
 
-const CustomTooltip = (
-  tooltipProps: TooltipProps<number, string> & {
-    payload?: Array<{
-      dataKey?: string;
-      value?: number;
-    }>;
-    label?: string | number;
-  },
-) => {
-  const { active, payload, label } = tooltipProps;
-
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<number, string> & {
+  payload?: Array<{
+    dataKey?: string;
+    value?: number;
+  }>;
+  label?: string | number;
+}) => {
   if (active && payload && payload.length) {
     const staked =
       payload.find((p) => p?.dataKey === "stakedSupply")?.value || 0;
@@ -105,6 +105,7 @@ const SupplyGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const { data: debtSharesBurnedEvents, isLoading: isDebtSharesBurnedLoading } =
@@ -116,6 +117,7 @@ const SupplyGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const { data: stakedEvents, isLoading: isStakedLoading } =
@@ -127,6 +129,7 @@ const SupplyGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const { data: withdrawnEvents, isLoading: isWithdrawnLoading } =
@@ -138,6 +141,7 @@ const SupplyGraph = () => {
       transactionData: false,
       receiptData: false,
       fromBlock: 0n,
+      format: true,
     });
 
   const { data: swapEvents, isLoading: isSwapLoading } =
@@ -147,6 +151,7 @@ const SupplyGraph = () => {
       watch: true,
       blockData: true,
       fromBlock: 0n,
+      format: true,
     });
 
   const isLoading =
@@ -166,38 +171,33 @@ const SupplyGraph = () => {
   const sortedEvents = combinedEvents.sort((a, b) =>
     Number(a.blockNumber - b.blockNumber),
   );
-  console.debug("[SupplyGraph] Sorted events", sortedEvents);
 
   const supplyData = sortedEvents.reduce<DataPoint[]>((acc, event, idx) => {
     const prevCirculatingSupply = acc[idx - 1]?.circulatingSupply || 0;
     const prevStakedSupply = acc[idx - 1]?.stakedSupply || 0;
     let minted =
       event?.eventName === "DebtSharesMinted"
-        ? Number(
-            formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n),
-          )
+        ? Number(formatEther(event?.parsedArgs?.amount || 0n))
         : 0;
     const burned =
       event?.eventName === "DebtSharesBurned"
-        ? Number(
-            formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n),
-          )
+        ? Number(formatEther(event?.parsedArgs?.amount || 0n))
         : 0;
     const staked =
       event?.eventName === "Staked"
-        ? Number(
-            formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n),
-          )
+        ? Number(formatEther(event?.parsedArgs?.amount || 0n))
         : 0;
     const withdrawn =
       event?.eventName === "Withdrawn"
-        ? Number(
-            formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n),
-          )
+        ? Number(formatEther(event?.parsedArgs?.amount || 0n))
         : 0;
 
     const { sent: dexSentMyUSDAmount, received: dexReceivedMyUSDAmount } =
       calculateDexSwapAmounts(event);
+
+    if (minted >= initialDexSupply) {
+      minted = 0;
+    }
 
     const circulatingSupply = Math.max(
       prevCirculatingSupply +
@@ -231,6 +231,37 @@ const SupplyGraph = () => {
       },
     ];
   }, []);
+
+  const renderLegend: LegendContentRenderer = (legendProps) => {
+    const legendPayload = (
+      (legendProps?.payload as LegendPayload[] | undefined) ?? []
+    ).filter((item) => {
+      if (stakedEvents && stakedEvents.length > 0) {
+        return true;
+      }
+      return item.value === "Total";
+    });
+
+    if (legendPayload.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="flex gap-4 pl-4 pt-2">
+        {legendPayload.map((entry) => (
+          <span
+            key={entry.value}
+            className="text-sm font-medium"
+            style={{
+              color: entry.color ?? strokeColor,
+            }}
+          >
+            {entry.value}
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="card bg-base-100 w-full shadow-xl indicator">
@@ -313,33 +344,7 @@ const SupplyGraph = () => {
                 content={
                   stakedEvents && stakedEvents.length > 0
                     ? undefined
-                    : (((legendProps) => {
-                        const legendPayload = (
-                          (legendProps?.payload as
-                            | LegendPayload[]
-                            | undefined) ?? []
-                        ).filter((item) => item.value === "Total");
-
-                        if (legendPayload.length === 0) {
-                          return null;
-                        }
-
-                        return (
-                          <div className="flex gap-4 pl-4 pt-2">
-                            {legendPayload.map((entry) => (
-                              <span
-                                key={entry.value}
-                                className="text-sm font-medium"
-                                style={{
-                                  color: entry.color ?? strokeColor,
-                                }}
-                              >
-                                {entry.value}
-                              </span>
-                            ))}
-                          </div>
-                        );
-                      }) satisfies LegendContentRenderer)
+                    : renderLegend
                 }
               />
             </LineChart>
