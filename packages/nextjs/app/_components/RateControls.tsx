@@ -82,6 +82,20 @@ const RateInput: React.FC<RateInputProps> = ({
   );
 };
 
+const parseRateInput = (value: string): bigint => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    throw new Error("Rate is required");
+  }
+
+  const numericValue = Number(trimmed);
+  if (!Number.isFinite(numericValue)) {
+    throw new Error("Invalid rate input");
+  }
+
+  return BigInt(Math.round(numericValue * 100));
+};
+
 const RateControls: React.FC = () => {
   const [newBorrowRate, setNewBorrowRate] = useState<string>("");
   const [newSavingsRate, setNewSavingsRate] = useState<string>("");
@@ -123,12 +137,10 @@ const RateControls: React.FC = () => {
   const handleSaveSavingsRate = useCallback(
     async (value: string) => {
       try {
-        await setSavingsRate({
-          args: [
-            savingsRateBigInt ? BigInt(Math.round(Number(value) * 100)) : 0n,
-          ],
-        });
+        const parsedValue = parseRateInput(value);
+        await setSavingsRate({ args: [parsedValue] });
         setIsEditingSR(false);
+        setNewSavingsRate("");
       } catch (error) {
         console.error("Failed to update savings rate:", error);
       }
@@ -139,12 +151,10 @@ const RateControls: React.FC = () => {
   const handleSaveBorrowRate = useCallback(
     async (value: string) => {
       try {
-        await setBorrowRate({
-          args: [
-            borrowRateBigInt ? BigInt(Math.round(Number(value) * 100)) : 0n,
-          ],
-        });
+        const parsedValue = parseRateInput(value);
+        await setBorrowRate({ args: [parsedValue] });
         setIsEditingBR(false);
+        setNewBorrowRate("");
       } catch (error) {
         console.error("Failed to update borrow rate:", error);
       }
