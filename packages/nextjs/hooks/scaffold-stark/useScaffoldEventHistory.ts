@@ -272,6 +272,7 @@ export const useScaffoldEventHistory = <
         const members = (rawEvent?.members ?? (eventAbi as any)?.members) || [];
         return {
           type: members,
+          eventName,
           args,
           parsedArgs: format ? parseEventData(args, members) : null,
           ...rest,

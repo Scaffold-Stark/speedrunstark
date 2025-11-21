@@ -37,7 +37,7 @@ type DataPoint = {
 const calculateDexSwapAmounts = (event: any) => {
   if (!event || event.eventName !== "Swap") return { sent: 0, received: 0 };
 
-  const { inputToken, inputAmount, outputAmount } = event.args || {};
+  const { inputToken, inputAmount, outputAmount } = event.parsedArgs || {};
   const isEthToMyUSD = inputToken === ZERO_ADDRESS;
 
   return {
@@ -166,42 +166,39 @@ const SupplyGraph = () => {
   const sortedEvents = combinedEvents.sort((a, b) =>
     Number(a.blockNumber - b.blockNumber),
   );
+  console.debug("[SupplyGraph] Sorted events", sortedEvents);
 
   const supplyData = sortedEvents.reduce<DataPoint[]>((acc, event, idx) => {
     const prevCirculatingSupply = acc[idx - 1]?.circulatingSupply || 0;
     const prevStakedSupply = acc[idx - 1]?.stakedSupply || 0;
     let minted =
       event?.eventName === "DebtSharesMinted"
-        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n))
         : 0;
     const burned =
       event?.eventName === "DebtSharesBurned"
-        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n))
         : 0;
     const staked =
       event?.eventName === "Staked"
-        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n))
         : 0;
     const withdrawn =
       event?.eventName === "Withdrawn"
-        ? Number(formatEther(decodeUint256Value(event?.args?.amount) || 0n))
+        ? Number(formatEther(decodeUint256Value(event?.parsedArgs?.amount) || 0n))
         : 0;
 
     const { sent: dexSentMyUSDAmount, received: dexReceivedMyUSDAmount } =
       calculateDexSwapAmounts(event);
 
-    if (minted >= initialDexSupply) {
-      minted = 0;
-    }
-
     const circulatingSupply = Math.max(
       prevCirculatingSupply +
-        minted -
-        burned -
-        staked +
-        withdrawn +
-        dexSentMyUSDAmount -
-        dexReceivedMyUSDAmount,
+      minted -
+      burned -
+      staked +
+      withdrawn +
+      dexSentMyUSDAmount -
+      dexReceivedMyUSDAmount,
       0,
     );
     const stakedSupply = Math.max(prevStakedSupply + staked - withdrawn, 0);
@@ -309,32 +306,32 @@ const SupplyGraph = () => {
                   stakedEvents && stakedEvents.length > 0
                     ? undefined
                     : (((legendProps) => {
-                        const legendPayload = (
-                          (legendProps?.payload as
-                            | LegendPayload[]
-                            | undefined) ?? []
-                        ).filter((item) => item.value === "Total");
+                      const legendPayload = (
+                        (legendProps?.payload as
+                          | LegendPayload[]
+                          | undefined) ?? []
+                      ).filter((item) => item.value === "Total");
 
-                        if (legendPayload.length === 0) {
-                          return null;
-                        }
+                      if (legendPayload.length === 0) {
+                        return null;
+                      }
 
-                        return (
-                          <div className="flex gap-4 pl-4 pt-2">
-                            {legendPayload.map((entry) => (
-                              <span
-                                key={entry.value}
-                                className="text-sm font-medium"
-                                style={{
-                                  color: entry.color ?? strokeColor,
-                                }}
-                              >
-                                {entry.value}
-                              </span>
-                            ))}
-                          </div>
-                        );
-                      }) satisfies LegendContentRenderer)
+                      return (
+                        <div className="flex gap-4 pl-4 pt-2">
+                          {legendPayload.map((entry) => (
+                            <span
+                              key={entry.value}
+                              className="text-sm font-medium"
+                              style={{
+                                color: entry.color ?? strokeColor,
+                              }}
+                            >
+                              {entry.value}
+                            </span>
+                          ))}
+                        </div>
+                      );
+                    }) satisfies LegendContentRenderer)
                 }
               />
             </LineChart>
