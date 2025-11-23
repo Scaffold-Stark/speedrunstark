@@ -230,7 +230,7 @@ const DEVNET_STRK_TOKEN =
   "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
 const LIQUIDITY_UNITS = 10_000_000n;
 const STRK_COLLATERAL_UNITS = 20_000_000n;
-const INITIAL_STRK_MINT = 50_000_000n;
+const INITIAL_STRK_MINT = STRK_COLLATERAL_UNITS + LIQUIDITY_UNITS;
 
 const setup = async (): Promise<void> => {
   if (networkName !== "devnet") {
