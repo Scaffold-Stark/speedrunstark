@@ -36,6 +36,8 @@ pub trait IMyUSDEngine<TContractState> {
     fn get_user_collateral(self: @TContractState, user: starknet::ContractAddress) -> u256;
     fn get_user_debt_shares(self: @TContractState, user: starknet::ContractAddress) -> u256;
     fn get_borrow_rate(self: @TContractState) -> u256;
+fn total_debt_shares(self: @TContractState) -> u256;
+    fn debt_exchange_rate(self: @TContractState) -> u256;
 }
 
 #[starknet::contract]
@@ -317,6 +319,14 @@ pub mod MyUSDEngine {
 
         fn borrow_rate(self: @ContractState) -> u256 {
             self.borrow_rate.read()
+        }
+
+        fn total_debt_shares(self: @ContractState) -> u256 {
+            self.total_debt_shares.read()
+        }
+
+        fn debt_exchange_rate(self: @ContractState) -> u256 {
+            self.debt_exchange_rate.read()
         }
     }
 
