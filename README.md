@@ -124,6 +124,8 @@ yarn start
 
 > 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend, update your current contracts with changes, or re-deploy it to get a fresh contract address.
 
+> ⚠️ **Important:** The first account (deployer) is used as the contract owner. For testing user-facing functionality (depositing collateral, minting, repaying, etc.), please use a **second account**. You can create a second account by opening a private/incognito browser window or using a different wallet. This ensures you're testing as a regular user rather than the owner.
+
 🔏 Now you are ready to edit your smart contract `MyUSDEngine.cairo` in `packages/snfoundry/contracts/src`
 
 ---
@@ -264,6 +266,8 @@ First, users need a way to deposit collateral (STRK) into the system. We also ne
 ---
 
 🚀 Go ahead and re-deploy your contracts with `yarn deploy --reset` and test your front-end to see if you can add collateral.
+
+> 💡 **Testing Tip:** Remember to use a **second account** (not the deployer/owner account) for testing user functionality. You can create a second account by opening a private/incognito browser window or connecting a different wallet.
 
 On the right side of the screen you will see a three icon menu. Hover the top icon to make the collateral menu appear.
 
@@ -619,6 +623,8 @@ Keep in mind, in the absence of decimals we will assume that a borrow rate of 12
 
 🧪 Run `yarn deploy --reset` then go test the minting functionality on the front end. After depositing collateral, hover the mint icon and input the amount of MyUSD you would like to mint.
 
+> 💡 **Testing Tip:** Use a **second account** (not the deployer/owner) for testing minting and other user operations.
+
 ### 🥅 Goals:
 
 - [ ] Users can mint MyUSD up to the allowed collateralization limit (150%).
@@ -836,6 +842,8 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
 🧪 Go try it out on the frontend! Re-deploy with `yarn deploy --reset` and go try to do the full deposit, mint/borrow, repay, and withdraw workflow.
 
+> 💡 **Testing Tip:** Use a **second account** (not the deployer/owner) for testing the full workflow of depositing, minting, repaying, and withdrawing.
+
 ### 🥅 Goals:
 
 - [ ] Users can repay their MyUSD debt. Their `s_user_debt_shares` should decrease.
@@ -998,13 +1006,15 @@ Whenever the rate is changed we need to "lock-in" all the interest accrued since
 
 🧪 Re-deploy (`yarn deploy --reset`) and go test everything on the frontend.
 
+> 💡 **Testing Tip:** Use a **second account** (not the deployer/owner) for creating the position to be liquidated, and a **third account** (or another burner wallet) as the liquidator.
+
 - Crank up the Borrow Rate to 1000% or something crazy (this will help us get in a liquidatable position quickly)
-- Deposit collateral
-- Mint the maximum amount MyUSD (150% of collateral value), including added cents in order to get as close as possible.
-- Open a private browser tab to the same page. You should have access to a new burner wallet. Go ahead and give it some STRK by clicking the faucet button (top right).
-- Use the **swap** button (in the MyUSD Wallet section) to exchange the STRK for enough MyUSD to pay the debt of your first account. Make sure you get more than the amount of MyUSD they minted because they have already accrued more debt in interest.
-- Check if the first account's position is in a liquidatable state. The **Liquidate** button should be enabled.
-- Click the button with your second account to liquidate the position.
+- **With your second account (not the deployer):** Deposit collateral
+- **With your second account:** Mint the maximum amount MyUSD (150% of collateral value), including added cents in order to get as close as possible.
+- Open a private browser tab to the same page. You should have access to a new burner wallet (this will be your third account/liquidator). Go ahead and give it some STRK by clicking the faucet button (top right).
+- **With your third account (liquidator):** Use the **swap** button (in the MyUSD Wallet section) to exchange the STRK for enough MyUSD to pay the debt of your second account. Make sure you get more than the amount of MyUSD they minted because they have already accrued more debt in interest.
+- Check if the second account's position is in a liquidatable state. The **Liquidate** button should be enabled.
+- **With your third account (liquidator):** Click the button to liquidate the position.
 
 ### 🥅 Goals:
 
