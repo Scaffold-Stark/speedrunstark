@@ -30,9 +30,7 @@ Deploy your contracts to a testnet then build and upload your app to a public we
 
 📚 This challenge is modeled after one of the first crypto-backed stablecoins called Dai - back when the only thing backing it was a single collateral type. Later Dai would allow multiple types of collateral and change its design somewhat. The version we are building is commonly referred to as "single collateral Dai".
 
-⚠️ You are highly encouraged to have completed the [Over-collateralized Lending challenge](https://speedrunstark.com/challenge/over-collateralized-lending) prior to attempting this one since we will be building on that same basic system but won't be discussing it in detail.
-
-💬 Meet other builders working on this challenge and get help in the [Stablecoin Challenge Telegram](https://t.me/+y93US5WbP5dkNDFh)
+💬 Meet other builders working on this challenge and get help in the [Stablecoin Challenge Telegram](https://t.me/+wO3PtlRAreo4MDI9)
 
 ---
 
@@ -84,17 +82,17 @@ For complete instructions on using Docker with the project, check out the [Requi
 📥 Then download the challenge to your computer and install dependencies by running:
 
 ```sh
-npx create-stark@latest -e challenge-stablecoin challenge-stablecoin
-cd challenge-stablecoin
+npx create-stark@latest -e challenge-6-stablecoin challenge-6-stablecoin
+cd challenge-6-stablecoin
 yarn install
 ```
 
 or clone from SpeedrunStark repo:
 
 ```sh
-git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-stablecoin
-cd challenge-stablecoin
-git checkout challenge-stablecoin
+git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-6-stablecoin
+cd challenge-6-stablecoin
+git checkout challenge-6-stablecoin
 yarn install
 ```
 
