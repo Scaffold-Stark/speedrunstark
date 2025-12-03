@@ -33,6 +33,12 @@ pub mod RateController {
         i_staking: ContractAddress,
     }
 
+    #[constructor]
+    fn constructor(ref self: ContractState, engine: ContractAddress, staking: ContractAddress) {
+        self.i_engine.write(engine);
+        self.i_staking.write(staking);
+    }
+
     #[abi(embed_v0)]
     impl RateControllerImpl of IRateController<ContractState> {
         /// Set the borrow rate for the MyUSD engine
