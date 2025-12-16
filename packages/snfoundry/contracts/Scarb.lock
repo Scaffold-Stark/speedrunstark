@@ -6,6 +6,7 @@ name = "contracts"
 version = "0.2.0"
 dependencies = [
  "openzeppelin_access",
+ "openzeppelin_security",
  "openzeppelin_testing",
  "openzeppelin_token",
  "openzeppelin_utils",
@@ -36,6 +37,12 @@ name = "openzeppelin_introspection"
 version = "2.0.0"
 source = "registry+https://scarbs.xyz/"
 checksum = "sha256:87773ed6cd2318f169283ecbbb161890d1996260a80302d81ec45b70ee5e54c1"
+
+[[package]]
+name = "openzeppelin_security"
+version = "2.0.0"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:902932ec296c2f400e0ac7c579edeaafd6067b6ce6d9854c1191de28e396ffe3"
 
 [[package]]
 name = "openzeppelin_testing"

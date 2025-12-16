@@ -751,4 +751,5 @@ export {
   assertDeployerDefined,
   assertDeployerSignable,
   assertRpcNetworkActive,
+  networkName,
 };

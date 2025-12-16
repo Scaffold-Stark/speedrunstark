@@ -33,15 +33,12 @@ export const useScaffoldContract = <TContractName extends ContractName>({
   const contract = useMemo(() => {
     if (!deployedContractData) return undefined;
 
+    // Use account if available, otherwise use provider
     const contractInstance = new Contract({
       abi: deployedContractData.abi as Abi,
       address: deployedContractData.address,
-      providerOrAccount: publicClient,
+      providerOrAccount: account || publicClient,
     });
-
-    if (account) {
-      contractInstance.connect(account);
-    }
 
     const originalCall = contractInstance.call.bind(contractInstance);
     contractInstance.call = async (method: string, ...args: any[]) => {
