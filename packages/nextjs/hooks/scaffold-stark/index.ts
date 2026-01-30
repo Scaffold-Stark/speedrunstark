@@ -6,3 +6,4 @@ export * from "./useTransactor";
 export * from "./useAutoConnect";
 export * from "./useSwitchNetwork";
 export * from "./useScaffoldWebSocketEvents";
+export * from "./useVendorActivity";
