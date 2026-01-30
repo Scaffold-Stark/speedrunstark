@@ -327,6 +327,40 @@ vendor = await deployContract({
 
 > If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
 
+## Extra Checkpoint 1 - Building a withdrawal history graph
+
+- Set up your Auco Indexer with a backend
+- Define your vending machine buy and sell events on auco
+- Define the endpoints
+- Install a graph package on NPM
+- Create a hook that calls the endpoints
+- Draw a graph from the data, should be able to show both buy and sell from the same graph
+
+## Extra Checkpoint 2: 🔗 Building Proof-of-Transaction History 📜
+
+> 👩‍💻 We already have an events table in place from Checkpoint 3. Now let's enhance it by adding clickable links to the block explorer for each transaction.
+
+> 📝 Add a new column to the events table that displays a block explorer link for each transaction hash. It should be a hyperlink on the text "Block Explorer".
+
+> 🔧 Create a utility function that generates the correct block explorer URL based on the current network from the transaction hash:
+> - For **local networks**: Use the localhost explorer (we will use `http://localhost:3000/blockexplorer/tx/<YOUR_TRANSACTION_HASH>`)
+> - For **Sepolia testnet**: Use Starkscan or Voyager Sepolia explorer (e.g., `https://sepolia.starkscan.co/tx/<YOUR_TRANSACTION_HASH>` or `https://sepolia.voyager.online/tx/<YOUR_TRANSACTION_HASH>`)
+> - For **Mainnet**: Use Starkscan or Voyager Mainnet explorer (e.g., `https://starkscan.co/tx/<YOUR_TRANSACTION_HASH>` or `https://voyager.online/tx/<YOUR_TRANSACTION_HASH>`)
+
+> ✏️ Integrate the explorer links into your events table component in `packages/nextjs/app/events/page.tsx`.
+
+### 🥅 Goals
+
+- [ ] Does each event in the table have a clickable link to view the transaction on a block explorer?
+- [ ] Does the link correctly switch between localhost explorer and public explorers based on the network?
+- [ ] Can you click through to verify the transaction details on the explorer?
+
+### ⚔️ Side Quests
+
+- [ ] Add a copy-to-clipboard button for transaction hashes
+- [ ] Show a truncated transaction hash with the full hash on hover
+
+
 #### Configuration of Third-Party Services for Production-Grade Apps
 
 By default, 🏗 Scaffold-Stark provides predefined Open API endpoint for some services such as Blast. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
