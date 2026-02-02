@@ -5,3 +5,4 @@ export * from "./BlockieAvatar";
 export * from "./Avatar";
 export * from "./Faucet";
 export * from "./SearchBar";
+export * from "./VendorActivityChart";

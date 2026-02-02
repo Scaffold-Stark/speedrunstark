@@ -327,6 +327,64 @@ vendor = await deployContract({
 
 > If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
 
+## Extra Checkpoint 1: 📊 Building a Buy/Sell History Graph 📈
+
+> 👩‍💻 In this checkpoint, we're going to create a graph that visualizes buy and sell activity over time. You'll learn how to use the **Auco Indexer** to implement advanced queries and display the data in a chart with configurable time ranges.
+
+> 🔧 **Set up your Auco Indexer with a backend server.** The indexer will listen to blockchain events and store them in a database for efficient querying.
+
+> 📝 Copy your `deployedContracts.ts` to the Auco Project. The indexer requires the ABI to parse event data from your contracts.
+
+> 🔍 Check your Smart Contracts (`vendor.cairo`) and identify which events contain the data you need:
+> - `BuyTokens` event: contains `buyer`, `strk_amount`, and `tokens_amount`
+> - `SellTokens` event: contains `seller`, `tokens_amount`, and `strk_amount`
+
+> 📡 Register your events on the indexer and configure it to store them in your database. Define API endpoints that allow querying events by time range.
+
+> ✏️ Complete the `useVendorActivity.ts` hook in `packages/nextjs/hooks/scaffold-stark/` with requests to your API. You may want to use [TanStack Query](https://tanstack.com/query/latest) (`useQuery`) for data fetching and caching.
+
+> 🎨 Use the provided `VendorActivityChart.tsx` component in `packages/nextjs/components/scaffold-stark/` to display your chart. Add it to your Events page or create a dedicated analytics page.
+
+### 🥅 Goals
+
+- [ ] Is your Auco Indexer running and connected to your Starknet network?
+- [ ] Are `BuyTokens` and `SellTokens` events being indexed and stored in your database?
+- [ ] Can you query events by time range from your API endpoints?
+- [ ] Does the `useVendorActivity` hook successfully fetch and return data from your indexer?
+- [ ] Is the chart displaying both buy (green) and sell (red) activity over time?
+- [ ] Can you filter the chart by selecting different date ranges?
+
+### ⚔️ Side Quests
+
+- [ ] Add a bar chart view as an alternative to the line chart
+- [ ] Implement real-time updates using WebSockets when new events occur
+- [ ] Add export functionality to download chart data as CSV
+
+## Extra Checkpoint 2: 🔗 Building Proof-of-Transaction History 📜
+
+> 👩‍💻 We already have an events table in place from Checkpoint 3. Now let's enhance it by adding clickable links to the block explorer for each transaction.
+
+> 📝 Add a new column to the events table that displays a block explorer link for each transaction hash. It should be a hyperlink on the text "Block Explorer".
+
+> 🔧 Create a utility function that generates the correct block explorer URL based on the current network from the transaction hash:
+> - For **local networks**: Use the localhost explorer (we will use `http://localhost:3000/blockexplorer/tx/<YOUR_TRANSACTION_HASH>`)
+> - For **Sepolia testnet**: Use Starkscan or Voyager Sepolia explorer (e.g., `https://sepolia.starkscan.co/tx/<YOUR_TRANSACTION_HASH>` or `https://sepolia.voyager.online/tx/<YOUR_TRANSACTION_HASH>`)
+> - For **Mainnet**: Use Starkscan or Voyager Mainnet explorer (e.g., `https://starkscan.co/tx/<YOUR_TRANSACTION_HASH>` or `https://voyager.online/tx/<YOUR_TRANSACTION_HASH>`)
+
+> ✏️ Integrate the explorer links into your events table component in `packages/nextjs/app/events/page.tsx`.
+
+### 🥅 Goals
+
+- [ ] Does each event in the table have a clickable link to view the transaction on a block explorer?
+- [ ] Does the link correctly switch between localhost explorer and public explorers based on the network?
+- [ ] Can you click through to verify the transaction details on the explorer?
+
+### ⚔️ Side Quests
+
+- [ ] Add a copy-to-clipboard button for transaction hashes
+- [ ] Show a truncated transaction hash with the full hash on hover
+
+
 #### Configuration of Third-Party Services for Production-Grade Apps
 
 By default, 🏗 Scaffold-Stark provides predefined Open API endpoint for some services such as Blast. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
