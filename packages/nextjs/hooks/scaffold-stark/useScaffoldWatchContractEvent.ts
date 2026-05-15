@@ -5,7 +5,7 @@ import {
 } from "~~/utils/scaffold-stark/contract";
 import { ExtractAbiEventNames } from "abi-wan-kanabi/dist/kanabi";
 import { useEffect, useMemo, useState } from "react";
-import { useProvider } from "@starknet-react/core";
+import { useProvider } from "@starknet-start/react";
 import { useTargetNetwork } from "./useTargetNetwork";
 import { useScaffoldWebSocketEvents } from "./useScaffoldWebSocketEvents";
 import scaffoldConfig from "~~/scaffold.config";
@@ -13,11 +13,8 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { Abi } from "abi-wan-kanabi/dist/kanabi";
 import { resolveEventAbi } from "~~/utils/scaffold-stark/eventsUtils";
 
-const MAX_EVENT_KEYS = 16;
-
 /**
  * Watches for specific contract events and triggers a callback when events are detected.
- * This hook continuously polls for events from a deployed contract and calls the provided
  * callback function whenever new events matching the specified event name are found.
  *
  * @param config - Configuration object for the hook

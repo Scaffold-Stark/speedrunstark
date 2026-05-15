@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useAccount } from "@starknet-react/core";
+import { useAccount } from "@starknet-start/react";
 
 const Home = () => {
   const connectedAddress = useAccount();

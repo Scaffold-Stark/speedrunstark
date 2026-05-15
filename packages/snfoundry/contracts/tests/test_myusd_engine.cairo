@@ -5,11 +5,19 @@ use contracts::MyUSDStaking::IMyUSDStakingDispatcher;
 use contracts::Oracle::IOracleDispatcher;
 use contracts::RateController::{IRateControllerDispatcher, IRateControllerDispatcherTrait};
 use core::traits::TryInto;
-use openzeppelin_testing::declare_and_deploy;
-use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use openzeppelin_interfaces::token::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::{CheatSpan, cheat_caller_address};
+use snforge_std::{CheatSpan, ContractClassTrait, DeclareResultTrait, cheat_caller_address, declare};
 use starknet::{ContractAddress, contract_address_const};
+
+// snforge equivalent of openzeppelin_testing::declare_and_deploy (openzeppelin_testing is not
+// available under the OZ 3.0 / snforge 0.60 toolchain bump — mirrors base's
+// declare().contract_class() + deploy() migration pattern).
+fn declare_and_deploy(contract: ByteArray, calldata: Array<felt252>) -> ContractAddress {
+    let contract_class = declare(contract).unwrap().contract_class();
+    let (contract_address, _) = contract_class.deploy(@calldata).unwrap();
+    contract_address
+}
 
 // Constants
 const PRECISION: u256 = 1_000_000_000_000_000_000; // 1e18

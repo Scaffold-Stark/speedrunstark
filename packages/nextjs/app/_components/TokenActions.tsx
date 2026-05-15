@@ -13,7 +13,7 @@ import { useAnimationConfig } from "~~/hooks/scaffold-stark/useAnimationConfig";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { tokenName } from "~~/utils/constant";
 import { decodeUint256Value } from "~~/utils/scaffold-stark/number";
-import { devnet } from "@starknet-react/chains";
+import { devnet } from "@starknet-start/chains";
 
 const TokenActions = () => {
   const { address, chainId: ConnectedChainId } = useAccount();

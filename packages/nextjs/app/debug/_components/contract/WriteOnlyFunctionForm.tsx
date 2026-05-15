@@ -13,10 +13,10 @@ import {
   isError,
 } from "~~/app/debug/_components/contract";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
-import { useNetwork, useContract } from "@starknet-react/core";
+import { useNetwork, useContract } from "@starknet-start/react";
 import { Abi } from "abi-wan-kanabi";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
-import { Address } from "@starknet-react/chains";
+import { Address } from "@starknet-start/chains";
 import { InvokeTransactionReceiptResponse } from "starknet";
 import { TxReceipt } from "./TxReceipt";
 import { useTransactor } from "~~/hooks/scaffold-stark";
@@ -43,7 +43,7 @@ export const WriteOnlyFunctionForm = ({
   );
   const [formErrorMessage, setFormErrorMessage] =
     useState<FormErrorMessageState>({});
-  const { status: walletStatus, isConnected, account, chainId } = useAccount();
+  const { status: walletStatus, isConnected, chainId } = useAccount();
   const { chain } = useNetwork();
   const {
     writeTransaction,
@@ -172,13 +172,11 @@ export const WriteOnlyFunctionForm = ({
         </p>
         {inputs}
         <div className="flex justify-between gap-2">
-          {!zeroInputs && (
-            <div className="grow basis-0">
-              {displayedTxResult ? (
-                <TxReceipt txResult={displayedTxResult} />
-              ) : null}
-            </div>
-          )}
+          <div className="grow basis-0">
+            {displayedTxResult ? (
+              <TxReceipt txResult={displayedTxResult} />
+            ) : null}
+          </div>
           <div
             className={`flex ${
               !!errorMsg &&
@@ -199,11 +197,6 @@ export const WriteOnlyFunctionForm = ({
           </div>
         </div>
       </div>
-      {zeroInputs && txResult ? (
-        <div className="grow basis-0">
-          <TxReceipt txResult={txResult} />
-        </div>
-      ) : null}
     </div>
   );
 };

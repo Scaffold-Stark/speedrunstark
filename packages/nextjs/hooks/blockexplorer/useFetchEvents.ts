@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useProvider } from "@starknet-react/core";
+import { useProvider } from "@starknet-start/react";
 import {
   RpcProvider,
   hash,
@@ -10,11 +10,12 @@ import {
 } from "starknet";
 import { useTargetNetwork } from "../scaffold-stark/useTargetNetwork";
 import { parseEventData } from "~~/utils/scaffold-stark/eventsData";
-import { devnet } from "@starknet-react/chains";
+import { devnet } from "@starknet-start/chains";
 import deployedContracts from "~~/contracts/deployedContracts";
 import predeployedContracts from "~~/contracts/predeployedContracts";
 import configExternalContracts from "~~/contracts/configExternalContracts";
 import { deepMergeContracts } from "~~/utils/scaffold-stark/contract";
+import { EMITTED_EVENT } from "@starknet-io/types-js";
 
 export interface EventData {
   blockHash: string;
@@ -428,12 +429,13 @@ export function useFetchEvents(
 
           if (eventResponse.events) {
             // Sort events by block number and event index (newest first)
-            const sortedEvents = eventResponse.events.sort((a, b) => {
-              if (a.block_number !== b.block_number) {
-                return b.block_number - a.block_number;
-              }
-              return (b as any).event_index - (a as any).event_index;
-            });
+            const sortedEvents = (eventResponse.events as EMITTED_EVENT[]).sort(
+              (a, b) => {
+                const blockA = a.block_number ?? 0;
+                const blockB = b.block_number ?? 0;
+                return blockB - blockA;
+              },
+            );
 
             // Apply pagination
             const startIndex = (page - 1) * pageSize;
@@ -459,8 +461,8 @@ export function useFetchEvents(
 
                   // Initialize event data
                   const eventData: EventData = {
-                    blockHash: event.block_hash,
-                    blockNumber: event.block_number,
+                    blockHash: event.block_hash ?? "",
+                    blockNumber: event.block_number ?? 0,
                     transactionHash: event.transaction_hash,
                     eventName: "Event",
                     contractAddress: event.from_address,
@@ -530,8 +532,8 @@ export function useFetchEvents(
                 } catch (error) {
                   console.warn("Failed to process event:", error);
                   return {
-                    blockHash: event.block_hash,
-                    blockNumber: event.block_number,
+                    blockHash: event.block_hash ?? "",
+                    blockNumber: event.block_number ?? 0,
                     transactionHash: event.transaction_hash,
                     eventName: "Unknown",
                     contractAddress: event.from_address,

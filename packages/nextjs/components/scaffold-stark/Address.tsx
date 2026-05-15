@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 // CopyToClipboard moved to lazy loading for better performance
-import { Address as AddressType } from "@starknet-react/chains";
+import { Address as AddressType } from "@starknet-start/chains";
 import { getChecksumAddress, StarkProfile } from "starknet";
-import { devnet } from "@starknet-react/chains";
+import { devnet } from "@starknet-start/chains";
 import {
   CheckCircleIcon,
   DocumentDuplicateIcon,
@@ -35,7 +35,7 @@ const blockieSizeMap = {
 };
 
 /**
- * Displays an address (or ENS) with a Blockie image and option to copy address.
+ * Displays an address with a StarkNet profile avatar and option to copy address.
  */
 export const Address = ({
   address,

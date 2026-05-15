@@ -35,7 +35,7 @@ pub trait IMyUSDStaking<TContractState> {
 pub mod MyUSD {
     use core::num::traits::Zero;
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_token::erc20::interface::IERC20;
+    use openzeppelin_interfaces::token::erc20::IERC20;
     use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
     use starknet::{ContractAddress, get_caller_address};
