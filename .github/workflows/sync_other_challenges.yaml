@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - base-challenge-template
+  workflow_dispatch: {}
 
 jobs:
   sync:
@@ -55,6 +56,7 @@ jobs:
             "challenge-3-dice-game"
             "challenge-4-build-a-dex"
             "challenge-5-multisig-wallet"
+            "challenge-6-stable-coin"
           )
 
           echo "Merging base-challenge-template into challenge branches..."
