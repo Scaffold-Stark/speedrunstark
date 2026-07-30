@@ -7,6 +7,7 @@ on:
       - "packages/nextjs/**"
       - "yarn.lock"
       - "package.json"
+      - ".tool-versions"
   pull_request:
     branches:
       - main
@@ -16,6 +17,7 @@ on:
       - "packages/snfoundry/**"
       - "yarn.lock"
       - "package.json"
+      - ".tool-versions"
 
 permissions:
   contents: read
