@@ -8,7 +8,7 @@ pub trait IMultisigWallet<TContractState> {
 #[starknet::contract]
 mod CustomMultisigWallet {
     use contracts::custom_multisig_component::MultisigComponent;
-    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use openzeppelin_interfaces::token::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use super::{ContractAddress, IMultisigWallet};
 
     const STRK_CONTRACT_ADDRESS: ContractAddress =
