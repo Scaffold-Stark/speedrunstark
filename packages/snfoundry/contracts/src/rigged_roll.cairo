@@ -14,7 +14,7 @@ pub trait IRiggedRoll<T> {
 mod RiggedRoll {
     use core::keccak::keccak_u256s_le_inputs;
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_token::erc20::interface::IERC20DispatcherTrait;
+    use openzeppelin_interfaces::token::erc20::IERC20DispatcherTrait;
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
     use starknet::{ContractAddress, get_block_number, get_caller_address, get_contract_address};
     use super::{IDiceGameDispatcher, IDiceGameDispatcherTrait};

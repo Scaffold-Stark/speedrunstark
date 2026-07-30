@@ -1,8 +1,8 @@
 use contracts::dice_game::{DiceGame, IDiceGameDispatcherTrait};
 use contracts::rigged_roll::{IRiggedRollDispatcher, IRiggedRollDispatcherTrait};
 use core::keccak::keccak_u256s_le_inputs;
+use openzeppelin_interfaces::token::erc20::IERC20DispatcherTrait;
 use openzeppelin_testing::declare_and_deploy;
-use openzeppelin_token::erc20::interface::IERC20DispatcherTrait;
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::cheatcodes::events::EventsFilterTrait;
 use snforge_std::{

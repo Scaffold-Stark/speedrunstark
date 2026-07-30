@@ -1,4 +1,4 @@
-use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+use openzeppelin_interfaces::token::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
 
 #[starknet::interface]
 pub trait IDiceGame<T> {
