@@ -64,6 +64,7 @@ const WalletInfo: React.FC<WalletInfoProps> = ({
                     address={convertFeltToAddress(address)}
                     size={16}
                   />
+                  {/* @ts-ignore */}
                   <CopyToClipboard
                     text={convertFeltToAddress(address)}
                     onCopy={() => {

@@ -93,6 +93,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             ID: {formatAddress(tx.id)}
           </div>{" "}
           <div>
+            {/* @ts-ignore */}
             <CopyToClipboard
               text={tx.id}
               onCopy={() => {
