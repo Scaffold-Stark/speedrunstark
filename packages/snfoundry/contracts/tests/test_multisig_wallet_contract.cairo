@@ -3,8 +3,8 @@ use starknet::ContractAddress;
 use starknet::account::Call;
 
 pub type TransactionID = felt252;
-pub type TransactionState = openzeppelin_governance::multisig::interface::TransactionState;
-use openzeppelin_governance::multisig::interface::{IMultisigDispatcher, IMultisigDispatcherTrait};
+pub type TransactionState = openzeppelin_interfaces::governance::multisig::TransactionState;
+use openzeppelin_interfaces::governance::multisig::{IMultisigDispatcher, IMultisigDispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{CheatSpan, EventSpyAssertionsTrait, cheat_caller_address, spy_events};
