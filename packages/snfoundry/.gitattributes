@@ -1,7 +1,22 @@
 scripts-ts/helpers/** merge=theirs
 scripts-ts/deploy-contract.ts merge=theirs
 .env.example merge=theirs
+
+contracts/src/** merge=ours
+contracts/tests/** merge=ours
+scripts-ts/deploy.ts merge=ours
+
+# .gitattributes resolves conflicting patterns by last-match-wins, so any
+# override for a path under contracts/ must come after a broader contracts/**
+# rule. There is no such wildcard here anymore -- contracts/src/** and
+# contracts/tests/** above are scoped narrowly on purpose, see below.
 contracts/Scarb.lock merge=theirs
 
-contracts/** merge=ours
-scripts-ts/deploy.ts merge=ours
+# Scarb.toml intentionally has NO merge driver. Challenge branches carry
+# their own legitimate dependencies base doesn't have (e.g. challenge-6 keeps
+# openzeppelin_security on purpose for MyUSDStaking's ReentrancyGuard, see
+# commit c3a178d). merge=ours would silently freeze out base's version bumps;
+# merge=theirs would silently delete the challenge's own deps. Neither is
+# safe. Leaving it on the default 3-way merge means a real base/challenge
+# edit collides as a genuine conflict and the sync workflow opens a PR for a
+# human to resolve. Do NOT "fix" this by adding a driver.
