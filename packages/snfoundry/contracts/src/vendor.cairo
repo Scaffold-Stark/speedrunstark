@@ -14,8 +14,8 @@ mod Vendor {
     use contracts::your_token::{IYourTokenDispatcher, IYourTokenDispatcherTrait};
     use core::traits::TryInto;
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_access::ownable::interface::IOwnable;
-    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use openzeppelin_interfaces::access::ownable::IOwnable;
+    use openzeppelin_interfaces::token::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
     use starknet::{get_caller_address, get_contract_address};
     use super::{ContractAddress, IVendor};
