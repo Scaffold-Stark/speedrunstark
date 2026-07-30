@@ -39,11 +39,11 @@ export const useMultisigOperations = () => {
       throw new Error("No account connected or contract not loaded");
     }
 
-    return new Contract(
-      deployedContractData.abi,
-      deployedContractData.address,
-      account,
-    );
+    return new Contract({
+      abi: deployedContractData.abi,
+      address: deployedContractData.address,
+      providerOrAccount: account,
+    });
   }, [account, deployedContractData]);
 
   const syncSigners = useCallback(async () => {
