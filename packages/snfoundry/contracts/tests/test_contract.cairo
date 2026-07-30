@@ -1,7 +1,7 @@
 use contracts::balloons::{IBalloonsDispatcher, IBalloonsDispatcherTrait};
 use contracts::dex::{IDexDispatcher, IDexDispatcherTrait};
+use openzeppelin_interfaces::token::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
-use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{CheatSpan, cheat_caller_address};
 use starknet::ContractAddress;
