@@ -466,5 +466,3 @@ mod test_event_utils {
 //     );
 //   ✅ fn execute_transaction_batch(ref self: TState, calls: Span<Call>, salt: felt252);
 // }
-
-
