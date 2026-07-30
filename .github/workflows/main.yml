@@ -5,6 +5,8 @@ on:
     paths:
       - "packages/snfoundry/contracts/**"
       - "packages/nextjs/**"
+      - "yarn.lock"
+      - "package.json"
   pull_request:
     branches:
       - main
@@ -12,6 +14,8 @@ on:
     paths:
       - "packages/nextjs/**"
       - "packages/snfoundry/**"
+      - "yarn.lock"
+      - "package.json"
 
 permissions:
   contents: read
