@@ -1,6 +1,6 @@
 use contracts::staker::{IStakerDispatcher, IStakerDispatcherTrait};
+use openzeppelin_interfaces::token::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_testing::declare_and_deploy;
-use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
 use snforge_std::{CheatSpan, cheat_caller_address, start_cheat_block_timestamp_global};
 use starknet::{ContractAddress, get_block_timestamp};
