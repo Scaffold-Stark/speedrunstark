@@ -100,11 +100,16 @@ jobs:
               print('Could not find Compatible versions in destination README')
               exit(1)
 
-          # Keep the requirements link if it exists
+          # Keep the requirements link if it exists.
+          # Anchored to a single line (MULTILINE, no DOTALL) on purpose: with
+          # DOTALL + a '\n###' lookahead, non-greedy still has to consume
+          # every already-accumulated duplicate of this sentence to reach the
+          # next heading, so it re-appended the whole accumulated block again
+          # instead of just one copy -- 20 duplicates in, 20 back out.
           old_content = dest_match.group(2)
           requirements_link = ''
           if 'Make sure you have the compatible versions' in old_content:
-              req_match = re.search(r'(Make sure you have.*?)(?=\n###|\Z)', old_content, re.DOTALL)
+              req_match = re.search(r'^(Make sure you have the compatible versions.*)$', old_content, re.MULTILINE)
               if req_match:
                   requirements_link = '\n\n' + req_match.group(1).strip()
 
