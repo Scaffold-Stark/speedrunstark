@@ -1,7 +1,15 @@
 scripts-ts/helpers/** merge=theirs
 scripts-ts/deploy-contract.ts merge=theirs
 .env.example merge=theirs
-contracts/Scarb.lock merge=theirs
 
 contracts/** merge=ours
+
+# Scarb.lock/Scarb.toml carry toolchain/dependency versions and must always
+# take the incoming base-challenge-template version, not the challenge's.
+# These must come AFTER the contracts/** wildcard: .gitattributes resolves
+# conflicting patterns by last-match-wins, so listing them first (as before)
+# let contracts/** silently override them back to merge=ours.
+contracts/Scarb.lock merge=theirs
+contracts/Scarb.toml merge=theirs
+
 scripts-ts/deploy.ts merge=ours
