@@ -80,8 +80,12 @@ jobs:
           with open('README.md', 'r') as f:
               dest = f.read()
 
-          # Extract versions list from source (## Compatible versions)
-          source_match = re.search(r'## Compatible versions\s*\n(.*?)(?=\n##|\Z)', source, re.DOTALL)
+          # Extract versions list from source (## Compatible versions).
+          # Bounded to the bullet lines only (not (?=\n##|\Z)) so the trailing
+          # 'Make sure you have...' sentence isn't captured here too -- it's
+          # already re-appended separately as requirements_link below, and
+          # capturing it in both places duplicated it on every sync run.
+          source_match = re.search(r'## Compatible versions\s*\n((?:-[^\n]*\n?)+)', source)
           if not source_match:
               print('Could not find Compatible versions in source README')
               exit(1)
