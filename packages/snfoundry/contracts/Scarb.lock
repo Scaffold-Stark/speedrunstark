@@ -7,6 +7,7 @@ version = "0.2.0"
 dependencies = [
  "openzeppelin_access",
  "openzeppelin_interfaces",
+ "openzeppelin_testing",
  "openzeppelin_token",
  "openzeppelin_utils",
  "snforge_std",
@@ -35,6 +36,15 @@ source = "registry+https://scarbs.xyz/"
 checksum = "sha256:ee491981a69736cde220f8b7dd290b6d8620c85ee6b83c81f665f5bef78b62b1"
 dependencies = [
  "openzeppelin_interfaces",
+]
+
+[[package]]
+name = "openzeppelin_testing"
+version = "6.9.0"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:af4293370028d5a085964365f3f181a8f00bdef7c84c9db1c8b73582eaba891c"
+dependencies = [
+ "snforge_std",
 ]
 
 [[package]]
