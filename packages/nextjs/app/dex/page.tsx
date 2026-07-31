@@ -7,7 +7,7 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldRead
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { multiplyTo1e18 } from "~~/utils/scaffold-stark/priceInWei";
-import { useAccount } from "@starknet-react/core";
+import { useAccount } from "@starknet-start/react";
 import { formatEther } from "ethers";
 import { Address, Balance, IntegerInput } from "~~/components/scaffold-stark";
 import { Curve } from "~~/app/dex/_components";
