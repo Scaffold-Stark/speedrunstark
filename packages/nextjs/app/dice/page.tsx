@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
-import { useBalance } from "@starknet-react/core";
+import { useBalance } from "@starknet-start/react";
 import { Roll, RollEvents } from "~~/components/RollEvents";
 import { Winner, WinnerEvents } from "~~/components/WinnerEvents";
 import { useScaffoldContract } from "~~/hooks/scaffold-stark/useScaffoldContract";
@@ -14,7 +14,7 @@ import {
   useScaffoldMultiWriteContract,
 } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { Address } from "~~/components/scaffold-stark";
-import { Address as AddressType } from "@starknet-react/chains";
+import { Address as AddressType } from "@starknet-start/chains";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-stark/useScaffoldEventHistory";
 import { BlockNumber } from "starknet";
 import useScaffoldStrkBalance from "~~/hooks/scaffold-stark/useScaffoldStrkBalance";
