@@ -1,6 +1,6 @@
 import React from "react";
 import { Address } from "./scaffold-stark/Address";
-import { Address as AddressType } from "@starknet-react/chains";
+import { Address as AddressType } from "@starknet-start/chains";
 
 export type Roll = {
   address: AddressType;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Amount } from "~~/components/diceComponents/Amount";
-import { Address as AddressType } from "@starknet-react/chains";
+import { Address as AddressType } from "@starknet-start/chains";
 import { Address } from "~~/components/scaffold-stark";
 import { formatEther } from "ethers";
 
