@@ -293,6 +293,10 @@ vendor = await deployContract({
 
 > Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
 
+> 💡 The RPC URL shipped in `.env.example` uses a shared demo Alchemy key. That's fine for a quick first run, but for anything sustained - a workshop, a long session, or a mainnet fork - grab your own free key from [Alchemy](https://www.alchemy.com/). The shared key has one rate limit across everyone using it, and when it throttles you won't see a "rate limited" error - you'll get an opaque parse or fork error and may think your own setup is broken.
+>
+> If you already have a `packages/snfoundry/.env` from an earlier clone, compare it against `.env.example` - `yarn install` never touches an existing `.env`, so a stale one may still point at the now-decommissioned `public.blastapi.io`. That failure won't say the endpoint is dead either; devnet just reports a raw parse error that looks like devnet itself is broken.
+
 ⛽️ You will need to get some `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
 
 🚀 Run `yarn deploy --network [network]` to deploy your smart contract to a public network (mainnet or sepolia).
