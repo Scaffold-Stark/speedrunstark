@@ -18,6 +18,10 @@ on:
       - "yarn.lock"
       - "package.json"
       - ".tool-versions"
+<<<<<<< HEAD
+=======
+      - ".github/workflows/**"
+>>>>>>> base-challenge-template
 
 permissions:
   contents: read
